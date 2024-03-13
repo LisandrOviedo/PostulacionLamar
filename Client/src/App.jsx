@@ -2,17 +2,21 @@ import "./App.css";
 
 import { Routes, Route, useLocation } from "react-router-dom";
 
-import { Landing } from "./components/Landing/Landing";
 import { Form } from "./components/Form/Form";
+import { Landing } from "./components/Landing/Landing";
+import { Navbar } from "./components/Navbar/Navbar";
 
 function App() {
   const { pathname } = useLocation();
 
   return (
-    <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/form/:cedula" element={<Form />} />
-    </Routes>
+    <div>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/form/:cedula" element={<Form />} />
+      </Routes>
+    </div>
   );
 }
 
