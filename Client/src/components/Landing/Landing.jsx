@@ -1,8 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import Button from "../UI/Button";
-import Logo from "../UI/Logo";
 
 import validations from "./validations";
 
@@ -43,29 +42,22 @@ export function Landing() {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col justify-center items-center px-10 bg-[#FFCC00]">
-      <Link
-        to="https://grupo-lamar.com/es/"
-        target="_blank"
-        className="hover:opacity-70"
-      >
-        <Logo className="w-20 mb-4 sm:w-28" />
-      </Link>
-      <h1 className="text-xl font-bold text-center">
+    <div className="mt-24 sm:mt-32 flex flex-col justify-center items-center px-10 bg-white h-full">
+      <h1 className="text-lg sm:text-xl font-bold text-center">
         Identificación de Talentos
       </h1>
       <br />
-      <p className="text-center">
+      <p className="text-center text-sm sm:text-base">
         A fin de identificar talentos potenciales en la organización, le
         invitamos a completar el siguiente formulario donde deberá indicar su
         profesión y/o experiencia, así como tu área de interés laboral.
       </p>
       <hr className="w-[50%] h-0.5 my-5 bg-gray-100 border-0" />
-      <span className="text-lg text-center">
+      <span className="text-base sm:text-lg text-center">
         Observaciones para el llenado del formulario:
       </span>
       <br />
-      <ul className="list-disc text-center sm:text-left">
+      <ul className="list-disc text-center sm:text-left text-sm sm:text-base">
         <li>
           Disponibilidad de tiempo de 30 minutos para aplicación del Test de
           Valoración Actitudinal
@@ -76,12 +68,12 @@ export function Landing() {
         </li>
       </ul>
       <br />
-      <label className="text-center">
+      <label className="text-center text-base sm:text-lg">
         Ingrese su número de cédula para empezar:
       </label>
       <br />
       <input
-        className="text-center mb-2 shadow appearance-none border rounded w-28 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        className="text-base text-center mb-2 appearance-none border-0 w-24 p-3 block rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-500 focus:ring-2 focus:ring-inset focus:ring-[#002846] sm:text-sm sm:leading-6"
         type="text"
         name="cedula"
         value={data.cedula}
@@ -91,7 +83,9 @@ export function Landing() {
         minLength="1"
         maxLength="9"
       />
-      <p className="mb-1 text-red-700 font-bold text-center">{errors.cedula}</p>
+      <p className="text-base sm:text-lg mb-2 text-red-700 font-bold text-center">
+        {errors.cedula}
+      </p>
       <Button
         id="btn_continuar"
         type="submit"
