@@ -56,14 +56,6 @@ export function Navbar() {
                 Inicio
               </Link>
             </li>
-            <li>
-              <Link
-                to="/"
-                className="block py-2 px-3 text-white hover:text-[#F0C95C]"
-              >
-                Contacto
-              </Link>
-            </li>
           </ul>
         </div>
       </div>
