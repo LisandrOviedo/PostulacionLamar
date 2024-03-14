@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export default function Label({ className, children, ...props }) {
+export const Label = ({ className, children, ...props }) => {
   return (
     <label
       className={twMerge(
@@ -15,4 +15,6 @@ export default function Label({ className, children, ...props }) {
       {children}
     </label>
   );
-}
+};
+
+export default Label;

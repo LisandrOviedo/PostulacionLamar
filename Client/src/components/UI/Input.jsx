@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export default function Input({ className, ...props }) {
+export const Input = ({ className, ...props }) => {
   return (
     <input
       className={twMerge(
@@ -13,4 +13,6 @@ export default function Input({ className, ...props }) {
       {...props}
     />
   );
-}
+};
+
+export default Input;

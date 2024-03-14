@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export default function Button({ className, children, ...props }) {
+export const Button = ({ className, children, ...props }) => {
   return (
     <button
       className={twMerge(
@@ -15,4 +15,6 @@ export default function Button({ className, children, ...props }) {
       {children}
     </button>
   );
-}
+};
+
+export default Button;

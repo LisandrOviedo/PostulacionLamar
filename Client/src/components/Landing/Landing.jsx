@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import validations from "./validations";
 
-import Button from "../UI/Button";
-import Input from "../UI/Input";
+import { Button, Input } from "../UI";
 
 export function Landing() {
   const navigate = useNavigate();

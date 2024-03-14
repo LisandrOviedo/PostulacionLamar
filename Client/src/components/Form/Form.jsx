@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 
 import validations from "./validations";
 
-import Button from "../UI/Button";
-import Input from "../UI/Input";
-import Label from "../UI/Label";
+import { Button, Input, Label } from "../UI";
 
 export function Form() {
   const { cedula } = useParams();
