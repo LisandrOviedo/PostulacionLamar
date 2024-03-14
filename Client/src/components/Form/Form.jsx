@@ -44,7 +44,7 @@ export function Form() {
       <form>
         <div className="grid gap-6 md:grid-cols-2 mt-5">
           <div>
-            <Label text="Nombre completo" />
+            <Label>Nombre completo</Label>
             <Input
               type="text"
               name="nombre_completo"
@@ -53,7 +53,7 @@ export function Form() {
             />
           </div>
           <div>
-            <Label text="Cédula" />
+            <Label>Cédula</Label>
             <Input
               type="text"
               name="cedula"
@@ -62,7 +62,7 @@ export function Form() {
             />
           </div>
           <div>
-            <Label text="Correo electrónico" />
+            <Label>Correo electrónico</Label>
             <Input
               type="email"
               name="email"
@@ -71,7 +71,7 @@ export function Form() {
             />
           </div>
           <div>
-            <Label text="Número de contacto" />
+            <Label>Número de contacto</Label>
             <Input
               type="tel"
               name="telefono"
@@ -81,7 +81,7 @@ export function Form() {
             />
           </div>
           <div>
-            <Label text="Dirección" />
+            <Label>Dirección</Label>
             <Input
               type="text"
               name="direccion"
@@ -90,7 +90,7 @@ export function Form() {
             />
           </div>
           <div>
-            <Label text="Grado de instrucción" />
+            <Label>Grado de instrucción</Label>
             <select
               name="grado_instruccion"
               className="cursor-pointer bg-gray-50 border border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-[#002846] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -104,7 +104,7 @@ export function Form() {
           </div>
 
           <div>
-            <Label text="Título obtenido" />
+            <Label>Título obtenido</Label>
             <Input
               type="text"
               name="titulo_obtenido"
@@ -113,7 +113,7 @@ export function Form() {
             />
           </div>
           <div>
-            <Label text="Indica cuál es tu área de interés laboral" />
+            <Label>Indica cuál es tu área de interés laboral</Label>
             <select
               name="interes_laboral"
               className="cursor-pointer bg-gray-50 border border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-[#002846] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -131,7 +131,7 @@ export function Form() {
             </select>
           </div>
           <div>
-            <Label text="Adjunte su resumen curricular (PDF)" />
+            <Label>Adjunte su resumen curricular (PDF)</Label>
             <input
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
               aria-describedby="file_input_help"
