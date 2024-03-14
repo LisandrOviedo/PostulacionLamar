@@ -1,9 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { clsx } from "clsx";
 import { useEffect, useState } from "react";
-
-import Button from "../UI/Button";
+import { useNavigate } from "react-router-dom";
 
 import validations from "./validations";
+
+import Button from "../UI/Button";
+import Input from "../UI/Input";
 
 export function Landing() {
   const navigate = useNavigate();
@@ -72,8 +74,9 @@ export function Landing() {
         Ingrese su número de cédula para empezar:
       </label>
       <br />
-      <input
-        className="text-base text-center mb-2 appearance-none border-0 w-24 p-3 block rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-500 focus:ring-2 focus:ring-inset focus:ring-[#002846] sm:text-sm sm:leading-6"
+
+      <Input
+        className="w-28 text-center"
         type="text"
         name="cedula"
         value={data.cedula}
@@ -82,8 +85,11 @@ export function Landing() {
         placeholder="12345678"
         minLength="1"
         maxLength="9"
-      />
-      <p className="text-base sm:text-lg mb-2 text-red-700 font-bold text-center">
+        required
+      ></Input>
+
+      {/* <input className="text-base text-center mb-2 appearance-none border-0 w-24 p-3 block rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-500 focus:ring-2 focus:ring-inset focus:ring-[#002846] sm:text-sm sm:leading-6" /> */}
+      <p className="text-base sm:text-lg text-red-700 font-bold text-center">
         {errors.cedula}
       </p>
       <Button
@@ -93,6 +99,11 @@ export function Landing() {
         disabled={
           Object.keys(errors).length > 0 || Object.keys(data.cedula).length <= 0
         }
+        className={clsx("", {
+          "opacity-50":
+            Object.keys(errors).length > 0 ||
+            Object.keys(data.cedula).length <= 0,
+        })}
       >
         Continuar
       </Button>
