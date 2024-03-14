@@ -12,6 +12,7 @@ export function Landing() {
   const [data, setData] = useState({
     cedula: "",
   });
+
   const [errors, setErrors] = useState({});
 
   const handleFindCI = () => {
@@ -83,7 +84,7 @@ export function Landing() {
         minLength="1"
         maxLength="9"
         required
-      ></Input>
+      />
       <p className="text-base sm:text-lg text-red-700 font-bold text-center">
         {errors.cedula}
       </p>
