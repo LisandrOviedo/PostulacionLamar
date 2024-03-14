@@ -1,19 +1,14 @@
 import "./App.css";
 
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import { Form } from "./components/Form/Form";
 import { Landing } from "./components/Landing/Landing";
 import { Navbar } from "./components/Navbar/Navbar";
+import { NotFound } from "./components/NotFound/NotFound";
 import { Login } from "./components/Admin/Login/Login";
 
 function App() {
-  const { pathname } = useLocation();
-
-  function NotFound() {
-    return <Navigate to="/" />;
-  }
-
   return (
     <div>
       <Navbar />
