@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import validations from "./validations";
 
-import { Button, Input } from "../UI";
+import { Button, Input, Title } from "../UI";
 
 export function Landing() {
   const navigate = useNavigate();
@@ -44,9 +44,7 @@ export function Landing() {
 
   return (
     <div className="mt-24 sm:mt-32 flex flex-col justify-center items-center px-10 bg-white h-full">
-      <h1 className="text-lg sm:text-xl font-bold text-center">
-        Identificación de Talentos
-      </h1>
+      <Title>Identificación de Talentos</Title>
       <br />
       <p className="text-center text-sm sm:text-base">
         A fin de identificar talentos potenciales en la organización, le

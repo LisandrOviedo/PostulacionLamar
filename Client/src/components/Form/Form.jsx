@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import validations from "./validations";
 
-import { Button, Input, Label } from "../UI";
+import { Button, Input, Label, Select, Title } from "../UI";
 
 export function Form() {
   const { cedula } = useParams();
@@ -34,9 +34,7 @@ export function Form() {
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
-      <h1 className="text-lg sm:text-xl font-bold text-center">
-        Postulación ({cedula})
-      </h1>
+      <Title>Postulación ({cedula})</Title>
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
 
       <form>
@@ -89,16 +87,13 @@ export function Form() {
           </div>
           <div>
             <Label>Grado de instrucción</Label>
-            <select
-              name="grado_instruccion"
-              className="cursor-pointer bg-gray-50 border border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-[#002846] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            >
+            <Select name="grado_instruccion">
               <option>Básico</option>
               <option>Bachiller</option>
               <option>Técnico Medio</option>
               <option>Técnico Medio Superior</option>
               <option>Universitario</option>
-            </select>
+            </Select>
           </div>
 
           <div>
@@ -112,10 +107,7 @@ export function Form() {
           </div>
           <div>
             <Label>Indica cuál es tu área de interés laboral</Label>
-            <select
-              name="interes_laboral"
-              className="cursor-pointer bg-gray-50 border border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-[#002846] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            >
+            <Select name="interes_laboral">
               <option>Administración</option>
               <option>Cadena de suministros</option>
               <option>Mantenimiento</option>
@@ -126,7 +118,7 @@ export function Form() {
               <option>Talento Humano</option>
               <option>Tecnología e informática</option>
               <option>Otro</option>
-            </select>
+            </Select>
           </div>
           <div>
             <Label>Adjunte su resumen curricular (PDF)</Label>
