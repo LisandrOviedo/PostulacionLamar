@@ -62,7 +62,7 @@ export function Navbar() {
                 </li>
               </>
             )}
-            {pathname.startsWith("/admin/") && (
+            {pathname === "/admin/login" && (
               <>
                 <li>
                   <Link
