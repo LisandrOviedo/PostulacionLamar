@@ -111,7 +111,6 @@ export function Form() {
               placeholder="Ingrese el nombre de su título obtenido en su grado de instrucción"
               required
             />
-            <input />
           </div>
           <div>
             <Label text="Indica cuál es tu área de interés laboral" />
