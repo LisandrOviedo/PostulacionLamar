@@ -28,6 +28,22 @@ export function Form() {
     );
   };
 
+  const handlePDF = (event) => {
+    const input = event.target;
+    const file = input.files[0];
+
+    if (!file) {
+      return; // No se seleccionó ningún archivo
+    }
+
+    const allowedTypes = ["application/pdf"];
+
+    if (!allowedTypes.includes(file.type)) {
+      input.value = ""; // Borra el valor del campo de entrada
+      return alert("¡Solo se permiten archivos PDF!");
+    }
+  };
+
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
@@ -128,6 +144,7 @@ export function Form() {
               id="file_input"
               type="file"
               accept="application/pdf"
+              onChange={handlePDF}
             />
             <p
               className="mt-1 text-sm text-red-600 dark:text-gray-300"
