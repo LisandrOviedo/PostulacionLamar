@@ -1,10 +1,16 @@
-export default function Input(props) {
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export default function Input({ className, ...props }) {
   return (
-    <div className="mt-2">
-      <input
-        className="p-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-500 focus:ring-2 focus:ring-inset focus:ring-[#002846] sm:text-sm sm:leading-6"
-        {...props}
-      />
-    </div>
+    <input
+      className={twMerge(
+        clsx(
+          "bg-gray-50 border border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-[#002846] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500",
+          className
+        )
+      )}
+      {...props}
+    />
   );
 }
