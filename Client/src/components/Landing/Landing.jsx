@@ -84,8 +84,6 @@ export function Landing() {
         maxLength="9"
         required
       ></Input>
-
-      {/* <input className="text-base text-center mb-2 appearance-none border-0 w-24 p-3 block rounded-md py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-500 focus:ring-2 focus:ring-inset focus:ring-[#002846] sm:text-sm sm:leading-6" /> */}
       <p className="text-base sm:text-lg text-red-700 font-bold text-center">
         {errors.cedula}
       </p>
