@@ -2,6 +2,8 @@ import { clsx } from "clsx";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import validations from "./validations";
+
 import { Button, Input, Label, Title } from "../../UI";
 
 export function Login() {
@@ -9,13 +11,24 @@ export function Login() {
 
   const [data, setData] = useState({
     cedula: "",
+    clave: "",
   });
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      const continuar = document.getElementById("btn_continuar");
-      continuar.click();
-    }
+  const [errors, setErrors] = useState({});
+
+  const handleOnChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+
+    setErrors(
+      validations({
+        ...data,
+        [e.target.name]: e.target.value,
+      })
+    );
+  };
+
+  const handleLogin = (e) => {
+    navigate("/admin/dashboard");
   };
 
   useEffect(() => {
@@ -50,8 +63,14 @@ export function Login() {
                 name="cedula"
                 type="text"
                 placeholder="123456789"
+                onChange={handleOnChange}
+                minLength="1"
+                maxLength="9"
                 required
               />
+              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                {errors.cedula}
+              </p>
             </div>
           </div>
 
@@ -69,16 +88,36 @@ export function Login() {
             </div>
             <div className="mt-2">
               <Input
-                name="password"
+                name="clave"
                 type="password"
                 placeholder="********"
+                onChange={handleOnChange}
+                minLength="1"
                 required
               />
+              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                {errors.clave}
+              </p>
             </div>
           </div>
 
           <div className="flex items-center justify-center">
-            <Button type="submit">Acceder</Button>
+            <Button
+              id="btn_continuar"
+              type="submit"
+              onClick={handleLogin}
+              disabled={
+                Object.keys(errors).length > 0 ||
+                Object.keys(data.cedula).length <= 0
+              }
+              className={clsx("", {
+                "opacity-50":
+                  Object.keys(errors).length > 0 ||
+                  Object.keys(data.cedula).length <= 0,
+              })}
+            >
+              Acceder
+            </Button>
           </div>
         </form>
       </div>
