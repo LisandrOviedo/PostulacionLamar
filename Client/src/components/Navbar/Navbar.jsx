@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 
 import { Logo } from "../UI";
@@ -9,6 +9,8 @@ export function Navbar() {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const { pathname } = useLocation();
 
   return (
     <nav className="bg-[#002846] border-gray-200 w-full z-999 fixed top-0">
@@ -48,14 +50,30 @@ export function Navbar() {
           id="navbar-default"
         >
           <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
-            <li>
-              <Link
-                to="/"
-                className="block py-2 px-3 text-white hover:text-[#F0C95C]"
-              >
-                Inicio
-              </Link>
-            </li>
+            {!pathname.startsWith("/admin/") && (
+              <>
+                <li>
+                  <Link
+                    to="/"
+                    className="block py-2 px-3 text-white hover:text-[#F0C95C]"
+                  >
+                    Inicio
+                  </Link>
+                </li>
+              </>
+            )}
+            {pathname.startsWith("/admin/") && (
+              <>
+                <li>
+                  <Link
+                    to="/admin/login"
+                    className="block py-2 px-3 text-white hover:text-[#F0C95C]"
+                  >
+                    Inicio
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
