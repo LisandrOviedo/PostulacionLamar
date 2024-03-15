@@ -66,10 +66,10 @@ export function Navbar() {
               <>
                 <li>
                   <Link
-                    to="/admin/login"
+                    to="/"
                     className="block py-2 px-3 text-white hover:text-[#F0C95C]"
                   >
-                    Inicio
+                    Ir a vista de empleado
                   </Link>
                 </li>
               </>
