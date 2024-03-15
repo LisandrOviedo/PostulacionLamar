@@ -2,9 +2,9 @@ import { clsx } from "clsx";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import validations from "./validations";
+import validations from "./Validations/login";
 
-import { Button, Input, Label, Title } from "../../UI";
+import { Button, Input, Label, Title } from "../UI";
 
 export function Login() {
   const navigate = useNavigate();

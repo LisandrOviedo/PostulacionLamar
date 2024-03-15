@@ -74,6 +74,34 @@ export function Navbar() {
                 </li>
               </>
             )}
+            {pathname.startsWith("/admin/") && pathname !== "/admin/login" && (
+              <>
+                <li>
+                  <Link
+                    to="/admin/dashboard"
+                    className="block py-2 px-3 text-white hover:text-[#F0C95C]"
+                  >
+                    Inicio
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/postulaciones"
+                    className="block py-2 px-3 text-white hover:text-[#F0C95C]"
+                  >
+                    Postulaciones
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/login"
+                    className="block py-2 px-3 text-white hover:text-[#F0C95C]"
+                  >
+                    Cerrar Sesión
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

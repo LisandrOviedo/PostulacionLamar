@@ -1,45 +1,10 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-
-import validations from "./validations";
+import { useEffect } from "react";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
-export function Form() {
-  const { cedula } = useParams();
-
-  const [data, setData] = useState({
-    cedula: "",
-  });
-
-  const [errors, setErrors] = useState({});
-
-  const handleOnChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-
-    setErrors(
-      validations({
-        ...data,
-        [e.target.name]: e.target.value,
-      })
-    );
-  };
-
-  const handlePDF = (event) => {
-    const input = event.target;
-    const file = input.files[0];
-
-    if (!file) {
-      return; // No se seleccionó ningún archivo
-    }
-
-    const allowedTypes = ["application/pdf"];
-
-    if (!allowedTypes.includes(file.type)) {
-      input.value = ""; // Borra el valor del campo de entrada
-      return alert("¡Solo se permiten archivos PDF!");
-    }
-  };
+export function Postulacion() {
+  const { id } = useParams();
 
   useEffect(() => {
     window.scroll(0, 0);
@@ -47,7 +12,7 @@ export function Form() {
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
-      <Title>Postulación ({cedula})</Title>
+      <Title>Postulación ({id})</Title>
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
 
       <form>
@@ -141,7 +106,6 @@ export function Form() {
               id="file_input"
               type="file"
               accept="application/pdf"
-              onChange={handlePDF}
             />
             <p
               className="mt-1 text-sm text-red-600 dark:text-gray-300"
