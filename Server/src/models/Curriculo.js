@@ -8,6 +8,16 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: UUIDV4,
     },
+    empleado_id: {
+      // Campo relacionado
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    area_interes_id: {
+      // Campo relacionado
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
     grado_instruccion: {
       type: DataTypes.ENUM(
         "Basico",
