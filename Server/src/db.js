@@ -42,14 +42,16 @@ Empleado.hasOne(Curriculo, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT", // Configurar el comportamiento de eliminación a RESTRICT
-    onUpdate: "RESTRICT", // Configurar el comportamiento de actualización a RESTRICT
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
   },
 });
 Curriculo.belongsTo(Empleado, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
   },
 });
 
@@ -58,14 +60,16 @@ Areas_Interes.hasMany(Curriculo, {
   foreignKey: {
     allowNull: false,
     name: "area_interes_id",
-    onDelete: "RESTRICT", // Configurar el comportamiento de eliminación a RESTRICT
-    onUpdate: "RESTRICT", // Configurar el comportamiento de actualización a RESTRICT
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
   },
 });
 Curriculo.belongsTo(Areas_Interes, {
   foreignKey: {
     allowNull: false,
     name: "area_interes_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
   },
 });
 
