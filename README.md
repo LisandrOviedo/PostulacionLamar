@@ -1,4 +1,4 @@
-# Postulación Lamar Client
+# Postulación Lamar
 
 ---
 
