@@ -12,6 +12,26 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER(10),
       allowNull: false,
     },
+    nombres: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+    },
+    apellidos: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+    },
+    correo: {
+      type: DataTypes.STRING(150),
+      allowNull: true,
+    },
+    telefono: {
+      type: DataTypes.STRING(15),
+      allowNull: false,
+    },
+    direccion: {
+      type: DataTypes.STRING(150),
+      allowNull: false,
+    },
     clave: {
       type: DataTypes.STRING(10),
       allowNull: false,
