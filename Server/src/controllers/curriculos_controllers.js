@@ -1,8 +1,23 @@
-const { Curriculo } = require("../db");
+const { Curriculo, Empleado, Areas_Interes } = require("../db");
 
 const todosLosCurriculos = async () => {
   try {
-    const curriculos = await Curriculo.findAll();
+    const curriculos = await Curriculo.findAll({
+      include: [
+        {
+          model: Empleado,
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Areas_Interes,
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+        },
+      ],
+    });
 
     if (curriculos.length === 0) {
       return "No existen curriculos";
@@ -20,7 +35,22 @@ const traerCurriculo = async (curriculo_id) => {
   }
 
   try {
-    const curriculo = await Curriculo.findByPk(curriculo_id);
+    const curriculo = await Curriculo.findByPk(curriculo_id, {
+      include: [
+        {
+          model: Empleado,
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Areas_Interes,
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+        },
+      ],
+    });
 
     if (curriculo === null) {
       return "No existe ese curriculo";
@@ -60,6 +90,17 @@ const crearCurriculo = async (
   }
 
   try {
+    const empleado = await Empleado.findByPk(empleado_id);
+    const area_interes = await Areas_Interes.findByPk(area_interes_id);
+
+    if (!empleado) {
+      return "No existe ese empleado";
+    }
+
+    if (!area_interes) {
+      return "No existe ese área de interés";
+    }
+
     const [curriculo, created] = await Curriculo.findOrCreate({
       where: { empleado_id: empleado_id },
       defaults: {
