@@ -59,7 +59,7 @@ const crearUsuario = async (
       defaults: {
         cedula: cedula,
         nombres: nombres,
-        apellidos: nombres,
+        apellidos: apellidos,
         correo: correo,
         telefono: telefono,
         direccion: direccion,
@@ -103,7 +103,7 @@ const modificarUsuario = async (
   }
 
   try {
-    const usuario = await traerUsuario(usuario_id);
+    await traerUsuario(usuario_id);
 
     await Usuario.update(
       {
