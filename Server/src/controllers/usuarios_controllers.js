@@ -24,9 +24,9 @@ const traerUsuario = async (usuario_id) => {
 
     if (usuario === null) {
       return "No existe ese usuario";
-    } else {
-      return usuario;
     }
+
+    return usuario;
   } catch (error) {
     return "Error al traer el usuario: ", error.message;
   }
@@ -103,6 +103,8 @@ const modificarUsuario = async (
   }
 
   try {
+    const usuario = await traerUsuario(usuario_id);
+
     await Usuario.update(
       {
         cedula: cedula,
@@ -121,9 +123,9 @@ const modificarUsuario = async (
       }
     );
 
-    return await Usuario.findByPk(usuario_id);
+    return await traerUsuario(usuario_id);
   } catch (error) {
-    return "Error al intentar modificar el usuario: ", error.message;
+    return "Error al modificar el usuario: ", error.message;
   }
 };
 
@@ -144,7 +146,7 @@ const inactivarUsuario = async (usuario_id) => {
 
     return await traerUsuario(usuario_id);
   } catch (error) {
-    return "Error al intentar inactivar el usuario: ", error.message;
+    return "Error al inactivar el usuario: ", error.message;
   }
 };
 
