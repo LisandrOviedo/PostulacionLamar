@@ -10,7 +10,7 @@ const {
 const usuarios = Router();
 
 usuarios.get("/", getUsuarios);
-usuarios.get("/detalle/:id", getUsuario);
+usuarios.get("/detalle/:usuario_id", getUsuario);
 
 usuarios.post("/", postUsuario);
 
