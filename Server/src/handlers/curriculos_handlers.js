@@ -30,18 +30,28 @@ const getCurriculo = async (req, res) => {
 
 const postCurriculo = async (req, res) => {
   const {
+    empleado_id,
     grado_instruccion,
     titulo_obtenido,
+    centro_educativo,
+    area_interes_id,
     area_interes_otro,
+    disponibilidad_viajar,
+    disponibilidad_cambio_residencia,
     ruta_pdf,
     estado,
   } = req.body;
 
   try {
     const response = await crearCurriculo(
+      empleado_id,
       grado_instruccion,
       titulo_obtenido,
+      centro_educativo,
+      area_interes_id,
       area_interes_otro,
+      disponibilidad_viajar,
+      disponibilidad_cambio_residencia,
       ruta_pdf,
       estado
     );
@@ -57,7 +67,11 @@ const putCurriculo = async (req, res) => {
     curriculo_id,
     grado_instruccion,
     titulo_obtenido,
+    centro_educativo,
+    area_interes_id,
     area_interes_otro,
+    disponibilidad_viajar,
+    disponibilidad_cambio_residencia,
     ruta_pdf,
     estado,
     inactivo,
@@ -68,7 +82,11 @@ const putCurriculo = async (req, res) => {
       curriculo_id,
       grado_instruccion,
       titulo_obtenido,
+      centro_educativo,
+      area_interes_id,
       area_interes_otro,
+      disponibilidad_viajar,
+      disponibilidad_cambio_residencia,
       ruta_pdf,
       estado,
       inactivo
