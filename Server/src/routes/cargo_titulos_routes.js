@@ -7,14 +7,14 @@ const {
   deleteCargoTitulo,
 } = require("../handlers/cargo_titulos_handlers");
 
-const cargotitulos = Router();
+const cargostitulos = Router();
 
-cargotitulos.get("/", getCargosTitulos);
-cargotitulos.get("/detalle/:cargo_titulo_id", getCargoTitulo);
+cargostitulos.get("/", getCargosTitulos);
+cargostitulos.get("/detalle/:cargo_titulo_id", getCargoTitulo);
 
-cargotitulos.post("/", postCargoTitulo);
+cargostitulos.post("/", postCargoTitulo);
 
-cargotitulos.put("/modificar", putCargoTitulo);
-cargotitulos.put("/inactivar", deleteCargoTitulo);
+cargostitulos.put("/modificar", putCargoTitulo);
+cargostitulos.put("/inactivar", deleteCargoTitulo);
 
-module.exports = cargotitulos;
+module.exports = cargostitulos;
