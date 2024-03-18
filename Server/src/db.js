@@ -34,7 +34,14 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-const { Usuario, Empleado, Areas_Interes, Curriculo } = sequelize.models;
+const {
+  Areas_Interes,
+  Cargo_Titulo,
+  Curriculo,
+  Empleado,
+  Experiencia,
+  Usuario,
+} = sequelize.models;
 
 // RELACIONES DE MODELOS (TABLAS)
 // Empleado 1:1 Curriculo
@@ -55,7 +62,7 @@ Curriculo.belongsTo(Empleado, {
   },
 });
 
-// Areas_Interes 1:N Direcciones
+// Areas_Interes 1:N Curriculo
 Areas_Interes.hasMany(Curriculo, {
   foreignKey: {
     allowNull: false,
@@ -73,11 +80,49 @@ Curriculo.belongsTo(Areas_Interes, {
   },
 });
 
+// Curriculo 1:N Experiencia
+Curriculo.hasMany(Experiencia, {
+  foreignKey: {
+    allowNull: false,
+    name: "curriculo_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+Experiencia.belongsTo(Curriculo, {
+  foreignKey: {
+    allowNull: false,
+    name: "curriculo_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+
+// Cargo_Titulo 1:N Experiencia
+Cargo_Titulo.hasMany(Experiencia, {
+  foreignKey: {
+    allowNull: false,
+    name: "cargo_titulo_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+Experiencia.belongsTo(Cargo_Titulo, {
+  foreignKey: {
+    allowNull: false,
+    name: "cargo_titulo_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
-  Usuario,
-  Empleado,
   Areas_Interes,
+  Cargo_Titulo,
   Curriculo,
+  Empleado,
+  Experiencia,
+  Usuario,
 };
