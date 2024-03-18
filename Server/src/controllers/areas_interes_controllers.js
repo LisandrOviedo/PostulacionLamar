@@ -61,6 +61,8 @@ const modificarAreaInteres = async (area_interes_id, nombre, inactivo) => {
   }
 
   try {
+    await traerAreaInteres(area_interes_id);
+
     await Areas_Interes.update(
       {
         nombre: nombre,
