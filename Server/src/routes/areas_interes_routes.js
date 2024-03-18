@@ -10,7 +10,7 @@ const {
 const areasinteres = Router();
 
 areasinteres.get("/", getAreasInteres);
-areasinteres.get("/detalle/:id", getAreaInteres);
+areasinteres.get("/detalle/:area_interes_id", getAreaInteres);
 
 areasinteres.post("/", postAreaInteres);
 

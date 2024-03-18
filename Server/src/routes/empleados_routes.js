@@ -10,7 +10,7 @@ const {
 const empleados = Router();
 
 empleados.get("/", getEmpleados);
-empleados.get("/detalle/:id", getEmpleado);
+empleados.get("/detalle/:empleado_id", getEmpleado);
 
 empleados.post("/", postEmpleado);
 
