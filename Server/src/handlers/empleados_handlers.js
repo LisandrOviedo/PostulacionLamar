@@ -58,7 +58,6 @@ const putEmpleado = async (req, res) => {
     correo,
     telefono,
     direccion,
-    clave,
     inactivo,
   } = req.body;
 
@@ -71,7 +70,6 @@ const putEmpleado = async (req, res) => {
       correo,
       telefono,
       direccion,
-      clave,
       inactivo
     );
 
