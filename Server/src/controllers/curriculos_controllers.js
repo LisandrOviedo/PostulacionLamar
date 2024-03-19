@@ -161,7 +161,6 @@ const modificarCurriculo = async (
 
     await Curriculo.update(
       {
-        curriculo_id: curriculo_id,
         grado_instruccion: grado_instruccion,
         titulo_obtenido: titulo_obtenido,
         centro_educativo: centro_educativo,
