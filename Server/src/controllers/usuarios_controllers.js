@@ -32,6 +32,29 @@ const traerUsuario = async (usuario_id) => {
   }
 };
 
+const login = async (cedula, clave) => {
+  if (!cedula || !clave) {
+    return "Datos faltantes";
+  }
+
+  try {
+    const usuario = await Usuario.findOne({
+      where: { cedula: cedula, clave: clave },
+      attributes: {
+        exclude: ["clave"],
+      },
+    });
+
+    if (usuario === null) {
+      return "Datos incorrectos";
+    }
+
+    return usuario;
+  } catch (error) {
+    return "Error al loguear: ", error.message;
+  }
+};
+
 const crearUsuario = async (
   cedula,
   nombres,
@@ -153,6 +176,7 @@ const inactivarUsuario = async (usuario_id) => {
 module.exports = {
   todosLosUsuarios,
   traerUsuario,
+  login,
   crearUsuario,
   modificarUsuario,
   inactivarUsuario,

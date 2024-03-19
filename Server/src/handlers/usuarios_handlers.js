@@ -1,6 +1,7 @@
 const {
   todosLosUsuarios,
   traerUsuario,
+  login,
   crearUsuario,
   modificarUsuario,
   inactivarUsuario,
@@ -21,6 +22,18 @@ const getUsuario = async (req, res) => {
 
   try {
     const response = await traerUsuario(usuario_id);
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const getLogin = async (req, res) => {
+  const { cedula, clave } = req.body;
+
+  try {
+    const response = await login(cedula, clave);
 
     return res.json(response);
   } catch (error) {
@@ -96,6 +109,7 @@ const deleteUsuario = async (req, res) => {
 module.exports = {
   getUsuarios,
   getUsuario,
+  getLogin,
   postUsuario,
   putUsuario,
   deleteUsuario,

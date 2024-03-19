@@ -2,6 +2,7 @@ const { Router } = require("express");
 const {
   getUsuarios,
   getUsuario,
+  getLogin,
   postUsuario,
   putUsuario,
   deleteUsuario,
@@ -11,6 +12,7 @@ const usuarios = Router();
 
 usuarios.get("/", getUsuarios);
 usuarios.get("/detalle/:usuario_id", getUsuario);
+usuarios.get("/login", getLogin);
 
 usuarios.post("/", postUsuario);
 
