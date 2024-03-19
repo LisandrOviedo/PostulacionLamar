@@ -8,11 +8,11 @@ const usuarios = require("./usuarios_routes");
 
 const router = Router();
 
-router.use("/areasinteres", areasinteres);
-router.use("/cargostitulos", cargostitulos);
-router.use("/curriculos", curriculos);
-router.use("/empleados", empleados);
-router.use("/experiencias", experiencias);
-router.use("/usuarios", usuarios);
+router.use("/tthh/areasinteres", areasinteres);
+router.use("/tthh/cargostitulos", cargostitulos);
+router.use("/tthh/curriculos", curriculos);
+router.use("/tthh/empleados", empleados);
+router.use("/tthh/experiencias", experiencias);
+router.use("/tthh/usuarios", usuarios);
 
 module.exports = router;
