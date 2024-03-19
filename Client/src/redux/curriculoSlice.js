@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   curriculos: [],
-  curriculo: {},
 };
 
 export const curriculoSlice = createSlice({
@@ -11,12 +10,6 @@ export const curriculoSlice = createSlice({
   reducers: {
     allCurriculos: (state, action) => {
       state.curriculos = action.payload;
-    },
-    resetState: () => {
-      return {
-        curriculos: [],
-        curriculo: {},
-      };
     },
   },
 });
