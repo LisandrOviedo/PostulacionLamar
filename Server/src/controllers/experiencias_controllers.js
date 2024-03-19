@@ -1,4 +1,4 @@
-const { Experiencia } = require("../db");
+const { Experiencia, Curriculo, Cargo_Titulo } = require("../db");
 
 const todasLasExperiencias = async () => {
   try {
@@ -52,6 +52,17 @@ const crearExperiencia = async (
   }
 
   try {
+    const curriculo = await Curriculo.findByPk(curriculo_id);
+    const cargo_titulo = await Cargo_Titulo.findByPk(cargo_titulo_id);
+
+    if (!curriculo) {
+      return "No existe ese curriculo";
+    }
+
+    if (!cargo_titulo) {
+      return "No existe ese cargo / título";
+    }
+
     const [experiencia, created] = await Experiencia.findOrCreate({
       where: {
         curriculo_id: curriculo_id,
