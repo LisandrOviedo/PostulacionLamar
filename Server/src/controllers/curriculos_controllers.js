@@ -1,8 +1,17 @@
-const { Curriculo, Empleado, Areas_Interes } = require("../db");
+const {
+  Curriculo,
+  Empleado,
+  Areas_Interes,
+  Experiencia,
+  Cargo_Titulo,
+} = require("../db");
 
 const todosLosCurriculos = async () => {
   try {
     const curriculos = await Curriculo.findAll({
+      attributes: {
+        exclude: ["empleado_id", "createdAt", "updatedAt"],
+      },
       include: [
         {
           model: Empleado,
@@ -15,6 +24,25 @@ const todosLosCurriculos = async () => {
           attributes: {
             exclude: ["createdAt", "updatedAt"],
           },
+        },
+        {
+          model: Experiencia,
+          attributes: {
+            exclude: [
+              "curriculo_id",
+              "cargo_titulo_id",
+              "createdAt",
+              "updatedAt",
+            ],
+          },
+          include: [
+            {
+              model: Cargo_Titulo,
+              attributes: {
+                exclude: ["createdAt", "updatedAt"],
+              },
+            },
+          ],
         },
       ],
     });
@@ -36,6 +64,9 @@ const traerCurriculo = async (curriculo_id) => {
 
   try {
     const curriculo = await Curriculo.findByPk(curriculo_id, {
+      attributes: {
+        exclude: ["empleado_id", "createdAt", "updatedAt"],
+      },
       include: [
         {
           model: Empleado,
@@ -48,6 +79,25 @@ const traerCurriculo = async (curriculo_id) => {
           attributes: {
             exclude: ["createdAt", "updatedAt"],
           },
+        },
+        {
+          model: Experiencia,
+          attributes: {
+            exclude: [
+              "curriculo_id",
+              "cargo_titulo_id",
+              "createdAt",
+              "updatedAt",
+            ],
+          },
+          include: [
+            {
+              model: Cargo_Titulo,
+              attributes: {
+                exclude: ["createdAt", "updatedAt"],
+              },
+            },
+          ],
         },
       ],
     });
