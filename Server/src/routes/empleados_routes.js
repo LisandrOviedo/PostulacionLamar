@@ -2,6 +2,7 @@ const { Router } = require("express");
 const {
   getEmpleados,
   getEmpleado,
+  getLogin,
   postEmpleado,
   putEmpleado,
   deleteEmpleado,
@@ -12,6 +13,7 @@ const empleados = Router();
 empleados.get("/", getEmpleados);
 empleados.get("/detalle/:empleado_id", getEmpleado);
 
+empleados.post("/login", getLogin);
 empleados.post("/", postEmpleado);
 
 empleados.put("/modificar", putEmpleado);

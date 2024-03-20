@@ -32,6 +32,26 @@ const traerEmpleado = async (empleado_id) => {
   }
 };
 
+const login = async (cedula) => {
+  if (!cedula) {
+    return "Datos faltantes";
+  }
+
+  try {
+    const empleado = await Empleado.findOne({
+      where: { cedula: cedula },
+    });
+
+    if (empleado === null) {
+      return "No existe ese empleado";
+    }
+
+    return empleado;
+  } catch (error) {
+    return "Error al loguear: ", error.message;
+  }
+};
+
 const crearEmpleado = async (
   cedula,
   nombres,
@@ -140,6 +160,7 @@ const inactivarEmpleado = async (empleado_id) => {
 module.exports = {
   todosLosEmpleados,
   traerEmpleado,
+  login,
   crearEmpleado,
   modificarEmpleado,
   inactivarEmpleado,

@@ -1,18 +1,20 @@
 import { persistReducer, persistStore } from "redux-persist";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
-import curriculos from "./curriculoSlice";
+import curriculos from "./curriculos/curriculoSlice";
+import empleado from "./empleados/empleadoSlice";
 
 // Configuración de Redux Persist
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["curriculos"],
+  whitelist: ["curriculos", "empleados"],
 };
 
 // Combinar el userReducer con Redux Persist
 const rootReducer = combineReducers({
   curriculos: curriculos,
+  empleado: empleado,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
