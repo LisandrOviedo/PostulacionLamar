@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import validations from "./validations";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { getLogin } from "../../redux/empleados/empleadoAction";
 import axios from "axios";
@@ -12,7 +12,6 @@ import axios from "axios";
 import { Button, Input, Title } from "../UI";
 
 export function Landing() {
-  const empleado = useSelector((state) => state.empleado);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -63,8 +62,20 @@ export function Landing() {
   }, []);
 
   useEffect(() => {
+    if (access === "No existe ese empleado" || access === "Datos faltantes") {
+      setAccess({});
+      return alert(access);
+    }
+
+    if (Object.keys(data).length > 0 && access.inactivo === true) {
+      setAccess({});
+      return alert(
+        "Tienes el acceso restringido, ya que tu usuario se encuentra inactivo"
+      );
+    }
+
     if (Object.keys(data).length > 0 && access.empleado_id) {
-      navigate(`/form/${access.empleado_id}`);
+      navigate(`/form/datospersonales/${access.empleado_id}`);
     }
   }, [access]);
 
