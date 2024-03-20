@@ -4,9 +4,15 @@ import { useNavigate } from "react-router-dom";
 
 import validations from "./validations";
 
+import { useSelector, useDispatch } from "react-redux";
+
+import { getLogin } from "../../redux/empleados/empleadoAction";
+
 import { Button, Input, Title } from "../UI";
 
 export function Landing() {
+  const empleado = useSelector((state) => state.empleado);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [data, setData] = useState({
@@ -16,9 +22,7 @@ export function Landing() {
   const [errors, setErrors] = useState({});
 
   const handleFindCI = () => {
-    const cedula = data.cedula;
-
-    navigate(`/form/${cedula}`);
+    dispatch(getLogin(data));
   };
 
   const handleKeyDown = (e) => {

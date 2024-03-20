@@ -1,11 +1,15 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
+import { useSelector, useDispatch } from "react-redux";
+
 import validations from "./validations";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
 export function Form() {
+  const empleado = useSelector((state) => state.empleado);
+
   const { cedula } = useParams();
 
   const [data, setData] = useState({
@@ -58,6 +62,7 @@ export function Form() {
               type="text"
               name="nombre_completo"
               placeholder="Ingrese su nombre completo"
+              value={empleado.empleado.nombres}
               required
             />
           </div>
