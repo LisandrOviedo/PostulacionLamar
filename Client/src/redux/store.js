@@ -7,7 +7,7 @@ import curriculos from "./curriculoSlice";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: [],
+  whitelist: ["curriculos"],
 };
 
 // Combinar el userReducer con Redux Persist
