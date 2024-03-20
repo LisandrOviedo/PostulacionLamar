@@ -41,13 +41,13 @@ const postCargoTitulo = async (req, res) => {
 };
 
 const putCargoTitulo = async (req, res) => {
-  const { cargo_titulo_id, nombre, inactivo } = req.body;
+  const { cargo_titulo_id, nombre, activo } = req.body;
 
   try {
     const response = await modificarCargoTitulo(
       cargo_titulo_id,
       nombre,
-      inactivo
+      activo
     );
 
     return res.json(response);

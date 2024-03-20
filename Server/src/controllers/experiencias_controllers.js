@@ -98,7 +98,7 @@ const modificarExperiencia = async (
   cargo_titulo_otro,
   duracion,
   empresa_centro_educativo,
-  inactivo
+  activo
 ) => {
   if (
     !experiencia_id ||
@@ -107,7 +107,7 @@ const modificarExperiencia = async (
     !cargo_titulo_otro ||
     !duracion ||
     !empresa_centro_educativo ||
-    !inactivo
+    !activo
   ) {
     return "Datos faltantes";
   }
@@ -122,7 +122,7 @@ const modificarExperiencia = async (
         cargo_titulo_otro: cargo_titulo_otro,
         duracion: duracion,
         empresa_centro_educativo: empresa_centro_educativo,
-        inactivo: inactivo,
+        activo: activo,
       },
       {
         where: {
@@ -146,7 +146,7 @@ const inactivarExperiencia = async (experiencia_id) => {
     const experiencia = await traerExperiencia(experiencia_id);
 
     await Experiencia.update(
-      { inactivo: !experiencia.inactivo },
+      { activo: !experiencia.activo },
       {
         where: { experiencia_id: experiencia_id },
       }

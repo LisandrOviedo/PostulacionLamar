@@ -55,8 +55,8 @@ const crearAreaInteres = async (nombre) => {
   }
 };
 
-const modificarAreaInteres = async (area_interes_id, nombre, inactivo) => {
-  if (!area_interes_id || !nombre || !inactivo) {
+const modificarAreaInteres = async (area_interes_id, nombre, activo) => {
+  if (!area_interes_id || !nombre || !activo) {
     return "Datos faltantes";
   }
 
@@ -66,7 +66,7 @@ const modificarAreaInteres = async (area_interes_id, nombre, inactivo) => {
     await Areas_Interes.update(
       {
         nombre: nombre,
-        inactivo: inactivo,
+        activo: activo,
       },
       {
         where: {
@@ -90,7 +90,7 @@ const inactivarAreaInteres = async (area_interes_id) => {
     const area_interes = await traerAreaInteres(area_interes_id);
 
     await Areas_Interes.update(
-      { inactivo: !area_interes.inactivo },
+      { activo: !area_interes.activo },
       {
         where: { area_interes_id: area_interes_id },
       }

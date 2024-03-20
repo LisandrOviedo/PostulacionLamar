@@ -72,7 +72,7 @@ const putUsuario = async (req, res) => {
     telefono,
     direccion,
     clave,
-    inactivo,
+    activo,
   } = req.body;
 
   try {
@@ -85,7 +85,7 @@ const putUsuario = async (req, res) => {
       telefono,
       direccion,
       clave,
-      inactivo
+      activo
     );
 
     return res.json(response);

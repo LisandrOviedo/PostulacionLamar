@@ -95,7 +95,7 @@ const modificarEmpleado = async (
   correo,
   telefono,
   direccion,
-  inactivo
+  activo
 ) => {
   if (
     !empleado_id ||
@@ -105,7 +105,7 @@ const modificarEmpleado = async (
     !correo ||
     !telefono ||
     !direccion ||
-    !inactivo
+    !activo
   ) {
     return "Datos faltantes";
   }
@@ -121,7 +121,7 @@ const modificarEmpleado = async (
         correo: correo,
         telefono: telefono,
         direccion: direccion,
-        inactivo: inactivo,
+        activo: activo,
       },
       {
         where: {
@@ -145,7 +145,7 @@ const inactivarEmpleado = async (empleado_id) => {
     const empleado = await traerEmpleado(empleado_id);
 
     await Empleado.update(
-      { inactivo: !empleado.inactivo },
+      { activo: !empleado.activo },
       {
         where: { empleado_id: empleado_id },
       }

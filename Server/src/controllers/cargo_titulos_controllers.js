@@ -55,8 +55,8 @@ const crearCargoTitulo = async (nombre) => {
   }
 };
 
-const modificarCargoTitulo = async (cargo_titulo_id, nombre, inactivo) => {
-  if (!cargo_titulo_id || !nombre || !inactivo) {
+const modificarCargoTitulo = async (cargo_titulo_id, nombre, activo) => {
+  if (!cargo_titulo_id || !nombre || !activo) {
     return "Datos faltantes";
   }
 
@@ -66,7 +66,7 @@ const modificarCargoTitulo = async (cargo_titulo_id, nombre, inactivo) => {
     await Cargo_Titulo.update(
       {
         nombre: nombre,
-        inactivo: inactivo,
+        activo: activo,
       },
       {
         where: {
@@ -90,7 +90,7 @@ const inactivarCargoTitulo = async (cargo_titulo_id) => {
     const cargo_titulo = await traerCargoTitulo(cargo_titulo_id);
 
     await Cargo_Titulo.update(
-      { inactivo: !cargo_titulo.inactivo },
+      { activo: !cargo_titulo.activo },
       {
         where: { cargo_titulo_id: cargo_titulo_id },
       }

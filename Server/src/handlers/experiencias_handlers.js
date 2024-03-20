@@ -62,7 +62,7 @@ const putExperiencia = async (req, res) => {
     cargo_titulo_otro,
     duracion,
     empresa_centro_educativo,
-    inactivo,
+    activo,
   } = req.body;
 
   try {
@@ -73,7 +73,7 @@ const putExperiencia = async (req, res) => {
       cargo_titulo_otro,
       duracion,
       empresa_centro_educativo,
-      inactivo
+      activo
     );
 
     return res.json(response);

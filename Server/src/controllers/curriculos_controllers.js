@@ -188,7 +188,7 @@ const modificarCurriculo = async (
   disponibilidad_cambio_residencia,
   ruta_pdf,
   estado,
-  inactivo
+  activo
 ) => {
   if (
     !curriculo_id ||
@@ -201,7 +201,7 @@ const modificarCurriculo = async (
     !disponibilidad_cambio_residencia ||
     !ruta_pdf ||
     !estado ||
-    !inactivo
+    !activo
   ) {
     return "Datos faltantes";
   }
@@ -220,7 +220,7 @@ const modificarCurriculo = async (
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
         ruta_pdf: ruta_pdf,
         estado: estado,
-        inactivo: inactivo,
+        activo: activo,
       },
       {
         where: {
@@ -244,7 +244,7 @@ const inactivarCurriculo = async (curriculo_id) => {
     const curriculo = await traerCurriculo(curriculo_id);
 
     await Curriculo.update(
-      { inactivo: !curriculo.inactivo },
+      { activo: !curriculo.activo },
       {
         where: { curriculo_id: curriculo_id },
       }

@@ -71,7 +71,7 @@ const putEmpleado = async (req, res) => {
     correo,
     telefono,
     direccion,
-    inactivo,
+    activo,
   } = req.body;
 
   try {
@@ -83,7 +83,7 @@ const putEmpleado = async (req, res) => {
       correo,
       telefono,
       direccion,
-      inactivo
+      activo
     );
 
     return res.json(response);

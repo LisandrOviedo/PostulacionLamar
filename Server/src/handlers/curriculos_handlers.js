@@ -74,7 +74,7 @@ const putCurriculo = async (req, res) => {
     disponibilidad_cambio_residencia,
     ruta_pdf,
     estado,
-    inactivo,
+    activo,
   } = req.body;
 
   try {
@@ -89,7 +89,7 @@ const putCurriculo = async (req, res) => {
       disponibilidad_cambio_residencia,
       ruta_pdf,
       estado,
-      inactivo
+      activo
     );
 
     return res.json(response);

@@ -39,7 +39,7 @@ const login = async (cedula, clave) => {
 
   try {
     const usuario = await Usuario.findOne({
-      where: { cedula: cedula, clave: clave },
+      where: { cedula: cedula, clave: clave, activo: true },
       attributes: {
         exclude: ["clave"],
       },
@@ -109,7 +109,7 @@ const modificarUsuario = async (
   telefono,
   direccion,
   clave,
-  inactivo
+  activo
 ) => {
   if (
     !usuario_id ||
@@ -120,7 +120,7 @@ const modificarUsuario = async (
     !telefono ||
     !direccion ||
     !clave ||
-    !inactivo
+    !activo
   ) {
     return "Datos faltantes";
   }
@@ -137,7 +137,7 @@ const modificarUsuario = async (
         telefono: telefono,
         direccion: direccion,
         clave: clave,
-        inactivo: inactivo,
+        activo: activo,
       },
       {
         where: {
@@ -161,7 +161,7 @@ const inactivarUsuario = async (usuario_id) => {
     const usuario = await traerUsuario(usuario_id);
 
     await Usuario.update(
-      { inactivo: !usuario.inactivo },
+      { activo: !usuario.activo },
       {
         where: { usuario_id: usuario_id },
       }
