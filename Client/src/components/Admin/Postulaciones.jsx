@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { getAllCurriculos } from "../../redux/curriculoAction";
+import { getAllCurriculos } from "../../redux/curriculos/curriculoAction";
 
 import { Title } from "../UI";
 
