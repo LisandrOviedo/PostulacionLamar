@@ -1,49 +1,27 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
-import validations from "./validations";
+import { Button, Input, Label, Title } from "../UI";
 
-import { Button, Input, Label, Select, Title } from "../UI";
-
-export function Form() {
+export function DatosPersonales() {
   const empleado = useSelector((state) => state.empleado);
 
-  const { cedula } = useParams();
+  // const handlePDF = (event) => {
+  //   const input = event.target;
+  //   const file = input.files[0];
 
-  const [data, setData] = useState({
-    cedula: "",
-  });
+  //   if (!file) {
+  //     return; // No se seleccionó ningún archivo
+  //   }
 
-  const [errors, setErrors] = useState({});
+  //   const allowedTypes = ["application/pdf"];
 
-  const handleOnChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-
-    setErrors(
-      validations({
-        ...data,
-        [e.target.name]: e.target.value,
-      })
-    );
-  };
-
-  const handlePDF = (event) => {
-    const input = event.target;
-    const file = input.files[0];
-
-    if (!file) {
-      return; // No se seleccionó ningún archivo
-    }
-
-    const allowedTypes = ["application/pdf"];
-
-    if (!allowedTypes.includes(file.type)) {
-      input.value = ""; // Borra el valor del campo de entrada
-      return alert("¡Solo se permiten archivos PDF!");
-    }
-  };
+  //   if (!allowedTypes.includes(file.type)) {
+  //     input.value = ""; // Borra el valor del campo de entrada
+  //     return alert("¡Solo se permiten archivos PDF!");
+  //   }
+  // };
 
   useEffect(() => {
     window.scroll(0, 0);
@@ -51,7 +29,7 @@ export function Form() {
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
-      <Title>Postulación ({cedula})</Title>
+      <Title>Datos Personales</Title>
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
 
       <form>
@@ -61,9 +39,8 @@ export function Form() {
             <Input
               type="text"
               name="nombre_completo"
-              placeholder="Ingrese su nombre completo"
-              value={empleado.empleado.nombres}
-              required
+              value={`${empleado.empleado.nombres} ${empleado.empleado.apellidos}`}
+              readOnly
             />
           </div>
           <div>
@@ -71,8 +48,8 @@ export function Form() {
             <Input
               type="text"
               name="cedula"
-              placeholder="Ingrese su número de cédula"
-              required
+              value={empleado.empleado.cedula}
+              readOnly
             />
           </div>
           <div>
@@ -80,8 +57,8 @@ export function Form() {
             <Input
               type="email"
               name="email"
-              placeholder="Ingrese su correo electrónico"
-              required
+              value={empleado.empleado.correo}
+              readOnly
             />
           </div>
           <div>
@@ -89,9 +66,9 @@ export function Form() {
             <Input
               type="tel"
               name="telefono"
-              placeholder="Ingrese su número de teléfono celular"
               pattern="[0-9]"
-              required
+              value={empleado.empleado.telefono}
+              readOnly
             />
           </div>
           <div>
@@ -99,11 +76,29 @@ export function Form() {
             <Input
               type="text"
               name="direccion"
-              placeholder="Ingrese su dirección completa"
-              required
+              value={empleado.empleado.direccion}
+              readOnly
             />
           </div>
           <div>
+            <Label>Cargo Actual</Label>
+            <Input
+              type="text"
+              name="cargo_actual"
+              value={empleado.empleado.direccion}
+              readOnly
+            />
+          </div>
+          <div>
+            <Label>Empresa</Label>
+            <Input
+              type="text"
+              name="nombre_empresa"
+              value={empleado.empleado.direccion}
+              readOnly
+            />
+          </div>
+          {/* <div>
             <Label>Grado de instrucción</Label>
             <Select name="grado_instruccion">
               <option>Básico</option>
@@ -120,7 +115,7 @@ export function Form() {
               type="text"
               name="titulo_obtenido"
               placeholder="Ingrese el nombre de su título obtenido en su grado de instrucción"
-              required
+              
             />
           </div>
           <div>
@@ -154,28 +149,6 @@ export function Form() {
             >
               ¡Solo archivos en formato PDF!
             </p>
-          </div>
-          {/* <div className="flex items-start mb-6">
-            <div className="flex items-center h-5">
-              <input
-                type="checkbox"
-                className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
-                required
-              />
-            </div>
-            <label
-              for="remember"
-              className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-            >
-              I agree with the{" "}
-              <a
-                href="#"
-                className="text-blue-600 hover:underline dark:text-blue-500"
-              >
-                terms and conditions
-              </a>
-              .
-            </label>
           </div> */}
         </div>
         <Button type="submit">Continuar</Button>

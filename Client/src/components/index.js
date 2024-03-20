@@ -1,4 +1,4 @@
-import { Form } from "./Form/Form";
+import { DatosPersonales } from "./Form/DatosPersonales";
 import { Landing } from "./Landing/Landing";
 import { Navbar } from "./Navbar/Navbar";
 import { NotFound } from "./NotFound/NotFound";
@@ -8,7 +8,7 @@ import { Postulaciones } from "./Admin/Postulaciones";
 import { Postulacion } from "./Admin/Postulacion";
 
 export {
-  Form,
+  DatosPersonales,
   Landing,
   Navbar,
   NotFound,

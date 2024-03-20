@@ -3,7 +3,7 @@ import "./App.css";
 import { Routes, Route } from "react-router-dom";
 
 import {
-  Form,
+  DatosPersonales,
   Landing,
   Navbar,
   NotFound,
@@ -20,7 +20,14 @@ function App() {
       <Routes>
         <Route path="*" element={<NotFound />} />
         <Route path="/" element={<Landing />} />
-        <Route path="/form/:cedula" element={<Form />} />
+        <Route
+          path="/form/datospersonales/:empleado_id"
+          element={<DatosPersonales />}
+        />
+        <Route
+          path="/form/datospersonales/:empleado_id"
+          element={<DatosPersonales />}
+        />
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/postulaciones" element={<Postulaciones />} />
