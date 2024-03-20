@@ -30,7 +30,7 @@ const getEmpleado = async (req, res) => {
 };
 
 const getLogin = async (req, res) => {
-  const { cedula } = req.body;
+  const { cedula } = req.query;
 
   try {
     const response = await login(cedula);

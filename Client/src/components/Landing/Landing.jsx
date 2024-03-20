@@ -7,6 +7,7 @@ import validations from "./validations";
 import { useSelector, useDispatch } from "react-redux";
 
 import { getLogin } from "../../redux/empleados/empleadoAction";
+import axios from "axios";
 
 import { Button, Input, Title } from "../UI";
 
@@ -15,14 +16,28 @@ export function Landing() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [access, setAccess] = useState({});
+
   const [data, setData] = useState({
     cedula: "",
   });
 
   const [errors, setErrors] = useState({});
 
-  const handleFindCI = () => {
-    dispatch(getLogin(data));
+  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
+
+  const handleFindCI = async () => {
+    dispatch(getLogin(data.cedula));
+
+    const URL_LOGIN = `${URL_SERVER}/empleados/login/?cedula=${data.cedula}`;
+
+    try {
+      const { data } = await axios(URL_LOGIN);
+
+      setAccess(data);
+    } catch (error) {
+      alert(error.response.data.error);
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -46,6 +61,12 @@ export function Landing() {
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
+
+  useEffect(() => {
+    if (Object.keys(data).length > 0 && access.empleado_id) {
+      navigate(`/form/${access.empleado_id}`);
+    }
+  }, [access]);
 
   return (
     <div className="mt-24 sm:mt-32 flex flex-col justify-center items-center px-10 bg-white h-full">

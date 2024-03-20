@@ -12,8 +12,8 @@ const empleados = Router();
 
 empleados.get("/", getEmpleados);
 empleados.get("/detalle/:empleado_id", getEmpleado);
+empleados.get("/login", getLogin);
 
-empleados.post("/login", getLogin);
 empleados.post("/", postEmpleado);
 
 empleados.put("/modificar", putEmpleado);
