@@ -8,7 +8,7 @@ import empleado from "./empleados/empleadoSlice";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["curriculos", "empleados"],
+  whitelist: ["empleado"],
 };
 
 // Combinar el userReducer con Redux Persist
@@ -22,6 +22,10 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 // Configuración de la tienda de Redux
 export const store = configureStore({
   reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 // Configuración del persistor de Redux Persist
