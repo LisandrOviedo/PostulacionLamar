@@ -1,39 +1,39 @@
 const { DataTypes, UUIDV4 } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define("Usuario", {
-    usuario_id: {
+  sequelize.define("Cargo", {
+    cargo_id: {
       type: DataTypes.UUID,
       primaryKey: true,
       allowNull: false,
       defaultValue: UUIDV4,
     },
-    cedula: {
-      type: DataTypes.INTEGER(10),
+    codigo_empresa: {
+      type: DataTypes.STRING(3),
       allowNull: false,
     },
-    nombres: {
-      type: DataTypes.STRING(100),
+    tipo_nomina: {
+      type: DataTypes.STRING(80),
       allowNull: false,
     },
-    apellidos: {
-      type: DataTypes.STRING(100),
+    codigo_cargo: {
+      type: DataTypes.STRING(80),
       allowNull: false,
     },
-    correo: {
-      type: DataTypes.STRING(150),
-      allowNull: true,
-    },
-    telefono: {
-      type: DataTypes.STRING(15),
+    codigo_cargo_nuevo: {
+      type: DataTypes.STRING(80),
       allowNull: false,
     },
-    direccion: {
-      type: DataTypes.STRING(150),
+    descripcion: {
+      type: DataTypes.STRING(12),
       allowNull: false,
     },
-    clave: {
-      type: DataTypes.STRING(10),
+    descripcion_nuevo: {
+      type: DataTypes.STRING(12),
+      allowNull: false,
+    },
+    salario: {
+      type: DataTypes.FLOAT,
       allowNull: false,
     },
     activo: {

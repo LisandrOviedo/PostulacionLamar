@@ -40,9 +40,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
-    inactivo: {
+    activo: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false,
+      defaultValue: true,
     },
   });
 };

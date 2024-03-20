@@ -64,9 +64,9 @@ module.exports = (sequelize) => {
       ),
       defaultValue: "Pendiente por revisar",
     },
-    inactivo: {
+    activo: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false,
+      defaultValue: true,
     },
   });
 };
