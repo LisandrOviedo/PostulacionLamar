@@ -10,7 +10,7 @@ const todosLosCurriculos = async () => {
   try {
     const curriculos = await Curriculo.findAll({
       attributes: {
-        exclude: ["empleado_id", "createdAt", "updatedAt"],
+        exclude: ["empleado_id"],
       },
       include: [
         {
@@ -65,7 +65,7 @@ const traerCurriculo = async (curriculo_id) => {
   try {
     const curriculo = await Curriculo.findByPk(curriculo_id, {
       attributes: {
-        exclude: ["empleado_id", "createdAt", "updatedAt"],
+        exclude: ["empleado_id"],
       },
       include: [
         {
