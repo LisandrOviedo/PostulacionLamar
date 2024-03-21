@@ -135,6 +135,24 @@ Cargo.belongsToMany(Empleado, {
   },
 });
 
+// Areas_Interes 1:N Curriculo
+Empresa.hasMany(Cargo, {
+  foreignKey: {
+    allowNull: false,
+    name: "empresa_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+Cargo.belongsTo(Empresa, {
+  foreignKey: {
+    allowNull: false,
+    name: "empresa_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
