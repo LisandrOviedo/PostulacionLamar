@@ -67,7 +67,7 @@ export function Landing() {
       return alert(access);
     }
 
-    if (Object.keys(data).length > 0 && access.inactivo === true) {
+    if (Object.keys(data).length > 0 && access.activo === false) {
       setAccess({});
       return alert(
         "Tienes el acceso restringido, ya que tu usuario se encuentra inactivo"
