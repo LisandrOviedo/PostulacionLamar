@@ -8,28 +8,33 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: UUIDV4,
     },
+    empresa_id: {
+      // Campo relacionado
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
     codigo_empresa: {
       type: DataTypes.STRING(3),
       allowNull: false,
     },
     tipo_nomina: {
-      type: DataTypes.STRING(80),
+      type: DataTypes.STRING(12),
       allowNull: false,
     },
     codigo_cargo: {
-      type: DataTypes.STRING(80),
+      type: DataTypes.STRING(12),
       allowNull: false,
     },
     codigo_cargo_nuevo: {
-      type: DataTypes.STRING(80),
+      type: DataTypes.STRING(12),
       allowNull: false,
     },
     descripcion: {
-      type: DataTypes.STRING(12),
+      type: DataTypes.STRING(80),
       allowNull: false,
     },
     descripcion_nuevo: {
-      type: DataTypes.STRING(12),
+      type: DataTypes.STRING(80),
       allowNull: false,
     },
     salario: {
