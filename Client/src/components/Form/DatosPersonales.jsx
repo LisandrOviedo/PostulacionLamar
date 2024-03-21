@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -86,24 +87,41 @@ export function DatosPersonales() {
               readOnly
             />
           </div>
-          <div>
-            <Label>Cargo Actual</Label>
-            <Input
-              type="text"
-              name="cargo_actual"
-              value={cargo_actual.cargo_actual.Cargos[0].descripcion}
-              readOnly
-            />
-          </div>
-          <div>
-            <Label>Empresa</Label>
-            <Input
-              type="text"
-              name="nombre_empresa"
-              value={cargo_actual.cargo_actual.Cargos[0].Empresa.nombre}
-              readOnly
-            />
-          </div>
+          {cargo_actual &&
+          cargo_actual.cargo_actual &&
+          cargo_actual.cargo_actual.Cargos.length > 0 ? (
+            <React.Fragment>
+              <div>
+                <Label>Cargo Actual</Label>
+                <Input
+                  type="text"
+                  name="cargo_actual"
+                  value={cargo_actual.cargo_actual.Cargos[0].descripcion}
+                  readOnly
+                />
+              </div>
+              <div>
+                <Label>Empresa</Label>
+                <Input
+                  type="text"
+                  name="nombre_empresa"
+                  value={cargo_actual.cargo_actual.Cargos[0].Empresa.nombre}
+                  readOnly
+                />
+              </div>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <div>
+                <Label>Cargo Actual</Label>
+                <Input type="text" name="cargo_actual" value="" readOnly />
+              </div>
+              <div>
+                <Label>Empresa</Label>
+                <Input type="text" name="nombre_empresa" value="" readOnly />
+              </div>
+            </React.Fragment>
+          )}
           {/* <div>
             <Label>Grado de instrucción</Label>
             <Select name="grado_instruccion">
