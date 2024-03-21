@@ -3,11 +3,14 @@ import { useEffect } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 
+import { getAllAreasInteres } from "../../redux/areasinteres/areainteresAction";
+
 import { Button, Input, Label, Select, Title } from "../UI";
 
 export function Curriculo() {
   const dispatch = useDispatch();
   const empleado = useSelector((state) => state.empleado);
+  const areas_interes = useSelector((state) => state.areas_interes);
 
   const handlePDF = (event) => {
     const input = event.target;
@@ -27,6 +30,7 @@ export function Curriculo() {
 
   useEffect(() => {
     window.scroll(0, 0);
+    dispatch(getAllAreasInteres());
   }, []);
 
   return (
@@ -53,7 +57,7 @@ export function Curriculo() {
             <Input
               type="text"
               name="titulo_obtenido"
-              placeholder="Ingrese el nombre de su título obtenido en su grado de instrucción"
+              placeholder="Ingrese el nombre de su título obtenido"
             />
           </div>
           <div>
@@ -66,55 +70,84 @@ export function Curriculo() {
           </div>
           <div>
             <Label>Indica cuál es tu área de interés laboral</Label>
-            <Select name="interes_laboral">
-              <option>BD</option>
-              <option>Otro</option>
+            <Select name="area_interes_id" defaultValue="Otro">
+              {areas_interes &&
+              areas_interes.areas_interes &&
+              areas_interes.areas_interes.length > 0
+                ? areas_interes?.areas_interes.map(
+                    (area, i) =>
+                      area.activo && (
+                        <option key={i} value={area.area_interes_id}>
+                          {area.nombre}
+                        </option>
+                      )
+                  )
+                : null}
             </Select>
           </div>
+
           <div>
             <Label>Área de interés (Otro)</Label>
             <Input
               type="text"
               name="area_interes_otro"
-              placeholder="Ingrese el nombre del centro educativo donde obtuvo su título"
+              placeholder="Ingrese el nombre del área de interés"
             />
           </div>
           <div>
             <Label>¿Disponibilidad para viajar?</Label>
             <div className="mt-4">
               <input
+                id="disponibilidad_viajar_si"
                 type="radio"
                 name="disponibilidad_viajar"
                 value="true"
-                checked
+                defaultChecked
               />
-              <label className="ml-1">Si</label>
+              <label htmlFor="disponibilidad_viajar_si" className="ml-1">
+                Si
+              </label>
               <input
+                id="disponibilidad_viajar_no"
                 type="radio"
                 name="disponibilidad_viajar"
                 value="false"
                 className="ml-6"
               />
-              <label className="ml-1">No</label>
+              <label htmlFor="disponibilidad_viajar_no" className="ml-1">
+                No
+              </label>
             </div>
           </div>
           <div>
             <Label>¿Disponibilidad para cambio de residencia?</Label>
             <div className="mt-4">
               <input
+                id="disponibilidad_cambio_residencia_si"
                 type="radio"
                 name="disponibilidad_cambio_residencia"
                 value="true"
-                checked
+                defaultChecked
               />
-              <label className="ml-1">Si</label>
+              <label
+                htmlFor="disponibilidad_cambio_residencia_si"
+                className="ml-1"
+              >
+                Si
+              </label>
               <input
+                id="disponibilidad_cambio_residencia_no"
                 type="radio"
                 name="disponibilidad_cambio_residencia"
                 value="false"
                 className="ml-6"
               />
-              <label className="ml-1">No</label>
+              <label
+                htmlFor="disponibilidad_cambio_residencia_no"
+                className="ml-1"
+              >
+                No
+              </label>
             </div>
           </div>
           <div>

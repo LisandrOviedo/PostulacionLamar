@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 import curriculos from "./curriculos/curriculoSlice";
 import empleado from "./empleados/empleadoSlice";
 import cargo_actual from "./empleados/empleadoSlice";
+import areas_interes from "./areasinteres/areainteresSlice";
 
 // Configuración de Redux Persist
 const persistConfig = {
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   curriculos: curriculos,
   empleado: empleado,
   cargo_actual: cargo_actual,
+  areas_interes: areas_interes,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
