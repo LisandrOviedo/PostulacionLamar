@@ -1,4 +1,4 @@
-const { Empleado } = require("../db");
+const { Empleado, Cargo, Cargo_Empleado, Empresa } = require("../db");
 
 const todosLosEmpleados = async () => {
   try {
@@ -27,6 +27,45 @@ const traerEmpleado = async (empleado_id) => {
     }
 
     return empleado;
+  } catch (error) {
+    return "Error al traer el empleado: ", error.message;
+  }
+};
+
+const traerCargoActual = async (empleado_id) => {
+  if (!empleado_id) {
+    return "Datos faltantes";
+  }
+
+  try {
+    const cargoActual = await Empleado.findByPk(empleado_id, {
+      attributes: [],
+      include: [
+        {
+          model: Cargo,
+          through: {
+            model: Cargo_Empleado,
+            where: {
+              activo: true,
+            },
+            attributes: [],
+          },
+          attributes: ["descripcion"],
+          include: [
+            {
+              model: Empresa,
+              attributes: ["nombre"],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (cargoActual === null) {
+      return "No existe cargo actual para ese empleado";
+    }
+
+    return cargoActual;
   } catch (error) {
     return "Error al traer el empleado: ", error.message;
   }
@@ -160,6 +199,7 @@ const inactivarEmpleado = async (empleado_id) => {
 module.exports = {
   todosLosEmpleados,
   traerEmpleado,
+  traerCargoActual,
   login,
   crearEmpleado,
   modificarEmpleado,

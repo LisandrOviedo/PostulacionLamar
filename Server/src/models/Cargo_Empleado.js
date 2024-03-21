@@ -23,12 +23,12 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     fecha_ingreso: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: false,
     },
     fecha_egreso: {
-      type: DataTypes.DATE,
-      allowNull: false,
+      type: DataTypes.DATEONLY,
+      allowNull: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,

@@ -2,6 +2,7 @@ const {
   todosLosEmpleados,
   traerEmpleado,
   login,
+  traerCargoActual,
   crearEmpleado,
   modificarEmpleado,
   inactivarEmpleado,
@@ -34,6 +35,18 @@ const getLogin = async (req, res) => {
 
   try {
     const response = await login(cedula);
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const getCargoActual = async (req, res) => {
+  const { empleado_id } = req.params;
+
+  try {
+    const response = await traerCargoActual(empleado_id);
 
     return res.json(response);
   } catch (error) {
@@ -108,6 +121,7 @@ module.exports = {
   getEmpleados,
   getEmpleado,
   getLogin,
+  getCargoActual,
   postEmpleado,
   putEmpleado,
   deleteEmpleado,
