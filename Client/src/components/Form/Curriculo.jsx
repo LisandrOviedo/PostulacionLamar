@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -11,6 +11,19 @@ export function Curriculo() {
   const dispatch = useDispatch();
   const empleado = useSelector((state) => state.empleado);
   const areas_interes = useSelector((state) => state.areas_interes);
+
+  const [data, setData] = useState({
+    empleado_id: empleado.empleado.empleado_id,
+    grado_instruccion: "Basico",
+    titulo_obtenido: "",
+    centro_educativo: "",
+    area_interes_id: "",
+    area_interes_otro: "",
+    disponibilidad_viajar: "true",
+    disponibilidad_cambio_residencia: "true",
+    ruta_pdf: "",
+    estado: "Pendiente por revisar",
+  });
 
   const handlePDF = (event) => {
     const input = event.target;
@@ -26,12 +39,24 @@ export function Curriculo() {
       input.value = ""; // Borra el valor del campo de entrada
       return alert("¡Solo se permiten archivos PDF!");
     }
+
+    handleInputChange(event);
   };
 
   useEffect(() => {
     window.scroll(0, 0);
     dispatch(getAllAreasInteres());
   }, []);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+
+    setData({ ...data, [name]: value });
+  };
+
+  const handleCreateCurriculo = (event) => {
+    event.preventDefault();
+  };
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
@@ -42,7 +67,11 @@ export function Curriculo() {
         <div className="grid gap-6 md:grid-cols-2 mt-5">
           <div>
             <Label>Grado de instrucción</Label>
-            <Select name="grado_instruccion">
+            <Select
+              name="grado_instruccion"
+              value={data.grado_instruccion}
+              onChange={handleInputChange}
+            >
               <option value="Basico">Básico</option>
               <option value="Bachiller">Bachiller</option>
               <option value="Tecnico Medio">Técnico Medio</option>
@@ -58,6 +87,8 @@ export function Curriculo() {
               type="text"
               name="titulo_obtenido"
               placeholder="Ingrese el nombre de su título obtenido"
+              value={data.titulo_obtenido}
+              onChange={handleInputChange}
             />
           </div>
           <div>
@@ -66,11 +97,17 @@ export function Curriculo() {
               type="text"
               name="centro_educativo"
               placeholder="Ingrese el nombre del centro educativo donde obtuvo su título"
+              value={data.centro_educativo}
+              onChange={handleInputChange}
             />
           </div>
           <div>
             <Label>Indica cuál es tu área de interés laboral</Label>
-            <Select name="area_interes_id" defaultValue="Otro">
+            <Select
+              name="area_interes_id"
+              value={data.area_interes_id}
+              onChange={handleInputChange}
+            >
               {areas_interes &&
               areas_interes.areas_interes &&
               areas_interes.areas_interes.length > 0
@@ -92,6 +129,8 @@ export function Curriculo() {
               type="text"
               name="area_interes_otro"
               placeholder="Ingrese el nombre del área de interés"
+              value={data.area_interes_otro}
+              onChange={handleInputChange}
             />
           </div>
           <div>
@@ -103,6 +142,7 @@ export function Curriculo() {
                 name="disponibilidad_viajar"
                 value="true"
                 defaultChecked
+                onChange={handleInputChange}
               />
               <label htmlFor="disponibilidad_viajar_si" className="ml-1">
                 Si
@@ -113,6 +153,7 @@ export function Curriculo() {
                 name="disponibilidad_viajar"
                 value="false"
                 className="ml-6"
+                onChange={handleInputChange}
               />
               <label htmlFor="disponibilidad_viajar_no" className="ml-1">
                 No
@@ -128,6 +169,7 @@ export function Curriculo() {
                 name="disponibilidad_cambio_residencia"
                 value="true"
                 defaultChecked
+                onChange={handleInputChange}
               />
               <label
                 htmlFor="disponibilidad_cambio_residencia_si"
@@ -141,6 +183,7 @@ export function Curriculo() {
                 name="disponibilidad_cambio_residencia"
                 value="false"
                 className="ml-6"
+                onChange={handleInputChange}
               />
               <label
                 htmlFor="disponibilidad_cambio_residencia_no"
@@ -159,6 +202,8 @@ export function Curriculo() {
               type="file"
               accept="application/pdf"
               onChange={handlePDF}
+              name="ruta_pdf"
+              value={data.ruta_pdf}
             />
             <p
               className="mt-1 text-sm text-red-600 dark:text-gray-300"
@@ -168,7 +213,7 @@ export function Curriculo() {
             </p>
           </div>
         </div>
-        <Button type="submit">Continuar</Button>
+        <Button onClick={handleCreateCurriculo}>Continuar</Button>
       </form>
     </div>
   );
