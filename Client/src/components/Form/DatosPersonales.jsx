@@ -1,11 +1,15 @@
 import { useEffect } from "react";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+
+import { getCargoActual } from "../../redux/empleados/empleadoAction";
 
 import { Button, Input, Label, Title } from "../UI";
 
 export function DatosPersonales() {
+  const dispatch = useDispatch();
   const empleado = useSelector((state) => state.empleado);
+  const cargo_actual = useSelector((state) => state.cargo_actual);
 
   // const handlePDF = (event) => {
   //   const input = event.target;
@@ -25,6 +29,8 @@ export function DatosPersonales() {
 
   useEffect(() => {
     window.scroll(0, 0);
+
+    dispatch(getCargoActual(empleado.empleado.empleado_id));
   }, []);
 
   return (
@@ -85,7 +91,7 @@ export function DatosPersonales() {
             <Input
               type="text"
               name="cargo_actual"
-              value={empleado.empleado.direccion}
+              value={cargo_actual.cargo_actual.Cargos[0].descripcion}
               readOnly
             />
           </div>
@@ -94,7 +100,7 @@ export function DatosPersonales() {
             <Input
               type="text"
               name="nombre_empresa"
-              value={empleado.empleado.direccion}
+              value={cargo_actual.cargo_actual.Cargos[0].Empresa.nombre}
               readOnly
             />
           </div>
