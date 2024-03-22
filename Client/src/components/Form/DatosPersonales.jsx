@@ -31,7 +31,7 @@ export function DatosPersonales() {
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
 
       <form>
-        <div className="grid gap-6 md:grid-cols-2 mt-5">
+        <div className="grid gap-6 md:grid-cols-3 mt-5 mb-5">
           <div>
             <Label>Nombre completo</Label>
             <Input
@@ -114,8 +114,12 @@ export function DatosPersonales() {
               </div>
             </React.Fragment>
           )}
+          <div className="flex items-end">
+            <Button className="m-0" onClick={handleContinuar}>
+              Continuar
+            </Button>
+          </div>
         </div>
-        <Button onClick={handleContinuar}>Continuar</Button>
       </form>
     </div>
   );
