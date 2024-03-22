@@ -14,13 +14,13 @@ export function Navbar() {
 
   return (
     <nav className="bg-[#002846] border-gray-200 w-full z-999 fixed top-0">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-2">
         <Link
           to="https://grupo-lamar.com/es/"
           target="_blank"
           className="hover:opacity-70"
         >
-          <Logo className="w-24 sm:w-28 md:w-32" />
+          <Logo className="w-24" />
         </Link>
         <button
           onClick={toggleMenu}
