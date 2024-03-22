@@ -80,6 +80,7 @@ export function DatosPersonales() {
           </div>
           {cargo_actual &&
           cargo_actual.cargo_actual &&
+          cargo_actual.cargo_actual.Cargos &&
           cargo_actual.cargo_actual.Cargos.length > 0 ? (
             <React.Fragment>
               <div>
