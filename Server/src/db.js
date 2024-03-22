@@ -65,61 +65,39 @@ Curriculo.belongsTo(Empleado, {
   },
 });
 
-// Areas_Interes 1:N Curriculo
-Areas_Interes.hasMany(Curriculo, {
+// Areas_Interes N:N Curriculo
+Areas_Interes.belongsToMany(Curriculo, {
+  through: "Area_Interes_Curriculo",
   foreignKey: {
     allowNull: false,
     name: "area_interes_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
-Curriculo.belongsTo(Areas_Interes, {
-  foreignKey: {
-    allowNull: false,
-    name: "area_interes_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  },
-});
-
-// Curriculo 1:N Experiencia
-Curriculo.hasMany(Experiencia, {
+Curriculo.belongsToMany(Areas_Interes, {
+  through: "Area_Interes_Curriculo",
   foreignKey: {
     allowNull: false,
     name: "curriculo_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
-Experiencia.belongsTo(Curriculo, {
+
+// Curriculo N:N Cargo_Titulo
+Curriculo.belongsToMany(Cargo_Titulo, {
+  through: "Experiencia",
   foreignKey: {
     allowNull: false,
     name: "curriculo_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
-
-// Cargo_Titulo 1:N Experiencia
-Cargo_Titulo.hasMany(Experiencia, {
+Cargo_Titulo.belongsToMany(Curriculo, {
+  through: "Experiencia",
   foreignKey: {
     allowNull: false,
     name: "cargo_titulo_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  },
-});
-Experiencia.belongsTo(Cargo_Titulo, {
-  foreignKey: {
-    allowNull: false,
-    name: "cargo_titulo_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
-// Usuarios N:N Productos
+// Empleado N:N Cargo
 Empleado.belongsToMany(Cargo, {
   through: "Cargo_Empleado",
   foreignKey: {
@@ -135,7 +113,7 @@ Cargo.belongsToMany(Empleado, {
   },
 });
 
-// Areas_Interes 1:N Curriculo
+// Empresa 1:N Cargo
 Empresa.hasMany(Cargo, {
   foreignKey: {
     allowNull: false,

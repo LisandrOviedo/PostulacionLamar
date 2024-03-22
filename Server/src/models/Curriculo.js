@@ -31,15 +31,6 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
-    area_interes_id: {
-      // Campo relacionado
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
-    area_interes_otro: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
     disponibilidad_viajar: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
