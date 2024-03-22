@@ -117,19 +117,15 @@ const crearCurriculo = async (
   grado_instruccion,
   titulo_obtenido,
   centro_educativo,
-  area_interes_id,
-  area_interes_otro,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
-  ruta_pdf,
-  estado
+  ruta_pdf
 ) => {
   if (
     !empleado_id ||
     !grado_instruccion ||
     !titulo_obtenido ||
     !centro_educativo ||
-    !area_interes_id ||
     !disponibilidad_viajar ||
     !disponibilidad_cambio_residencia ||
     !ruta_pdf
@@ -156,8 +152,6 @@ const crearCurriculo = async (
         grado_instruccion: grado_instruccion,
         titulo_obtenido: titulo_obtenido,
         centro_educativo: centro_educativo,
-        area_interes_id: area_interes_id,
-        area_interes_otro: area_interes_otro,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
         ruta_pdf: ruta_pdf,
@@ -179,8 +173,6 @@ const modificarCurriculo = async (
   grado_instruccion,
   titulo_obtenido,
   centro_educativo,
-  area_interes_id,
-  area_interes_otro,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
   ruta_pdf,
@@ -192,8 +184,6 @@ const modificarCurriculo = async (
     !grado_instruccion ||
     !titulo_obtenido ||
     !centro_educativo ||
-    !area_interes_id ||
-    !area_interes_otro ||
     !disponibilidad_viajar ||
     !disponibilidad_cambio_residencia ||
     !ruta_pdf ||
@@ -211,8 +201,6 @@ const modificarCurriculo = async (
         grado_instruccion: grado_instruccion,
         titulo_obtenido: titulo_obtenido,
         centro_educativo: centro_educativo,
-        area_interes_id: area_interes_id,
-        area_interes_otro: area_interes_otro,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
         ruta_pdf: ruta_pdf,
