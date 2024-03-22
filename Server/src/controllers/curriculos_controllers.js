@@ -130,11 +130,9 @@ const crearCurriculo = async (
     !titulo_obtenido ||
     !centro_educativo ||
     !area_interes_id ||
-    !area_interes_otro ||
     !disponibilidad_viajar ||
     !disponibilidad_cambio_residencia ||
-    !ruta_pdf ||
-    !estado
+    !ruta_pdf
   ) {
     return "Datos faltantes";
   }
@@ -163,7 +161,6 @@ const crearCurriculo = async (
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
         ruta_pdf: ruta_pdf,
-        estado: estado,
       },
     });
 
