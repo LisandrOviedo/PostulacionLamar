@@ -70,7 +70,33 @@ export function Curriculo() {
     setDatosAreasInteres({ ...datosAreasInteres, [name]: value });
   };
 
-  const handleAddArea = (event) => {};
+  const handleAddArea = (event) => {
+    event.preventDefault();
+
+    if (datosAreasInteres.areas_interes.length === 3) {
+      return alert("Solo puedes agregar máximo 3 áreas de interés");
+    }
+
+    const select = document.getElementById("area_interes_id");
+    const name = select.options[select.selectedIndex].text;
+    const value = select.options[select.selectedIndex].value;
+
+    const areaValidatorInclude = datosAreasInteres.areas_interes.some(
+      (area) => area.area_interes_id === value || area.nombre === name
+    );
+
+    if (areaValidatorInclude) {
+      return alert("Ya has agregado esta área de interés");
+    }
+
+    return setDatosAreasInteres({
+      ...datosAreasInteres,
+      areas_interes: [
+        ...datosAreasInteres.areas_interes,
+        { area_interes_id: value, nombre: name },
+      ],
+    });
+  };
 
   const handleCreateCurriculo = async (event) => {
     event.preventDefault();
@@ -85,6 +111,18 @@ export function Curriculo() {
     }
 
     return alert(data);
+  };
+
+  const handleDeleteRow = (event) => {
+    const rowIndex = event.target.parentNode.parentNode.rowIndex;
+    const updatedAreasInteres = datosAreasInteres.areas_interes.filter(
+      (_, index) => index !== rowIndex - 1
+    );
+
+    setDatosAreasInteres({
+      ...datosAreasInteres,
+      areas_interes: updatedAreasInteres,
+    });
   };
 
   return (
@@ -153,7 +191,11 @@ export function Curriculo() {
                   ? areas_interes?.areas_interes.map(
                       (area, i) =>
                         area.activo && (
-                          <option key={i} value={area.area_interes_id}>
+                          <option
+                            key={i}
+                            name={area.nombre}
+                            value={area.area_interes_id}
+                          >
                             {area.nombre}
                           </option>
                         )
@@ -174,8 +216,8 @@ export function Curriculo() {
               type="text"
               name="area_interes_otro"
               placeholder="Ingrese el nombre del área de interés"
-              value={datosCurriculo.area_interes_otro}
-              onChange={handleInputChangeCurriculo}
+              value={datosAreasInteres.area_interes_otro}
+              onChange={handleInputChangeAreaInteres}
             />
           </div>
           <div>
@@ -214,17 +256,23 @@ export function Curriculo() {
                 </tr>
               </thead>
               <tbody>
-                <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
-                  <td className="px-4 py-4">Area 1</td>
-                  <td className="px-4 py-4">
-                    <a
-                      href="#"
-                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Borrar
-                    </a>
-                  </td>
-                </tr>
+                {datosAreasInteres.areas_interes.map((area, i) => (
+                  <tr
+                    key={i}
+                    className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <td className="px-4 py-4">{area.nombre}</td>
+                    <td className="px-4 py-4">
+                      <a
+                        href="#"
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        onClick={handleDeleteRow}
+                      >
+                        Borrar
+                      </a>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
