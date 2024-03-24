@@ -104,7 +104,7 @@ export function Landing() {
         </li>
       </ul>
       <br />
-      <label className="text-center text-base sm:text-lg">
+      <label htmlFor="cedula" className="text-center text-base sm:text-lg">
         Ingrese su número de cédula para empezar:
       </label>
       <br />
@@ -113,6 +113,7 @@ export function Landing() {
         className="w-28 text-center"
         type="text"
         name="cedula"
+        id="cedula"
         value={data.cedula}
         onChange={handleOnChange}
         onKeyDown={handleKeyDown}

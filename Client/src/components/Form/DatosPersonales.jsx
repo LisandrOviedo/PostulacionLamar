@@ -33,8 +33,9 @@ export function DatosPersonales() {
       <form>
         <div className="grid gap-6 md:grid-cols-3 mt-5 mb-5">
           <div>
-            <Label>Nombre completo</Label>
+            <Label htmlFor="nombre_completo">Nombre completo</Label>
             <Input
+              id="nombre_completo"
               type="text"
               name="nombre_completo"
               value={`${empleado.empleado.nombres} ${empleado.empleado.apellidos}`}
@@ -42,8 +43,9 @@ export function DatosPersonales() {
             />
           </div>
           <div>
-            <Label>Cédula</Label>
+            <Label htmlFor="cedula">Cédula</Label>
             <Input
+              id="cedula"
               type="text"
               name="cedula"
               value={empleado.empleado.cedula}
@@ -51,8 +53,9 @@ export function DatosPersonales() {
             />
           </div>
           <div>
-            <Label>Correo electrónico</Label>
+            <Label htmlFor="email">Correo electrónico</Label>
             <Input
+              id="email"
               type="email"
               name="email"
               value={empleado.empleado.correo}
@@ -60,8 +63,9 @@ export function DatosPersonales() {
             />
           </div>
           <div>
-            <Label>Número de contacto</Label>
+            <Label htmlFor="telefono">Número de contacto</Label>
             <Input
+              id="telefono"
               type="tel"
               name="telefono"
               pattern="[0-9]"
@@ -70,8 +74,9 @@ export function DatosPersonales() {
             />
           </div>
           <div>
-            <Label>Dirección</Label>
+            <Label htmlFor="direccion">Dirección</Label>
             <Input
+              id="direccion"
               type="text"
               name="direccion"
               value={empleado.empleado.direccion}
@@ -84,8 +89,9 @@ export function DatosPersonales() {
           cargo_actual.cargo_actual.Cargos.length > 0 ? (
             <React.Fragment>
               <div>
-                <Label>Cargo Actual</Label>
+                <Label htmlFor="cargo_actual">Cargo Actual</Label>
                 <Input
+                  id="cargo_actual"
                   type="text"
                   name="cargo_actual"
                   value={cargo_actual.cargo_actual.Cargos[0].descripcion}
@@ -93,8 +99,9 @@ export function DatosPersonales() {
                 />
               </div>
               <div>
-                <Label>Empresa</Label>
+                <Label htmlFor="nombre_empresa">Empresa</Label>
                 <Input
+                  id="nombre_empresa"
                   type="text"
                   name="nombre_empresa"
                   value={cargo_actual.cargo_actual.Cargos[0].Empresa.nombre}
@@ -105,12 +112,24 @@ export function DatosPersonales() {
           ) : (
             <React.Fragment>
               <div>
-                <Label>Cargo Actual</Label>
-                <Input type="text" name="cargo_actual" value="" readOnly />
+                <Label htmlFor="cargo_actual">Cargo Actual</Label>
+                <Input
+                  id="cargo_actual"
+                  type="text"
+                  name="cargo_actual"
+                  value=""
+                  readOnly
+                />
               </div>
               <div>
-                <Label>Empresa</Label>
-                <Input type="text" name="nombre_empresa" value="" readOnly />
+                <Label htmlFor="nombre_empresa">Empresa</Label>
+                <Input
+                  id="nombre_empresa"
+                  type="text"
+                  name="nombre_empresa"
+                  value=""
+                  readOnly
+                />
               </div>
             </React.Fragment>
           )}

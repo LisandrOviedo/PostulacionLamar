@@ -10,6 +10,7 @@ export const Input = ({ className, ...props }) => {
           className
         )
       )}
+      autoComplete="off"
       {...props}
     />
   );

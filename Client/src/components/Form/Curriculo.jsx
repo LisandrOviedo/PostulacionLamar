@@ -95,8 +95,11 @@ export function Curriculo() {
       <form>
         <div className="grid gap-6 md:grid-cols-3 mt-5 mb-5">
           <div>
-            <Label>Grado de instrucción más alta</Label>
+            <Label htmlFor="grado_instruccion">
+              Grado de instrucción más alta
+            </Label>
             <Select
+              id="grado_instruccion"
               name="grado_instruccion"
               value={datosCurriculo.grado_instruccion}
               onChange={handleInputChangeCurriculo}
@@ -111,8 +114,9 @@ export function Curriculo() {
             </Select>
           </div>
           <div>
-            <Label>Título obtenido</Label>
+            <Label htmlFor="titulo_obtenido">Título obtenido</Label>
             <Input
+              id="titulo_obtenido"
               type="text"
               name="titulo_obtenido"
               placeholder="Ingrese el nombre de su título obtenido"
@@ -121,8 +125,9 @@ export function Curriculo() {
             />
           </div>
           <div>
-            <Label>Centro Educativo</Label>
+            <Label htmlFor="centro_educativo">Centro Educativo</Label>
             <Input
+              id="centro_educativo"
               type="text"
               name="centro_educativo"
               placeholder="Ingrese el nombre del centro educativo donde obtuvo su título"
@@ -131,9 +136,12 @@ export function Curriculo() {
             />
           </div>
           <div>
-            <Label>Indica cuál es tu área de interés laboral</Label>
+            <Label htmlFor="area_interes_id">
+              Indica cuál es tu área de interés laboral
+            </Label>
             <div className="flex gap-4 w-full items-start">
               <Select
+                id="area_interes_id"
                 name="area_interes_id"
                 value={datosCurriculo.area_interes_id}
                 onChange={handleInputChangeCurriculo}
@@ -158,8 +166,11 @@ export function Curriculo() {
             </div>
           </div>
           <div>
-            <Label>Otra área de interés (Opcional)</Label>
+            <Label htmlFor="area_interes_otro">
+              Otra área de interés (Opcional)
+            </Label>
             <Input
+              id="area_interes_otro"
               type="text"
               name="area_interes_otro"
               placeholder="Ingrese el nombre del área de interés"
@@ -168,7 +179,9 @@ export function Curriculo() {
             />
           </div>
           <div>
-            <Label>Adjunte su resumen curricular (PDF)</Label>
+            <Label htmlFor="file_input">
+              Adjunte su resumen curricular (PDF)
+            </Label>
             <input
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
               aria-describedby="file_input_help"
@@ -216,7 +229,9 @@ export function Curriculo() {
             </table>
           </div>
           <div>
-            <Label>¿Posees disponibilidad para viajar?</Label>
+            <Label htmlFor="disponibilidad_viajar_si">
+              ¿Posees disponibilidad para viajar?
+            </Label>
             <div className="mt-4">
               <input
                 id="disponibilidad_viajar_si"
@@ -243,7 +258,9 @@ export function Curriculo() {
             </div>
           </div>
           <div>
-            <Label>¿Posees disponibilidad para cambio de residencia?</Label>
+            <Label htmlFor="disponibilidad_cambio_residencia_si">
+              ¿Posees disponibilidad para cambio de residencia?
+            </Label>
             <div className="mt-4">
               <input
                 id="disponibilidad_cambio_residencia_si"

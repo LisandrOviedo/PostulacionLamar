@@ -57,9 +57,10 @@ export function Login() {
       <div className="mt-10 sm:mx-auto sm:w-[40%] sm:max-w-sm">
         <form className="space-y-6" action="#" method="POST">
           <div>
-            <Label>Número de cédula</Label>
+            <Label htmlFor="cedula">Número de cédula</Label>
             <div className="mt-2">
               <Input
+                id="cedula"
                 name="cedula"
                 type="text"
                 placeholder="123456789"
@@ -76,7 +77,7 @@ export function Login() {
 
           <div>
             <div className="flex items-center justify-between">
-              <Label>Contraseña</Label>
+              <Label htmlFor="clave">Contraseña</Label>
               <div className="text-sm">
                 <a
                   className="cursor-pointer font-semibold text-[#002846] hover:text-blue-800 text-xs sm:text-sm ml-2 sm:ml-0"
@@ -88,6 +89,7 @@ export function Login() {
             </div>
             <div className="mt-2">
               <Input
+                id="clave"
                 name="clave"
                 type="password"
                 placeholder="********"
