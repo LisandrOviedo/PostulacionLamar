@@ -30,7 +30,6 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM(
         "Menos de 1 año",
         "1-2 años",
-        "2-3 años",
         "3-4 años",
         "5 años o más"
       ),

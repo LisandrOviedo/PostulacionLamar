@@ -1,4 +1,10 @@
-const { Curriculo, Empleado, Cargo_Titulo, Areas_Interes } = require("../db");
+const {
+  Curriculo,
+  Empleado,
+  Cargo_Titulo,
+  Areas_Interes,
+  Area_Interes_Curriculo,
+} = require("../db");
 
 const todosLosCurriculos = async () => {
   try {
@@ -99,8 +105,6 @@ const traerCurriculo = async (curriculo_id) => {
 const crearCurriculo = async (
   empleado_id,
   grado_instruccion,
-  titulo_obtenido,
-  centro_educativo,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
   originalname,
@@ -109,8 +113,6 @@ const crearCurriculo = async (
   if (
     !empleado_id ||
     !grado_instruccion ||
-    !titulo_obtenido ||
-    !centro_educativo ||
     !disponibilidad_viajar ||
     !disponibilidad_cambio_residencia ||
     !originalname ||
@@ -131,8 +133,6 @@ const crearCurriculo = async (
       defaults: {
         empleado_id: empleado_id,
         grado_instruccion: grado_instruccion,
-        titulo_obtenido: titulo_obtenido,
-        centro_educativo: centro_educativo,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
         nombre_pdf: originalname,
@@ -185,8 +185,6 @@ const agregarAreasInteres = async (curriculo_id, areas_interes) => {
 const modificarCurriculo = async (
   curriculo_id,
   grado_instruccion,
-  titulo_obtenido,
-  centro_educativo,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
   originalname,
@@ -197,8 +195,6 @@ const modificarCurriculo = async (
   if (
     !curriculo_id ||
     !grado_instruccion ||
-    !titulo_obtenido ||
-    !centro_educativo ||
     !disponibilidad_viajar ||
     !disponibilidad_cambio_residencia ||
     !originalname ||
@@ -215,8 +211,6 @@ const modificarCurriculo = async (
     await Curriculo.update(
       {
         grado_instruccion: grado_instruccion,
-        titulo_obtenido: titulo_obtenido,
-        centro_educativo: centro_educativo,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
         nombre_pdf: originalname,

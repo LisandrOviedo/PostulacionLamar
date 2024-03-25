@@ -33,8 +33,6 @@ const postCurriculo = async (req, res) => {
   const {
     empleado_id,
     grado_instruccion,
-    titulo_obtenido,
-    centro_educativo,
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
   } = req.body;
@@ -45,8 +43,6 @@ const postCurriculo = async (req, res) => {
     const response = await crearCurriculo(
       empleado_id,
       grado_instruccion,
-      titulo_obtenido,
-      centro_educativo,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
       originalname,

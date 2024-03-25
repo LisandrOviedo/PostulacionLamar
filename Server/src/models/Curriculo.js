@@ -23,14 +23,6 @@ module.exports = (sequelize) => {
       ),
       defaultValue: "Basico",
     },
-    titulo_obtenido: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
-    centro_educativo: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
     disponibilidad_viajar: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
@@ -48,15 +40,7 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     estado: {
-      type: DataTypes.ENUM(
-        "Pendiente por revisar",
-        "En revision",
-        "Rechazado con replica",
-        "Rechazado",
-        "Pendiente por entrevista",
-        "Aceptado",
-        "Almacenado"
-      ),
+      type: DataTypes.ENUM("Pendiente por revisar", "Revisado"),
       defaultValue: "Pendiente por revisar",
     },
     activo: {
