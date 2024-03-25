@@ -1,4 +1,9 @@
-const { Curriculo, Empleado, Cargo_Titulo } = require("../db");
+const {
+  Curriculo,
+  Empleado,
+  Cargo_Titulo,
+  Area_Interes_Curriculo,
+} = require("../db");
 
 const todosLosCurriculos = async () => {
   try {
@@ -103,15 +108,10 @@ const crearCurriculo = async (
 
   try {
     const empleado = await Empleado.findByPk(empleado_id);
-    // const area_interes = await Areas_Interes.findByPk(area_interes_id);
 
     if (!empleado) {
       return "No existe ese empleado";
     }
-
-    // if (!area_interes) {
-    //   return "No existe ese área de interés";
-    // }
 
     const [curriculo, created] = await Curriculo.findOrCreate({
       where: { empleado_id: empleado_id },
@@ -132,7 +132,6 @@ const crearCurriculo = async (
     }
 
     const fs = require("fs");
-
     const rutaArchivo = path;
 
     try {
@@ -144,6 +143,29 @@ const crearCurriculo = async (
     return "Ya existe un curriculo para ese empleado";
   } catch (error) {
     return "Error al crear el curriculo: ", error.message;
+  }
+};
+
+const agregarAreasInteres = async (curriculo_id, areas_interes) => {
+  for (const objeto of areas_interes) {
+    try {
+      const [area, created] = await Area_Interes_Curriculo.findOrCreate({
+        where: {
+          curriculo_id: curriculo_id,
+          area_interes_id: objeto.area_interes_id,
+          area_interes_otro: objeto.nombre_otro,
+        },
+        defaults: {
+          curriculo_id: curriculo_id,
+          area_interes_id: objeto.area_interes_id,
+          area_interes_otro: objeto.nombre_otro,
+        },
+      });
+    } catch (error) {
+      return (
+        "Error al agregar el área de interés al curriculo: ", error.message
+      );
+    }
   }
 };
 
@@ -227,6 +249,7 @@ module.exports = {
   todosLosCurriculos,
   traerCurriculo,
   crearCurriculo,
+  agregarAreasInteres,
   modificarCurriculo,
   inactivarCurriculo,
 };

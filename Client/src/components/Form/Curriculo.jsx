@@ -26,10 +26,6 @@ export function Curriculo() {
     centro_educativo: "",
     disponibilidad_viajar: "true",
     disponibilidad_cambio_residencia: "true",
-  });
-
-  const [datosAreasInteres, setDatosAreasInteres] = useState({
-    curriculo_id: "",
     areas_interes: [], // ID's
   });
 
@@ -80,7 +76,7 @@ export function Curriculo() {
   const handleAddArea = (event) => {
     event.preventDefault();
 
-    if (datosAreasInteres.areas_interes.length === 3) {
+    if (datosCurriculo.areas_interes.length === 3) {
       return alert("Solo puedes agregar máximo 3 áreas de interés");
     }
 
@@ -89,7 +85,7 @@ export function Curriculo() {
     const name = select.options[select.selectedIndex].text;
     const value = select.options[select.selectedIndex].value;
 
-    const areaValidatorInclude = datosAreasInteres.areas_interes.some(
+    const areaValidatorInclude = datosCurriculo.areas_interes.some(
       (area) => area.area_interes_id === value && area.nombre === name
     );
 
@@ -104,10 +100,10 @@ export function Curriculo() {
         return alert("Debes escribir el nombre del área que deseas añadir");
       }
 
-      setDatosAreasInteres({
-        ...datosAreasInteres,
+      setDatosCurriculo({
+        ...datosCurriculo,
         areas_interes: [
-          ...datosAreasInteres.areas_interes,
+          ...datosCurriculo.areas_interes,
           { area_interes_id: value, nombre: name, nombre_otro: areaOtro.value },
         ],
       });
@@ -120,11 +116,11 @@ export function Curriculo() {
 
     select.selectedIndex = 0;
 
-    return setDatosAreasInteres({
-      ...datosAreasInteres,
+    return setDatosCurriculo({
+      ...datosCurriculo,
       areas_interes: [
-        ...datosAreasInteres.areas_interes,
-        { area_interes_id: value, nombre: name },
+        ...datosCurriculo.areas_interes,
+        { area_interes_id: value, nombre: name, nombre_otro: "" },
       ],
     });
   };
@@ -152,7 +148,11 @@ export function Curriculo() {
 
     const { data } = await axios.post(`${URL_SERVER}/curriculos`, formData);
 
-    if (data.empleado_id) {
+    if (data.curriculo_id) {
+      await axios.post(`${URL_SERVER}/curriculos/agregarArea`, {
+        curriculo_id: data.curriculo_id,
+        areas_interes: datosCurriculo.areas_interes,
+      });
       return alert("Curriculo registrado");
     }
 
@@ -161,12 +161,12 @@ export function Curriculo() {
 
   const handleDeleteRow = (event) => {
     const rowIndex = event.target.parentNode.parentNode.rowIndex;
-    const updatedAreasInteres = datosAreasInteres.areas_interes.filter(
+    const updatedAreasInteres = datosCurriculo.areas_interes.filter(
       (_, index) => index !== rowIndex - 1
     );
 
-    setDatosAreasInteres({
-      ...datosAreasInteres,
+    setDatosCurriculo({
+      ...datosCurriculo,
       areas_interes: updatedAreasInteres,
     });
   };
@@ -300,7 +300,7 @@ export function Curriculo() {
                 </tr>
               </thead>
               <tbody>
-                {datosAreasInteres.areas_interes.map((area, i) => (
+                {datosCurriculo.areas_interes.map((area, i) => (
                   <tr
                     key={i}
                     className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"

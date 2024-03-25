@@ -2,6 +2,7 @@ const {
   todosLosCurriculos,
   traerCurriculo,
   crearCurriculo,
+  agregarAreasInteres,
   modificarCurriculo,
   inactivarCurriculo,
 } = require("../controllers/curriculos_controllers");
@@ -51,6 +52,19 @@ const postCurriculo = async (req, res) => {
       originalname,
       path
     );
+
+    return res.status(201).json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const postAreasInteres = async (req, res) => {
+  const { curriculo_id, areas_interes } = req.body;
+
+  try {
+    const response = await agregarAreasInteres(curriculo_id, areas_interes);
+
     return res.status(201).json(response);
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -109,6 +123,7 @@ module.exports = {
   getCurriculos,
   getCurriculo,
   postCurriculo,
+  postAreasInteres,
   putCurriculo,
   deleteCurriculo,
 };

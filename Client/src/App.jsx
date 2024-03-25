@@ -5,7 +5,6 @@ import { Routes, Route } from "react-router-dom";
 import {
   DatosPersonales,
   Curriculo,
-  // CurriculoExperiencias,
   Landing,
   Navbar,
   NotFound,
