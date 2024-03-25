@@ -69,18 +69,6 @@ export function Postulaciones() {
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    Área Interés
-                    <a href="#">
-                      <img
-                        src="/sort.svg"
-                        alt="Sort.svg"
-                        className="w-3 h-3 ms-1.5"
-                      ></img>
-                    </a>
-                  </div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
                     Recibido
                     <a href="#">
                       <img
@@ -136,9 +124,6 @@ export function Postulaciones() {
                     <td className="px-4 py-4">{curriculo.Empleado.telefono}</td>
                     <td className="px-4 py-4">{curriculo.Empleado.correo}</td>
                     <td className="px-4 py-4">{curriculo.grado_instruccion}</td>
-                    <td className="px-4 py-4">
-                      {curriculo.Areas_Intere.nombre}
-                    </td>
                     <td className="px-4 py-4">
                       {convertirFecha(curriculo.createdAt)}
                     </td>
