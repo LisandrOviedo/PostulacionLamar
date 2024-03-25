@@ -35,6 +35,7 @@ let capsEntries = entries.map((entry) => [
 sequelize.models = Object.fromEntries(capsEntries);
 
 const {
+  Area_Interes_Curriculo,
   Areas_Interes,
   Cargo_Empleado,
   Cargo_Titulo,
@@ -134,9 +135,10 @@ Cargo.belongsTo(Empresa, {
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
+  Area_Interes_Curriculo,
   Areas_Interes,
-  Cargo_Titulo,
   Cargo_Empleado,
+  Cargo_Titulo,
   Cargo,
   Curriculo,
   Empleado,

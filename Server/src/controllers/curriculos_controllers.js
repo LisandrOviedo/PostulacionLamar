@@ -1,10 +1,4 @@
-const {
-  Curriculo,
-  Empleado,
-  Areas_Interes,
-  Experiencia,
-  Cargo_Titulo,
-} = require("../db");
+const { Curriculo, Empleado, Cargo_Titulo } = require("../db");
 
 const todosLosCurriculos = async () => {
   try {
@@ -20,13 +14,7 @@ const todosLosCurriculos = async () => {
           },
         },
         {
-          model: Areas_Interes,
-          attributes: {
-            exclude: ["createdAt", "updatedAt"],
-          },
-        },
-        {
-          model: Experiencia,
+          model: Cargo_Titulo,
           attributes: {
             exclude: [
               "curriculo_id",
@@ -35,14 +23,6 @@ const todosLosCurriculos = async () => {
               "updatedAt",
             ],
           },
-          include: [
-            {
-              model: Cargo_Titulo,
-              attributes: {
-                exclude: ["createdAt", "updatedAt"],
-              },
-            },
-          ],
         },
       ],
     });
@@ -75,13 +55,7 @@ const traerCurriculo = async (curriculo_id) => {
           },
         },
         {
-          model: Areas_Interes,
-          attributes: {
-            exclude: ["createdAt", "updatedAt"],
-          },
-        },
-        {
-          model: Experiencia,
+          model: Cargo_Titulo,
           attributes: {
             exclude: [
               "curriculo_id",
@@ -90,14 +64,6 @@ const traerCurriculo = async (curriculo_id) => {
               "updatedAt",
             ],
           },
-          include: [
-            {
-              model: Cargo_Titulo,
-              attributes: {
-                exclude: ["createdAt", "updatedAt"],
-              },
-            },
-          ],
         },
       ],
     });
@@ -178,7 +144,8 @@ const modificarCurriculo = async (
   centro_educativo,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
-  ruta_pdf,
+  originalname,
+  path,
   estado,
   activo
 ) => {
@@ -189,7 +156,8 @@ const modificarCurriculo = async (
     !centro_educativo ||
     !disponibilidad_viajar ||
     !disponibilidad_cambio_residencia ||
-    !ruta_pdf ||
+    !originalname ||
+    !path ||
     !estado ||
     !activo
   ) {
@@ -206,7 +174,8 @@ const modificarCurriculo = async (
         centro_educativo: centro_educativo,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
-        ruta_pdf: ruta_pdf,
+        nombre_pdf: originalname,
+        ruta_pdf: path,
         estado: estado,
         activo: activo,
       },
