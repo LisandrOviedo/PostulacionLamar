@@ -39,6 +39,10 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
+    nombre_pdf: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     ruta_pdf: {
       type: DataTypes.STRING,
       allowNull: false,

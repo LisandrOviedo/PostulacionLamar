@@ -34,13 +34,11 @@ const postCurriculo = async (req, res) => {
     grado_instruccion,
     titulo_obtenido,
     centro_educativo,
-    area_interes_id,
-    area_interes_otro,
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
-    ruta_pdf,
-    estado,
   } = req.body;
+
+  const { originalname, path } = req.file;
 
   try {
     const response = await crearCurriculo(
@@ -48,14 +46,11 @@ const postCurriculo = async (req, res) => {
       grado_instruccion,
       titulo_obtenido,
       centro_educativo,
-      area_interes_id,
-      area_interes_otro,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
-      ruta_pdf,
-      estado
+      originalname,
+      path
     );
-
     return res.status(201).json(response);
   } catch (error) {
     return res.status(400).json({ error: error.message });
