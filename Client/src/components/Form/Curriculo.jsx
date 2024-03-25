@@ -26,31 +26,29 @@ export function Curriculo() {
     centro_educativo: "",
     disponibilidad_viajar: "true",
     disponibilidad_cambio_residencia: "true",
-    ruta_pdf: "",
   });
 
   const [datosAreasInteres, setDatosAreasInteres] = useState({
     curriculo_id: "",
     areas_interes: [], // ID's
-    area_interes_otro: "",
   });
+
+  const [isReadOnly, setIsReadOnly] = useState(true);
 
   const handlePDF = (event) => {
     const input = event.target;
-    const file = input.files[0];
+    const pdf = input.files[0];
 
-    if (!file) {
+    if (!pdf) {
       return; // No se seleccionó ningún archivo
     }
 
     const allowedTypes = ["application/pdf"];
 
-    if (!allowedTypes.includes(file.type)) {
+    if (!allowedTypes.includes(pdf.type)) {
       input.value = ""; // Borra el valor del campo de entrada
       return alert("¡Solo se permiten archivos PDF!");
     }
-
-    handleInputChangeCurriculo(event);
   };
 
   useEffect(() => {
@@ -64,10 +62,19 @@ export function Curriculo() {
     setDatosCurriculo({ ...datosCurriculo, [name]: value });
   };
 
-  const handleInputChangeAreaInteres = (event) => {
-    const { name, value } = event.target;
+  const handleAreaSelected = () => {
+    const select = document.getElementById("area_interes_id");
+    const name = select.options[select.selectedIndex].text;
+    const areaOtro = document.getElementById("area_interes_otro");
 
-    setDatosAreasInteres({ ...datosAreasInteres, [name]: value });
+    if (name === "Otro") {
+      return setIsReadOnly(false);
+    }
+
+    if (isReadOnly === false) {
+      areaOtro.value = "";
+      return setIsReadOnly(true);
+    }
   };
 
   const handleAddArea = (event) => {
@@ -77,17 +84,41 @@ export function Curriculo() {
       return alert("Solo puedes agregar máximo 3 áreas de interés");
     }
 
+    const areaOtro = document.getElementById("area_interes_otro");
     const select = document.getElementById("area_interes_id");
     const name = select.options[select.selectedIndex].text;
     const value = select.options[select.selectedIndex].value;
 
     const areaValidatorInclude = datosAreasInteres.areas_interes.some(
-      (area) => area.area_interes_id === value || area.nombre === name
+      (area) => area.area_interes_id === value && area.nombre === name
     );
 
     if (areaValidatorInclude) {
+      areaOtro.value = "";
       return alert("Ya has agregado esta área de interés");
     }
+
+    if (name === "Otro") {
+      if (areaOtro.value === "") {
+        areaOtro.focus();
+        return alert("Debes escribir el nombre del área que deseas añadir");
+      }
+
+      setDatosAreasInteres({
+        ...datosAreasInteres,
+        areas_interes: [
+          ...datosAreasInteres.areas_interes,
+          { area_interes_id: value, nombre: name, nombre_otro: areaOtro.value },
+        ],
+      });
+
+      areaOtro.value = "";
+      select.selectedIndex = 0;
+
+      return setIsReadOnly(true);
+    }
+
+    select.selectedIndex = 0;
 
     return setDatosAreasInteres({
       ...datosAreasInteres,
@@ -101,10 +132,25 @@ export function Curriculo() {
   const handleCreateCurriculo = async (event) => {
     event.preventDefault();
 
-    const { data } = await axios.post(
-      `${URL_SERVER}/curriculos`,
-      datosCurriculo
+    const input = document.getElementById("pdf");
+    const pdf = input.files[0];
+
+    const formData = new FormData();
+    formData.append("pdf", pdf);
+    formData.append("empleado_id", datosCurriculo.empleado_id);
+    formData.append("grado_instruccion", datosCurriculo.grado_instruccion);
+    formData.append("titulo_obtenido", datosCurriculo.titulo_obtenido);
+    formData.append("centro_educativo", datosCurriculo.centro_educativo);
+    formData.append(
+      "disponibilidad_viajar",
+      datosCurriculo.disponibilidad_viajar
     );
+    formData.append(
+      "disponibilidad_cambio_residencia",
+      datosCurriculo.disponibilidad_cambio_residencia
+    );
+
+    const { data } = await axios.post(`${URL_SERVER}/curriculos`, formData);
 
     if (data.empleado_id) {
       return alert("Curriculo registrado");
@@ -181,8 +227,7 @@ export function Curriculo() {
               <Select
                 id="area_interes_id"
                 name="area_interes_id"
-                value={datosCurriculo.area_interes_id}
-                onChange={handleInputChangeCurriculo}
+                onChange={handleAreaSelected}
                 className="inline-block"
               >
                 {areas_interes &&
@@ -216,23 +261,19 @@ export function Curriculo() {
               type="text"
               name="area_interes_otro"
               placeholder="Ingrese el nombre del área de interés"
-              value={datosAreasInteres.area_interes_otro}
-              onChange={handleInputChangeAreaInteres}
+              readOnly={isReadOnly}
             />
           </div>
           <div>
-            <Label htmlFor="file_input">
-              Adjunte su resumen curricular (PDF)
-            </Label>
+            <Label htmlFor="pdf">Adjunte su resumen curricular (PDF)</Label>
             <input
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
               aria-describedby="file_input_help"
-              id="file_input"
+              id="pdf"
               type="file"
               accept="application/pdf"
               onChange={handlePDF}
-              name="ruta_pdf"
-              value={datosCurriculo.ruta_pdf}
+              name="pdf"
             />
             <p
               className="mt-1 text-sm text-red-600 dark:text-gray-300"
@@ -251,6 +292,9 @@ export function Curriculo() {
                     </div>
                   </th>
                   <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Descripción (Otro)</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
                     <div className="flex items-center">Acción</div>
                   </th>
                 </tr>
@@ -262,10 +306,11 @@ export function Curriculo() {
                     className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
                     <td className="px-4 py-4">{area.nombre}</td>
+                    <td className="px-4 py-4">{area.nombre_otro}</td>
                     <td className="px-4 py-4">
                       <a
                         href="#"
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        className="font-medium text-red-600 dark:text-blue-500"
                         onClick={handleDeleteRow}
                       >
                         Borrar
