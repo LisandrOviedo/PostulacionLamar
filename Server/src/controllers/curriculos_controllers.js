@@ -1,9 +1,4 @@
-const {
-  Curriculo,
-  Empleado,
-  Cargo_Titulo,
-  Area_Interes_Curriculo,
-} = require("../db");
+const { Curriculo, Empleado, Cargo_Titulo, Areas_Interes } = require("../db");
 
 const todosLosCurriculos = async () => {
   try {
@@ -27,6 +22,15 @@ const todosLosCurriculos = async () => {
               "createdAt",
               "updatedAt",
             ],
+          },
+        },
+        {
+          model: Areas_Interes,
+          attributes: {
+            exclude: ["activo", "createdAt", "updatedAt"],
+          },
+          through: {
+            attributes: ["area_interes_curriculo_id", "area_interes_otro"],
           },
         },
       ],
@@ -68,6 +72,15 @@ const traerCurriculo = async (curriculo_id) => {
               "createdAt",
               "updatedAt",
             ],
+          },
+        },
+        {
+          model: Areas_Interes,
+          attributes: {
+            exclude: ["activo", "createdAt", "updatedAt"],
+          },
+          through: {
+            attributes: ["area_interes_curriculo_id", "area_interes_otro"],
           },
         },
       ],
