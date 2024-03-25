@@ -23,10 +23,12 @@ export function Curriculo() {
     empleado_id: empleado.empleado.empleado_id,
     grado_instruccion: "Basico",
     titulo_obtenido: "",
-    centro_educativo: "",
     disponibilidad_viajar: "true",
     disponibilidad_cambio_residencia: "true",
-    areas_interes: [], // ID's
+    areas_interes: [], // ID's de las áreas
+    experiencia_tipo: "Ninguno",
+    cargos_titulos: [],
+    experiencia_duracion: "Menos de 1 año",
   });
 
   const [isReadOnly, setIsReadOnly] = useState(true);
@@ -58,20 +60,72 @@ export function Curriculo() {
     setDatosCurriculo({ ...datosCurriculo, [name]: value });
   };
 
-  const handleAreaSelected = () => {
-    const select = document.getElementById("area_interes_id");
+  const handleCargoTituloSelected = () => {
+    const select = document.getElementById("cargo_titulo_id");
     const name = select.options[select.selectedIndex].text;
-    const areaOtro = document.getElementById("area_interes_otro");
+    const cargoTituloOtro = document.getElementById("cargo_titulo_otro");
 
     if (name === "Otro") {
       return setIsReadOnly(false);
     }
 
     if (isReadOnly === false) {
-      areaOtro.value = "";
+      cargoTituloOtro.value = "";
       return setIsReadOnly(true);
     }
   };
+
+  // const handleAddCargoTitulo = (event) => {
+  //   event.preventDefault();
+
+  //   if (datosCurriculo.cargos_titulos.length === 3) {
+  //     return alert("Solo puedes agregar máximo 3 áreas de interés");
+  //   }
+
+  //   const areaOtro = document.getElementById("area_interes_otro");
+  //   const select = document.getElementById("area_interes_id");
+  //   const name = select.options[select.selectedIndex].text;
+  //   const value = select.options[select.selectedIndex].value;
+
+  //   const areaValidatorInclude = datosCurriculo.areas_interes.some(
+  //     (area) => area.area_interes_id === value && area.nombre === name
+  //   );
+
+  //   if (areaValidatorInclude) {
+  //     areaOtro.value = "";
+  //     return alert("Ya has agregado esta área de interés");
+  //   }
+
+  //   if (name === "Otro") {
+  //     if (areaOtro.value === "") {
+  //       areaOtro.focus();
+  //       return alert("Debes escribir el nombre del área que deseas añadir");
+  //     }
+
+  //     setDatosCurriculo({
+  //       ...datosCurriculo,
+  //       areas_interes: [
+  //         ...datosCurriculo.areas_interes,
+  //         { area_interes_id: value, nombre: name, nombre_otro: areaOtro.value },
+  //       ],
+  //     });
+
+  //     areaOtro.value = "";
+  //     select.selectedIndex = 0;
+
+  //     return setIsReadOnly(true);
+  //   }
+
+  //   select.selectedIndex = 0;
+
+  //   return setDatosCurriculo({
+  //     ...datosCurriculo,
+  //     areas_interes: [
+  //       ...datosCurriculo.areas_interes,
+  //       { area_interes_id: value, nombre: name, nombre_otro: "" },
+  //     ],
+  //   });
+  // };
 
   const handleAddArea = (event) => {
     event.preventDefault();
@@ -80,7 +134,6 @@ export function Curriculo() {
       return alert("Solo puedes agregar máximo 3 áreas de interés");
     }
 
-    const areaOtro = document.getElementById("area_interes_otro");
     const select = document.getElementById("area_interes_id");
     const name = select.options[select.selectedIndex].text;
     const value = select.options[select.selectedIndex].value;
@@ -90,39 +143,20 @@ export function Curriculo() {
     );
 
     if (areaValidatorInclude) {
-      areaOtro.value = "";
       return alert("Ya has agregado esta área de interés");
     }
 
-    if (name === "Otro") {
-      if (areaOtro.value === "") {
-        areaOtro.focus();
-        return alert("Debes escribir el nombre del área que deseas añadir");
-      }
-
-      setDatosCurriculo({
-        ...datosCurriculo,
-        areas_interes: [
-          ...datosCurriculo.areas_interes,
-          { area_interes_id: value, nombre: name, nombre_otro: areaOtro.value },
-        ],
-      });
-
-      areaOtro.value = "";
-      select.selectedIndex = 0;
-
-      return setIsReadOnly(true);
-    }
-
-    select.selectedIndex = 0;
-
-    return setDatosCurriculo({
+    setDatosCurriculo({
       ...datosCurriculo,
       areas_interes: [
         ...datosCurriculo.areas_interes,
-        { area_interes_id: value, nombre: name, nombre_otro: "" },
+        { area_interes_id: value, nombre: name },
       ],
     });
+
+    select.selectedIndex = 0;
+
+    return setIsReadOnly(true);
   };
 
   const handleCreateCurriculo = async (event) => {
@@ -198,26 +232,40 @@ export function Curriculo() {
             </Select>
           </div>
           <div>
-            <Label htmlFor="titulo_obtenido">Título obtenido</Label>
-            <Input
-              id="titulo_obtenido"
-              type="text"
-              name="titulo_obtenido"
-              placeholder="Ingrese el nombre de su título obtenido"
-              value={datosCurriculo.titulo_obtenido}
-              onChange={handleInputChangeCurriculo}
-            />
+            <Label htmlFor="titulo_obtenido">
+              Títulos obtenidos (Agregar todos)
+            </Label>
+            <div className="flex gap-4 w-full items-start">
+              <Input
+                id="titulo_obtenido"
+                type="text"
+                name="titulo_obtenido"
+                placeholder="Ingrese el nombre del título"
+                value={datosCurriculo.titulo_obtenido}
+                onChange={handleInputChangeCurriculo}
+              />
+              <Button className="m-0" onClick={handleAddArea}>
+                Agregar
+              </Button>
+            </div>
           </div>
           <div>
-            <Label htmlFor="centro_educativo">Centro Educativo</Label>
-            <Input
-              id="centro_educativo"
-              type="text"
-              name="centro_educativo"
-              placeholder="Ingrese el nombre del centro educativo donde obtuvo su título"
-              value={datosCurriculo.centro_educativo}
-              onChange={handleInputChangeCurriculo}
+            <Label htmlFor="pdf">Adjunte su resumen curricular (PDF)</Label>
+            <input
+              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+              aria-describedby="file_input_help"
+              id="pdf"
+              type="file"
+              accept="application/pdf"
+              onChange={handlePDF}
+              name="pdf"
             />
+            <p
+              className="mt-1 text-sm text-red-600 dark:text-gray-300"
+              id="file_input_help"
+            >
+              ¡Solo archivos en formato PDF!
+            </p>
           </div>
           <div>
             <Label htmlFor="area_interes_id">
@@ -227,7 +275,6 @@ export function Curriculo() {
               <Select
                 id="area_interes_id"
                 name="area_interes_id"
-                onChange={handleAreaSelected}
                 className="inline-block"
               >
                 {areas_interes &&
@@ -251,75 +298,6 @@ export function Curriculo() {
                 Agregar
               </Button>
             </div>
-          </div>
-          <div>
-            <Label htmlFor="area_interes_otro">
-              Otra área de interés (Opcional)
-            </Label>
-            <Input
-              id="area_interes_otro"
-              type="text"
-              name="area_interes_otro"
-              placeholder="Ingrese el nombre del área de interés"
-              readOnly={isReadOnly}
-            />
-          </div>
-          <div>
-            <Label htmlFor="pdf">Adjunte su resumen curricular (PDF)</Label>
-            <input
-              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-              aria-describedby="file_input_help"
-              id="pdf"
-              type="file"
-              accept="application/pdf"
-              onChange={handlePDF}
-              name="pdf"
-            />
-            <p
-              className="mt-1 text-sm text-red-600 dark:text-gray-300"
-              id="file_input_help"
-            >
-              ¡Solo archivos en formato PDF!
-            </p>
-          </div>
-          <div className="md:col-span-3">
-            <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
-              <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
-                <tr className="text-white">
-                  <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">
-                      Areas de interés seleccionadas
-                    </div>
-                  </th>
-                  <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Descripción (Otro)</div>
-                  </th>
-                  <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Acción</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {datosCurriculo.areas_interes.map((area, i) => (
-                  <tr
-                    key={i}
-                    className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
-                  >
-                    <td className="px-4 py-4">{area.nombre}</td>
-                    <td className="px-4 py-4">{area.nombre_otro}</td>
-                    <td className="px-4 py-4">
-                      <a
-                        href="#"
-                        className="font-medium text-red-600 dark:text-blue-500"
-                        onClick={handleDeleteRow}
-                      >
-                        Borrar
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
           <div>
             <Label htmlFor="disponibilidad_viajar_si">
@@ -384,6 +362,131 @@ export function Curriculo() {
                 No
               </label>
             </div>
+          </div>
+          <div className="md:col-span-3">
+            <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
+              <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
+                <tr className="text-white">
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">
+                      Areas de interés seleccionadas
+                    </div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Descripción (Otro)</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Acción</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {datosCurriculo.areas_interes.map((area, i) => (
+                  <tr
+                    key={i}
+                    className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <td className="px-4 py-4">{area.nombre}</td>
+                    <td className="px-4 py-4">{area.nombre_otro}</td>
+                    <td className="px-4 py-4">
+                      <a
+                        href="#"
+                        className="font-medium text-red-600 dark:text-blue-500"
+                        onClick={handleDeleteRow}
+                      >
+                        Borrar
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <Label htmlFor="experiencia_tipo">
+              ¿Posees experiencia laboral o realizaste algún curso?
+            </Label>
+            <Select
+              id="experiencia_tipo"
+              name="experiencia_tipo"
+              value={datosCurriculo.experiencia_tipo}
+              onChange={handleInputChangeCurriculo}
+            >
+              <option value="Ninguno">Ninguno</option>
+              <option value="Laboral">Experiencia Laboral</option>
+              <option value="Curso">Experiencia Curso</option>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="experiencia_duracion">
+              Duración de la experiencia
+            </Label>
+            <Select
+              id="experiencia_duracion"
+              name="experiencia_duracion"
+              value={datosCurriculo.experiencia_duracion}
+              onChange={handleInputChangeCurriculo}
+            >
+              <option value="Menos de 1 año">Menos de 1 año</option>
+              <option value="1-2 años">1-2 años</option>
+              <option value="3-4 años">3-4 años</option>
+              <option value="5 años o más">5 años o más</option>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="cargo_titulo_id">
+              ¿Cual fue tu cargo laboral o título obtenido en el curso?
+            </Label>
+            <div className="flex gap-4 w-full items-start">
+              <Select
+                id="cargo_titulo_id"
+                name="cargo_titulo_id"
+                onChange={handleCargoTituloSelected}
+                className="inline-block"
+              >
+                {areas_interes &&
+                areas_interes.areas_interes &&
+                areas_interes.areas_interes.length > 0
+                  ? areas_interes?.areas_interes.map(
+                      (area, i) =>
+                        area.activo && (
+                          <option
+                            key={i}
+                            name={area.nombre}
+                            value={area.area_interes_id}
+                          >
+                            {area.nombre}
+                          </option>
+                        )
+                    )
+                  : null}
+              </Select>
+              <Button className="m-0">Agregar</Button>
+            </div>
+          </div>
+          <div>
+            <Label htmlFor="cargo_titulo_otro">
+              Agregar otro cargo laboral o título obtenido en el curso
+              (Opcional)
+            </Label>
+            <Input
+              id="cargo_titulo_otro"
+              type="text"
+              name="cargo_titulo_otro"
+              placeholder="Ingrese el nombre del cargo o título"
+              readOnly={isReadOnly}
+            />
+          </div>
+          <div>
+            <Label htmlFor="empresa_centro_educativo">
+              Nombre de empresa / centro educativo
+            </Label>
+            <Input
+              id="empresa_centro_educativo"
+              type="text"
+              name="empresa_centro_educativo"
+              placeholder="Ingrese el nombre de la empresa / centro educativo"
+            />
           </div>
           <div className="flex items-end">
             <Button className="m-0" onClick={handleCreateCurriculo}>
