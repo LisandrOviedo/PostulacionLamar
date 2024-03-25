@@ -110,7 +110,7 @@ export function Postulaciones() {
             </thead>
             <tbody>
               {curriculos?.curriculos === "No existen curriculos" ? (
-                <p className="text-center">No existen curriculos!</p>
+                <p className="text-center p-2">No existen curriculos!</p>
               ) : (
                 curriculos?.curriculos.map((curriculo, i) => (
                   <tr
