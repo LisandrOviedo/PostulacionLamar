@@ -131,6 +131,16 @@ const crearCurriculo = async (
       return curriculo;
     }
 
+    const fs = require("fs");
+
+    const rutaArchivo = path;
+
+    try {
+      fs.unlinkSync(rutaArchivo);
+    } catch (error) {
+      console.error("Error al eliminar el archivo PDF:", error);
+    }
+
     return "Ya existe un curriculo para ese empleado";
   } catch (error) {
     return "Error al crear el curriculo: ", error.message;
