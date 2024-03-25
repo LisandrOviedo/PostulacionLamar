@@ -119,7 +119,8 @@ const crearCurriculo = async (
   centro_educativo,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
-  ruta_pdf
+  originalname,
+  path
 ) => {
   if (
     !empleado_id ||
@@ -128,22 +129,23 @@ const crearCurriculo = async (
     !centro_educativo ||
     !disponibilidad_viajar ||
     !disponibilidad_cambio_residencia ||
-    !ruta_pdf
+    !originalname ||
+    !path
   ) {
     return "Datos faltantes";
   }
 
   try {
     const empleado = await Empleado.findByPk(empleado_id);
-    const area_interes = await Areas_Interes.findByPk(area_interes_id);
+    // const area_interes = await Areas_Interes.findByPk(area_interes_id);
 
     if (!empleado) {
       return "No existe ese empleado";
     }
 
-    if (!area_interes) {
-      return "No existe ese área de interés";
-    }
+    // if (!area_interes) {
+    //   return "No existe ese área de interés";
+    // }
 
     const [curriculo, created] = await Curriculo.findOrCreate({
       where: { empleado_id: empleado_id },
@@ -154,7 +156,8 @@ const crearCurriculo = async (
         centro_educativo: centro_educativo,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
-        ruta_pdf: ruta_pdf,
+        nombre_pdf: originalname,
+        ruta_pdf: path,
       },
     });
 
