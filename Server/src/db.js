@@ -44,6 +44,7 @@ const {
   Empleado,
   Empresa,
   Experiencia,
+  Titulo_Obtenido,
   Usuario,
 } = sequelize.models;
 
@@ -132,6 +133,24 @@ Cargo.belongsTo(Empresa, {
   },
 });
 
+// Curriculo 1:N Titulo_Obtenido
+Curriculo.hasMany(Titulo_Obtenido, {
+  foreignKey: {
+    allowNull: false,
+    name: "curriculo_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+Titulo_Obtenido.belongsTo(Curriculo, {
+  foreignKey: {
+    allowNull: false,
+    name: "curriculo_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -144,5 +163,6 @@ module.exports = {
   Empleado,
   Empresa,
   Experiencia,
+  Titulo_Obtenido,
   Usuario,
 };
