@@ -183,7 +183,7 @@ export function Curriculo() {
     const { data } = await axios.post(`${URL_SERVER}/curriculos`, formData);
 
     if (data.curriculo_id) {
-      await axios.post(`${URL_SERVER}/curriculos/agregarArea`, {
+      await axios.post(`${URL_SERVER}/areasinteres/agregarArea`, {
         curriculo_id: data.curriculo_id,
         areas_interes: datosCurriculo.areas_interes,
       });
@@ -214,7 +214,7 @@ export function Curriculo() {
         <div className="grid gap-6 md:grid-cols-3 mt-5 mb-5">
           <div>
             <Label htmlFor="grado_instruccion">
-              Grado de instrucción más alta
+              Grado de instrucción más alta obtenida
             </Label>
             <Select
               id="grado_instruccion"
@@ -233,7 +233,7 @@ export function Curriculo() {
           </div>
           <div>
             <Label htmlFor="titulo_obtenido">
-              Títulos obtenidos (Agregar todos)
+              Títulos obtenidos (Agregar todos uno por uno)
             </Label>
             <div className="flex gap-4 w-full items-start">
               <Input
