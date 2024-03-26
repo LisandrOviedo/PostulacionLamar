@@ -9,7 +9,6 @@ const usuarios = require("./usuarios_routes");
 const router = Router();
 
 router.use("/tthh/areasinteres", areasinteres);
-router.use("/tthh/cargostitulos", cargostitulos);
 router.use("/tthh/curriculos", curriculos);
 router.use("/tthh/empleados", empleados);
 router.use("/tthh/experiencias", experiencias);
