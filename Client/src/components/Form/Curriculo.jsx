@@ -12,7 +12,7 @@ import { Button, Input, Label, Select, Title } from "../UI";
 
 export function Curriculo() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const empleado = useSelector((state) => state.empleado);
   const areas_interes = useSelector((state) => state.areas_interes);
