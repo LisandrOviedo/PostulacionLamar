@@ -1,10 +1,4 @@
-const {
-  Curriculo,
-  Empleado,
-  Cargo_Titulo,
-  Areas_Interes,
-  Area_Interes_Curriculo,
-} = require("../db");
+const { Curriculo, Empleado, Cargo_Titulo, Areas_Interes } = require("../db");
 
 const todosLosCurriculos = async () => {
   try {
@@ -42,7 +36,7 @@ const todosLosCurriculos = async () => {
       ],
     });
 
-    if (curriculos.length === 0) {
+    if (!curriculos) {
       return "No existen curriculos";
     }
 
@@ -92,7 +86,7 @@ const traerCurriculo = async (curriculo_id) => {
       ],
     });
 
-    if (curriculo === null) {
+    if (!curriculo) {
       return "No existe ese curriculo";
     }
 
@@ -156,29 +150,6 @@ const crearCurriculo = async (
     return "Ya existe un curriculo para ese empleado";
   } catch (error) {
     return "Error al crear el curriculo: ", error.message;
-  }
-};
-
-const agregarAreasInteres = async (curriculo_id, areas_interes) => {
-  for (const objeto of areas_interes) {
-    try {
-      const [area, created] = await Area_Interes_Curriculo.findOrCreate({
-        where: {
-          curriculo_id: curriculo_id,
-          area_interes_id: objeto.area_interes_id,
-          area_interes_otro: objeto.nombre_otro,
-        },
-        defaults: {
-          curriculo_id: curriculo_id,
-          area_interes_id: objeto.area_interes_id,
-          area_interes_otro: objeto.nombre_otro,
-        },
-      });
-    } catch (error) {
-      return (
-        "Error al agregar el área de interés al curriculo: ", error.message
-      );
-    }
   }
 };
 
@@ -256,7 +227,6 @@ module.exports = {
   todosLosCurriculos,
   traerCurriculo,
   crearCurriculo,
-  agregarAreasInteres,
   modificarCurriculo,
   inactivarCurriculo,
 };

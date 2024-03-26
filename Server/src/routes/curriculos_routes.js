@@ -3,7 +3,6 @@ const {
   getCurriculos,
   getCurriculo,
   postCurriculo,
-  postAreasInteres,
   putCurriculo,
   deleteCurriculo,
 } = require("../handlers/curriculos_handlers");
@@ -26,7 +25,6 @@ curriculos.get("/", getCurriculos);
 curriculos.get("/detalle/:curriculo_id", getCurriculo);
 
 curriculos.post("/", upload.single("pdf"), postCurriculo);
-curriculos.post("/agregarArea", postAreasInteres);
 
 curriculos.put("/modificar", putCurriculo);
 curriculos.put("/inactivar", deleteCurriculo);

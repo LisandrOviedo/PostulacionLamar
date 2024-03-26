@@ -4,7 +4,7 @@ const todosLosUsuarios = async () => {
   try {
     const usuarios = await Usuario.findAll();
 
-    if (usuarios.length === 0) {
+    if (!usuarios) {
       return "No existen usuarios";
     }
 
@@ -22,7 +22,7 @@ const traerUsuario = async (usuario_id) => {
   try {
     const usuario = await Usuario.findByPk(usuario_id);
 
-    if (usuario === null) {
+    if (!usuario) {
       return "No existe ese usuario";
     }
 
@@ -45,7 +45,7 @@ const login = async (cedula, clave) => {
       },
     });
 
-    if (usuario === null) {
+    if (!usuario) {
       return "Datos incorrectos";
     }
 

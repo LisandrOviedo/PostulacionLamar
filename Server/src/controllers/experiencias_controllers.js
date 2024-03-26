@@ -4,7 +4,7 @@ const todasLasExperiencias = async () => {
   try {
     const experiencias = await Experiencia.findAll();
 
-    if (experiencias.length === 0) {
+    if (!experiencias) {
       return "No existen experiencias";
     }
 
@@ -22,7 +22,7 @@ const traerExperiencia = async (experiencia_id) => {
   try {
     const experiencia = await Experiencia.findByPk(experiencia_id);
 
-    if (experiencia === null) {
+    if (!experiencia) {
       return "No existe esa experiencia";
     }
 

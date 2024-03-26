@@ -4,7 +4,7 @@ const todosLosEmpleados = async () => {
   try {
     const empleados = await Empleado.findAll();
 
-    if (empleados.length === 0) {
+    if (!empleados) {
       return "No existen empleados";
     }
 
@@ -22,7 +22,7 @@ const traerEmpleado = async (empleado_id) => {
   try {
     const empleado = await Empleado.findByPk(empleado_id);
 
-    if (empleado === null) {
+    if (!empleado) {
       return "No existe ese empleado";
     }
 
@@ -61,7 +61,7 @@ const traerCargoActual = async (empleado_id) => {
       ],
     });
 
-    if (cargoActual === null) {
+    if (!cargoActual) {
       return "No existe cargo actual para ese empleado";
     }
 
@@ -81,7 +81,7 @@ const login = async (cedula) => {
       where: { cedula: cedula },
     });
 
-    if (empleado === null) {
+    if (!empleado) {
       return "No existe ese empleado";
     }
 

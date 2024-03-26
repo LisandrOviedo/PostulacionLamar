@@ -4,7 +4,7 @@ const todosLosCargosTitulos = async () => {
   try {
     const cargos_titulos = await Cargo_Titulo.findAll();
 
-    if (cargos_titulos.length === 0) {
+    if (!cargos_titulos) {
       return "No existen cargos / títulos";
     }
 
@@ -22,7 +22,7 @@ const traerCargoTitulo = async (cargo_titulo_id) => {
   try {
     const cargo_titulo = await Cargo_Titulo.findByPk(cargo_titulo_id);
 
-    if (cargo_titulo === null) {
+    if (!cargo_titulo) {
       return "No existe ese cargo / título";
     }
 

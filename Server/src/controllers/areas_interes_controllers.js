@@ -1,10 +1,10 @@
-const { Areas_Interes } = require("../db");
+const { Areas_Interes, Area_Interes_Curriculo } = require("../db");
 
 const todosLosAreaInteres = async () => {
   try {
     const areas_interes = await Areas_Interes.findAll();
 
-    if (areas_interes.length === 0) {
+    if (!areas_interes) {
       return "No existen áreas de interés";
     }
 
@@ -22,7 +22,7 @@ const traerAreaInteres = async (area_interes_id) => {
   try {
     const area_interes = await Areas_Interes.findByPk(area_interes_id);
 
-    if (area_interes === null) {
+    if (!area_interes) {
       return "No existe esa área de interés";
     }
 
@@ -102,10 +102,34 @@ const inactivarAreaInteres = async (area_interes_id) => {
   }
 };
 
+const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
+  for (const objeto of areas_interes) {
+    try {
+      const [area, created] = await Area_Interes_Curriculo.findOrCreate({
+        where: {
+          curriculo_id: curriculo_id,
+          area_interes_id: objeto.area_interes_id,
+          area_interes_otro: objeto.nombre_otro,
+        },
+        defaults: {
+          curriculo_id: curriculo_id,
+          area_interes_id: objeto.area_interes_id,
+          area_interes_otro: objeto.nombre_otro,
+        },
+      });
+    } catch (error) {
+      return (
+        "Error al agregar el área de interés al curriculo: ", error.message
+      );
+    }
+  }
+};
+
 module.exports = {
   todosLosAreaInteres,
   traerAreaInteres,
   crearAreaInteres,
   modificarAreaInteres,
   inactivarAreaInteres,
+  agregarAreasInteresCurriculo,
 };
