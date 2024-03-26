@@ -1,10 +1,8 @@
 const { Curriculo, Titulo_Obtenido } = require("../db");
 
-const todosLosTitulosObtenidos = async (curriculo_id) => {
+const todosLosTitulosObtenidos = async () => {
   try {
-    const titulos_obtenidos = await Titulo_Obtenido.findAll({
-      where: { curriculo_id: curriculo_id },
-    });
+    const titulos_obtenidos = await Titulo_Obtenido.findAll();
 
     if (!titulos_obtenidos) {
       return "No existen títulos obtenidos";
@@ -46,92 +44,92 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
       return "No existe ese curriculo";
     }
 
+    let fallidos = "";
 
-    const [titulo_obtenido, created] = await Titulo_Obtenido.findOrCreate({
-      where: {
-        curriculo_id: curriculo_id,
-        nombre: titulos_obtenidos,
-      },
-      defaults: {
-        curriculo_id: curriculo_id,
-        nombre: titulos_obtenidos,
-      },
+    titulos_obtenidos.forEach(async (titulo) => {
+      const [titulo_obtenido, created] = await Titulo_Obtenido.findOrCreate({
+        where: {
+          curriculo_id: curriculo_id,
+          nombre: titulo,
+        },
+        defaults: {
+          curriculo_id: curriculo_id,
+          nombre: titulo,
+        },
+      });
+
+      if (!created) {
+        if (fallidos === "") {
+          fallidos = titulo;
+          return;
+        }
+
+        if (fallidos !== "") {
+          fallidos = fallidos + ` ${titulo}`;
+          return;
+        }
+      }
     });
 
-    if (created) {
-      return experiencia;
+    if (fallidos !== "") {
+      return (
+        "Estos títulos obtenidos no se pudieron guardar porque ya existen: ",
+        fallidos
+      );
     }
-
-    return "Ya existe una experiencia con esas características";
   } catch (error) {
-    return "Error al crear la experiencia: ", error.message;
+    return "Error al crear los títulos obtenidos: ", error.message;
   }
 };
 
 const modificarTitulosObtenidos = async (
-  experiencia_id,
-  tipo,
-  cargo_titulo_id,
-  cargo_titulo_otro,
-  duracion,
-  empresa_centro_educativo,
+  titulo_obtenido_id,
+  nombre,
   activo
 ) => {
-  if (
-    !experiencia_id ||
-    !tipo ||
-    !cargo_titulo_id ||
-    !cargo_titulo_otro ||
-    !duracion ||
-    !empresa_centro_educativo ||
-    !activo
-  ) {
+  if (!titulo_obtenido_id || !nombre || !activo) {
     return "Datos faltantes";
   }
 
   try {
-    await traerExperiencia(experiencia_id);
+    await traerTituloObtenido(titulo_obtenido_id);
 
-    await Experiencia.update(
+    await Titulo_Obtenido.update(
       {
-        tipo: tipo,
-        cargo_titulo_id: cargo_titulo_id,
-        cargo_titulo_otro: cargo_titulo_otro,
-        duracion: duracion,
-        empresa_centro_educativo: empresa_centro_educativo,
+        nombre: nombre,
         activo: activo,
       },
       {
         where: {
-          experiencia_id: experiencia_id,
+          titulo_obtenido_id: titulo_obtenido_id,
         },
       }
     );
 
-    return await traerExperiencia(experiencia_id);
+    return await traerTituloObtenido(titulo_obtenido_id);
   } catch (error) {
-    return "Error al modificar la experiencia: ", error.message;
+    return "Error al modificar el título obtenido: ", error.message;
   }
 };
 
-const inactivarTituloObtenido = async (experiencia_id) => {
-  if (!experiencia_id) {
+const inactivarTituloObtenido = async (titulo_obtenido_id) => {
+  if (!titulo_obtenido_id) {
     return "Datos faltantes";
   }
 
   try {
-    const experiencia = await traerExperiencia(experiencia_id);
+    const titulo_obtenido = await traerTituloObtenido(titulo_obtenido_id);
 
-    await Experiencia.update(
-      { activo: !experiencia.activo },
+    await Titulo_Obtenido.update(
+      { activo: !titulo_obtenido.activo },
       {
-        where: { experiencia_id: experiencia_id },
+        where: { titulo_obtenido_id: titulo_obtenido_id },
       }
     );
 
-    return await traerExperiencia(experiencia_id);
+    return await traerTituloObtenido(titulo_obtenido_id);
   } catch (error) {
-    return "Error al inactivar la experiencia: ", error.message;
+    return "Error al inactivar el título obtenido: ", error.message;
   }
 };
 

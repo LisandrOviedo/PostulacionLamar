@@ -46,13 +46,12 @@ const postTitulosObtenidos = async (req, res) => {
 };
 
 const putTituloObtenido = async (req, res) => {
-  const { titulo_obtenido_id, nombre } = req.body;
+  const { curriculo_id, titulos_obtenidos } = req.body;
 
   try {
     const response = await modificarTitulosObtenidos(
-      titulo_obtenido_id,
-      nombre,
-      activo
+      curriculo_id,
+      titulos_obtenidos
     );
 
     return res.json(response);
