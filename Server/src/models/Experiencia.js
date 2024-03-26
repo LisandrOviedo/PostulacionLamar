@@ -17,12 +17,7 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM("Laboral", "Curso"),
       defaultValue: "Laboral",
     },
-    cargo_titulo_id: {
-      // Campo relacionado
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
-    cargo_titulo_otro: {
+    cargo_titulo: {
       type: DataTypes.STRING,
       allowNull: true,
     },

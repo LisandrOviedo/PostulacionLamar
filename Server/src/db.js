@@ -38,7 +38,6 @@ const {
   Area_Interes_Curriculo,
   Areas_Interes,
   Cargo_Empleado,
-  Cargo_Titulo,
   Cargo,
   Curriculo,
   Empleado,
@@ -80,22 +79,6 @@ Curriculo.belongsToMany(Areas_Interes, {
   foreignKey: {
     allowNull: false,
     name: "curriculo_id",
-  },
-});
-
-// Curriculo N:N Cargo_Titulo
-Curriculo.belongsToMany(Cargo_Titulo, {
-  through: "Experiencia",
-  foreignKey: {
-    allowNull: false,
-    name: "curriculo_id",
-  },
-});
-Cargo_Titulo.belongsToMany(Curriculo, {
-  through: "Experiencia",
-  foreignKey: {
-    allowNull: false,
-    name: "cargo_titulo_id",
   },
 });
 
@@ -151,13 +134,30 @@ Titulo_Obtenido.belongsTo(Curriculo, {
   },
 });
 
+// Curriculo 1:N Experiencia
+Curriculo.hasMany(Experiencia, {
+  foreignKey: {
+    allowNull: false,
+    name: "curriculo_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+Experiencia.belongsTo(Curriculo, {
+  foreignKey: {
+    allowNull: false,
+    name: "curriculo_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
   Area_Interes_Curriculo,
   Areas_Interes,
   Cargo_Empleado,
-  Cargo_Titulo,
   Cargo,
   Curriculo,
   Empleado,
