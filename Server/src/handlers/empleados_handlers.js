@@ -31,10 +31,10 @@ const getEmpleado = async (req, res) => {
 };
 
 const getLogin = async (req, res) => {
-  const { cedula } = req.query;
+  const { cedula, clave } = req.query;
 
   try {
-    const response = await login(cedula);
+    const response = await login(cedula, clave);
 
     return res.json(response);
   } catch (error) {

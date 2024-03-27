@@ -19,6 +19,7 @@ export function Landing() {
 
   const [data, setData] = useState({
     cedula: "",
+    clave: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -26,9 +27,9 @@ export function Landing() {
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const handleFindCI = async () => {
-    dispatch(getLogin(data.cedula));
+    dispatch(getLogin(data.cedula, data.clave));
 
-    const URL_LOGIN = `${URL_SERVER}/empleados/login/?cedula=${data.cedula}`;
+    const URL_LOGIN = `${URL_SERVER}/empleados/login/?cedula=${data.cedula}&clave=${data.clave}`;
 
     try {
       const { data } = await axios(URL_LOGIN);
@@ -62,7 +63,7 @@ export function Landing() {
   }, []);
 
   useEffect(() => {
-    if (access === "No existe ese empleado" || access === "Datos faltantes") {
+    if (access === "Datos incorrectos" || access === "Datos faltantes") {
       setAccess({});
       return alert(access);
     }
@@ -105,10 +106,9 @@ export function Landing() {
       </ul>
       <br />
       <label htmlFor="cedula" className="text-center text-base sm:text-lg">
-        Ingrese su número de cédula para empezar:
+        Ingrese su número de cédula y clave para empezar:
       </label>
       <br />
-
       <Input
         className="w-28 text-center"
         type="text"
@@ -117,7 +117,7 @@ export function Landing() {
         value={data.cedula}
         onChange={handleOnChange}
         onKeyDown={handleKeyDown}
-        placeholder="12345678"
+        placeholder="Cédula"
         minLength="1"
         maxLength="9"
         required
@@ -125,17 +125,37 @@ export function Landing() {
       <p className="text-base sm:text-lg text-red-700 font-bold text-center">
         {errors.cedula}
       </p>
+      <br />
+      <Input
+        className="w-28 text-center"
+        type="password"
+        name="clave"
+        id="clave"
+        value={data.clave}
+        onChange={handleOnChange}
+        onKeyDown={handleKeyDown}
+        placeholder="Clave"
+        minLength="4"
+        maxLength="4"
+        required
+      />
+      <p className="text-base sm:text-lg text-red-700 font-bold text-center">
+        {errors.clave}
+      </p>
       <Button
         id="btn_continuar"
         type="submit"
         onClick={handleFindCI}
         disabled={
-          Object.keys(errors).length > 0 || Object.keys(data.cedula).length <= 0
+          Object.keys(errors).length > 0 ||
+          Object.keys(data.cedula).length <= 0 ||
+          Object.keys(data.clave).length <= 0
         }
         className={clsx("", {
           "opacity-50":
             Object.keys(errors).length > 0 ||
-            Object.keys(data.cedula).length <= 0,
+            Object.keys(data.cedula).length <= 0 ||
+            Object.keys(data.clave).length <= 0,
         })}
       >
         Continuar

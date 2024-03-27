@@ -12,6 +12,11 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER(10),
       allowNull: false,
     },
+    clave: {
+      type: DataTypes.INTEGER(4),
+      allowNull: false,
+      defaultValue: "1234",
+    },
     nombres: {
       type: DataTypes.STRING(100),
       allowNull: false,
