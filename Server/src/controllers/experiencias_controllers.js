@@ -1,4 +1,4 @@
-const { Experiencia, Curriculo, Cargo_Titulo } = require("../db");
+const { Experiencia, Curriculo } = require("../db");
 
 const todasLasExperiencias = async () => {
   try {
@@ -32,62 +32,58 @@ const traerExperiencia = async (experiencia_id) => {
   }
 };
 
-const crearExperiencia = async (
-  curriculo_id,
-  tipo,
-  cargo_titulo_id,
-  cargo_titulo_otro,
-  duracion,
-  empresa_centro_educativo
-) => {
-  if (
-    !curriculo_id ||
-    !tipo ||
-    !cargo_titulo_id ||
-    !cargo_titulo_otro ||
-    !duracion ||
-    !empresa_centro_educativo
-  ) {
+const crearExperiencia = async (curriculo_id, experiencias) => {
+  if (!curriculo_id || !experiencias) {
     return "Datos faltantes";
   }
 
   try {
     const curriculo = await Curriculo.findByPk(curriculo_id);
-    const cargo_titulo = await Cargo_Titulo.findByPk(cargo_titulo_id);
 
     if (!curriculo) {
       return "No existe ese curriculo";
     }
 
-    if (!cargo_titulo) {
-      return "No existe ese cargo / título";
-    }
+    let fallidos = "";
 
-    const [experiencia, created] = await Experiencia.findOrCreate({
-      where: {
-        curriculo_id: curriculo_id,
-        tipo: tipo,
-        cargo_titulo_id: cargo_titulo_id,
-        cargo_titulo_otro: cargo_titulo_otro,
-        empresa_centro_educativo: empresa_centro_educativo,
-      },
-      defaults: {
-        curriculo_id: curriculo_id,
-        tipo: tipo,
-        cargo_titulo_id: cargo_titulo_id,
-        cargo_titulo_otro: cargo_titulo_otro,
-        duracion: duracion,
-        empresa_centro_educativo: empresa_centro_educativo,
-      },
+    experiencias.forEach(async (exp) => {
+      const [experiencia, created] = await Experiencia.findOrCreate({
+        where: {
+          curriculo_id: curriculo_id,
+          tipo: exp.tipo,
+          cargo_titulo: exp.cargo_titulo,
+          empresa_centro_educativo: exp.empresa_centro_educativo,
+        },
+        defaults: {
+          curriculo_id: curriculo_id,
+          tipo: exp.tipo,
+          cargo_titulo: exp.cargo_titulo,
+          duracion: exp.duracion,
+          empresa_centro_educativo: exp.empresa_centro_educativo,
+        },
+      });
+
+      if (!created) {
+        if (fallidos === "") {
+          fallidos = exp.cargo_titulo;
+          return;
+        }
+
+        if (fallidos !== "") {
+          fallidos = fallidos + ` ${exp.cargo_titulo}`;
+          return;
+        }
+      }
     });
 
-    if (created) {
-      return experiencia;
+    if (fallidos !== "") {
+      return (
+        "Estos cargos laborales / títulos de curso no se pudieron guardar porque ya existen: ",
+        fallidos
+      );
     }
-
-    return "Ya existe una experiencia con esas características";
   } catch (error) {
-    return "Error al crear la experiencia: ", error.message;
+    return "Error al crear las experiencias: ", error.message;
   }
 };
 

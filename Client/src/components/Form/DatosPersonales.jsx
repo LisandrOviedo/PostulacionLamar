@@ -32,57 +32,95 @@ export function DatosPersonales() {
 
       <form>
         <div className="grid gap-6 md:grid-cols-3 mt-5 mb-5">
-          <div>
-            <Label htmlFor="nombre_completo">Nombre completo</Label>
-            <Input
-              id="nombre_completo"
-              type="text"
-              name="nombre_completo"
-              value={`${empleado.empleado.nombres} ${empleado.empleado.apellidos}`}
-              readOnly
-            />
-          </div>
-          <div>
-            <Label htmlFor="cedula">Cédula</Label>
-            <Input
-              id="cedula"
-              type="text"
-              name="cedula"
-              value={empleado.empleado.cedula}
-              readOnly
-            />
-          </div>
-          <div>
-            <Label htmlFor="email">Correo electrónico</Label>
-            <Input
-              id="email"
-              type="email"
-              name="email"
-              value={empleado.empleado.correo}
-              readOnly
-            />
-          </div>
-          <div>
-            <Label htmlFor="telefono">Número de contacto</Label>
-            <Input
-              id="telefono"
-              type="tel"
-              name="telefono"
-              pattern="[0-9]"
-              value={empleado.empleado.telefono}
-              readOnly
-            />
-          </div>
-          <div>
-            <Label htmlFor="direccion">Dirección</Label>
-            <Input
-              id="direccion"
-              type="text"
-              name="direccion"
-              value={empleado.empleado.direccion}
-              readOnly
-            />
-          </div>
+          {empleado && empleado?.empleado && empleado?.empleado.nombres ? (
+            <React.Fragment>
+              <div>
+                <Label htmlFor="nombre_completo">Nombre completo</Label>
+                <Input
+                  id="nombre_completo"
+                  type="text"
+                  name="nombre_completo"
+                  value={`${empleado.empleado.nombres} ${empleado.empleado.apellidos}`}
+                  readOnly
+                />
+              </div>
+              <div>
+                <Label htmlFor="cedula">Cédula</Label>
+                <Input
+                  id="cedula"
+                  type="text"
+                  name="cedula"
+                  value={empleado.empleado.cedula}
+                  readOnly
+                />
+              </div>
+              <div>
+                <Label htmlFor="email">Correo electrónico</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  name="email"
+                  value={empleado.empleado.correo}
+                  readOnly
+                />
+              </div>
+              <div>
+                <Label htmlFor="telefono">Número de contacto</Label>
+                <Input
+                  id="telefono"
+                  type="tel"
+                  name="telefono"
+                  pattern="[0-9]"
+                  value={empleado.empleado.telefono}
+                  readOnly
+                />
+              </div>
+              <div>
+                <Label htmlFor="direccion">Dirección</Label>
+                <Input
+                  id="direccion"
+                  type="text"
+                  name="direccion"
+                  value={empleado.empleado.direccion}
+                  readOnly
+                />
+              </div>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <div>
+                <Label htmlFor="nombre_completo">Nombre completo</Label>
+                <Input
+                  id="nombre_completo"
+                  type="text"
+                  name="nombre_completo"
+                  readOnly
+                />
+              </div>
+              <div>
+                <Label htmlFor="cedula">Cédula</Label>
+                <Input id="cedula" type="text" name="cedula" readOnly />
+              </div>
+              <div>
+                <Label htmlFor="email">Correo electrónico</Label>
+                <Input id="email" type="email" name="email" readOnly />
+              </div>
+              <div>
+                <Label htmlFor="telefono">Número de contacto</Label>
+                <Input
+                  id="telefono"
+                  type="tel"
+                  name="telefono"
+                  pattern="[0-9]"
+                  readOnly
+                />
+              </div>
+              <div>
+                <Label htmlFor="direccion">Dirección</Label>
+                <Input id="direccion" type="text" name="direccion" readOnly />
+              </div>
+            </React.Fragment>
+          )}
           {cargo_actual &&
           cargo_actual?.cargo_actual &&
           cargo_actual.cargo_actual.Cargos &&
@@ -117,7 +155,6 @@ export function DatosPersonales() {
                   id="cargo_actual"
                   type="text"
                   name="cargo_actual"
-                  value=""
                   readOnly
                 />
               </div>
@@ -127,7 +164,6 @@ export function DatosPersonales() {
                   id="nombre_empresa"
                   type="text"
                   name="nombre_empresa"
-                  value=""
                   readOnly
                 />
               </div>

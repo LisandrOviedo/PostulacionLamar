@@ -12,7 +12,7 @@ import { Button, Input, Label, Select, Title } from "../UI";
 
 export function Curriculo() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const empleado = useSelector((state) => state.empleado);
   const areas_interes = useSelector((state) => state.areas_interes);
@@ -246,6 +246,19 @@ export function Curriculo() {
     const input = document.getElementById("pdf");
     const pdf = input.files[0];
 
+    if (
+      !input.value ||
+      !datosCurriculo.empleado_id ||
+      !datosCurriculo.grado_instruccion ||
+      !datosCurriculo.titulos_obtenidos ||
+      !datosCurriculo.disponibilidad_viajar ||
+      !datosCurriculo.disponibilidad_cambio_residencia ||
+      !datosCurriculo.areas_interes ||
+      !datosCurriculo.experiencias
+    ) {
+      return alert("Datos faltantes");
+    }
+
     const formData = new FormData();
     formData.append("pdf", pdf);
     formData.append("empleado_id", datosCurriculo.empleado_id);
@@ -263,15 +276,28 @@ export function Curriculo() {
 
     const { data } = await axios.post(`${URL_SERVER}/curriculos`, formData);
 
+    if (data === "Ya existe un curriculo para ese empleado") {
+      return alert(data);
+    }
+
     if (data.curriculo_id) {
       await axios.post(`${URL_SERVER}/areasinteres/agregarArea`, {
         curriculo_id: data.curriculo_id,
         areas_interes: datosCurriculo.areas_interes,
       });
+
+      await axios.post(`${URL_SERVER}/titulosobtenidos`, {
+        curriculo_id: data.curriculo_id,
+        titulos_obtenidos: datosCurriculo.titulos_obtenidos,
+      });
+
+      await axios.post(`${URL_SERVER}/experiencias`, {
+        curriculo_id: data.curriculo_id,
+        experiencias: datosCurriculo.experiencias,
+      });
+
       return alert("Curriculo registrado");
     }
-
-    return alert(data);
   };
 
   return (
