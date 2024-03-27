@@ -2,7 +2,11 @@ const { Empleado, Cargo, Cargo_Empleado, Empresa } = require("../db");
 
 const todosLosEmpleados = async () => {
   try {
-    const empleados = await Empleado.findAll();
+    const empleados = await Empleado.findAll({
+      attributes: {
+        exclude: ["clave"],
+      },
+    });
 
     if (!empleados) {
       return "No existen empleados";
@@ -20,7 +24,11 @@ const traerEmpleado = async (empleado_id) => {
   }
 
   try {
-    const empleado = await Empleado.findByPk(empleado_id);
+    const empleado = await Empleado.findByPk(empleado_id, {
+      attributes: {
+        exclude: ["clave"],
+      },
+    });
 
     if (!empleado) {
       return "No existe ese empleado";
@@ -78,6 +86,7 @@ const login = async (cedula, clave) => {
 
   try {
     const empleado = await Empleado.findOne({
+      attributes: ["empleado_id"],
       where: { cedula: cedula, clave: clave },
     });
 
