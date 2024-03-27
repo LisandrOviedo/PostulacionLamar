@@ -6,13 +6,11 @@ import validations from "./validations";
 
 import { useDispatch } from "react-redux";
 
-import { getLogin } from "../../redux/empleados/empleadoAction";
 import axios from "axios";
 
 import { Button, Input, Title } from "../UI";
 
 export function Landing() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [access, setAccess] = useState({});
@@ -27,8 +25,6 @@ export function Landing() {
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const handleFindCI = async () => {
-    dispatch(getLogin(data.cedula, data.clave));
-
     const URL_LOGIN = `${URL_SERVER}/empleados/login/?cedula=${data.cedula}&clave=${data.clave}`;
 
     try {

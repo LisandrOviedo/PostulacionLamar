@@ -2,14 +2,15 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   empleado: [],
+  allEmpleados: [],
   cargo_actual: [],
 };
 
-export const cargoActualSlice = createSlice({
-  name: "cargo_actual",
+export const empleadoSlice = createSlice({
+  name: "empleados",
   initialState,
   reducers: {
-    login: (state, action) => {
+    empleado: (state, action) => {
       state.empleado = action.payload;
     },
     cargoActual: (state, action) => {
@@ -18,5 +19,5 @@ export const cargoActualSlice = createSlice({
   },
 });
 
-export const { login, cargoActual } = cargoActualSlice.actions;
-export default cargoActualSlice.reducer;
+export const { empleado, cargoActual } = empleadoSlice.actions;
+export default empleadoSlice.reducer;
