@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import {
   DatosPersonales,
   Curriculo,
+  CurriculoDetail,
   Landing,
   Navbar,
   NotFound,
@@ -26,6 +27,8 @@ function App() {
           element={<DatosPersonales />}
         />
         <Route path="/form/curriculo/:empleado_id" element={<Curriculo />} />
+        <Route path="/curriculo/:curriculo_id" element={<CurriculoDetail />} />
+
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/postulaciones" element={<Postulaciones />} />
