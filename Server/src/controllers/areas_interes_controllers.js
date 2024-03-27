@@ -1,4 +1,4 @@
-const { Areas_Interes, Area_Interes_Curriculo } = require("../db");
+const { Areas_Interes, Area_Interes_Curriculo, Curriculo } = require("../db");
 
 const todosLosAreaInteres = async () => {
   try {
@@ -103,25 +103,47 @@ const inactivarAreaInteres = async (area_interes_id) => {
 };
 
 const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
-  for (const objeto of areas_interes) {
-    try {
-      const [area, created] = await Area_Interes_Curriculo.findOrCreate({
-        where: {
-          curriculo_id: curriculo_id,
-          area_interes_id: objeto.area_interes_id,
-          area_interes_otro: objeto.nombre_otro,
-        },
-        defaults: {
-          curriculo_id: curriculo_id,
-          area_interes_id: objeto.area_interes_id,
-          area_interes_otro: objeto.nombre_otro,
-        },
-      });
-    } catch (error) {
-      return (
-        "Error al agregar el área de interés al curriculo: ", error.message
-      );
+  if (!curriculo_id || !areas_interes) {
+    return "Datos faltantes";
+  }
+
+  try {
+    const curriculo = await Curriculo.findByPk(curriculo_id);
+
+    if (!curriculo) {
+      return "No existe ese curriculo";
     }
+
+    let fallidos = "";
+
+    areas_interes.forEach(async (area) => {
+      const [area_interes, created] = await Area_Interes_Curriculo.findOrCreate(
+        {
+          where: {
+            curriculo_id: curriculo_id,
+            area_interes_id: area.area_interes_id,
+          },
+          defaults: {
+            curriculo_id: curriculo_id,
+            area_interes_id: area.area_interes_id,
+          },
+        }
+      );
+
+      if (!created) {
+        if (fallidos === "") {
+          fallidos = area.nombre;
+          return;
+        }
+
+        if (fallidos !== "") {
+          fallidos = fallidos + ` ${area.nombre}`;
+          return;
+        }
+      }
+    });
+  } catch (error) {
+    return "Error al agregar el área de interés al curriculo: ", error.message;
   }
 };
 
