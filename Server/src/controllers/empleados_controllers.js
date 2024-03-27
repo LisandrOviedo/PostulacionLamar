@@ -71,18 +71,18 @@ const traerCargoActual = async (empleado_id) => {
   }
 };
 
-const login = async (cedula) => {
-  if (!cedula) {
+const login = async (cedula, clave) => {
+  if (!cedula || !clave) {
     return "Datos faltantes";
   }
 
   try {
     const empleado = await Empleado.findOne({
-      where: { cedula: cedula },
+      where: { cedula: cedula, clave: clave },
     });
 
     if (!empleado) {
-      return "No existe ese empleado";
+      return "Datos incorrectos";
     }
 
     return empleado;
