@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { getAllAreasInteres } from "../../redux/areasinteres/areainteresAction";
+import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
@@ -15,7 +15,7 @@ export function Curriculo() {
   // const navigate = useNavigate();
 
   const empleado = useSelector((state) => state.empleado);
-  const areas_interes = useSelector((state) => state.areas_interes);
+  const areas_interes_activas = useSelector((state) => state.areas_interes);
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
@@ -50,7 +50,11 @@ export function Curriculo() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllAreasInteres());
+    dispatch(getAllAreasInteresActivas());
+
+    if (areas_interes_activas) {
+      console.log(areas_interes_activas);
+    }
   }, []);
 
   const handleInputChangeCurriculo = (event) => {
@@ -263,7 +267,6 @@ export function Curriculo() {
     formData.append("pdf", pdf);
     formData.append("empleado_id", datosCurriculo.empleado_id);
     formData.append("grado_instruccion", datosCurriculo.grado_instruccion);
-    formData.append("titulo_obtenido", datosCurriculo.titulo_obtenido);
     formData.append("centro_educativo", datosCurriculo.centro_educativo);
     formData.append(
       "disponibilidad_viajar",
@@ -405,10 +408,10 @@ export function Curriculo() {
                 name="area_interes_id"
                 className="inline-block"
               >
-                {areas_interes &&
-                areas_interes.areas_interes &&
-                areas_interes.areas_interes.length > 0
-                  ? areas_interes?.areas_interes.map(
+                {areas_interes_activas &&
+                areas_interes_activas?.areas_interes_activas &&
+                areas_interes_activas?.areas_interes_activas.length > 0
+                  ? areas_interes_activas?.areas_interes_activas.map(
                       (area, i) =>
                         area.activo && (
                           <option

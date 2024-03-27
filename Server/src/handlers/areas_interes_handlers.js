@@ -1,5 +1,6 @@
 const {
   todosLosAreaInteres,
+  todosLosAreaInteresActivas,
   traerAreaInteres,
   crearAreaInteres,
   modificarAreaInteres,
@@ -10,6 +11,16 @@ const {
 const getAreasInteres = async (req, res) => {
   try {
     const response = await todosLosAreaInteres();
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const getAreasInteresActivas = async (req, res) => {
+  try {
+    const response = await todosLosAreaInteresActivas();
 
     return res.json(response);
   } catch (error) {
@@ -86,6 +97,7 @@ const postAreasInteresCurriculo = async (req, res) => {
 
 module.exports = {
   getAreasInteres,
+  getAreasInteresActivas,
   getAreaInteres,
   postAreaInteres,
   putAreaInteres,
