@@ -18,10 +18,6 @@ module.exports = (sequelize) => {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    area_interes_otro: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     activo: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
