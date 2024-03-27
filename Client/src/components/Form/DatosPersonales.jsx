@@ -32,7 +32,7 @@ export function DatosPersonales() {
 
       <form>
         <div className="grid gap-6 md:grid-cols-3 mt-5 mb-5">
-          {empleado && empleado?.empleado && empleado?.empleado.nombres ? (
+          {empleado?.empleado?.nombres ? (
             <React.Fragment>
               <div>
                 <Label htmlFor="nombre_completo">Nombre completo</Label>
@@ -94,16 +94,23 @@ export function DatosPersonales() {
                   id="nombre_completo"
                   type="text"
                   name="nombre_completo"
+                  value=""
                   readOnly
                 />
               </div>
               <div>
                 <Label htmlFor="cedula">Cédula</Label>
-                <Input id="cedula" type="text" name="cedula" readOnly />
+                <Input
+                  id="cedula"
+                  type="text"
+                  name="cedula"
+                  value=""
+                  readOnly
+                />
               </div>
               <div>
                 <Label htmlFor="email">Correo electrónico</Label>
-                <Input id="email" type="email" name="email" readOnly />
+                <Input id="email" type="email" name="email" value="" readOnly />
               </div>
               <div>
                 <Label htmlFor="telefono">Número de contacto</Label>
@@ -112,19 +119,23 @@ export function DatosPersonales() {
                   type="tel"
                   name="telefono"
                   pattern="[0-9]"
+                  value=""
                   readOnly
                 />
               </div>
               <div>
                 <Label htmlFor="direccion">Dirección</Label>
-                <Input id="direccion" type="text" name="direccion" readOnly />
+                <Input
+                  id="direccion"
+                  type="text"
+                  name="direccion"
+                  value=""
+                  readOnly
+                />
               </div>
             </React.Fragment>
           )}
-          {cargo_actual &&
-          cargo_actual?.cargo_actual &&
-          cargo_actual.cargo_actual.Cargos &&
-          cargo_actual.cargo_actual.Cargos.length > 0 ? (
+          {cargo_actual?.cargo_actual?.Cargos?.length > 0 ? (
             <React.Fragment>
               <div>
                 <Label htmlFor="cargo_actual">Cargo Actual</Label>
@@ -155,6 +166,7 @@ export function DatosPersonales() {
                   id="cargo_actual"
                   type="text"
                   name="cargo_actual"
+                  value=""
                   readOnly
                 />
               </div>
@@ -164,6 +176,7 @@ export function DatosPersonales() {
                   id="nombre_empresa"
                   type="text"
                   name="nombre_empresa"
+                  value=""
                   readOnly
                 />
               </div>
