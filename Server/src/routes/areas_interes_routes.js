@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const {
   getAreasInteres,
+  getAreasInteresActivas,
   getAreaInteres,
   postAreaInteres,
   putAreaInteres,
@@ -11,6 +12,7 @@ const {
 const areasinteres = Router();
 
 areasinteres.get("/", getAreasInteres);
+areasinteres.get("/activas", getAreasInteresActivas);
 areasinteres.get("/detalle/:area_interes_id", getAreaInteres);
 
 areasinteres.post("/", postAreaInteres);

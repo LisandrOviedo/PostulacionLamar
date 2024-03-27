@@ -1,4 +1,10 @@
-const { Curriculo, Empleado, Cargo_Titulo, Areas_Interes } = require("../db");
+const {
+  Curriculo,
+  Empleado,
+  Titulo_Obtenido,
+  Areas_Interes,
+  Experiencia,
+} = require("../db");
 
 const todosLosCurriculos = async () => {
   try {
@@ -14,23 +20,24 @@ const todosLosCurriculos = async () => {
           },
         },
         {
-          model: Cargo_Titulo,
-          attributes: {
-            exclude: [
-              "curriculo_id",
-              "cargo_titulo_id",
-              "createdAt",
-              "updatedAt",
-            ],
-          },
-        },
-        {
           model: Areas_Interes,
           attributes: {
             exclude: ["activo", "createdAt", "updatedAt"],
           },
           through: {
-            attributes: ["area_interes_curriculo_id", "area_interes_otro"],
+            attributes: ["area_interes_curriculo_id"],
+          },
+        },
+        {
+          model: Titulo_Obtenido,
+          attributes: {
+            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Experiencia,
+          attributes: {
+            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
           },
         },
       ],
@@ -52,7 +59,11 @@ const traerCurriculo = async (curriculo_id) => {
   }
 
   try {
-    const curriculo = await Curriculo.findByPk(curriculo_id, {
+    const curriculo = await Curriculo.findOne({
+      where: {
+        curriculo_id: curriculo_id,
+        activo: true,
+      },
       attributes: {
         exclude: ["empleado_id"],
       },
@@ -64,23 +75,24 @@ const traerCurriculo = async (curriculo_id) => {
           },
         },
         {
-          model: Cargo_Titulo,
-          attributes: {
-            exclude: [
-              "curriculo_id",
-              "cargo_titulo_id",
-              "createdAt",
-              "updatedAt",
-            ],
-          },
-        },
-        {
           model: Areas_Interes,
           attributes: {
             exclude: ["activo", "createdAt", "updatedAt"],
           },
           through: {
-            attributes: ["area_interes_curriculo_id", "area_interes_otro"],
+            attributes: ["area_interes_curriculo_id"],
+          },
+        },
+        {
+          model: Titulo_Obtenido,
+          attributes: {
+            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Experiencia,
+          attributes: {
+            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
           },
         },
       ],

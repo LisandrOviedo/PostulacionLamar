@@ -50,26 +50,20 @@ export function Postulaciones() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Cédula</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Teléfono</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Correo</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    Grado Instrucción
-                    <a href="#">
-                      <img
-                        src="/sort.svg"
-                        alt="Sort.svg"
-                        className="w-3 h-3 ms-1.5"
-                      ></img>
-                    </a>
-                  </div>
+                  <div className="flex items-center">Áreas de Interés</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    Recibido
+                    Grado Instrucción
                     <a href="#">
                       <img
                         src="/sort.svg"
@@ -118,15 +112,23 @@ export function Postulaciones() {
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
                     <td className="px-4 py-4">
-                      {curriculo.Empleado.nombres}{" "}
-                      {curriculo.Empleado.apellidos}
+                      {curriculo.Empleado.apellidos}{" "}
+                      {curriculo.Empleado.nombres}
                     </td>
+                    <td className="px-4 py-4">{curriculo.Empleado.cedula}</td>
                     <td className="px-4 py-4">{curriculo.Empleado.telefono}</td>
                     <td className="px-4 py-4">{curriculo.Empleado.correo}</td>
-                    <td className="px-4 py-4">{curriculo.grado_instruccion}</td>
                     <td className="px-4 py-4">
-                      {convertirFecha(curriculo.createdAt)}
+                      {curriculo.Areas_Interes.map(
+                        (area, index) =>
+                          `${area.nombre}${
+                            index !== curriculo.Areas_Interes.length - 1
+                              ? ", "
+                              : ""
+                          }`
+                      )}
                     </td>
+                    <td className="px-4 py-4">{curriculo.grado_instruccion}</td>
                     <td className="px-4 py-4">
                       {convertirFecha(curriculo.updatedAt)}
                     </td>

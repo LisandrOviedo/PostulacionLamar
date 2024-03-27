@@ -14,6 +14,22 @@ const todosLosAreaInteres = async () => {
   }
 };
 
+const todosLosAreaInteresActivas = async () => {
+  try {
+    const areas_interes = await Areas_Interes.findAll({
+      where: { activo: true },
+    });
+
+    if (!areas_interes) {
+      return "No existen áreas de interés";
+    }
+
+    return areas_interes;
+  } catch (error) {
+    return "Error al traer todas las áreas de interés: ", error.message;
+  }
+};
+
 const traerAreaInteres = async (area_interes_id) => {
   if (!area_interes_id) {
     return "Datos faltantes";
@@ -149,6 +165,7 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
 
 module.exports = {
   todosLosAreaInteres,
+  todosLosAreaInteresActivas,
   traerAreaInteres,
   crearAreaInteres,
   modificarAreaInteres,
