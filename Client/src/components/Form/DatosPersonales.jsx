@@ -24,7 +24,7 @@ export function DatosPersonales() {
     window.scroll(0, 0);
 
     dispatch(getEmpleado(empleado_id));
-    dispatch(getCargoActual(empleado.empleado_id));
+    dispatch(getCargoActual(empleado_id));
   }, []);
 
   const handleContinuar = (event) => {
