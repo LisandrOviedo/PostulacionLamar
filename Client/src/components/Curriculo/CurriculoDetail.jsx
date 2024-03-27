@@ -10,7 +10,7 @@ import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresA
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
-export function Curriculo() {
+export function CurriculoDetail() {
   const dispatch = useDispatch();
   // const navigate = useNavigate();
 

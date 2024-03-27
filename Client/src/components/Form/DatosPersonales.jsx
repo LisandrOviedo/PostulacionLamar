@@ -29,7 +29,7 @@ export function DatosPersonales() {
 
   const handleContinuar = (event) => {
     event.preventDefault();
-    navigate(`/form/curriculo/${empleado.empleado_id}`);
+    navigate(`/form/curriculo/${empleado_id}`);
   };
 
   return (
