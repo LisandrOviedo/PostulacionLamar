@@ -5,6 +5,7 @@ const {
   getCargoActual,
   getLogin,
   postEmpleado,
+  putClaveEmpleado,
   putEmpleado,
   deleteEmpleado,
 } = require("../handlers/empleados_handlers");
@@ -18,6 +19,7 @@ empleados.get("/login", getLogin);
 
 empleados.post("/", postEmpleado);
 
+empleados.put("/modificarClave", putClaveEmpleado);
 empleados.put("/modificar", putEmpleado);
 empleados.put("/inactivar", deleteEmpleado);
 

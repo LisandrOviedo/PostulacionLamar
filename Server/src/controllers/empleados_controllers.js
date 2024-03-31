@@ -1,5 +1,7 @@
 const { Empleado, Cargo, Cargo_Empleado, Empresa } = require("../db");
 
+const bcrypt = require("bcrypt");
+
 const todosLosEmpleados = async () => {
   try {
     const empleados = await Empleado.findAll({
@@ -135,6 +137,33 @@ const crearEmpleado = async (
   }
 };
 
+const actualizarClaveEmpleado = async (empleado_id, clave) => {
+  if (!empleado_id || !clave) {
+    return "Datos faltantes";
+  }
+
+  try {
+    await traerEmpleado(empleado_id);
+
+    const claveCifrada = await bcrypt.hash(clave, 10);
+
+    await Empleado.update(
+      {
+        clave: claveCifrada,
+      },
+      {
+        where: {
+          empleado_id: empleado_id,
+        },
+      }
+    );
+
+    return await traerEmpleado(empleado_id);
+  } catch (error) {
+    return "Error al modificar el empleado: ", error.message;
+  }
+};
+
 const modificarEmpleado = async (
   empleado_id,
   cedula,
@@ -211,6 +240,7 @@ module.exports = {
   traerCargoActual,
   login,
   crearEmpleado,
+  actualizarClaveEmpleado,
   modificarEmpleado,
   inactivarEmpleado,
 };
