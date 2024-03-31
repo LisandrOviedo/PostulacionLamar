@@ -33,7 +33,7 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     clave: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     activo: {

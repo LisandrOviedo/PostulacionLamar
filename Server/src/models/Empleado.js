@@ -13,7 +13,7 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     clave: {
-      type: DataTypes.INTEGER(4),
+      type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "1234",
     },
