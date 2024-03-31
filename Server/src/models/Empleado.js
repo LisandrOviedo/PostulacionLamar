@@ -15,7 +15,6 @@ module.exports = (sequelize) => {
     clave: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "1234",
     },
     nombres: {
       type: DataTypes.STRING(100),
