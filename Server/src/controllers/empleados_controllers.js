@@ -88,11 +88,17 @@ const login = async (cedula, clave) => {
 
   try {
     const empleado = await Empleado.findOne({
-      attributes: ["empleado_id"],
-      where: { cedula: cedula, clave: clave },
+      attributes: ["empleado_id", "clave"],
+      where: { cedula: cedula },
     });
 
     if (!empleado) {
+      return "Datos incorrectos";
+    }
+
+    const claveCoincide = await bcrypt.compare(clave, empleado.clave);
+
+    if (!claveCoincide) {
       return "Datos incorrectos";
     }
 
@@ -115,10 +121,13 @@ const crearEmpleado = async (
   }
 
   try {
+    const claveCifrada = await bcrypt.hash("1234", 10);
+
     const [empleado, created] = await Empleado.findOrCreate({
       where: { cedula: cedula },
       defaults: {
         cedula: cedula,
+        clave: claveCifrada,
         nombres: nombres,
         apellidos: apellidos,
         correo: correo,
