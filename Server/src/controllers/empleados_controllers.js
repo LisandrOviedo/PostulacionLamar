@@ -88,7 +88,7 @@ const login = async (cedula, clave) => {
 
   try {
     const empleado = await Empleado.findOne({
-      attributes: ["empleado_id", "clave"],
+      attributes: ["empleado_id", "clave", "activo"],
       where: { cedula: cedula },
     });
 
