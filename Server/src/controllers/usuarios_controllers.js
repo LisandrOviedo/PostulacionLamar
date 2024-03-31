@@ -1,8 +1,14 @@
 const { Usuario } = require("../db");
 
+const bcrypt = require("bcrypt");
+
 const todosLosUsuarios = async () => {
   try {
-    const usuarios = await Usuario.findAll();
+    const usuarios = await Usuario.findAll({
+      attributes: {
+        exclude: ["clave"],
+      },
+    });
 
     if (!usuarios) {
       return "No existen usuarios";
@@ -20,7 +26,11 @@ const traerUsuario = async (usuario_id) => {
   }
 
   try {
-    const usuario = await Usuario.findByPk(usuario_id);
+    const usuario = await Usuario.findByPk(usuario_id, {
+      attributes: {
+        exclude: ["clave"],
+      },
+    });
 
     if (!usuario) {
       return "No existe ese usuario";
@@ -39,13 +49,17 @@ const login = async (cedula, clave) => {
 
   try {
     const usuario = await Usuario.findOne({
-      where: { cedula: cedula, clave: clave, activo: true },
-      attributes: {
-        exclude: ["clave"],
-      },
+      attributes: ["usuario_id", "clave", "activo"],
+      where: { cedula: cedula },
     });
 
     if (!usuario) {
+      return "Datos incorrectos";
+    }
+
+    const claveCoincide = await bcrypt.compare(clave, usuario.clave);
+
+    if (!claveCoincide) {
       return "Datos incorrectos";
     }
 
@@ -57,36 +71,38 @@ const login = async (cedula, clave) => {
 
 const crearUsuario = async (
   cedula,
+  clave,
   nombres,
   apellidos,
   correo,
   telefono,
-  direccion,
-  clave
+  direccion
 ) => {
   if (
     !cedula ||
+    !clave ||
     !nombres ||
     !apellidos ||
     !correo ||
     !telefono ||
-    !direccion ||
-    !clave
+    !direccion
   ) {
     return "Datos faltantes";
   }
 
   try {
+    const claveCifrada = await bcrypt.hash(clave, 10);
+
     const [usuario, created] = await Usuario.findOrCreate({
       where: { cedula: cedula },
       defaults: {
         cedula: cedula,
+        clave: claveCifrada,
         nombres: nombres,
         apellidos: apellidos,
         correo: correo,
         telefono: telefono,
         direccion: direccion,
-        clave: clave,
       },
     });
 
@@ -103,23 +119,23 @@ const crearUsuario = async (
 const modificarUsuario = async (
   usuario_id,
   cedula,
+  clave,
   nombres,
   apellidos,
   correo,
   telefono,
   direccion,
-  clave,
   activo
 ) => {
   if (
     !usuario_id ||
     !cedula ||
+    !clave ||
     !nombres ||
     !apellidos ||
     !correo ||
     !telefono ||
     !direccion ||
-    !clave ||
     !activo
   ) {
     return "Datos faltantes";
@@ -128,15 +144,17 @@ const modificarUsuario = async (
   try {
     await traerUsuario(usuario_id);
 
+    const claveCifrada = await bcrypt.hash(clave, 10);
+
     await Usuario.update(
       {
         cedula: cedula,
+        clave: claveCifrada,
         nombres: nombres,
         apellidos: apellidos,
         correo: correo,
         telefono: telefono,
         direccion: direccion,
-        clave: clave,
         activo: activo,
       },
       {

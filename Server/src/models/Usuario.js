@@ -12,6 +12,10 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER(10),
       allowNull: false,
     },
+    clave: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     nombres: {
       type: DataTypes.STRING(100),
       allowNull: false,
@@ -30,10 +34,6 @@ module.exports = (sequelize) => {
     },
     direccion: {
       type: DataTypes.STRING(150),
-      allowNull: false,
-    },
-    clave: {
-      type: DataTypes.STRING,
       allowNull: false,
     },
     activo: {
