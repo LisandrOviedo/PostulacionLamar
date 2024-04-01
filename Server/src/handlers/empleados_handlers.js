@@ -4,6 +4,7 @@ const {
   login,
   traerCargoActual,
   crearEmpleado,
+  actualizarClaveEmpleado,
   modificarEmpleado,
   inactivarEmpleado,
 } = require("../controllers/empleados_controllers");
@@ -75,6 +76,18 @@ const postEmpleado = async (req, res) => {
   }
 };
 
+const putClaveEmpleado = async (req, res) => {
+  const { empleado_id, clave } = req.body;
+
+  try {
+    const response = await actualizarClaveEmpleado(empleado_id, clave);
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 const putEmpleado = async (req, res) => {
   const {
     empleado_id,
@@ -123,6 +136,7 @@ module.exports = {
   getLogin,
   getCargoActual,
   postEmpleado,
+  putClaveEmpleado,
   putEmpleado,
   deleteEmpleado,
 };

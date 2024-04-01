@@ -1,17 +1,17 @@
 import axios from "axios";
 
-import { login, cargoActual } from "./empleadoSlice";
+import { empleado, cargoActual } from "./empleadoSlice";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-export const getLogin = (cedula, clave) => {
+export const getEmpleado = (empleado_id) => {
   return async (dispatch) => {
     try {
       const { data } = await axios(
-        `${URL_SERVER}/empleados/login?cedula=${cedula}&clave=${clave}`
+        `${URL_SERVER}/empleados/detalle/${empleado_id}`
       );
 
-      return dispatch(login(data));
+      return dispatch(empleado(data));
     } catch (error) {
       console.error(error);
     }

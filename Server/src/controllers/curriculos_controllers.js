@@ -44,18 +44,18 @@ const todosLosCurriculos = async () => {
     });
 
     if (!curriculos) {
-      return "No existen curriculos";
+      throw new Error("No existen curriculos");
     }
 
     return curriculos;
   } catch (error) {
-    return "Error al traer todos los curriculos: ", error.message;
+    throw new Error("Error al traer todos los curriculos: " + error.message);
   }
 };
 
 const traerCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -99,12 +99,12 @@ const traerCurriculo = async (curriculo_id) => {
     });
 
     if (!curriculo) {
-      return "No existe ese curriculo";
+      throw new Error("No existe ese curriculo");
     }
 
     return curriculo;
   } catch (error) {
-    return "Error al traer el curriculo: ", error.message;
+    throw new Error("Error al traer el curriculo: " + error.message);
   }
 };
 
@@ -124,14 +124,14 @@ const crearCurriculo = async (
     !originalname ||
     !path
   ) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
     const empleado = await Empleado.findByPk(empleado_id);
 
     if (!empleado) {
-      return "No existe ese empleado";
+      throw new Error("No existe ese empleado");
     }
 
     const [curriculo, created] = await Curriculo.findOrCreate({
@@ -156,12 +156,12 @@ const crearCurriculo = async (
     try {
       fs.unlinkSync(rutaArchivo);
     } catch (error) {
-      console.error("Error al eliminar el archivo PDF:", error);
+      console.error("Error al eliminar el archivo PDF: " + error);
     }
 
-    return "Ya existe un curriculo para ese empleado";
+    throw new Error("Ya existe un curriculo para ese empleado");
   } catch (error) {
-    return "Error al crear el curriculo: ", error.message;
+    throw new Error("Error al crear el curriculo: " + error.message);
   }
 };
 
@@ -185,7 +185,7 @@ const modificarCurriculo = async (
     !estado ||
     !activo
   ) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -210,13 +210,13 @@ const modificarCurriculo = async (
 
     return await traerCurriculo(curriculo_id);
   } catch (error) {
-    return "Error al modificar el curriculo: ", error.message;
+    throw new Error("Error al modificar el curriculo: " + error.message);
   }
 };
 
 const inactivarCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -231,7 +231,7 @@ const inactivarCurriculo = async (curriculo_id) => {
 
     return await traerCurriculo(curriculo_id);
   } catch (error) {
-    return "Error al inactivar el curriculo: ", error.message;
+    throw new Error("Error al inactivar el curriculo: " + error.message);
   }
 };
 

@@ -3,15 +3,17 @@ import "./App.css";
 import { Routes, Route } from "react-router-dom";
 
 import {
-  DatosPersonales,
   Curriculo,
+  CurriculoDetail,
+  Dashboard,
+  DatosPersonales,
   Landing,
+  Login,
   Navbar,
   NotFound,
-  Login,
-  Dashboard,
-  Postulaciones,
   Postulacion,
+  Postulaciones,
+  UpdatePassword,
 } from "./components/";
 
 function App() {
@@ -22,10 +24,16 @@ function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="/" element={<Landing />} />
         <Route
+          path="/empleado/cambioClave/:empleado_id"
+          element={<UpdatePassword />}
+        />
+        <Route
           path="/form/datospersonales/:empleado_id"
           element={<DatosPersonales />}
         />
         <Route path="/form/curriculo/:empleado_id" element={<Curriculo />} />
+        <Route path="/curriculo/:curriculo_id" element={<CurriculoDetail />} />
+
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/postulaciones" element={<Postulaciones />} />

@@ -1,40 +1,46 @@
 const { Empleado, Cargo, Cargo_Empleado, Empresa } = require("../db");
 
+const bcrypt = require("bcrypt");
+
 const todosLosEmpleados = async () => {
   try {
-    const empleados = await Empleado.findAll();
+    const empleados = await Empleado.findAll({
+      attributes: {
+        exclude: ["clave"],
+      },
+    });
 
     if (!empleados) {
-      return "No existen empleados";
+      throw new Error("No existen empleados");
     }
 
     return empleados;
   } catch (error) {
-    return "Error al traer todos los empleados: ", error.message;
+    throw new Error("Error al traer todos los empleados: " + error.message);
   }
 };
 
 const traerEmpleado = async (empleado_id) => {
   if (!empleado_id) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
     const empleado = await Empleado.findByPk(empleado_id);
 
     if (!empleado) {
-      return "No existe ese empleado";
+      throw new Error("No existe ese empleado");
     }
 
     return empleado;
   } catch (error) {
-    return "Error al traer el empleado: ", error.message;
+    throw new Error("Error al traer el empleado: " + error.message);
   }
 };
 
 const traerCargoActual = async (empleado_id) => {
   if (!empleado_id) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -62,32 +68,52 @@ const traerCargoActual = async (empleado_id) => {
     });
 
     if (!cargoActual) {
-      return "No existe cargo actual para ese empleado";
+      throw new Error("No existe cargo actual para ese empleado");
     }
 
     return cargoActual;
   } catch (error) {
-    return "Error al traer el empleado: ", error.message;
+    throw new Error("Error al traer el empleado: " + error.message);
   }
 };
 
 const login = async (cedula, clave) => {
   if (!cedula || !clave) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
     const empleado = await Empleado.findOne({
-      where: { cedula: cedula, clave: clave },
+      attributes: ["empleado_id", "clave", "activo"],
+      where: { cedula: cedula },
     });
 
     if (!empleado) {
-      return "Datos incorrectos";
+      throw new Error("Datos incorrectos");
+    }
+
+    if (!empleado.activo) {
+      throw new Error(
+        "Tienes el acceso restringido, ya que tu usuario se encuentra inactivo"
+      );
+    }
+
+    const claveCoincide = await bcrypt.compare(clave, empleado.clave);
+
+    if (!claveCoincide) {
+      throw new Error("Datos incorrectos");
+    }
+
+    if (clave == "1234") {
+      return {
+        empleado_id: empleado.empleado_id,
+        changePassword: true,
+      };
     }
 
     return empleado;
   } catch (error) {
-    return "Error al loguear: ", error.message;
+    throw new Error("Error al loguear: " + error.message);
   }
 };
 
@@ -100,14 +126,17 @@ const crearEmpleado = async (
   direccion
 ) => {
   if (!cedula || !nombres || !apellidos || !correo || !telefono || !direccion) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
+    const claveCifrada = await bcrypt.hash("1234", 10);
+
     const [empleado, created] = await Empleado.findOrCreate({
       where: { cedula: cedula },
       defaults: {
         cedula: cedula,
+        clave: claveCifrada,
         nombres: nombres,
         apellidos: apellidos,
         correo: correo,
@@ -120,9 +149,48 @@ const crearEmpleado = async (
       return empleado;
     }
 
-    return "Ya existe un empleado con ese número de cédula de identidad";
+    throw new Error(
+      "Ya existe un empleado con ese número de cédula de identidad"
+    );
   } catch (error) {
-    return "Error al crear el empleado: ", error.message;
+    throw new Error("Error al crear el empleado: " + error.message);
+  }
+};
+
+const actualizarClaveEmpleado = async (empleado_id, clave) => {
+  if (!empleado_id || !clave) {
+    throw new Error("Datos faltantes");
+  }
+
+  if (clave == "1234") {
+    throw new Error("Debes ingresar una contraseña diferente a 1234");
+  }
+
+  try {
+    const empleado = await traerEmpleado(empleado_id);
+
+    const claveCoincide = await bcrypt.compare("1234", empleado.clave);
+
+    if (!claveCoincide) {
+      throw new Error("Ya has restablecido tu contraseña anteriormente");
+    }
+
+    const claveCifrada = await bcrypt.hash(clave, 10);
+
+    await Empleado.update(
+      {
+        clave: claveCifrada,
+      },
+      {
+        where: {
+          empleado_id: empleado_id,
+        },
+      }
+    );
+
+    return await traerEmpleado(empleado_id);
+  } catch (error) {
+    throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
 
@@ -146,7 +214,7 @@ const modificarEmpleado = async (
     !direccion ||
     !activo
   ) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -171,13 +239,13 @@ const modificarEmpleado = async (
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    return "Error al modificar el empleado: ", error.message;
+    throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
 
 const inactivarEmpleado = async (empleado_id) => {
   if (!empleado_id) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -192,7 +260,7 @@ const inactivarEmpleado = async (empleado_id) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    return "Error al inactivar el empleado: ", error.message;
+    throw new Error("Error al inactivar el empleado: " + error.message);
   }
 };
 
@@ -202,6 +270,7 @@ module.exports = {
   traerCargoActual,
   login,
   crearEmpleado,
+  actualizarClaveEmpleado,
   modificarEmpleado,
   inactivarEmpleado,
 };

@@ -1,28 +1,35 @@
 import React from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { getCargoActual } from "../../redux/empleados/empleadoAction";
+import {
+  getEmpleado,
+  getCargoActual,
+} from "../../redux/empleados/empleadoAction";
 
 import { Button, Input, Label, Title } from "../UI";
 
 export function DatosPersonales() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const empleado = useSelector((state) => state.empleado);
-  const cargo_actual = useSelector((state) => state.cargo_actual);
+
+  const { empleado_id } = useParams();
+
+  const empleado = useSelector((state) => state.empleados.empleado);
+  const cargo_actual = useSelector((state) => state.empleados.cargo_actual);
 
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getCargoActual(empleado.empleado.empleado_id));
+    dispatch(getEmpleado(empleado_id));
+    dispatch(getCargoActual(empleado_id));
   }, []);
 
   const handleContinuar = (event) => {
     event.preventDefault();
-    navigate(`/form/curriculo/${empleado.empleado.empleado_id}`);
+    navigate(`/form/curriculo/${empleado_id}`);
   };
 
   return (
@@ -32,7 +39,7 @@ export function DatosPersonales() {
 
       <form>
         <div className="grid gap-6 md:grid-cols-3 mt-5 mb-5">
-          {empleado?.empleado?.nombres ? (
+          {empleado?.nombres ? (
             <React.Fragment>
               <div>
                 <Label htmlFor="nombre_completo">Nombre completo</Label>
@@ -40,7 +47,7 @@ export function DatosPersonales() {
                   id="nombre_completo"
                   type="text"
                   name="nombre_completo"
-                  value={`${empleado.empleado.nombres} ${empleado.empleado.apellidos}`}
+                  value={`${empleado.nombres} ${empleado.apellidos}`}
                   readOnly
                 />
               </div>
@@ -50,7 +57,7 @@ export function DatosPersonales() {
                   id="cedula"
                   type="text"
                   name="cedula"
-                  value={empleado.empleado.cedula}
+                  value={empleado.cedula}
                   readOnly
                 />
               </div>
@@ -60,7 +67,7 @@ export function DatosPersonales() {
                   id="email"
                   type="email"
                   name="email"
-                  value={empleado.empleado.correo}
+                  value={empleado.correo}
                   readOnly
                 />
               </div>
@@ -71,7 +78,7 @@ export function DatosPersonales() {
                   type="tel"
                   name="telefono"
                   pattern="[0-9]"
-                  value={empleado.empleado.telefono}
+                  value={empleado.telefono}
                   readOnly
                 />
               </div>
@@ -81,7 +88,7 @@ export function DatosPersonales() {
                   id="direccion"
                   type="text"
                   name="direccion"
-                  value={empleado.empleado.direccion}
+                  value={empleado.direccion}
                   readOnly
                 />
               </div>
@@ -135,7 +142,7 @@ export function DatosPersonales() {
               </div>
             </React.Fragment>
           )}
-          {cargo_actual?.cargo_actual?.Cargos?.length > 0 ? (
+          {cargo_actual?.Cargos?.length > 0 ? (
             <React.Fragment>
               <div>
                 <Label htmlFor="cargo_actual">Cargo Actual</Label>
@@ -143,7 +150,7 @@ export function DatosPersonales() {
                   id="cargo_actual"
                   type="text"
                   name="cargo_actual"
-                  value={cargo_actual.cargo_actual.Cargos[0].descripcion}
+                  value={cargo_actual.Cargos[0].descripcion}
                   readOnly
                 />
               </div>
@@ -153,7 +160,7 @@ export function DatosPersonales() {
                   id="nombre_empresa"
                   type="text"
                   name="nombre_empresa"
-                  value={cargo_actual.cargo_actual.Cargos[0].Empresa.nombre}
+                  value={cargo_actual.Cargos[0].Empresa.nombre}
                   readOnly
                 />
               </div>

@@ -10,9 +10,9 @@ import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresA
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
-export function Curriculo() {
+export function CurriculoDetail() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const { empleado_id } = useParams();
 
@@ -298,9 +298,7 @@ export function Curriculo() {
         experiencias: datosCurriculo.experiencias,
       });
 
-      alert("¡Curriculo registrado exitosamente!");
-      navigate(`/curriculo/${data.curriculo_id}`);
-      return;
+      return alert("Curriculo registrado");
     }
   };
 

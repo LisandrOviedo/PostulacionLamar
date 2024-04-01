@@ -42,18 +42,18 @@ const getLogin = async (req, res) => {
 };
 
 const postUsuario = async (req, res) => {
-  const { cedula, nombres, apellidos, correo, telefono, direccion, clave } =
+  const { cedula, clave, nombres, apellidos, correo, telefono, direccion } =
     req.body;
 
   try {
     const response = await crearUsuario(
       cedula,
+      clave,
       nombres,
       apellidos,
       correo,
       telefono,
-      direccion,
-      clave
+      direccion
     );
 
     return res.status(201).json(response);
@@ -66,12 +66,12 @@ const putUsuario = async (req, res) => {
   const {
     usuario_id,
     cedula,
+    clave,
     nombres,
     apellidos,
     correo,
     telefono,
     direccion,
-    clave,
     activo,
   } = req.body;
 
@@ -79,12 +79,12 @@ const putUsuario = async (req, res) => {
     const response = await modificarUsuario(
       usuario_id,
       cedula,
+      clave,
       nombres,
       apellidos,
       correo,
       telefono,
       direccion,
-      clave,
       activo
     );
 

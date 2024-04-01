@@ -1,23 +1,23 @@
 import { clsx } from "clsx";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import validations from "./validations";
-
-import { useDispatch } from "react-redux";
 
 import axios from "axios";
 
 import { Button, Input, Title } from "../UI";
 
-export function Landing() {
+export function UpdatePassword() {
   const navigate = useNavigate();
 
   const [access, setAccess] = useState({});
 
+  const { empleado_id } = useParams();
+
   const [data, setData] = useState({
-    cedula: "",
     clave: "",
+    confirmarClave: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -25,13 +25,25 @@ export function Landing() {
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const handleFindCI = async () => {
-    const URL_LOGIN = `${URL_SERVER}/empleados/login/?cedula=${data.cedula}&clave=${data.clave}`;
+    const URL_LOGIN = `${URL_SERVER}/empleados/modificarClave`;
+
+    const body = {
+      empleado_id: empleado_id,
+      clave: data.clave,
+    };
 
     try {
-      const { data } = await axios(URL_LOGIN);
+      const { data } = await axios.put(URL_LOGIN, body);
 
       setAccess(data);
     } catch (error) {
+      if (
+        error.response.data.error ===
+        "Error al modificar el empleado: Ya has restablecido tu contraseña anteriormente"
+      ) {
+        alert(error.response.data.error);
+        return navigate("/");
+      }
       alert(error.response.data.error);
     }
   };
@@ -59,72 +71,33 @@ export function Landing() {
   }, []);
 
   useEffect(() => {
-    if (access.changePassword) {
-      navigate(`/empleado/cambioClave/${access.empleado_id}`);
-      return;
-    }
-
     if (access.empleado_id && access.activo) {
       navigate(`/form/datospersonales/${access.empleado_id}`);
-      return;
+      return alert("Su contraseña ha sido actualizada, puede continuar");
     }
   }, [access]);
 
   return (
     <div className="mt-24 sm:mt-32 flex flex-col justify-center items-center px-10 bg-white h-full">
-      <Title>Identificación de Talentos</Title>
+      <Title>Actualización de contraseña</Title>
       <br />
       <p className="text-center text-sm sm:text-base">
-        A fin de identificar talentos potenciales en la organización, le
-        invitamos a completar el siguiente formulario donde deberá indicar su
-        profesión y/o experiencia, así como tu área de interés laboral.
+        ¡Hola, bienvenid@! Haz ingresado con una contraseña temporal, por
+        seguridad, para continuar deberás actualizar tu contraseña
       </p>
       <hr className="w-[50%] h-0.5 my-5 bg-gray-100 border-0" />
-      <span className="text-base sm:text-lg text-center">
-        Observaciones para el llenado del formulario:
-      </span>
-      <br />
-      <ul className="list-disc text-center sm:text-left text-sm sm:text-base">
-        <li>
-          Disponibilidad de tiempo de 30 minutos para aplicación del Test de
-          Valoración Actitudinal
-        </li>
-        <li>
-          Cargar resumen curricular en formato PDF{" "}
-          <img className="w-[1.2rem] inline" src="/PDF.svg" alt="PDF Icon" />
-        </li>
-      </ul>
-      <br />
-      <label htmlFor="cedula" className="text-center text-base sm:text-lg">
-        Ingrese su número de cédula y clave para empezar:
+      <label htmlFor="clave" className="text-center text-base sm:text-lg">
+        Ingrese su nueva contraseña (¡No la olvides!):
       </label>
       <br />
       <Input
-        className="w-28 text-center"
-        type="text"
-        name="cedula"
-        id="cedula"
-        value={data.cedula}
-        onChange={handleOnChange}
-        onKeyDown={handleKeyDown}
-        placeholder="Cédula"
-        minLength="1"
-        maxLength="9"
-        required
-      />
-      <p className="text-base sm:text-lg text-red-700 font-bold text-center">
-        {errors.cedula}
-      </p>
-      <br />
-      <Input
-        className="w-28 text-center"
+        className="w-32 text-center"
         type="password"
         name="clave"
         id="clave"
         value={data.clave}
         onChange={handleOnChange}
-        onKeyDown={handleKeyDown}
-        placeholder="Clave"
+        placeholder="Nueva clave"
         minLength="4"
         maxLength="4"
         required
@@ -132,20 +105,37 @@ export function Landing() {
       <p className="text-base sm:text-lg text-red-700 font-bold text-center">
         {errors.clave}
       </p>
+      <br />
+      <Input
+        className="w-32 text-center"
+        type="password"
+        name="confirmarClave"
+        id="confirmarClave"
+        value={data.confirmarClave}
+        onChange={handleOnChange}
+        onKeyDown={handleKeyDown}
+        placeholder="Confirmar clave"
+        minLength="4"
+        maxLength="4"
+        required
+      />
+      <p className="text-base sm:text-lg text-red-700 font-bold text-center">
+        {errors.confirmarClave}
+      </p>
       <Button
         id="btn_continuar"
         type="submit"
         onClick={handleFindCI}
         disabled={
           Object.keys(errors).length > 0 ||
-          Object.keys(data.cedula).length <= 0 ||
-          Object.keys(data.clave).length <= 0
+          Object.keys(data.clave).length <= 0 ||
+          Object.keys(data.confirmarClave).length <= 0
         }
         className={clsx("", {
           "opacity-50":
             Object.keys(errors).length > 0 ||
-            Object.keys(data.cedula).length <= 0 ||
-            Object.keys(data.clave).length <= 0,
+            Object.keys(data.clave).length <= 0 ||
+            Object.keys(data.confirmarClave).length <= 0,
         })}
       >
         Continuar

@@ -1,23 +1,25 @@
-import { DatosPersonales } from "./Form/DatosPersonales";
 import { Curriculo } from "./Form/Curriculo";
-// import { CurriculoExperiencias } from "./Form/CurriculoExperiencias";
+import { CurriculoDetail } from "./Curriculo/CurriculoDetail";
+import { Dashboard } from "./Admin/Dashboard";
+import { DatosPersonales } from "./Form/DatosPersonales";
 import { Landing } from "./Landing/Landing";
+import { Login } from "./Admin/Login";
 import { Navbar } from "./Navbar/Navbar";
 import { NotFound } from "./NotFound/NotFound";
-import { Login } from "./Admin/Login";
-import { Dashboard } from "./Admin/Dashboard";
-import { Postulaciones } from "./Admin/Postulaciones";
 import { Postulacion } from "./Admin/Postulacion";
+import { Postulaciones } from "./Admin/Postulaciones";
+import { UpdatePassword } from "./UpdatePassword/UpdatePassword";
 
 export {
-  DatosPersonales,
   Curriculo,
-  // CurriculoExperiencias,
+  CurriculoDetail,
+  Dashboard,
+  DatosPersonales,
   Landing,
+  Login,
   Navbar,
   NotFound,
-  Login,
-  Dashboard,
-  Postulaciones,
   Postulacion,
+  Postulaciones,
+  UpdatePassword,
 };
