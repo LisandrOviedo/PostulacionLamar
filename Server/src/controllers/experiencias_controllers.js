@@ -5,43 +5,43 @@ const todasLasExperiencias = async () => {
     const experiencias = await Experiencia.findAll();
 
     if (!experiencias) {
-      return "No existen experiencias";
+      throw new Error("No existen experiencias");
     }
 
     return experiencias;
   } catch (error) {
-    return "Error al traer todas las experiencias: ", error.message;
+    throw new Error("Error al traer todas las experiencias: ", error.message);
   }
 };
 
 const traerExperiencia = async (experiencia_id) => {
   if (!experiencia_id) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
     const experiencia = await Experiencia.findByPk(experiencia_id);
 
     if (!experiencia) {
-      return "No existe esa experiencia";
+      throw new Error("No existe esa experiencia");
     }
 
     return experiencia;
   } catch (error) {
-    return "Error al traer la experiencia: ", error.message;
+    throw new Error("Error al traer la experiencia: ", error.message);
   }
 };
 
 const crearExperiencia = async (curriculo_id, experiencias) => {
   if (!curriculo_id || !experiencias) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
     const curriculo = await Curriculo.findByPk(curriculo_id);
 
     if (!curriculo) {
-      return "No existe ese curriculo";
+      throw new Error("No existe ese curriculo");
     }
 
     let fallidos = "";
@@ -77,13 +77,13 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
     });
 
     if (fallidos !== "") {
-      return (
+      throw new Error(
         "Estos cargos laborales / títulos de curso no se pudieron guardar porque ya existen: ",
         fallidos
       );
     }
   } catch (error) {
-    return "Error al crear las experiencias: ", error.message;
+    throw new Error("Error al crear las experiencias: ", error.message);
   }
 };
 
@@ -105,7 +105,7 @@ const modificarExperiencia = async (
     !empresa_centro_educativo ||
     !activo
   ) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -129,13 +129,13 @@ const modificarExperiencia = async (
 
     return await traerExperiencia(experiencia_id);
   } catch (error) {
-    return "Error al modificar la experiencia: ", error.message;
+    throw new Error("Error al modificar la experiencia: ", error.message);
   }
 };
 
 const inactivarExperiencia = async (experiencia_id) => {
   if (!experiencia_id) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -150,7 +150,7 @@ const inactivarExperiencia = async (experiencia_id) => {
 
     return await traerExperiencia(experiencia_id);
   } catch (error) {
-    return "Error al inactivar la experiencia: ", error.message;
+    throw new Error("Error al inactivar la experiencia: ", error.message);
   }
 };
 

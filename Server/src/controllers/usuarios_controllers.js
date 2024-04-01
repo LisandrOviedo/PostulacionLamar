@@ -11,18 +11,18 @@ const todosLosUsuarios = async () => {
     });
 
     if (!usuarios) {
-      return "No existen usuarios";
+      throw new Error("No existen usuarios");
     }
 
     return usuarios;
   } catch (error) {
-    return "Error al traer todos los usuarios: ", error.message;
+    throw new Error("Error al traer todos los usuarios: ", error.message);
   }
 };
 
 const traerUsuario = async (usuario_id) => {
   if (!usuario_id) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -33,18 +33,18 @@ const traerUsuario = async (usuario_id) => {
     });
 
     if (!usuario) {
-      return "No existe ese usuario";
+      throw new Error("No existe ese usuario");
     }
 
     return usuario;
   } catch (error) {
-    return "Error al traer el usuario: ", error.message;
+    throw new Error("Error al traer el usuario: ", error.message);
   }
 };
 
 const login = async (cedula, clave) => {
   if (!cedula || !clave) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -54,18 +54,18 @@ const login = async (cedula, clave) => {
     });
 
     if (!usuario) {
-      return "Datos incorrectos";
+      throw new Error("Datos incorrectos");
     }
 
     const claveCoincide = await bcrypt.compare(clave, usuario.clave);
 
     if (!claveCoincide) {
-      return "Datos incorrectos";
+      throw new Error("Datos incorrectos");
     }
 
     return usuario;
   } catch (error) {
-    return "Error al loguear: ", error.message;
+    throw new Error("Error al loguear: ", error.message);
   }
 };
 
@@ -87,7 +87,7 @@ const crearUsuario = async (
     !telefono ||
     !direccion
   ) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -110,9 +110,11 @@ const crearUsuario = async (
       return usuario;
     }
 
-    return "Ya existe un usuario con ese número de cédula de identidad";
+    throw new Error(
+      "Ya existe un usuario con ese número de cédula de identidad"
+    );
   } catch (error) {
-    return "Error al crear el usuario: ", error.message;
+    throw new Error("Error al crear el usuario: ", error.message);
   }
 };
 
@@ -138,7 +140,7 @@ const modificarUsuario = async (
     !direccion ||
     !activo
   ) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -166,13 +168,13 @@ const modificarUsuario = async (
 
     return await traerUsuario(usuario_id);
   } catch (error) {
-    return "Error al modificar el usuario: ", error.message;
+    throw new Error("Error al modificar el usuario: ", error.message);
   }
 };
 
 const inactivarUsuario = async (usuario_id) => {
   if (!usuario_id) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -187,7 +189,7 @@ const inactivarUsuario = async (usuario_id) => {
 
     return await traerUsuario(usuario_id);
   } catch (error) {
-    return "Error al inactivar el usuario: ", error.message;
+    throw new Error("Error al inactivar el usuario: ", error.message);
   }
 };
 

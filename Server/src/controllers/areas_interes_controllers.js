@@ -5,12 +5,15 @@ const todosLosAreaInteres = async () => {
     const areas_interes = await Areas_Interes.findAll();
 
     if (!areas_interes) {
-      return "No existen áreas de interés";
+      throw new Error("No existen áreas de interés");
     }
 
     return areas_interes;
   } catch (error) {
-    return "Error al traer todas las áreas de interés: ", error.message;
+    throw new Error(
+      "Error al traer todas las áreas de interés: ",
+      error.message
+    );
   }
 };
 
@@ -21,36 +24,39 @@ const todosLosAreaInteresActivas = async () => {
     });
 
     if (!areas_interes) {
-      return "No existen áreas de interés";
+      throw new Error("No existen áreas de interés");
     }
 
     return areas_interes;
   } catch (error) {
-    return "Error al traer todas las áreas de interés: ", error.message;
+    throw new Error(
+      "Error al traer todas las áreas de interés: ",
+      error.message
+    );
   }
 };
 
 const traerAreaInteres = async (area_interes_id) => {
   if (!area_interes_id) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
     const area_interes = await Areas_Interes.findByPk(area_interes_id);
 
     if (!area_interes) {
-      return "No existe esa área de interés";
+      throw new Error("No existe esa área de interés");
     }
 
     return area_interes;
   } catch (error) {
-    return "Error al traer el área de interés: ", error.message;
+    throw new Error("Error al traer el área de interés: ", error.message);
   }
 };
 
 const crearAreaInteres = async (nombre) => {
   if (!nombre) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -65,15 +71,15 @@ const crearAreaInteres = async (nombre) => {
       return area_interes;
     }
 
-    return "Ya existe un área de interés con ese nombre";
+    throw new Error("Ya existe un área de interés con ese nombre");
   } catch (error) {
-    return "Error al crear el área de interés: ", error.message;
+    throw new Error("Error al crear el área de interés: ", error.message);
   }
 };
 
 const modificarAreaInteres = async (area_interes_id, nombre, activo) => {
   if (!area_interes_id || !nombre || !activo) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -93,13 +99,13 @@ const modificarAreaInteres = async (area_interes_id, nombre, activo) => {
 
     return await traerAreaInteres(area_interes_id);
   } catch (error) {
-    return "Error al modificar el área de interés: ", error.message;
+    throw new Error("Error al modificar el área de interés: ", error.message);
   }
 };
 
 const inactivarAreaInteres = async (area_interes_id) => {
   if (!area_interes_id) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -114,20 +120,20 @@ const inactivarAreaInteres = async (area_interes_id) => {
 
     return await traerAreaInteres(area_interes_id);
   } catch (error) {
-    return "Error al inactivar el área de interés: ", error.message;
+    throw new Error("Error al inactivar el área de interés: ", error.message);
   }
 };
 
 const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
   if (!curriculo_id || !areas_interes) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
     const curriculo = await Curriculo.findByPk(curriculo_id);
 
     if (!curriculo) {
-      return "No existe ese curriculo";
+      throw new Error("No existe ese curriculo");
     }
 
     let fallidos = "";
@@ -158,8 +164,18 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
         }
       }
     });
+
+    if (fallidos !== "") {
+      throw new Error(
+        "Estas áreas de interés no se pudieron guardar porque ya existen: ",
+        fallidos
+      );
+    }
   } catch (error) {
-    return "Error al agregar el área de interés al curriculo: ", error.message;
+    throw new Error(
+      "Error al agregar el área de interés al curriculo: ",
+      error.message
+    );
   }
 };
 

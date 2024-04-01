@@ -5,43 +5,46 @@ const todosLosTitulosObtenidos = async () => {
     const titulos_obtenidos = await Titulo_Obtenido.findAll();
 
     if (!titulos_obtenidos) {
-      return "No existen títulos obtenidos";
+      throw new Error("No existen títulos obtenidos");
     }
 
     return titulos_obtenidos;
   } catch (error) {
-    return "Error al traer todos los títulos obtenidos: ", error.message;
+    throw new Error(
+      "Error al traer todos los títulos obtenidos: ",
+      error.message
+    );
   }
 };
 
 const traerTituloObtenido = async (titulo_obtenido_id) => {
   if (!titulo_obtenido_id) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
     const titulo_obtenido = await Titulo_Obtenido.findByPk(titulo_obtenido_id);
 
     if (!titulo_obtenido) {
-      return "No existe ese título obtenido";
+      throw new Error("No existe ese título obtenido");
     }
 
     return titulo_obtenido;
   } catch (error) {
-    return "Error al traer el título obtenido: ", error.message;
+    throw new Error("Error al traer el título obtenido: ", error.message);
   }
 };
 
 const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
   if (!curriculo_id || !titulos_obtenidos) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
     const curriculo = await Curriculo.findByPk(curriculo_id);
 
     if (!curriculo) {
-      return "No existe ese curriculo";
+      throw new Error("No existe ese curriculo");
     }
 
     let fallidos = "";
@@ -72,13 +75,13 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
     });
 
     if (fallidos !== "") {
-      return (
+      throw new Error(
         "Estos títulos obtenidos no se pudieron guardar porque ya existen: ",
         fallidos
       );
     }
   } catch (error) {
-    return "Error al crear los títulos obtenidos: ", error.message;
+    throw new Error("Error al crear los títulos obtenidos: ", error.message);
   }
 };
 
@@ -88,7 +91,7 @@ const modificarTitulosObtenidos = async (
   activo
 ) => {
   if (!titulo_obtenido_id || !nombre || !activo) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -108,13 +111,13 @@ const modificarTitulosObtenidos = async (
 
     return await traerTituloObtenido(titulo_obtenido_id);
   } catch (error) {
-    return "Error al modificar el título obtenido: ", error.message;
+    throw new Error("Error al modificar el título obtenido: ", error.message);
   }
 };
 
 const inactivarTituloObtenido = async (titulo_obtenido_id) => {
   if (!titulo_obtenido_id) {
-    return "Datos faltantes";
+    throw new Error("Datos faltantes");
   }
 
   try {
@@ -129,7 +132,7 @@ const inactivarTituloObtenido = async (titulo_obtenido_id) => {
 
     return await traerTituloObtenido(titulo_obtenido_id);
   } catch (error) {
-    return "Error al inactivar el título obtenido: ", error.message;
+    throw new Error("Error al inactivar el título obtenido: ", error.message);
   }
 };
 
