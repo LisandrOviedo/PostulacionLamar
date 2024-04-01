@@ -26,11 +26,7 @@ const traerEmpleado = async (empleado_id) => {
   }
 
   try {
-    const empleado = await Empleado.findByPk(empleado_id, {
-      attributes: {
-        exclude: ["clave"],
-      },
-    });
+    const empleado = await Empleado.findByPk(empleado_id);
 
     if (!empleado) {
       throw new Error("No existe ese empleado");
@@ -171,7 +167,13 @@ const actualizarClaveEmpleado = async (empleado_id, clave) => {
   }
 
   try {
-    await traerEmpleado(empleado_id);
+    const empleado = await traerEmpleado(empleado_id);
+
+    const claveCoincide = await bcrypt.compare("1234", empleado.clave);
+
+    if (!claveCoincide) {
+      throw new Error("Ya has restablecido tu contraseña anteriormente");
+    }
 
     const claveCifrada = await bcrypt.hash(clave, 10);
 
