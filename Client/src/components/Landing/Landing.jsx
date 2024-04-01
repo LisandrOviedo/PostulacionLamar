@@ -59,19 +59,16 @@ export function Landing() {
   }, []);
 
   useEffect(() => {
-    if (access === "Datos incorrectos" || access === "Datos faltantes") {
+    if (access.error) {
       setAccess({});
       return alert(access);
     }
 
-    if (Object.keys(data).length > 0 && access.activo === false) {
-      setAccess({});
-      return alert(
-        "Tienes el acceso restringido, ya que tu usuario se encuentra inactivo"
-      );
+    if (access.changePassword) {
+      return alert("Debes cambiar tu clave temporal");
     }
 
-    if (Object.keys(data).length > 0 && access.empleado_id) {
+    if (access.empleado_id && access.activo) {
       navigate(`/form/datospersonales/${access.empleado_id}`);
     }
   }, [access]);
