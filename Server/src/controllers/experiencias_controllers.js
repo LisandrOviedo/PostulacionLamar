@@ -10,7 +10,7 @@ const todasLasExperiencias = async () => {
 
     return experiencias;
   } catch (error) {
-    throw new Error("Error al traer todas las experiencias: ", error.message);
+    throw new Error("Error al traer todas las experiencias: " + error.message);
   }
 };
 
@@ -28,7 +28,7 @@ const traerExperiencia = async (experiencia_id) => {
 
     return experiencia;
   } catch (error) {
-    throw new Error("Error al traer la experiencia: ", error.message);
+    throw new Error("Error al traer la experiencia: " + error.message);
   }
 };
 
@@ -83,7 +83,7 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
       );
     }
   } catch (error) {
-    throw new Error("Error al crear las experiencias: ", error.message);
+    throw new Error("Error al crear las experiencias: " + error.message);
   }
 };
 
@@ -129,7 +129,7 @@ const modificarExperiencia = async (
 
     return await traerExperiencia(experiencia_id);
   } catch (error) {
-    throw new Error("Error al modificar la experiencia: ", error.message);
+    throw new Error("Error al modificar la experiencia: " + error.message);
   }
 };
 
@@ -150,7 +150,7 @@ const inactivarExperiencia = async (experiencia_id) => {
 
     return await traerExperiencia(experiencia_id);
   } catch (error) {
-    throw new Error("Error al inactivar la experiencia: ", error.message);
+    throw new Error("Error al inactivar la experiencia: " + error.message);
   }
 };
 

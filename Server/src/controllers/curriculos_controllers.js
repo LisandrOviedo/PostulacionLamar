@@ -49,7 +49,7 @@ const todosLosCurriculos = async () => {
 
     return curriculos;
   } catch (error) {
-    throw new Error("Error al traer todos los curriculos: ", error.message);
+    throw new Error("Error al traer todos los curriculos: " + error.message);
   }
 };
 
@@ -104,7 +104,7 @@ const traerCurriculo = async (curriculo_id) => {
 
     return curriculo;
   } catch (error) {
-    throw new Error("Error al traer el curriculo: ", error.message);
+    throw new Error("Error al traer el curriculo: " + error.message);
   }
 };
 
@@ -156,12 +156,12 @@ const crearCurriculo = async (
     try {
       fs.unlinkSync(rutaArchivo);
     } catch (error) {
-      console.error("Error al eliminar el archivo PDF:", error);
+      console.error("Error al eliminar el archivo PDF: " + error);
     }
 
     throw new Error("Ya existe un curriculo para ese empleado");
   } catch (error) {
-    throw new Error("Error al crear el curriculo: ", error.message);
+    throw new Error("Error al crear el curriculo: " + error.message);
   }
 };
 
@@ -210,7 +210,7 @@ const modificarCurriculo = async (
 
     return await traerCurriculo(curriculo_id);
   } catch (error) {
-    throw new Error("Error al modificar el curriculo: ", error.message);
+    throw new Error("Error al modificar el curriculo: " + error.message);
   }
 };
 
@@ -231,7 +231,7 @@ const inactivarCurriculo = async (curriculo_id) => {
 
     return await traerCurriculo(curriculo_id);
   } catch (error) {
-    throw new Error("Error al inactivar el curriculo: ", error.message);
+    throw new Error("Error al inactivar el curriculo: " + error.message);
   }
 };
 

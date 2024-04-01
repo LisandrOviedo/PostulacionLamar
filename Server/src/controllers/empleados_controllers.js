@@ -16,7 +16,7 @@ const todosLosEmpleados = async () => {
 
     return empleados;
   } catch (error) {
-    throw new Error("Error al traer todos los empleados: ", error.message);
+    throw new Error("Error al traer todos los empleados: " + error.message);
   }
 };
 
@@ -38,7 +38,7 @@ const traerEmpleado = async (empleado_id) => {
 
     return empleado;
   } catch (error) {
-    throw new Error("Error al traer el empleado: ", error.message);
+    throw new Error("Error al traer el empleado: " + error.message);
   }
 };
 
@@ -77,7 +77,7 @@ const traerCargoActual = async (empleado_id) => {
 
     return cargoActual;
   } catch (error) {
-    throw new Error("Error al traer el empleado: ", error.message);
+    throw new Error("Error al traer el empleado: " + error.message);
   }
 };
 
@@ -96,6 +96,12 @@ const login = async (cedula, clave) => {
       throw new Error("Datos incorrectos");
     }
 
+    if (!empleado.activo) {
+      throw new Error(
+        "Tienes el acceso restringido, ya que tu usuario se encuentra inactivo"
+      );
+    }
+
     const claveCoincide = await bcrypt.compare(clave, empleado.clave);
 
     if (!claveCoincide) {
@@ -111,7 +117,7 @@ const login = async (cedula, clave) => {
 
     return empleado;
   } catch (error) {
-    throw new Error("Error al loguear: ", error.message);
+    throw new Error("Error al loguear: " + error.message);
   }
 };
 
@@ -151,7 +157,7 @@ const crearEmpleado = async (
       "Ya existe un empleado con ese número de cédula de identidad"
     );
   } catch (error) {
-    throw new Error("Error al crear el empleado: ", error.message);
+    throw new Error("Error al crear el empleado: " + error.message);
   }
 };
 
@@ -182,7 +188,7 @@ const actualizarClaveEmpleado = async (empleado_id, clave) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    throw new Error("Error al modificar el empleado: ", error.message);
+    throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
 
@@ -231,7 +237,7 @@ const modificarEmpleado = async (
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    throw new Error("Error al modificar el empleado: ", error.message);
+    throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
 
@@ -252,7 +258,7 @@ const inactivarEmpleado = async (empleado_id) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    throw new Error("Error al inactivar el empleado: ", error.message);
+    throw new Error("Error al inactivar el empleado: " + error.message);
   }
 };
 

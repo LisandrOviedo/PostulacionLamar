@@ -11,8 +11,7 @@ const todosLosAreaInteres = async () => {
     return areas_interes;
   } catch (error) {
     throw new Error(
-      "Error al traer todas las áreas de interés: ",
-      error.message
+      "Error al traer todas las áreas de interés: " + error.message
     );
   }
 };
@@ -30,8 +29,7 @@ const todosLosAreaInteresActivas = async () => {
     return areas_interes;
   } catch (error) {
     throw new Error(
-      "Error al traer todas las áreas de interés: ",
-      error.message
+      "Error al traer todas las áreas de interés: " + error.message
     );
   }
 };
@@ -50,7 +48,7 @@ const traerAreaInteres = async (area_interes_id) => {
 
     return area_interes;
   } catch (error) {
-    throw new Error("Error al traer el área de interés: ", error.message);
+    throw new Error("Error al traer el área de interés: " + error.message);
   }
 };
 
@@ -73,7 +71,7 @@ const crearAreaInteres = async (nombre) => {
 
     throw new Error("Ya existe un área de interés con ese nombre");
   } catch (error) {
-    throw new Error("Error al crear el área de interés: ", error.message);
+    throw new Error("Error al crear el área de interés: " + error.message);
   }
 };
 
@@ -99,7 +97,7 @@ const modificarAreaInteres = async (area_interes_id, nombre, activo) => {
 
     return await traerAreaInteres(area_interes_id);
   } catch (error) {
-    throw new Error("Error al modificar el área de interés: ", error.message);
+    throw new Error("Error al modificar el área de interés: " + error.message);
   }
 };
 
@@ -120,7 +118,7 @@ const inactivarAreaInteres = async (area_interes_id) => {
 
     return await traerAreaInteres(area_interes_id);
   } catch (error) {
-    throw new Error("Error al inactivar el área de interés: ", error.message);
+    throw new Error("Error al inactivar el área de interés: " + error.message);
   }
 };
 
@@ -173,8 +171,7 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
     }
   } catch (error) {
     throw new Error(
-      "Error al agregar el área de interés al curriculo: ",
-      error.message
+      "Error al agregar el área de interés al curriculo: " + error.message
     );
   }
 };

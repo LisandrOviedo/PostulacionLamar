@@ -16,7 +16,7 @@ const todosLosUsuarios = async () => {
 
     return usuarios;
   } catch (error) {
-    throw new Error("Error al traer todos los usuarios: ", error.message);
+    throw new Error("Error al traer todos los usuarios: " + error.message);
   }
 };
 
@@ -38,7 +38,7 @@ const traerUsuario = async (usuario_id) => {
 
     return usuario;
   } catch (error) {
-    throw new Error("Error al traer el usuario: ", error.message);
+    throw new Error("Error al traer el usuario: " + error.message);
   }
 };
 
@@ -65,7 +65,7 @@ const login = async (cedula, clave) => {
 
     return usuario;
   } catch (error) {
-    throw new Error("Error al loguear: ", error.message);
+    throw new Error("Error al loguear: " + error.message);
   }
 };
 
@@ -114,7 +114,7 @@ const crearUsuario = async (
       "Ya existe un usuario con ese número de cédula de identidad"
     );
   } catch (error) {
-    throw new Error("Error al crear el usuario: ", error.message);
+    throw new Error("Error al crear el usuario: " + error.message);
   }
 };
 
@@ -168,7 +168,7 @@ const modificarUsuario = async (
 
     return await traerUsuario(usuario_id);
   } catch (error) {
-    throw new Error("Error al modificar el usuario: ", error.message);
+    throw new Error("Error al modificar el usuario: " + error.message);
   }
 };
 
@@ -189,7 +189,7 @@ const inactivarUsuario = async (usuario_id) => {
 
     return await traerUsuario(usuario_id);
   } catch (error) {
-    throw new Error("Error al inactivar el usuario: ", error.message);
+    throw new Error("Error al inactivar el usuario: " + error.message);
   }
 };
 
