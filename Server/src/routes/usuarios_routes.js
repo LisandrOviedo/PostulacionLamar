@@ -8,6 +8,8 @@ const {
   deleteUsuario,
 } = require("../handlers/usuarios_handlers");
 
+const { authenticateToken } = require("../auth/index");
+
 const usuarios = Router();
 
 usuarios.get("/", getUsuarios);
@@ -17,6 +19,6 @@ usuarios.get("/login", getLogin);
 usuarios.post("/", postUsuario);
 
 usuarios.put("/modificar", putUsuario);
-usuarios.put("/inactivar", deleteUsuario);
+usuarios.put("/inactivar", authenticateToken, deleteUsuario);
 
 module.exports = usuarios;
