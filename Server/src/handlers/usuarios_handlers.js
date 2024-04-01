@@ -30,7 +30,7 @@ const getUsuario = async (req, res) => {
 };
 
 const getLogin = async (req, res) => {
-  const { cedula, clave } = req.body;
+  const { cedula, clave } = req.query;
 
   try {
     const response = await login(cedula, clave);
