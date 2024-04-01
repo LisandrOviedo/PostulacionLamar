@@ -12,13 +12,13 @@ const { authenticateToken } = require("../auth/index");
 
 const usuarios = Router();
 
-usuarios.get("/", getUsuarios);
-usuarios.get("/detalle/:usuario_id", getUsuario);
+usuarios.get("/", authenticateToken, getUsuarios);
+usuarios.get("/detalle/:usuario_id", authenticateToken, getUsuario);
 usuarios.get("/login", getLogin);
 
-usuarios.post("/", postUsuario);
+usuarios.post("/", authenticateToken, postUsuario);
 
-usuarios.put("/modificar", putUsuario);
+usuarios.put("/modificar", authenticateToken, putUsuario);
 usuarios.put("/inactivar", authenticateToken, deleteUsuario);
 
 module.exports = usuarios;
