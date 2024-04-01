@@ -59,17 +59,14 @@ export function Landing() {
   }, []);
 
   useEffect(() => {
-    if (access.error) {
-      setAccess({});
-      return alert(access);
-    }
-
     if (access.changePassword) {
-      return alert("Debes cambiar tu clave temporal");
+      navigate(`/empleado/cambioClave/${access.empleado_id}`);
+      return;
     }
 
     if (access.empleado_id && access.activo) {
       navigate(`/form/datospersonales/${access.empleado_id}`);
+      return;
     }
   }, [access]);
 
