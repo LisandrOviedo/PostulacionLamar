@@ -8,6 +8,10 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: UUIDV4,
     },
+    admin: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
     cedula: {
       type: DataTypes.INTEGER(10),
       allowNull: false,
