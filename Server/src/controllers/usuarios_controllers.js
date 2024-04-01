@@ -2,6 +2,7 @@ const { Usuario } = require("../db");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { SECRET_KEY } = process.env;
 
 const todosLosUsuarios = async () => {
   try {
@@ -48,8 +49,6 @@ const login = async (cedula, clave) => {
     throw new Error("Datos faltantes");
   }
 
-  const { SECRET_KEY } = process.env;
-
   try {
     const usuario = await Usuario.findOne({
       attributes: ["usuario_id", "cedula", "clave", "activo"],
@@ -66,15 +65,12 @@ const login = async (cedula, clave) => {
       throw new Error("Datos incorrectos");
     }
 
-    // return usuario;
-
     const token = jwt.sign(
       { userId: usuario.usuario_id, username: usuario.cedula },
       SECRET_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "8hr" }
     );
 
-    // Enviar el token al cliente
     return token;
   } catch (error) {
     throw new Error("Error al loguear: " + error.message);

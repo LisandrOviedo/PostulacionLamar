@@ -1,6 +1,8 @@
 const { Empleado, Cargo, Cargo_Empleado, Empresa } = require("../db");
 
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { SECRET_KEY } = process.env;
 
 const todosLosEmpleados = async () => {
   try {
@@ -105,13 +107,27 @@ const login = async (cedula, clave) => {
     }
 
     if (clave == "1234") {
+      const token = jwt.sign(
+        { userId: usuario.usuario_id, username: usuario.cedula },
+        SECRET_KEY,
+        { expiresIn: "8hr" }
+      );
+
+      return token;
+
       return {
         empleado_id: empleado.empleado_id,
         changePassword: true,
       };
     }
 
-    return empleado;
+    const token = jwt.sign(
+      { userId: usuario.usuario_id, username: usuario.cedula },
+      SECRET_KEY,
+      { expiresIn: "8hr" }
+    );
+
+    return token;
   } catch (error) {
     throw new Error("Error al loguear: " + error.message);
   }
