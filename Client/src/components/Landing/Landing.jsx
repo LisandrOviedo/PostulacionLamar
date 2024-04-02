@@ -4,16 +4,16 @@ import { useNavigate } from "react-router-dom";
 
 import validations from "./validations";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Button, Input, Title } from "../UI";
-import { getLogin } from "../../redux/empleados/empleadoAction";
+import { getLogin, resetEmpleados } from "../../redux/empleados/empleadoAction";
 
 export function Landing() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [access, setAccess] = useState({});
+  const empleado = useSelector((state) => state.empleados.empleado);
 
   const [data, setData] = useState({
     cedula: "",
@@ -22,13 +22,11 @@ export function Landing() {
 
   const [errors, setErrors] = useState({});
 
-  const handleFindCI = async () => {
+  const handleFindCI = () => {
     const { cedula, clave } = data;
 
     try {
       dispatch(getLogin(cedula, clave));
-
-      // setAccess(data);
     } catch (error) {
       alert(error.response.data.error);
     }
@@ -54,19 +52,17 @@ export function Landing() {
 
   useEffect(() => {
     window.scroll(0, 0);
+
+    dispatch(resetEmpleados());
   }, []);
 
   useEffect(() => {
-    if (access.changePassword) {
-      navigate(`/empleado/cambioClave/${access.empleado_id}`);
-      return;
+    if (empleado.changePassword) {
+      return navigate(`/empleado/cambioClave/${empleado.empleado_id}`);
+    } else if (empleado.activo) {
+      return navigate(`/form/datospersonales/${empleado.empleado_id}`);
     }
-
-    if (access.empleado_id && access.activo) {
-      navigate(`/form/datospersonales/${access.empleado_id}`);
-      return;
-    }
-  }, [access]);
+  }, [empleado, navigate]);
 
   return (
     <div className="mt-24 sm:mt-32 flex flex-col justify-center items-center px-10 bg-white h-full">
