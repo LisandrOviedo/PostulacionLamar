@@ -1,6 +1,10 @@
 import axios from "axios";
 
-import { allCurriculos, createCurriculo } from "./curriculoSlice";
+import {
+  allCurriculos,
+  createCurriculo,
+  curriculoEmpleado,
+} from "./curriculoSlice";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
@@ -11,7 +15,21 @@ export const getAllCurriculos = () => {
 
       return dispatch(allCurriculos(data));
     } catch (error) {
-      console.error(error);
+      alert(error.response.data.error);
+    }
+  };
+};
+
+export const getCurriculoEmpleado = (empleado_id) => {
+  const URL_CURRICULO_DETAIL = `${URL_SERVER}/curriculos/detalleEmpleado/${empleado_id}`;
+
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.get(`${URL_CURRICULO_DETAIL}`);
+
+      return dispatch(curriculoEmpleado(data));
+    } catch (error) {
+      alert(error.response.data.error);
     }
   };
 };
