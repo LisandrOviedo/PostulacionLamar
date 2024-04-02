@@ -86,7 +86,6 @@ const login = async (cedula, clave) => {
 
   try {
     const empleado = await Empleado.findOne({
-      attributes: ["empleado_id", "clave", "activo"],
       where: { cedula: cedula },
     });
 
@@ -106,28 +105,28 @@ const login = async (cedula, clave) => {
       throw new Error("Datos incorrectos");
     }
 
-    if (clave == "1234") {
-      const token = jwt.sign(
-        { userId: usuario.usuario_id, username: usuario.cedula },
-        SECRET_KEY,
-        { expiresIn: "8hr" }
-      );
+    // if (clave == "1234") {
+    //   // const token = jwt.sign(
+    //   //   { userId: usuario.usuario_id, username: usuario.cedula },
+    //   //   SECRET_KEY,
+    //   //   { expiresIn: "8hr" }
+    //   // );
 
-      return token;
+    //   // return token;
 
-      return {
-        empleado_id: empleado.empleado_id,
-        changePassword: true,
-      };
-    }
+    //   return {
+    //     empleado_id: empleado.empleado_id,
+    //     changePassword: true,
+    //   };
+    // }
 
-    const token = jwt.sign(
-      { userId: usuario.usuario_id, username: usuario.cedula },
-      SECRET_KEY,
-      { expiresIn: "8hr" }
-    );
+    // const token = jwt.sign(
+    //   { userId: usuario.usuario_id, username: usuario.cedula },
+    //   SECRET_KEY,
+    //   { expiresIn: "8hr" }
+    // );
 
-    return token;
+    return empleado;
   } catch (error) {
     throw new Error("Error al loguear: " + error.message);
   }
