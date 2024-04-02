@@ -179,13 +179,7 @@ const actualizarClaveEmpleado = async (empleado_id, clave) => {
   }
 
   try {
-    const empleado = await traerEmpleado(empleado_id);
-
-    const claveCoincide = await bcrypt.compare("1234", empleado.clave);
-
-    if (!claveCoincide) {
-      throw new Error("Ya has restablecido tu contraseña anteriormente");
-    }
+    await traerEmpleado(empleado_id);
 
     const claveCifrada = await bcrypt.hash(clave, 10);
 

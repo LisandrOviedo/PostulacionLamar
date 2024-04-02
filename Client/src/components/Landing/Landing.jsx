@@ -58,9 +58,9 @@ export function Landing() {
 
   useEffect(() => {
     if (empleado.changePassword) {
-      return navigate(`/empleado/cambioClave/${empleado.empleado_id}`);
+      return navigate("/empleado/cambioClave");
     } else if (empleado.activo) {
-      return navigate(`/form/datospersonales/${empleado.empleado_id}`);
+      return navigate("/form/datosPersonales");
     }
   }, [empleado, navigate]);
 
