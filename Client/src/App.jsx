@@ -32,21 +32,12 @@ function App() {
           <Route path="/" element={<Landing />} />
 
           <Route element={<AuthGuardUpdatePassword />}>
-            <Route
-              path="/empleado/cambioClave/:empleado_id"
-              element={<UpdatePassword />}
-            />
+            <Route path="/empleado/cambioClave" element={<UpdatePassword />} />
           </Route>
 
           <Route element={<AuthGuardEmpleado />}>
-            <Route
-              path="/form/datospersonales/:empleado_id"
-              element={<DatosPersonales />}
-            />
-            <Route
-              path="/form/curriculo/:empleado_id"
-              element={<Curriculo />}
-            />
+            <Route path="/form/datosPersonales" element={<DatosPersonales />} />
+            <Route path="/form/curriculo" element={<Curriculo />} />
             <Route
               path="/curriculo/:curriculo_id"
               element={<CurriculoDetail />}
