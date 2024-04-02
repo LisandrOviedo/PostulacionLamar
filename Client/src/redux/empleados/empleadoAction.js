@@ -19,7 +19,7 @@ export const getLogin = (cedula, clave) => {
 
       return dispatch(createEmpleado(data));
     } catch (error) {
-      console.error(error);
+      alert(error.response.data.error);
     }
   };
 };
@@ -33,7 +33,7 @@ export const getEmpleadoByID = (empleado_id) => {
 
       return dispatch(empleadoByID(data));
     } catch (error) {
-      console.error(error);
+      alert(error.response.data.error);
     }
   };
 };
@@ -47,7 +47,17 @@ export const getCargoActual = (empleado_id) => {
 
       return dispatch(cargoActualEmpleado(data));
     } catch (error) {
-      console.error(error);
+      alert(error.response.data.error);
+    }
+  };
+};
+
+export const resetEmpleados = () => {
+  return async (dispatch) => {
+    try {
+      return dispatch(resetState());
+    } catch (error) {
+      alert(error.response.data.error);
     }
   };
 };
