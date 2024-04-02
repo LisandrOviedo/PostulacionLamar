@@ -1,19 +1,20 @@
 import { clsx } from "clsx";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import validations from "./validations";
 
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Button, Input, Title } from "../UI";
 
+import { putPassword } from "../../redux/empleados/empleadoAction";
+
 export function UpdatePassword() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [access, setAccess] = useState({});
-
-  const { empleado_id } = useParams();
+  const empleado = useSelector((state) => state.empleados.empleado);
 
   const [data, setData] = useState({
     clave: "",
@@ -22,28 +23,20 @@ export function UpdatePassword() {
 
   const [errors, setErrors] = useState({});
 
-  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
-
   const handleFindCI = async () => {
-    const URL_LOGIN = `${URL_SERVER}/empleados/modificarClave`;
-
     const body = {
-      empleado_id: empleado_id,
+      empleado_id: empleado.empleado_id,
       clave: data.clave,
     };
 
     try {
-      const { data } = await axios.put(URL_LOGIN, body);
+      dispatch(putPassword(body));
 
-      setAccess(data);
+      navigate("/");
+      return alert(
+        "Su contraseña ha sido actualizada exitosamente, proceda a loguearse para continuar"
+      );
     } catch (error) {
-      if (
-        error.response.data.error ===
-        "Error al modificar el empleado: Ya has restablecido tu contraseña anteriormente"
-      ) {
-        alert(error.response.data.error);
-        return navigate("/");
-      }
       alert(error.response.data.error);
     }
   };
@@ -69,13 +62,6 @@ export function UpdatePassword() {
   useEffect(() => {
     window.scroll(0, 0);
   }, []);
-
-  useEffect(() => {
-    if (access.empleado_id && access.activo) {
-      navigate(`/form/datospersonales/${access.empleado_id}`);
-      return alert("Su contraseña ha sido actualizada, puede continuar");
-    }
-  }, [access]);
 
   return (
     <div className="mt-24 sm:mt-32 flex flex-col justify-center items-center px-10 bg-white h-full">

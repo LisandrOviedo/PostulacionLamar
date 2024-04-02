@@ -1,12 +1,12 @@
 import React from "react";
-import axios from "axios";
 
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
 import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
+import { postCurriculo } from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
@@ -14,16 +14,14 @@ export function Curriculo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { empleado_id } = useParams();
+  const empleado = useSelector((state) => state.empleados.empleado);
+  const curriculo = useSelector((state) => state.curriculos.curriculo);
 
   const areas_interes_activas = useSelector(
     (state) => state.areas_interes.areas_interes_activas
   );
 
-  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
-
   const [datosCurriculo, setDatosCurriculo] = useState({
-    empleado_id: empleado_id,
     grado_instruccion: "Basico",
     titulos_obtenidos: [],
     disponibilidad_viajar: "true",
@@ -55,6 +53,12 @@ export function Curriculo() {
 
     dispatch(getAllAreasInteresActivas());
   }, []);
+
+  useEffect(() => {
+    if (curriculo && curriculo.curriculo_id) {
+      navigate(`/curriculo/${curriculo.curriculo_id}`);
+    }
+  }, [curriculo]);
 
   const handleInputChangeCurriculo = (event) => {
     const { name, value } = event.target;
@@ -251,20 +255,17 @@ export function Curriculo() {
 
     if (
       !input.value ||
-      !datosCurriculo.empleado_id ||
       !datosCurriculo.grado_instruccion ||
-      !datosCurriculo.titulos_obtenidos ||
       !datosCurriculo.disponibilidad_viajar ||
       !datosCurriculo.disponibilidad_cambio_residencia ||
-      !datosCurriculo.areas_interes ||
-      !datosCurriculo.experiencias
+      !datosCurriculo.areas_interes.length
     ) {
       return alert("Datos faltantes");
     }
 
     const formData = new FormData();
     formData.append("pdf", pdf);
-    formData.append("empleado_id", datosCurriculo.empleado_id);
+    formData.append("empleado_id", empleado.empleado_id);
     formData.append("grado_instruccion", datosCurriculo.grado_instruccion);
     formData.append("centro_educativo", datosCurriculo.centro_educativo);
     formData.append(
@@ -276,31 +277,17 @@ export function Curriculo() {
       datosCurriculo.disponibilidad_cambio_residencia
     );
 
-    const { data } = await axios.post(`${URL_SERVER}/curriculos`, formData);
-
-    if (data === "Ya existe un curriculo para ese empleado") {
-      return alert(data);
-    }
-
-    if (data.curriculo_id) {
-      await axios.post(`${URL_SERVER}/areasinteres/agregarArea`, {
-        curriculo_id: data.curriculo_id,
-        areas_interes: datosCurriculo.areas_interes,
-      });
-
-      await axios.post(`${URL_SERVER}/titulosobtenidos`, {
-        curriculo_id: data.curriculo_id,
-        titulos_obtenidos: datosCurriculo.titulos_obtenidos,
-      });
-
-      await axios.post(`${URL_SERVER}/experiencias`, {
-        curriculo_id: data.curriculo_id,
-        experiencias: datosCurriculo.experiencias,
-      });
-
-      alert("¡Curriculo registrado exitosamente!");
-      navigate(`/curriculo/${data.curriculo_id}`);
-      return;
+    try {
+      dispatch(
+        postCurriculo(
+          formData,
+          datosCurriculo.areas_interes,
+          datosCurriculo.titulos_obtenidos,
+          datosCurriculo.experiencias
+        )
+      );
+    } catch (error) {
+      alert(error.response.data.error);
     }
   };
 

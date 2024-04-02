@@ -16,29 +16,42 @@ import {
   UpdatePassword,
 } from "./components/";
 
+import { AuthGuardAdmin } from "./guards/AuthGuardAdmin";
+import { AuthGuardEmpleado } from "./guards/AuthGuardEmpleado";
+import { AuthGuardUpdatePassword } from "./guards/AuthGuardUpdatePassword";
+
+import { Suspense } from "react";
+
 function App() {
   return (
     <div>
-      <Navbar />
-      <Routes>
-        <Route path="*" element={<NotFound />} />
-        <Route path="/" element={<Landing />} />
-        <Route
-          path="/empleado/cambioClave/:empleado_id"
-          element={<UpdatePassword />}
-        />
-        <Route
-          path="/form/datospersonales/:empleado_id"
-          element={<DatosPersonales />}
-        />
-        <Route path="/form/curriculo/:empleado_id" element={<Curriculo />} />
-        <Route path="/curriculo/:curriculo_id" element={<CurriculoDetail />} />
+      <Suspense fallback={<>Cargando</>}>
+        <Navbar />
+        <Routes>
+          <Route path="*" element={<NotFound />} />
+          <Route path="/" element={<Landing />} />
 
-        <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin/dashboard" element={<Dashboard />} />
-        <Route path="/admin/postulaciones" element={<Postulaciones />} />
-        <Route path="/admin/postulacion/:id" element={<Postulacion />} />
-      </Routes>
+          <Route element={<AuthGuardUpdatePassword />}>
+            <Route path="/empleado/cambioClave" element={<UpdatePassword />} />
+          </Route>
+
+          <Route element={<AuthGuardEmpleado />}>
+            <Route path="/form/datosPersonales" element={<DatosPersonales />} />
+            <Route path="/form/curriculo" element={<Curriculo />} />
+            <Route
+              path="/curriculo/:curriculo_id"
+              element={<CurriculoDetail />}
+            />
+          </Route>
+
+          <Route path="/admin/login" element={<Login />} />
+          <Route element={<AuthGuardAdmin />}>
+            <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route path="/admin/postulaciones" element={<Postulaciones />} />
+            <Route path="/admin/postulacion/:id" element={<Postulacion />} />
+          </Route>
+        </Routes>
+      </Suspense>
     </div>
   );
 }

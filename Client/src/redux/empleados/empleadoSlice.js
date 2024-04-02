@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  empleado: [],
-  allEmpleados: [],
+  empleados: [],
+  empleado: {},
   cargo_actual: [],
 };
 
@@ -10,14 +10,29 @@ export const empleadoSlice = createSlice({
   name: "empleados",
   initialState,
   reducers: {
-    empleado: (state, action) => {
+    allEmpleados: (state, action) => {
+      state.empleados = action.payload.empleados;
+    },
+    createEmpleado: (state, action) => {
       state.empleado = action.payload;
     },
-    cargoActual: (state, action) => {
+    empleadoByID: (state, action) => {
+      state.empleado = action.payload;
+    },
+    cargoActualEmpleado: (state, action) => {
       state.cargo_actual = action.payload;
+    },
+    resetState: () => {
+      return initialState;
     },
   },
 });
 
-export const { empleado, cargoActual } = empleadoSlice.actions;
+export const {
+  allEmpleados,
+  createEmpleado,
+  empleadoByID,
+  cargoActualEmpleado,
+  resetState,
+} = empleadoSlice.actions;
 export default empleadoSlice.reducer;

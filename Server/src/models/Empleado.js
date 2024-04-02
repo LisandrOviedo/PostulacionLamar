@@ -8,6 +8,10 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: UUIDV4,
     },
+    rol: {
+      type: DataTypes.ENUM("empleado", "admin"),
+      defaultValue: "empleado",
+    },
     cedula: {
       type: DataTypes.INTEGER(10),
       allowNull: false,

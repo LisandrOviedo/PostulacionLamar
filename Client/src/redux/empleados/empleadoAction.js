@@ -1,19 +1,39 @@
 import axios from "axios";
 
-import { empleado, cargoActual } from "./empleadoSlice";
+import {
+  allEmpleados,
+  createEmpleado,
+  empleadoByID,
+  cargoActualEmpleado,
+  resetState,
+} from "./empleadoSlice";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-export const getEmpleado = (empleado_id) => {
+export const getLogin = (cedula, clave) => {
+  const URL_LOGIN = `${URL_SERVER}/empleados/login?cedula=${cedula}&clave=${clave}`;
+
+  return async (dispatch) => {
+    try {
+      const { data } = await axios(URL_LOGIN);
+
+      return dispatch(createEmpleado(data));
+    } catch (error) {
+      alert(error.response.data.error);
+    }
+  };
+};
+
+export const getEmpleadoByID = (empleado_id) => {
   return async (dispatch) => {
     try {
       const { data } = await axios(
         `${URL_SERVER}/empleados/detalle/${empleado_id}`
       );
 
-      return dispatch(empleado(data));
+      return dispatch(empleadoByID(data));
     } catch (error) {
-      console.error(error);
+      alert(error.response.data.error);
     }
   };
 };
@@ -25,9 +45,32 @@ export const getCargoActual = (empleado_id) => {
         `${URL_SERVER}/empleados/cargoActual/${empleado_id}`
       );
 
-      return dispatch(cargoActual(data));
+      return dispatch(cargoActualEmpleado(data));
     } catch (error) {
-      console.error(error);
+      alert(error.response.data.error);
+    }
+  };
+};
+
+export const putPassword = (body) => {
+  const URL_PUT_PASSWORD = `${URL_SERVER}/empleados/modificarClave`;
+
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.put(`${URL_PUT_PASSWORD}`, body);
+      return dispatch(data);
+    } catch (error) {
+      alert(error.response.data.error);
+    }
+  };
+};
+
+export const resetEmpleados = () => {
+  return async (dispatch) => {
+    try {
+      return dispatch(resetState());
+    } catch (error) {
+      alert(error.response.data.error);
     }
   };
 };

@@ -1,6 +1,8 @@
 const { Empleado, Cargo, Cargo_Empleado, Empresa } = require("../db");
 
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { SECRET_KEY } = process.env;
 
 const todosLosEmpleados = async () => {
   try {
@@ -84,7 +86,6 @@ const login = async (cedula, clave) => {
 
   try {
     const empleado = await Empleado.findOne({
-      attributes: ["empleado_id", "clave", "activo"],
       where: { cedula: cedula },
     });
 
@@ -105,11 +106,22 @@ const login = async (cedula, clave) => {
     }
 
     if (clave == "1234") {
-      return {
-        empleado_id: empleado.empleado_id,
-        changePassword: true,
-      };
+      // const token = jwt.sign(
+      //   { userId: usuario.usuario_id, username: usuario.cedula },
+      //   SECRET_KEY,
+      //   { expiresIn: "8hr" }
+      // );
+
+      // return token;
+
+      return { empleado_id: empleado.empleado_id, changePassword: true };
     }
+
+    // const token = jwt.sign(
+    //   { userId: usuario.usuario_id, username: usuario.cedula },
+    //   SECRET_KEY,
+    //   { expiresIn: "8hr" }
+    // );
 
     return empleado;
   } catch (error) {
@@ -118,6 +130,7 @@ const login = async (cedula, clave) => {
 };
 
 const crearEmpleado = async (
+  rol,
   cedula,
   nombres,
   apellidos,
@@ -133,8 +146,9 @@ const crearEmpleado = async (
     const claveCifrada = await bcrypt.hash("1234", 10);
 
     const [empleado, created] = await Empleado.findOrCreate({
-      where: { cedula: cedula },
+      where: { cedula: cedula, rol: rol },
       defaults: {
+        rol: rol,
         cedula: cedula,
         clave: claveCifrada,
         nombres: nombres,
@@ -149,9 +163,7 @@ const crearEmpleado = async (
       return empleado;
     }
 
-    throw new Error(
-      "Ya existe un empleado con ese número de cédula de identidad"
-    );
+    throw new Error("Ya existe un empleado con esa cédula de identidad y rol");
   } catch (error) {
     throw new Error("Error al crear el empleado: " + error.message);
   }
@@ -167,13 +179,7 @@ const actualizarClaveEmpleado = async (empleado_id, clave) => {
   }
 
   try {
-    const empleado = await traerEmpleado(empleado_id);
-
-    const claveCoincide = await bcrypt.compare("1234", empleado.clave);
-
-    if (!claveCoincide) {
-      throw new Error("Ya has restablecido tu contraseña anteriormente");
-    }
+    await traerEmpleado(empleado_id);
 
     const claveCifrada = await bcrypt.hash(clave, 10);
 
@@ -196,6 +202,7 @@ const actualizarClaveEmpleado = async (empleado_id, clave) => {
 
 const modificarEmpleado = async (
   empleado_id,
+  rol,
   cedula,
   nombres,
   apellidos,
@@ -206,6 +213,7 @@ const modificarEmpleado = async (
 ) => {
   if (
     !empleado_id ||
+    !rol ||
     !cedula ||
     !nombres ||
     !apellidos ||
@@ -222,6 +230,7 @@ const modificarEmpleado = async (
 
     await Empleado.update(
       {
+        rol: rol,
         cedula: cedula,
         nombres: nombres,
         apellidos: apellidos,

@@ -10,6 +10,8 @@ const {
   deleteEmpleado,
 } = require("../handlers/empleados_handlers");
 
+const { authenticateToken } = require("../auth/index");
+
 const empleados = Router();
 
 empleados.get("/", getEmpleados);
