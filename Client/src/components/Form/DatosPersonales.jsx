@@ -1,13 +1,10 @@
 import React from "react";
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import {
-  getEmpleadoByID,
-  getCargoActual,
-} from "../../redux/empleados/empleadoAction";
+import { getCargoActual } from "../../redux/empleados/empleadoAction";
 
 import { Button, Input, Label, Title } from "../UI";
 
@@ -15,21 +12,18 @@ export function DatosPersonales() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { empleado_id } = useParams();
-
   const empleado = useSelector((state) => state.empleados.empleado);
   const cargo_actual = useSelector((state) => state.empleados.cargo_actual);
 
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getEmpleadoByID(empleado_id));
-    dispatch(getCargoActual(empleado_id));
+    dispatch(getCargoActual(empleado.empleado_id));
   }, []);
 
   const handleContinuar = (event) => {
     event.preventDefault();
-    navigate(`/form/curriculo/${empleado_id}`);
+    navigate("/form/curriculo");
   };
 
   return (
