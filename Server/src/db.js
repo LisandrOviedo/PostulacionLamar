@@ -44,7 +44,6 @@ const {
   Empresa,
   Experiencia,
   Titulo_Obtenido,
-  Usuario,
 } = sequelize.models;
 
 // RELACIONES DE MODELOS (TABLAS)
@@ -164,5 +163,4 @@ module.exports = {
   Empresa,
   Experiencia,
   Titulo_Obtenido,
-  Usuario,
 };

@@ -14,15 +14,15 @@ const { authenticateToken } = require("../auth/index");
 
 const empleados = Router();
 
-empleados.get("/", authenticateToken, getEmpleados);
-empleados.get("/detalle/:empleado_id", authenticateToken, getEmpleado);
-empleados.get("/cargoActual/:empleado_id", authenticateToken, getCargoActual);
+empleados.get("/", getEmpleados);
+empleados.get("/detalle/:empleado_id", getEmpleado);
+empleados.get("/cargoActual/:empleado_id", getCargoActual);
 empleados.get("/login", getLogin);
 
-empleados.post("/", authenticateToken, postEmpleado);
+empleados.post("/", postEmpleado);
 
-empleados.put("/modificarClave", authenticateToken, putClaveEmpleado);
-empleados.put("/modificar", authenticateToken, putEmpleado);
-empleados.put("/inactivar", authenticateToken, deleteEmpleado);
+empleados.put("/modificarClave", putClaveEmpleado);
+empleados.put("/modificar", putEmpleado);
+empleados.put("/inactivar", deleteEmpleado);
 
 module.exports = empleados;

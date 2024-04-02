@@ -56,18 +56,18 @@ const getCargoActual = async (req, res) => {
 };
 
 const postEmpleado = async (req, res) => {
-  const { cedula, nombres, apellidos, correo, telefono, direccion, clave } =
+  const { rol, cedula, nombres, apellidos, correo, telefono, direccion } =
     req.body;
 
   try {
     const response = await crearEmpleado(
+      rol,
       cedula,
       nombres,
       apellidos,
       correo,
       telefono,
-      direccion,
-      clave
+      direccion
     );
 
     return res.status(201).json(response);

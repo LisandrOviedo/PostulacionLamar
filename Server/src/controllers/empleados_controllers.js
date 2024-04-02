@@ -134,6 +134,7 @@ const login = async (cedula, clave) => {
 };
 
 const crearEmpleado = async (
+  rol,
   cedula,
   nombres,
   apellidos,
@@ -149,8 +150,9 @@ const crearEmpleado = async (
     const claveCifrada = await bcrypt.hash("1234", 10);
 
     const [empleado, created] = await Empleado.findOrCreate({
-      where: { cedula: cedula },
+      where: { cedula: cedula, rol: rol },
       defaults: {
+        rol: rol,
         cedula: cedula,
         clave: claveCifrada,
         nombres: nombres,
@@ -165,9 +167,7 @@ const crearEmpleado = async (
       return empleado;
     }
 
-    throw new Error(
-      "Ya existe un empleado con ese número de cédula de identidad"
-    );
+    throw new Error("Ya existe un empleado con esa cédula de identidad y rol");
   } catch (error) {
     throw new Error("Error al crear el empleado: " + error.message);
   }
@@ -212,6 +212,7 @@ const actualizarClaveEmpleado = async (empleado_id, clave) => {
 
 const modificarEmpleado = async (
   empleado_id,
+  rol,
   cedula,
   nombres,
   apellidos,
@@ -222,6 +223,7 @@ const modificarEmpleado = async (
 ) => {
   if (
     !empleado_id ||
+    !rol ||
     !cedula ||
     !nombres ||
     !apellidos ||
@@ -238,6 +240,7 @@ const modificarEmpleado = async (
 
     await Empleado.update(
       {
+        rol: rol,
         cedula: cedula,
         nombres: nombres,
         apellidos: apellidos,
