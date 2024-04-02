@@ -30,7 +30,7 @@ export function UpdatePassword() {
     };
 
     try {
-      dispatch(putPassword(body));
+      putPassword(body);
 
       navigate("/");
       return alert(

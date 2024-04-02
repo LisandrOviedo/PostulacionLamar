@@ -52,17 +52,15 @@ export const getCargoActual = (empleado_id) => {
   };
 };
 
-export const putPassword = (body) => {
+export const putPassword = async (body) => {
   const URL_PUT_PASSWORD = `${URL_SERVER}/empleados/modificarClave`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios.put(`${URL_PUT_PASSWORD}`, body);
-      return dispatch(data);
-    } catch (error) {
-      alert(error.response.data.error);
-    }
-  };
+  try {
+    const response = await axios.put(URL_PUT_PASSWORD, body);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.error);
+  }
 };
 
 export const resetEmpleados = () => {
