@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
-  getEmpleado,
+  getEmpleadoByID,
   getCargoActual,
 } from "../../redux/empleados/empleadoAction";
 
@@ -23,7 +23,7 @@ export function DatosPersonales() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getEmpleado(empleado_id));
+    dispatch(getEmpleadoByID(empleado_id));
     dispatch(getCargoActual(empleado_id));
   }, []);
 

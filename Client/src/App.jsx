@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import {
   Curriculo,
@@ -15,6 +15,8 @@ import {
   Postulaciones,
   UpdatePassword,
 } from "./components/";
+
+import { AuthGuard } from "./guards/AuthGuard";
 
 function App() {
   return (
@@ -34,10 +36,12 @@ function App() {
         <Route path="/form/curriculo/:empleado_id" element={<Curriculo />} />
         <Route path="/curriculo/:curriculo_id" element={<CurriculoDetail />} />
 
-        <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin/dashboard" element={<Dashboard />} />
-        <Route path="/admin/postulaciones" element={<Postulaciones />} />
-        <Route path="/admin/postulacion/:id" element={<Postulacion />} />
+        <Route element={<AuthGuard />}>
+          <Route path="/admin/login" element={<Login />} />
+          <Route path="/admin/dashboard" element={<Dashboard />} />
+          <Route path="/admin/postulaciones" element={<Postulaciones />} />
+          <Route path="/admin/postulacion/:id" element={<Postulacion />} />
+        </Route>
       </Routes>
     </div>
   );
