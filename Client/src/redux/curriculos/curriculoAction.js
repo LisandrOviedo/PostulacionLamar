@@ -4,6 +4,7 @@ import {
   allCurriculos,
   createCurriculo,
   curriculoEmpleado,
+  resetState,
 } from "./curriculoSlice";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
@@ -107,4 +108,14 @@ const postExperiencias = async (curriculo_id, experiencias) => {
   } catch (error) {
     alert(error.response.data.error);
   }
+};
+
+export const resetCurriculos = () => {
+  return async (dispatch) => {
+    try {
+      return dispatch(resetState());
+    } catch (error) {
+      alert(error.response.data.error);
+    }
+  };
 };

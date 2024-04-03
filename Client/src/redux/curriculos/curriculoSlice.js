@@ -19,9 +19,12 @@ export const curriculoSlice = createSlice({
     curriculoEmpleado: (state, action) => {
       state.curriculoEmpleado = action.payload;
     },
+    resetState: () => {
+      return initialState;
+    },
   },
 });
 
-export const { allCurriculos, createCurriculo, curriculoEmpleado } =
+export const { allCurriculos, createCurriculo, curriculoEmpleado, resetState } =
   curriculoSlice.actions;
 export default curriculoSlice.reducer;
