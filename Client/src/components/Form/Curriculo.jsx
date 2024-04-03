@@ -57,7 +57,7 @@ export function Curriculo() {
 
   useEffect(() => {
     if (curriculo && curriculo.curriculo_id) {
-      navigate(`/curriculo/${curriculo.curriculo_id}`);
+      navigate(`/curriculoDetalle/${curriculo.curriculo_id}`);
     }
   }, [curriculo]);
 
@@ -144,7 +144,7 @@ export function Curriculo() {
     let duplicado = false;
 
     datosCurriculo.titulos_obtenidos.forEach((titulo_obtenido) => {
-      if (titulo_obtenido.toLowerCase() === select.value.toLowerCase()) {
+      if (titulo_obtenido.nombre.toLowerCase() === select.value.toLowerCase()) {
         duplicado = true;
         return;
       }
@@ -158,7 +158,10 @@ export function Curriculo() {
 
     setDatosCurriculo({
       ...datosCurriculo,
-      titulos_obtenidos: [...datosCurriculo.titulos_obtenidos, select.value],
+      titulos_obtenidos: [
+        ...datosCurriculo.titulos_obtenidos,
+        { nombre: select.value },
+      ],
     });
 
     select.value = "";
@@ -375,7 +378,7 @@ export function Curriculo() {
                     key={i}
                     className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="px-4 py-4">{titulo_obtenido}</td>
+                    <td className="px-4 py-4">{titulo_obtenido.nombre}</td>
                     <td className="px-4 py-4">
                       <a
                         href="#"

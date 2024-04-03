@@ -34,7 +34,7 @@ export function DatosPersonales() {
     event.preventDefault();
 
     if (curriculoEmpleado && curriculoEmpleado.curriculo_id) {
-      return navigate(`/curriculo/${curriculoEmpleado.curriculo_id}`);
+      return navigate(`/curriculoDetalle/${curriculoEmpleado.curriculo_id}`);
     }
 
     return navigate("/form/curriculo");
