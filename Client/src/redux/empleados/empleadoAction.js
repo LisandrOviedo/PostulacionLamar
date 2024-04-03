@@ -24,13 +24,18 @@ export const getLogin = (cedula, clave) => {
         title: "¡Bienvenido!",
         text: "Sesión iniciada correctamente",
         icon: "success",
-        position: "center",
         showConfirmButton: false,
         timer: 1500,
         width: "20em",
       });
     } catch (error) {
-      alert(error.response.data.error);
+      return Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     }
   };
 };

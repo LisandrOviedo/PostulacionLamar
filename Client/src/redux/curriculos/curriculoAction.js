@@ -63,9 +63,8 @@ export const postCurriculo = (
         title: "¡Curriculo registrado exitosamente!",
         text: "Si deseas actualizar o ver los detalles de tu currículo, debes iniciar sesión nuevamente",
         icon: "success",
-        position: "center",
         showConfirmButton: false,
-        timer: 1500,
+        timer: 2000,
       });
     } catch (error) {
       alert(error.response.data.error);
