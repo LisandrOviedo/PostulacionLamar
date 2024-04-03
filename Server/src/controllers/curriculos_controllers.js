@@ -153,11 +153,9 @@ const traerCurriculoEmpleado = async (empleado_id) => {
       ],
     });
 
-    if (!curriculo) {
-      throw new Error("No existe ese curriculo");
+    if (curriculo) {
+      return curriculo;
     }
-
-    return curriculo;
   } catch (error) {
     throw new Error("Error al traer el curriculo: " + error.message);
   }
@@ -171,14 +169,7 @@ const crearCurriculo = async (
   originalname,
   path
 ) => {
-  if (
-    !empleado_id ||
-    !grado_instruccion ||
-    !disponibilidad_viajar ||
-    !disponibilidad_cambio_residencia ||
-    !originalname ||
-    !path
-  ) {
+  if (!empleado_id || !grado_instruccion || !originalname || !path) {
     throw new Error("Datos faltantes");
   }
 
@@ -233,8 +224,6 @@ const modificarCurriculo = async (
   if (
     !curriculo_id ||
     !grado_instruccion ||
-    !disponibilidad_viajar ||
-    !disponibilidad_cambio_residencia ||
     !originalname ||
     !path ||
     !estado ||
