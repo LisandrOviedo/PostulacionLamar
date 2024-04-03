@@ -57,7 +57,7 @@ export function Curriculo() {
 
   useEffect(() => {
     if (curriculo && curriculo.curriculo_id) {
-      navigate(`/curriculoDetalle/${curriculo.curriculo_id}`);
+      navigate("/");
     }
   }, [curriculo]);
 
