@@ -52,22 +52,22 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
       const [titulo_obtenido, created] = await Titulo_Obtenido.findOrCreate({
         where: {
           curriculo_id: curriculo_id,
-          nombre: titulo,
+          nombre: titulo.nombre,
         },
         defaults: {
           curriculo_id: curriculo_id,
-          nombre: titulo,
+          nombre: titulo.nombre,
         },
       });
 
       if (!created) {
         if (fallidos === "") {
-          fallidos = titulo;
+          fallidos = titulo.nombre;
           return;
         }
 
         if (fallidos !== "") {
-          fallidos = fallidos + ` ${titulo}`;
+          fallidos = fallidos + ` ${titulo.nombre}`;
           return;
         }
       }
