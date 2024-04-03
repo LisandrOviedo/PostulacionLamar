@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Button, Input, Title } from "../UI";
 import { getLogin, resetEmpleados } from "../../redux/empleados/empleadoAction";
+import { resetCurriculos } from "../../redux/curriculos/curriculoAction";
 
 export function Landing() {
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ export function Landing() {
     window.scroll(0, 0);
 
     dispatch(resetEmpleados());
+    dispatch(resetCurriculos());
   }, []);
 
   useEffect(() => {
