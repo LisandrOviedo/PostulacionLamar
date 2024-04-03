@@ -6,10 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
-import {
-  postCurriculo,
-  getCurriculoEmpleado,
-} from "../../redux/curriculos/curriculoAction";
+import { postCurriculo } from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
@@ -18,9 +15,7 @@ export function Curriculo() {
   const navigate = useNavigate();
 
   const empleado = useSelector((state) => state.empleados.empleado);
-  const curriculoEmpleado = useSelector(
-    (state) => state.curriculos.curriculoEmpleado
-  );
+
   const curriculo = useSelector((state) => state.curriculos.curriculo);
 
   const areas_interes_activas = useSelector(
@@ -30,8 +25,8 @@ export function Curriculo() {
   const [datosCurriculo, setDatosCurriculo] = useState({
     grado_instruccion: "Basico",
     titulos_obtenidos: [],
-    disponibilidad_viajar: "true",
-    disponibilidad_cambio_residencia: "true",
+    disponibilidad_viajar: true,
+    disponibilidad_cambio_residencia: false,
     areas_interes: [],
     experiencias: [],
   });
@@ -57,17 +52,8 @@ export function Curriculo() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getCurriculoEmpleado(empleado.empleado_id));
     dispatch(getAllAreasInteresActivas());
   }, []);
-
-  useEffect(() => {
-    window.scroll(0, 0);
-
-    if (curriculoEmpleado && curriculoEmpleado.curriculo_id) {
-      alert("El empleado ya posee curriculo registrado");
-    }
-  }, [curriculoEmpleado]);
 
   useEffect(() => {
     if (curriculo && curriculo.curriculo_id) {
@@ -79,6 +65,12 @@ export function Curriculo() {
     const { name, value } = event.target;
 
     setDatosCurriculo({ ...datosCurriculo, [name]: value });
+  };
+
+  const handleCheckedChangeCurriculo = (event) => {
+    const { name, checked } = event.target;
+
+    setDatosCurriculo({ ...datosCurriculo, [name]: checked });
   };
 
   const handleTipoExpSelected = () => {
@@ -271,8 +263,6 @@ export function Curriculo() {
     if (
       !input.value ||
       !datosCurriculo.grado_instruccion ||
-      !datosCurriculo.disponibilidad_viajar ||
-      !datosCurriculo.disponibilidad_cambio_residencia ||
       !datosCurriculo.areas_interes.length
     ) {
       return alert("Datos faltantes");
@@ -430,69 +420,31 @@ export function Curriculo() {
               </Button>
             </div>
           </div>
-          <div>
-            <Label htmlFor="disponibilidad_viajar_si">
+          <div className="flex items-center justify-center gap-2">
+            <input
+              id="disponibilidad_viajar"
+              name="disponibilidad_viajar"
+              type="checkbox"
+              checked={datosCurriculo.disponibilidad_viajar}
+              onChange={handleCheckedChangeCurriculo}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+            <Label htmlFor="disponibilidad_viajar">
               ¿Posees disponibilidad para viajar?
             </Label>
-            <div className="mt-4">
-              <input
-                id="disponibilidad_viajar_si"
-                type="radio"
-                name="disponibilidad_viajar"
-                value="true"
-                defaultChecked
-                onChange={handleInputChangeCurriculo}
-              />
-              <label htmlFor="disponibilidad_viajar_si" className="ml-1">
-                Si
-              </label>
-              <input
-                id="disponibilidad_viajar_no"
-                type="radio"
-                name="disponibilidad_viajar"
-                value="false"
-                className="ml-6"
-                onChange={handleInputChangeCurriculo}
-              />
-              <label htmlFor="disponibilidad_viajar_no" className="ml-1">
-                No
-              </label>
-            </div>
           </div>
-          <div>
-            <Label htmlFor="disponibilidad_cambio_residencia_si">
+          <div className="flex items-center justify-center gap-2">
+            <input
+              id="disponibilidad_cambio_residencia"
+              name="disponibilidad_cambio_residencia"
+              type="checkbox"
+              checked={datosCurriculo.disponibilidad_cambio_residencia}
+              onChange={handleCheckedChangeCurriculo}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+            <Label htmlFor="disponibilidad_cambio_residencia">
               ¿Posees disponibilidad para cambio de residencia?
             </Label>
-            <div className="mt-4">
-              <input
-                id="disponibilidad_cambio_residencia_si"
-                type="radio"
-                name="disponibilidad_cambio_residencia"
-                value="true"
-                defaultChecked
-                onChange={handleInputChangeCurriculo}
-              />
-              <label
-                htmlFor="disponibilidad_cambio_residencia_si"
-                className="ml-1"
-              >
-                Si
-              </label>
-              <input
-                id="disponibilidad_cambio_residencia_no"
-                type="radio"
-                name="disponibilidad_cambio_residencia"
-                value="false"
-                className="ml-6"
-                onChange={handleInputChangeCurriculo}
-              />
-              <label
-                htmlFor="disponibilidad_cambio_residencia_no"
-                className="ml-1"
-              >
-                No
-              </label>
-            </div>
           </div>
           <div className="md:col-span-3">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
