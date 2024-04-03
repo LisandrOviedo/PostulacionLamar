@@ -1,33 +1,38 @@
 import React from "react";
-import axios from "axios";
 
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
 import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
+import {
+  postCurriculo,
+  getCurriculoEmpleado,
+} from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
 export function CurriculoDetail() {
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const { empleado_id } = useParams();
+  const empleado = useSelector((state) => state.empleados.empleado);
+
+  const curriculoEmpleado = useSelector(
+    (state) => state.curriculos.curriculoEmpleado
+  );
+  const curriculo = useSelector((state) => state.curriculos.curriculo);
 
   const areas_interes_activas = useSelector(
     (state) => state.areas_interes.areas_interes_activas
   );
 
-  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
-
   const [datosCurriculo, setDatosCurriculo] = useState({
-    empleado_id: empleado_id,
     grado_instruccion: "Basico",
     titulos_obtenidos: [],
-    disponibilidad_viajar: "true",
-    disponibilidad_cambio_residencia: "true",
+    disponibilidad_viajar: true,
+    disponibilidad_cambio_residencia: false,
     areas_interes: [],
     experiencias: [],
   });
@@ -53,13 +58,34 @@ export function CurriculoDetail() {
   useEffect(() => {
     window.scroll(0, 0);
 
+    // dispatch(getCurriculoEmpleado(empleado.empleado_id));
     dispatch(getAllAreasInteresActivas());
   }, []);
+
+  // useEffect(() => {
+  //   window.scroll(0, 0);
+
+  //   if (curriculoEmpleado && curriculoEmpleado.curriculo_id) {
+  //     navigate(`/curriculo/${curriculoEmpleado.curriculo_id}`);
+  //   }
+  // }, [curriculoEmpleado]);
+
+  useEffect(() => {
+    if (curriculo && curriculo.curriculo_id) {
+      navigate(`/curriculo/${curriculo.curriculo_id}`);
+    }
+  }, [curriculo]);
 
   const handleInputChangeCurriculo = (event) => {
     const { name, value } = event.target;
 
     setDatosCurriculo({ ...datosCurriculo, [name]: value });
+  };
+
+  const handleCheckedChangeCurriculo = (event) => {
+    const { name, checked } = event.target;
+
+    setDatosCurriculo({ ...datosCurriculo, [name]: checked });
   };
 
   const handleTipoExpSelected = () => {
@@ -251,20 +277,15 @@ export function CurriculoDetail() {
 
     if (
       !input.value ||
-      !datosCurriculo.empleado_id ||
       !datosCurriculo.grado_instruccion ||
-      !datosCurriculo.titulos_obtenidos ||
-      !datosCurriculo.disponibilidad_viajar ||
-      !datosCurriculo.disponibilidad_cambio_residencia ||
-      !datosCurriculo.areas_interes ||
-      !datosCurriculo.experiencias
+      !datosCurriculo.areas_interes.length
     ) {
       return alert("Datos faltantes");
     }
 
     const formData = new FormData();
     formData.append("pdf", pdf);
-    formData.append("empleado_id", datosCurriculo.empleado_id);
+    formData.append("empleado_id", empleado.empleado_id);
     formData.append("grado_instruccion", datosCurriculo.grado_instruccion);
     formData.append("centro_educativo", datosCurriculo.centro_educativo);
     formData.append(
@@ -276,35 +297,23 @@ export function CurriculoDetail() {
       datosCurriculo.disponibilidad_cambio_residencia
     );
 
-    const { data } = await axios.post(`${URL_SERVER}/curriculos`, formData);
-
-    if (data === "Ya existe un curriculo para ese empleado") {
-      return alert(data);
-    }
-
-    if (data.curriculo_id) {
-      await axios.post(`${URL_SERVER}/areasinteres/agregarArea`, {
-        curriculo_id: data.curriculo_id,
-        areas_interes: datosCurriculo.areas_interes,
-      });
-
-      await axios.post(`${URL_SERVER}/titulosobtenidos`, {
-        curriculo_id: data.curriculo_id,
-        titulos_obtenidos: datosCurriculo.titulos_obtenidos,
-      });
-
-      await axios.post(`${URL_SERVER}/experiencias`, {
-        curriculo_id: data.curriculo_id,
-        experiencias: datosCurriculo.experiencias,
-      });
-
-      return alert("Curriculo registrado");
+    try {
+      dispatch(
+        postCurriculo(
+          formData,
+          datosCurriculo.areas_interes,
+          datosCurriculo.titulos_obtenidos,
+          datosCurriculo.experiencias
+        )
+      );
+    } catch (error) {
+      alert(error.response.data.error);
     }
   };
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
-      <Title>Datos Currículo</Title>
+      <Title>Detalle del Currículo</Title>
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
       <form>
         <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
@@ -426,69 +435,31 @@ export function CurriculoDetail() {
               </Button>
             </div>
           </div>
-          <div>
-            <Label htmlFor="disponibilidad_viajar_si">
+          <div className="flex items-center justify-center gap-2">
+            <input
+              id="disponibilidad_viajar"
+              name="disponibilidad_viajar"
+              type="checkbox"
+              checked={datosCurriculo.disponibilidad_viajar}
+              onChange={handleCheckedChangeCurriculo}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+            <Label htmlFor="disponibilidad_viajar">
               ¿Posees disponibilidad para viajar?
             </Label>
-            <div className="mt-4">
-              <input
-                id="disponibilidad_viajar_si"
-                type="radio"
-                name="disponibilidad_viajar"
-                value="true"
-                defaultChecked
-                onChange={handleInputChangeCurriculo}
-              />
-              <label htmlFor="disponibilidad_viajar_si" className="ml-1">
-                Si
-              </label>
-              <input
-                id="disponibilidad_viajar_no"
-                type="radio"
-                name="disponibilidad_viajar"
-                value="false"
-                className="ml-6"
-                onChange={handleInputChangeCurriculo}
-              />
-              <label htmlFor="disponibilidad_viajar_no" className="ml-1">
-                No
-              </label>
-            </div>
           </div>
-          <div>
-            <Label htmlFor="disponibilidad_cambio_residencia_si">
+          <div className="flex items-center justify-center gap-2">
+            <input
+              id="disponibilidad_cambio_residencia"
+              name="disponibilidad_cambio_residencia"
+              type="checkbox"
+              checked={datosCurriculo.disponibilidad_cambio_residencia}
+              onChange={handleCheckedChangeCurriculo}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+            <Label htmlFor="disponibilidad_cambio_residencia">
               ¿Posees disponibilidad para cambio de residencia?
             </Label>
-            <div className="mt-4">
-              <input
-                id="disponibilidad_cambio_residencia_si"
-                type="radio"
-                name="disponibilidad_cambio_residencia"
-                value="true"
-                defaultChecked
-                onChange={handleInputChangeCurriculo}
-              />
-              <label
-                htmlFor="disponibilidad_cambio_residencia_si"
-                className="ml-1"
-              >
-                Si
-              </label>
-              <input
-                id="disponibilidad_cambio_residencia_no"
-                type="radio"
-                name="disponibilidad_cambio_residencia"
-                value="false"
-                className="ml-6"
-                onChange={handleInputChangeCurriculo}
-              />
-              <label
-                htmlFor="disponibilidad_cambio_residencia_no"
-                className="ml-1"
-              >
-                No
-              </label>
-            </div>
           </div>
           <div className="md:col-span-3">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
