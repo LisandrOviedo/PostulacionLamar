@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { getCargoActual } from "../../redux/empleados/empleadoAction";
 
+import { getCurriculoEmpleado } from "../../redux/curriculos/curriculoAction";
+
 import { Button, Input, Label, Title } from "../UI";
 
 export function DatosPersonales() {
@@ -13,17 +15,29 @@ export function DatosPersonales() {
   const navigate = useNavigate();
 
   const empleado = useSelector((state) => state.empleados.empleado);
+
   const cargo_actual = useSelector((state) => state.empleados.cargo_actual);
+
+  const curriculoEmpleado = useSelector(
+    (state) => state.curriculos.curriculoEmpleado
+  );
 
   useEffect(() => {
     window.scroll(0, 0);
 
     dispatch(getCargoActual(empleado.empleado_id));
+
+    dispatch(getCurriculoEmpleado(empleado.empleado_id));
   }, []);
 
   const handleContinuar = (event) => {
     event.preventDefault();
-    navigate("/form/curriculo");
+
+    if (curriculoEmpleado && curriculoEmpleado.curriculo_id) {
+      return navigate(`/curriculo/${curriculoEmpleado.curriculo_id}`);
+    }
+
+    return navigate("/form/curriculo");
   };
 
   return (
