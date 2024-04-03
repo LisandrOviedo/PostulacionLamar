@@ -6,10 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
-import {
-  postCurriculo,
-  getCurriculoEmpleado,
-} from "../../redux/curriculos/curriculoAction";
+import { postCurriculo } from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
@@ -19,9 +16,6 @@ export function CurriculoDetail() {
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const curriculoEmpleado = useSelector(
-    (state) => state.curriculos.curriculoEmpleado
-  );
   const curriculo = useSelector((state) => state.curriculos.curriculo);
 
   const areas_interes_activas = useSelector(
@@ -58,17 +52,8 @@ export function CurriculoDetail() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    // dispatch(getCurriculoEmpleado(empleado.empleado_id));
     dispatch(getAllAreasInteresActivas());
   }, []);
-
-  // useEffect(() => {
-  //   window.scroll(0, 0);
-
-  //   if (curriculoEmpleado && curriculoEmpleado.curriculo_id) {
-  //     navigate(`/curriculo/${curriculoEmpleado.curriculo_id}`);
-  //   }
-  // }, [curriculoEmpleado]);
 
   useEffect(() => {
     if (curriculo && curriculo.curriculo_id) {
