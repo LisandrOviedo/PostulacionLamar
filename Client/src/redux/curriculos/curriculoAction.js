@@ -9,6 +9,8 @@ import {
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
+import Swal from "sweetalert2";
+
 export const getAllCurriculos = () => {
   return async (dispatch) => {
     try {
@@ -58,7 +60,14 @@ export const postCurriculo = (
         await postExperiencias(data.curriculo_id, experiencias);
       }
 
-      return alert("¡Curriculo registrado exitosamente!");
+      return Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "¡Curriculo registrado exitosamente!",
+        text: "Si deseas actualizar o ver los detalles de tu currículo, debes iniciar sesión nuevamente",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     } catch (error) {
       alert(error.response.data.error);
     }

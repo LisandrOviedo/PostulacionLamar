@@ -10,6 +10,8 @@ import { getCurriculoEmpleado } from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Title } from "../UI";
 
+import Swal from "sweetalert2";
+
 export function DatosPersonales() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,6 +36,12 @@ export function DatosPersonales() {
     event.preventDefault();
 
     if (curriculoEmpleado && curriculoEmpleado.curriculo_id) {
+      Swal.fire({
+        title: "¡Atención!",
+        text: "Ya tienes un currículo registrado, serás redireccionado a sus detalles",
+        icon: "info",
+      });
+
       return navigate(`/curriculoDetalle/${curriculoEmpleado.curriculo_id}`);
     }
 
