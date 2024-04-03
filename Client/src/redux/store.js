@@ -9,7 +9,7 @@ import areas_interes from "./areasinteres/areainteresSlice";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["empleados"],
+  whitelist: ["empleados", "curriculos"],
 };
 
 // Combinar el userReducer con Redux Persist
