@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import {
   allCurriculos,
@@ -8,8 +9,6 @@ import {
 } from "./curriculoSlice";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
-
-import Swal from "sweetalert2";
 
 export const getAllCurriculos = () => {
   return async (dispatch) => {
@@ -61,10 +60,10 @@ export const postCurriculo = (
       }
 
       return Swal.fire({
-        position: "center",
-        icon: "success",
         title: "¡Curriculo registrado exitosamente!",
         text: "Si deseas actualizar o ver los detalles de tu currículo, debes iniciar sesión nuevamente",
+        icon: "success",
+        position: "center",
         showConfirmButton: false,
         timer: 1500,
       });

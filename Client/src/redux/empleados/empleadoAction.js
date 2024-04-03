@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import {
   allEmpleados,
@@ -17,7 +18,17 @@ export const getLogin = (cedula, clave) => {
     try {
       const { data } = await axios(URL_LOGIN);
 
-      return dispatch(createEmpleado(data));
+      dispatch(createEmpleado(data));
+
+      return Swal.fire({
+        title: "¡Bienvenido!",
+        text: "Sesión iniciada correctamente",
+        icon: "success",
+        position: "center",
+        showConfirmButton: false,
+        timer: 1500,
+        width: "20em",
+      });
     } catch (error) {
       alert(error.response.data.error);
     }
