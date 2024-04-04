@@ -18,7 +18,7 @@ experiencias.post("/", postExperiencia);
 experiencias.put("/modificar", putExperiencia);
 experiencias.put("/inactivar", deleteExperiencia);
 
-experiencias.put(
+experiencias.delete(
   "/eliminarExperiencias/:curriculo_id",
   deleteExperienciasCurriculo
 );

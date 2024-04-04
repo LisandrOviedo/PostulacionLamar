@@ -10,6 +10,8 @@ import { postCurriculo } from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
+import Swal from "sweetalert2";
+
 export function Curriculo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -268,7 +270,13 @@ export function Curriculo() {
       !datosCurriculo.grado_instruccion ||
       !datosCurriculo.areas_interes.length
     ) {
-      return alert("Datos faltantes");
+      return Swal.fire({
+        title: "Oops...",
+        text: "Datos faltantes",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
 
     const formData = new FormData();
@@ -582,7 +590,7 @@ export function Curriculo() {
               </tbody>
             </table>
           </div>
-          <div className="flex items-end">
+          <div className="flex items-end col-span-3 justify-center">
             <Button className="m-0" onClick={handleCreateCurriculo}>
               Enviar Currículo
             </Button>

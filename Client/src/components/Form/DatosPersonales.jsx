@@ -213,7 +213,8 @@ export function DatosPersonales() {
               </div>
             </React.Fragment>
           )}
-          <div className="flex items-end">
+
+          <div className="flex items-end col-span-3 justify-center">
             <Button className="m-0" onClick={handleContinuar}>
               Continuar
             </Button>

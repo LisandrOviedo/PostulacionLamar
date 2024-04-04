@@ -6,8 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
+import { putCurriculo } from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
+
+import Swal from "sweetalert2";
 
 export function CurriculoDetail() {
   const dispatch = useDispatch();
@@ -251,6 +254,10 @@ export function CurriculoDetail() {
     });
   };
 
+  const handleCancel = () => {
+    navigate("/");
+  };
+
   const handleUpdateCurriculo = async (event) => {
     event.preventDefault();
 
@@ -262,7 +269,13 @@ export function CurriculoDetail() {
       !datosCurriculo.grado_instruccion ||
       !datosCurriculo.areas_interes.length
     ) {
-      return alert("Datos faltantes");
+      return Swal.fire({
+        title: "Oops...",
+        text: "Datos faltantes",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
 
     const formData = new FormData();
@@ -281,7 +294,7 @@ export function CurriculoDetail() {
 
     try {
       dispatch(
-        postCurriculo(
+        putCurriculo(
           formData,
           datosCurriculo.areas_interes,
           datosCurriculo.titulos_obtenidos,
@@ -580,6 +593,14 @@ export function CurriculoDetail() {
               </table>
             </div>
             <div className="flex items-end">
+              <Button
+                className="m-0 bg-red-700 hover:bg-red-800 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                onClick={handleCancel}
+              >
+                Cancelar / Salir
+              </Button>
+            </div>
+            <div className="flex items-end justify-center">
               <Button className="m-0" onClick={handleUpdateCurriculo}>
                 Guardar Cambios
               </Button>
