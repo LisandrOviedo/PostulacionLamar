@@ -17,15 +17,14 @@ export const getAllCurriculos = () => {
 
       return dispatch(allCurriculos(data));
     } catch (error) {
-      throw new Error(
-        Swal.fire({
-          title: "Oops...",
-          text: `${error.response.data.error}`,
-          icon: "error",
-          showConfirmButton: false,
-          timer: 2000,
-        })
-      );
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };
@@ -39,15 +38,14 @@ export const getCurriculoEmpleado = (empleado_id) => {
 
       return dispatch(curriculoEmpleado(data));
     } catch (error) {
-      throw new Error(
-        Swal.fire({
-          title: "Oops...",
-          text: `${error.response.data.error}`,
-          icon: "error",
-          showConfirmButton: false,
-          timer: 2000,
-        })
-      );
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };
@@ -83,15 +81,14 @@ export const postCurriculo = (
         timer: 2000,
       });
     } catch (error) {
-      throw new Error(
-        Swal.fire({
-          title: "Oops...",
-          text: `${error.response.data.error}`,
-          icon: "error",
-          showConfirmButton: false,
-          timer: 2000,
-        })
-      );
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };
@@ -107,15 +104,14 @@ const postAreasInteres = async (curriculo_id, areas_interes) => {
 
     return data;
   } catch (error) {
-    throw new Error(
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      })
-    );
+    Swal.fire({
+      title: "Oops...",
+      text: `${error.response.data.error}`,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    throw new Error();
   }
 };
 
@@ -130,15 +126,14 @@ const postTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
 
     return data;
   } catch (error) {
-    throw new Error(
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      })
-    );
+    Swal.fire({
+      title: "Oops...",
+      text: `${error.response.data.error}`,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    throw new Error();
   }
 };
 
@@ -153,15 +148,14 @@ const postExperiencias = async (curriculo_id, experiencias) => {
 
     return data;
   } catch (error) {
-    throw new Error(
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      })
-    );
+    Swal.fire({
+      title: "Oops...",
+      text: `${error.response.data.error}`,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    throw new Error();
   }
 };
 
@@ -170,15 +164,14 @@ export const resetCurriculos = () => {
     try {
       return dispatch(resetState());
     } catch (error) {
-      throw new Error(
-        Swal.fire({
-          title: "Oops...",
-          text: `${error.response.data.error}`,
-          icon: "error",
-          showConfirmButton: false,
-          timer: 2000,
-        })
-      );
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };

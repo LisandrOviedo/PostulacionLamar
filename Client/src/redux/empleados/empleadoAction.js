@@ -29,15 +29,14 @@ export const getLogin = (cedula, clave) => {
         width: "20em",
       });
     } catch (error) {
-      throw new Error(
-        Swal.fire({
-          title: "Oops...",
-          text: `${error.response.data.error}`,
-          icon: "error",
-          showConfirmButton: false,
-          timer: 2000,
-        })
-      );
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };
@@ -51,15 +50,14 @@ export const getEmpleadoByID = (empleado_id) => {
 
       return dispatch(empleadoByID(data));
     } catch (error) {
-      throw new Error(
-        Swal.fire({
-          title: "Oops...",
-          text: `${error.response.data.error}`,
-          icon: "error",
-          showConfirmButton: false,
-          timer: 2000,
-        })
-      );
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };
@@ -73,15 +71,14 @@ export const getCargoActual = (empleado_id) => {
 
       return dispatch(cargoActualEmpleado(data));
     } catch (error) {
-      throw new Error(
-        Swal.fire({
-          title: "Oops...",
-          text: `${error.response.data.error}`,
-          icon: "error",
-          showConfirmButton: false,
-          timer: 2000,
-        })
-      );
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };
@@ -97,15 +94,14 @@ export const putPassword = async (body) => {
       icon: "success",
     });
   } catch (error) {
-    throw new Error(
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      })
-    );
+    Swal.fire({
+      title: "Oops...",
+      text: `${error.response.data.error}`,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    throw new Error();
   }
 };
 
@@ -114,15 +110,14 @@ export const resetEmpleados = () => {
     try {
       return dispatch(resetState());
     } catch (error) {
-      throw new Error(
-        Swal.fire({
-          title: "Oops...",
-          text: `${error.response.data.error}`,
-          icon: "error",
-          showConfirmButton: false,
-          timer: 2000,
-        })
-      );
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };

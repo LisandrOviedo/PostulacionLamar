@@ -12,15 +12,14 @@ export const getAllAreasInteresActivas = () => {
 
       return dispatch(allAreasInteresActivas(data));
     } catch (error) {
-      throw new Error(
-        Swal.fire({
-          title: "Oops...",
-          text: `${error.response.data.error}`,
-          icon: "error",
-          showConfirmButton: false,
-          timer: 2000,
-        })
-      );
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };
