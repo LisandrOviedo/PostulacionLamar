@@ -80,7 +80,7 @@ export const postCurriculo = (
         text: "Si deseas actualizar o ver los detalles de tu currículo, debes iniciar sesión nuevamente",
         icon: "success",
         showConfirmButton: false,
-        timer: 3000,
+        timer: 4000,
       });
     } catch (error) {
       Swal.fire({
@@ -99,12 +99,10 @@ const postAreasInteres = async (curriculo_id, areas_interes) => {
   const URL_ADD_AREASINTERES = `${URL_SERVER}/areasinteres/agregarArea`;
 
   try {
-    const { data } = await axios.post(`${URL_ADD_AREASINTERES}`, {
+    await axios.post(`${URL_ADD_AREASINTERES}`, {
       curriculo_id,
       areas_interes,
     });
-
-    return data;
   } catch (error) {
     Swal.fire({
       title: "Oops...",
@@ -121,12 +119,10 @@ const postTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
   const URL_ADD_TITULOSOBTENIDOS = `${URL_SERVER}/titulosobtenidos`;
 
   try {
-    const { data } = await axios.post(`${URL_ADD_TITULOSOBTENIDOS}`, {
+    await axios.post(`${URL_ADD_TITULOSOBTENIDOS}`, {
       curriculo_id,
       titulos_obtenidos,
     });
-
-    return data;
   } catch (error) {
     Swal.fire({
       title: "Oops...",
@@ -143,12 +139,10 @@ const postExperiencias = async (curriculo_id, experiencias) => {
   const URL_ADD_EXPERIENCIAS = `${URL_SERVER}/experiencias`;
 
   try {
-    const { data } = await axios.post(`${URL_ADD_EXPERIENCIAS}`, {
+    await axios.post(`${URL_ADD_EXPERIENCIAS}`, {
       curriculo_id,
       experiencias,
     });
-
-    return data;
   } catch (error) {
     Swal.fire({
       title: "Oops...",
@@ -161,7 +155,7 @@ const postExperiencias = async (curriculo_id, experiencias) => {
   }
 };
 
-// FIN CREAR CURRICULO
+// FIN POST CURRICULO
 
 export const resetCurriculos = () => {
   return async (dispatch) => {
@@ -225,14 +219,15 @@ export const putCurriculo = (
 
 const putAreasInteres = async (curriculo_id, areas_interes) => {
   const URL_ADD_AREASINTERES = `${URL_SERVER}/areasinteres/agregarArea`;
+  const URL_DELETE_AREASINTERES = `${URL_SERVER}/areasinteres/eliminarAreas/${curriculo_id}`;
 
   try {
-    const { data } = await axios.post(`${URL_ADD_AREASINTERES}`, {
+    await axios.delete(URL_DELETE_AREASINTERES);
+
+    await axios.post(`${URL_ADD_AREASINTERES}`, {
       curriculo_id,
       areas_interes,
     });
-
-    return data;
   } catch (error) {
     Swal.fire({
       title: "Oops...",
@@ -247,14 +242,15 @@ const putAreasInteres = async (curriculo_id, areas_interes) => {
 
 const putTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
   const URL_ADD_TITULOSOBTENIDOS = `${URL_SERVER}/titulosobtenidos`;
+  const URL_DELETE_TITULOSOBTENIDOS = `${URL_SERVER}/titulosobtenidos/eliminarTitulos/${curriculo_id}`;
 
   try {
-    const { data } = await axios.post(`${URL_ADD_TITULOSOBTENIDOS}`, {
+    await axios.delete(URL_DELETE_TITULOSOBTENIDOS);
+
+    await axios.post(`${URL_ADD_TITULOSOBTENIDOS}`, {
       curriculo_id,
       titulos_obtenidos,
     });
-
-    return data;
   } catch (error) {
     Swal.fire({
       title: "Oops...",
@@ -269,14 +265,15 @@ const putTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
 
 const putExperiencias = async (curriculo_id, experiencias) => {
   const URL_ADD_EXPERIENCIAS = `${URL_SERVER}/experiencias`;
+  const URL_DELETE_EXPERIENCIAS = `${URL_SERVER}/experiencias/eliminarExperiencias/${curriculo_id}`;
 
   try {
-    const { data } = await axios.post(`${URL_ADD_EXPERIENCIAS}`, {
+    await axios.delete(URL_DELETE_EXPERIENCIAS);
+
+    await axios.post(`${URL_ADD_EXPERIENCIAS}`, {
       curriculo_id,
       experiencias,
     });
-
-    return data;
   } catch (error) {
     Swal.fire({
       title: "Oops...",
