@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import validations from "./validations";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { Button, Input, Title } from "../UI";
 
@@ -12,7 +12,6 @@ import { putPassword } from "../../redux/empleados/empleadoAction";
 
 export function UpdatePassword() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
@@ -29,16 +28,9 @@ export function UpdatePassword() {
       clave: data.clave,
     };
 
-    try {
-      putPassword(body);
+    await putPassword(body);
 
-      navigate("/");
-      return alert(
-        "Su contraseña ha sido actualizada exitosamente, proceda a loguearse para continuar"
-      );
-    } catch (error) {
-      alert(error.response.data.error);
-    }
+    navigate("/");
   };
 
   const handleKeyDown = (e) => {

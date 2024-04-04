@@ -29,13 +29,15 @@ export const getLogin = (cedula, clave) => {
         width: "20em",
       });
     } catch (error) {
-      return Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      throw new Error(
+        Swal.fire({
+          title: "Oops...",
+          text: `${error.response.data.error}`,
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        })
+      );
     }
   };
 };
@@ -49,7 +51,15 @@ export const getEmpleadoByID = (empleado_id) => {
 
       return dispatch(empleadoByID(data));
     } catch (error) {
-      alert(error.response.data.error);
+      throw new Error(
+        Swal.fire({
+          title: "Oops...",
+          text: `${error.response.data.error}`,
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        })
+      );
     }
   };
 };
@@ -63,7 +73,15 @@ export const getCargoActual = (empleado_id) => {
 
       return dispatch(cargoActualEmpleado(data));
     } catch (error) {
-      alert(error.response.data.error);
+      throw new Error(
+        Swal.fire({
+          title: "Oops...",
+          text: `${error.response.data.error}`,
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        })
+      );
     }
   };
 };
@@ -72,10 +90,22 @@ export const putPassword = async (body) => {
   const URL_PUT_PASSWORD = `${URL_SERVER}/empleados/modificarClave`;
 
   try {
-    const response = await axios.put(URL_PUT_PASSWORD, body);
-    return response.data;
+    await axios.put(URL_PUT_PASSWORD, body);
+
+    return Swal.fire({
+      text: "Su contraseña ha sido actualizada exitosamente, proceda a loguearse para continuar",
+      icon: "success",
+    });
   } catch (error) {
-    throw new Error(error.response.data.error);
+    throw new Error(
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      })
+    );
   }
 };
 
@@ -84,7 +114,15 @@ export const resetEmpleados = () => {
     try {
       return dispatch(resetState());
     } catch (error) {
-      alert(error.response.data.error);
+      throw new Error(
+        Swal.fire({
+          title: "Oops...",
+          text: `${error.response.data.error}`,
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        })
+      );
     }
   };
 };

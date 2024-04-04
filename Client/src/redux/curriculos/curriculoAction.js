@@ -17,7 +17,15 @@ export const getAllCurriculos = () => {
 
       return dispatch(allCurriculos(data));
     } catch (error) {
-      alert(error.response.data.error);
+      throw new Error(
+        Swal.fire({
+          title: "Oops...",
+          text: `${error.response.data.error}`,
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        })
+      );
     }
   };
 };
@@ -31,7 +39,15 @@ export const getCurriculoEmpleado = (empleado_id) => {
 
       return dispatch(curriculoEmpleado(data));
     } catch (error) {
-      alert(error.response.data.error);
+      throw new Error(
+        Swal.fire({
+          title: "Oops...",
+          text: `${error.response.data.error}`,
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        })
+      );
     }
   };
 };
@@ -67,7 +83,15 @@ export const postCurriculo = (
         timer: 2000,
       });
     } catch (error) {
-      alert(error.response.data.error);
+      throw new Error(
+        Swal.fire({
+          title: "Oops...",
+          text: `${error.response.data.error}`,
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        })
+      );
     }
   };
 };
@@ -83,7 +107,15 @@ const postAreasInteres = async (curriculo_id, areas_interes) => {
 
     return data;
   } catch (error) {
-    alert(error.response.data.error);
+    throw new Error(
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      })
+    );
   }
 };
 
@@ -98,7 +130,15 @@ const postTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
 
     return data;
   } catch (error) {
-    alert(error.response.data.error);
+    throw new Error(
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      })
+    );
   }
 };
 
@@ -113,7 +153,15 @@ const postExperiencias = async (curriculo_id, experiencias) => {
 
     return data;
   } catch (error) {
-    alert(error.response.data.error);
+    throw new Error(
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      })
+    );
   }
 };
 
@@ -122,7 +170,15 @@ export const resetCurriculos = () => {
     try {
       return dispatch(resetState());
     } catch (error) {
-      alert(error.response.data.error);
+      throw new Error(
+        Swal.fire({
+          title: "Oops...",
+          text: `${error.response.data.error}`,
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        })
+      );
     }
   };
 };
