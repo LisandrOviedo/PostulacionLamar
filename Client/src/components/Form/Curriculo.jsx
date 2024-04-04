@@ -582,7 +582,7 @@ export function Curriculo() {
               </tbody>
             </table>
           </div>
-          <div className="flex items-end">
+          <div className="flex items-end col-span-3 justify-center">
             <Button className="m-0" onClick={handleCreateCurriculo}>
               Enviar Currículo
             </Button>
