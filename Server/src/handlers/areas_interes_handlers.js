@@ -6,6 +6,7 @@ const {
   modificarAreaInteres,
   inactivarAreaInteres,
   agregarAreasInteresCurriculo,
+  eliminarAreasInteresCurriculo,
 } = require("../controllers/areas_interes_controllers");
 
 const getAreasInteres = async (req, res) => {
@@ -95,6 +96,18 @@ const postAreasInteresCurriculo = async (req, res) => {
   }
 };
 
+const deleteAreasInteresCurriculo = async (req, res) => {
+  const { curriculo_id } = req.params;
+
+  try {
+    const response = await eliminarAreasInteresCurriculo(curriculo_id);
+
+    return res.status(201).json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAreasInteres,
   getAreasInteresActivas,
@@ -103,4 +116,5 @@ module.exports = {
   putAreaInteres,
   deleteAreaInteres,
   postAreasInteresCurriculo,
+  deleteAreasInteresCurriculo,
 };
