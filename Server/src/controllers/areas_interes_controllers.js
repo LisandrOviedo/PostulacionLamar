@@ -1,4 +1,6 @@
-const { Areas_Interes, Area_Interes_Curriculo, Curriculo } = require("../db");
+const { Areas_Interes, Area_Interes_Curriculo } = require("../db");
+
+const { traerCurriculo } = require("./curriculos_controllers");
 
 const todosLosAreaInteres = async () => {
   try {
@@ -128,11 +130,7 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
   }
 
   try {
-    const curriculo = await Curriculo.findByPk(curriculo_id);
-
-    if (!curriculo) {
-      throw new Error("No existe ese curriculo");
-    }
+    await traerCurriculo(curriculo_id);
 
     let fallidos = "";
 
@@ -176,6 +174,24 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
   }
 };
 
+const eliminarAreasInteresCurriculo = async (curriculo_id) => {
+  if (!curriculo_id) {
+    throw new Error("Datos faltantes");
+  }
+
+  try {
+    await traerCurriculo(curriculo_id);
+
+    await Area_Interes_Curriculo.destroy({
+      where: {
+        curriculo_id: curriculo_id,
+      },
+    });
+  } catch (error) {
+    throw new Error("Error al eliminar las áreas de interés: " + error.message);
+  }
+};
+
 module.exports = {
   todosLosAreaInteres,
   todosLosAreaInteresActivas,
@@ -184,4 +200,5 @@ module.exports = {
   modificarAreaInteres,
   inactivarAreaInteres,
   agregarAreasInteresCurriculo,
+  eliminarAreasInteresCurriculo,
 };
