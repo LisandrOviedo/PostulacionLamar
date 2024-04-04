@@ -28,9 +28,12 @@ export function UpdatePassword() {
       clave: data.clave,
     };
 
-    await putPassword(body);
-
-    navigate("/");
+    try {
+      await putPassword(body);
+      navigate("/");
+    } catch (error) {
+      return error;
+    }
   };
 
   const handleKeyDown = (e) => {
