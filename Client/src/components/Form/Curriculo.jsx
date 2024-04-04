@@ -584,7 +584,7 @@ export function Curriculo() {
           </div>
           <div className="flex items-end">
             <Button className="m-0" onClick={handleCreateCurriculo}>
-              Continuar
+              Enviar Currículo
             </Button>
           </div>
         </div>
