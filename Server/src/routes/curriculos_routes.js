@@ -28,7 +28,7 @@ curriculos.get("/detalleEmpleado/:empleado_id", getCurriculoEmpleado);
 
 curriculos.post("/", upload.single("pdf"), postCurriculo);
 
-curriculos.put("/modificar", putCurriculo);
+curriculos.put("/modificar", upload.single("pdf"), putCurriculo);
 curriculos.put("/inactivar", deleteCurriculo);
 
 module.exports = curriculos;
