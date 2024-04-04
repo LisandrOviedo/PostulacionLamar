@@ -295,7 +295,7 @@ export function Curriculo() {
         )
       );
     } catch (error) {
-      alert(error.response.data.error);
+      return error;
     }
   };
 
