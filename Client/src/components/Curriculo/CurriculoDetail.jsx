@@ -10,6 +10,8 @@ import { putCurriculo } from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
+import Swal from "sweetalert2";
+
 export function CurriculoDetail() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -267,7 +269,13 @@ export function CurriculoDetail() {
       !datosCurriculo.grado_instruccion ||
       !datosCurriculo.areas_interes.length
     ) {
-      return alert("Datos faltantes");
+      return Swal.fire({
+        title: "Oops...",
+        text: "Datos faltantes",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
 
     const formData = new FormData();
