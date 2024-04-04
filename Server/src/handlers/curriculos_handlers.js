@@ -71,30 +71,20 @@ const putCurriculo = async (req, res) => {
   const {
     curriculo_id,
     grado_instruccion,
-    titulo_obtenido,
-    centro_educativo,
-    area_interes_id,
-    area_interes_otro,
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
-    ruta_pdf,
-    estado,
-    activo,
   } = req.body;
+
+  const { originalname, path } = req.file;
 
   try {
     const response = await modificarCurriculo(
       curriculo_id,
       grado_instruccion,
-      titulo_obtenido,
-      centro_educativo,
-      area_interes_id,
-      area_interes_otro,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
-      ruta_pdf,
-      estado,
-      activo
+      originalname,
+      path
     );
 
     return res.json(response);
