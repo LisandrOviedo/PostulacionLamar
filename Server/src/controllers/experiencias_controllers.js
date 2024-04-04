@@ -1,4 +1,6 @@
-const { Experiencia, Curriculo } = require("../db");
+const { Experiencia } = require("../db");
+
+const { traerCurriculo } = require("./curriculos_controllers");
 
 const todasLasExperiencias = async () => {
   try {
@@ -38,11 +40,7 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
   }
 
   try {
-    const curriculo = await Curriculo.findByPk(curriculo_id);
-
-    if (!curriculo) {
-      throw new Error("No existe ese curriculo");
-    }
+    await traerCurriculo(curriculo_id);
 
     let fallidos = "";
 
@@ -154,10 +152,29 @@ const inactivarExperiencia = async (experiencia_id) => {
   }
 };
 
+const eliminarExperienciasCurriculo = async (curriculo_id) => {
+  if (!curriculo_id) {
+    throw new Error("Datos faltantes");
+  }
+
+  try {
+    await traerCurriculo(curriculo_id);
+
+    await Experiencia.destroy({
+      where: {
+        curriculo_id: curriculo_id,
+      },
+    });
+  } catch (error) {
+    throw new Error("Error al eliminar las experiencias: " + error.message);
+  }
+};
+
 module.exports = {
   todasLasExperiencias,
   traerExperiencia,
   crearExperiencia,
   modificarExperiencia,
   inactivarExperiencia,
+  eliminarExperienciasCurriculo,
 };

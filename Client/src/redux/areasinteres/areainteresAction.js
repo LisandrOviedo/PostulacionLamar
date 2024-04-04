@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import { allAreasInteresActivas } from "./areainteresSlice";
 
@@ -11,7 +12,14 @@ export const getAllAreasInteresActivas = () => {
 
       return dispatch(allAreasInteresActivas(data));
     } catch (error) {
-      console.error(error);
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };

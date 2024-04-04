@@ -4,9 +4,10 @@ const {
   getAreasInteresActivas,
   getAreaInteres,
   postAreaInteres,
+  postAreasInteresCurriculo,
   putAreaInteres,
   deleteAreaInteres,
-  postAreasInteresCurriculo,
+  deleteAreasInteresCurriculo,
 } = require("../handlers/areas_interes_handlers");
 
 const areasinteres = Router();
@@ -20,5 +21,10 @@ areasinteres.post("/agregarArea", postAreasInteresCurriculo);
 
 areasinteres.put("/modificar", putAreaInteres);
 areasinteres.put("/inactivar", deleteAreaInteres);
+
+areasinteres.delete(
+  "/eliminarAreas/:curriculo_id",
+  deleteAreasInteresCurriculo
+);
 
 module.exports = areasinteres;

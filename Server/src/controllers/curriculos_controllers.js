@@ -6,6 +6,8 @@ const {
   Experiencia,
 } = require("../db");
 
+const { traerEmpleado } = require("./empleados_controllers");
+
 const todosLosCurriculos = async () => {
   try {
     const curriculos = await Curriculo.findAll({
@@ -108,6 +110,61 @@ const traerCurriculo = async (curriculo_id) => {
   }
 };
 
+const traerCurriculoEmpleado = async (empleado_id) => {
+  if (!empleado_id) {
+    throw new Error("Datos faltantes");
+  }
+
+  try {
+    await traerEmpleado(empleado_id);
+
+    const curriculo = await Curriculo.findOne({
+      where: {
+        empleado_id: empleado_id,
+        activo: true,
+      },
+      attributes: {
+        exclude: ["empleado_id"],
+      },
+      include: [
+        {
+          model: Empleado,
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Areas_Interes,
+          attributes: {
+            exclude: ["activo", "createdAt", "updatedAt"],
+          },
+          through: {
+            attributes: ["area_interes_curriculo_id"],
+          },
+        },
+        {
+          model: Titulo_Obtenido,
+          attributes: {
+            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Experiencia,
+          attributes: {
+            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+          },
+        },
+      ],
+    });
+
+    if (curriculo) {
+      return curriculo;
+    }
+  } catch (error) {
+    throw new Error("Error al traer el curriculo: " + error.message);
+  }
+};
+
 const crearCurriculo = async (
   empleado_id,
   grado_instruccion,
@@ -116,23 +173,12 @@ const crearCurriculo = async (
   originalname,
   path
 ) => {
-  if (
-    !empleado_id ||
-    !grado_instruccion ||
-    !disponibilidad_viajar ||
-    !disponibilidad_cambio_residencia ||
-    !originalname ||
-    !path
-  ) {
+  if (!empleado_id || !grado_instruccion || !originalname || !path) {
     throw new Error("Datos faltantes");
   }
 
   try {
-    const empleado = await Empleado.findByPk(empleado_id);
-
-    if (!empleado) {
-      throw new Error("No existe ese empleado");
-    }
+    await traerEmpleado(empleado_id);
 
     const [curriculo, created] = await Curriculo.findOrCreate({
       where: { empleado_id: empleado_id },
@@ -171,25 +217,23 @@ const modificarCurriculo = async (
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
   originalname,
-  path,
-  estado,
-  activo
+  path
 ) => {
-  if (
-    !curriculo_id ||
-    !grado_instruccion ||
-    !disponibilidad_viajar ||
-    !disponibilidad_cambio_residencia ||
-    !originalname ||
-    !path ||
-    !estado ||
-    !activo
-  ) {
+  if (!curriculo_id || !grado_instruccion || !originalname || !path) {
     throw new Error("Datos faltantes");
   }
 
   try {
-    await traerCurriculo(curriculo_id);
+    const curriculo = await traerCurriculo(curriculo_id);
+
+    const fs = require("fs");
+    const rutaArchivo = curriculo.ruta_pdf;
+
+    try {
+      fs.unlinkSync(rutaArchivo);
+    } catch (error) {
+      console.error("Error al eliminar el archivo PDF: " + error);
+    }
 
     await Curriculo.update(
       {
@@ -198,8 +242,7 @@ const modificarCurriculo = async (
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
         nombre_pdf: originalname,
         ruta_pdf: path,
-        estado: estado,
-        activo: activo,
+        estado: "Pendiente por revisar",
       },
       {
         where: {
@@ -238,6 +281,7 @@ const inactivarCurriculo = async (curriculo_id) => {
 module.exports = {
   todosLosCurriculos,
   traerCurriculo,
+  traerCurriculoEmpleado,
   crearCurriculo,
   modificarCurriculo,
   inactivarCurriculo,

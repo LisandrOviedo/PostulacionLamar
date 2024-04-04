@@ -39,7 +39,7 @@ function App() {
             <Route path="/form/datosPersonales" element={<DatosPersonales />} />
             <Route path="/form/curriculo" element={<Curriculo />} />
             <Route
-              path="/curriculo/:curriculo_id"
+              path="/curriculoDetalle/:curriculo_id"
               element={<CurriculoDetail />}
             />
           </Route>

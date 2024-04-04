@@ -1,6 +1,7 @@
 const {
   todosLosCurriculos,
   traerCurriculo,
+  traerCurriculoEmpleado,
   crearCurriculo,
   modificarCurriculo,
   inactivarCurriculo,
@@ -21,6 +22,18 @@ const getCurriculo = async (req, res) => {
 
   try {
     const response = await traerCurriculo(curriculo_id);
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const getCurriculoEmpleado = async (req, res) => {
+  const { empleado_id } = req.params;
+
+  try {
+    const response = await traerCurriculoEmpleado(empleado_id);
 
     return res.json(response);
   } catch (error) {
@@ -58,30 +71,20 @@ const putCurriculo = async (req, res) => {
   const {
     curriculo_id,
     grado_instruccion,
-    titulo_obtenido,
-    centro_educativo,
-    area_interes_id,
-    area_interes_otro,
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
-    ruta_pdf,
-    estado,
-    activo,
   } = req.body;
+
+  const { originalname, path } = req.file;
 
   try {
     const response = await modificarCurriculo(
       curriculo_id,
       grado_instruccion,
-      titulo_obtenido,
-      centro_educativo,
-      area_interes_id,
-      area_interes_otro,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
-      ruta_pdf,
-      estado,
-      activo
+      originalname,
+      path
     );
 
     return res.json(response);
@@ -105,6 +108,7 @@ const deleteCurriculo = async (req, res) => {
 module.exports = {
   getCurriculos,
   getCurriculo,
+  getCurriculoEmpleado,
   postCurriculo,
   putCurriculo,
   deleteCurriculo,

@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 
 import {
   allEmpleados,
@@ -17,9 +18,25 @@ export const getLogin = (cedula, clave) => {
     try {
       const { data } = await axios(URL_LOGIN);
 
-      return dispatch(createEmpleado(data));
+      dispatch(createEmpleado(data));
+
+      return Swal.fire({
+        title: "¡Bienvenido!",
+        text: "Sesión iniciada correctamente",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+        width: "20em",
+      });
     } catch (error) {
-      alert(error.response.data.error);
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };
@@ -33,7 +50,14 @@ export const getEmpleadoByID = (empleado_id) => {
 
       return dispatch(empleadoByID(data));
     } catch (error) {
-      alert(error.response.data.error);
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };
@@ -47,22 +71,38 @@ export const getCargoActual = (empleado_id) => {
 
       return dispatch(cargoActualEmpleado(data));
     } catch (error) {
-      alert(error.response.data.error);
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };
 
-export const putPassword = (body) => {
+export const putPassword = async (body) => {
   const URL_PUT_PASSWORD = `${URL_SERVER}/empleados/modificarClave`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios.put(`${URL_PUT_PASSWORD}`, body);
-      return dispatch(data);
-    } catch (error) {
-      alert(error.response.data.error);
-    }
-  };
+  try {
+    await axios.put(URL_PUT_PASSWORD, body);
+
+    return Swal.fire({
+      text: "Su contraseña ha sido actualizada exitosamente, proceda a loguearse para continuar",
+      icon: "success",
+    });
+  } catch (error) {
+    Swal.fire({
+      title: "Oops...",
+      text: `${error.response.data.error}`,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    throw new Error();
+  }
 };
 
 export const resetEmpleados = () => {
@@ -70,7 +110,14 @@ export const resetEmpleados = () => {
     try {
       return dispatch(resetState());
     } catch (error) {
-      alert(error.response.data.error);
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
     }
   };
 };

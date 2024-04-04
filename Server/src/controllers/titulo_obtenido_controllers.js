@@ -1,4 +1,6 @@
-const { Curriculo, Titulo_Obtenido } = require("../db");
+const { Titulo_Obtenido } = require("../db");
+
+const { traerCurriculo } = require("./curriculos_controllers");
 
 const todosLosTitulosObtenidos = async () => {
   try {
@@ -40,11 +42,7 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
   }
 
   try {
-    const curriculo = await Curriculo.findByPk(curriculo_id);
-
-    if (!curriculo) {
-      throw new Error("No existe ese curriculo");
-    }
+    await traerCurriculo(curriculo_id);
 
     let fallidos = "";
 
@@ -52,22 +50,22 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
       const [titulo_obtenido, created] = await Titulo_Obtenido.findOrCreate({
         where: {
           curriculo_id: curriculo_id,
-          nombre: titulo,
+          nombre: titulo.nombre,
         },
         defaults: {
           curriculo_id: curriculo_id,
-          nombre: titulo,
+          nombre: titulo.nombre,
         },
       });
 
       if (!created) {
         if (fallidos === "") {
-          fallidos = titulo;
+          fallidos = titulo.nombre;
           return;
         }
 
         if (fallidos !== "") {
-          fallidos = fallidos + ` ${titulo}`;
+          fallidos = fallidos + ` ${titulo.nombre}`;
           return;
         }
       }
@@ -135,10 +133,31 @@ const inactivarTituloObtenido = async (titulo_obtenido_id) => {
   }
 };
 
+const eliminarTitulosCurriculo = async (curriculo_id) => {
+  if (!curriculo_id) {
+    throw new Error("Datos faltantes");
+  }
+
+  try {
+    await traerCurriculo(curriculo_id);
+
+    await Titulo_Obtenido.destroy({
+      where: {
+        curriculo_id: curriculo_id,
+      },
+    });
+  } catch (error) {
+    throw new Error(
+      "Error al eliminar los títulos obtenidos: " + error.message
+    );
+  }
+};
+
 module.exports = {
   todosLosTitulosObtenidos,
   traerTituloObtenido,
   crearTitulosObtenidos,
   modificarTitulosObtenidos,
   inactivarTituloObtenido,
+  eliminarTitulosCurriculo,
 };

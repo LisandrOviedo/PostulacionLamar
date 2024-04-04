@@ -2,6 +2,7 @@ const { Router } = require("express");
 const {
   getCurriculos,
   getCurriculo,
+  getCurriculoEmpleado,
   postCurriculo,
   putCurriculo,
   deleteCurriculo,
@@ -23,10 +24,11 @@ const upload = multer({ storage: storage });
 
 curriculos.get("/", getCurriculos);
 curriculos.get("/detalle/:curriculo_id", getCurriculo);
+curriculos.get("/detalleEmpleado/:empleado_id", getCurriculoEmpleado);
 
 curriculos.post("/", upload.single("pdf"), postCurriculo);
 
-curriculos.put("/modificar", putCurriculo);
+curriculos.put("/modificar", upload.single("pdf"), putCurriculo);
 curriculos.put("/inactivar", deleteCurriculo);
 
 module.exports = curriculos;

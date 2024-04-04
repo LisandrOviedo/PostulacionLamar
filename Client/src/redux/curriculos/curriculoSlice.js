@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   curriculos: [],
   curriculo: {},
+  curriculoEmpleado: {},
 };
 
 export const curriculoSlice = createSlice({
@@ -15,8 +16,15 @@ export const curriculoSlice = createSlice({
     createCurriculo: (state, action) => {
       state.curriculo = action.payload;
     },
+    curriculoEmpleado: (state, action) => {
+      state.curriculoEmpleado = action.payload;
+    },
+    resetState: () => {
+      return initialState;
+    },
   },
 });
 
-export const { allCurriculos, createCurriculo } = curriculoSlice.actions;
+export const { allCurriculos, createCurriculo, curriculoEmpleado, resetState } =
+  curriculoSlice.actions;
 export default curriculoSlice.reducer;

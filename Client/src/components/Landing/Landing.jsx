@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Button, Input, Title } from "../UI";
 import { getLogin, resetEmpleados } from "../../redux/empleados/empleadoAction";
+import { resetCurriculos } from "../../redux/curriculos/curriculoAction";
 
 export function Landing() {
   const navigate = useNavigate();
@@ -25,11 +26,13 @@ export function Landing() {
   const handleFindCI = () => {
     const { cedula, clave } = data;
 
-    try {
-      dispatch(getLogin(cedula, clave));
-    } catch (error) {
-      alert(error.response.data.error);
-    }
+    dispatch(getLogin(cedula, clave))
+      .then(() => {
+        // Acciones a realizar después de que se resuelva la promesa exitosamente
+      })
+      .catch((error) => {
+        return error;
+      });
   };
 
   const handleKeyDown = (e) => {
@@ -54,6 +57,7 @@ export function Landing() {
     window.scroll(0, 0);
 
     dispatch(resetEmpleados());
+    dispatch(resetCurriculos());
   }, []);
 
   useEffect(() => {
