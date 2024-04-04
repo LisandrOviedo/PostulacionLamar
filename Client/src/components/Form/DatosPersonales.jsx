@@ -32,11 +32,11 @@ export function DatosPersonales() {
     dispatch(getCurriculoEmpleado(empleado.empleado_id));
   }, []);
 
-  const handleContinuar = (event) => {
+  const handleContinuar = async (event) => {
     event.preventDefault();
 
     if (curriculoEmpleado && curriculoEmpleado.curriculo_id) {
-      Swal.fire({
+      await Swal.fire({
         title: "¡Atención!",
         text: "Ya tienes un currículo registrado, serás redireccionado a sus detalles",
         icon: "info",
@@ -45,7 +45,15 @@ export function DatosPersonales() {
       return navigate(`/curriculoDetalle/${curriculoEmpleado.curriculo_id}`);
     }
 
-    return navigate("/form/curriculo");
+    navigate("/form/curriculo");
+
+    return Swal.fire({
+      title: "Creación y envío del currículo",
+      text: "Llena los datos y presiona continuar",
+      icon: "info",
+      showConfirmButton: false,
+      timer: 3000,
+    });
   };
 
   return (
