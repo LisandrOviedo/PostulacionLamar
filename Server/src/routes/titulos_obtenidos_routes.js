@@ -5,6 +5,7 @@ const {
   postTitulosObtenidos,
   putTituloObtenido,
   deleteTituloObtenido,
+  deleteTitulosCurriculo,
 } = require("../handlers/titulo_obtenidos_handlers");
 
 const titulos_obtenidos = Router();
@@ -16,5 +17,10 @@ titulos_obtenidos.post("/", postTitulosObtenidos);
 
 titulos_obtenidos.put("/modificar", putTituloObtenido);
 titulos_obtenidos.put("/inactivar", deleteTituloObtenido);
+
+titulos_obtenidos.delete(
+  "/eliminarTitulos/:curriculo_id",
+  deleteTitulosCurriculo
+);
 
 module.exports = titulos_obtenidos;
