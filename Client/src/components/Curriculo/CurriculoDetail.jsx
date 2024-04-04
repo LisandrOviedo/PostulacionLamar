@@ -251,7 +251,7 @@ export function CurriculoDetail() {
     });
   };
 
-  const handleCreateCurriculo = async (event) => {
+  const handleUpdateCurriculo = async (event) => {
     event.preventDefault();
 
     const input = document.getElementById("pdf");
@@ -267,7 +267,7 @@ export function CurriculoDetail() {
 
     const formData = new FormData();
     formData.append("pdf", pdf);
-    formData.append("empleado_id", empleado.empleado_id);
+    formData.append("curriculo_id", curriculoEmpleado.curriculo_id);
     formData.append("grado_instruccion", datosCurriculo.grado_instruccion);
     formData.append("centro_educativo", datosCurriculo.centro_educativo);
     formData.append(
@@ -289,7 +289,7 @@ export function CurriculoDetail() {
         )
       );
     } catch (error) {
-      alert(error.response.data.error);
+      return error;
     }
   };
 
@@ -580,8 +580,8 @@ export function CurriculoDetail() {
               </table>
             </div>
             <div className="flex items-end">
-              <Button className="m-0" onClick={handleCreateCurriculo}>
-                Continuar
+              <Button className="m-0" onClick={handleUpdateCurriculo}>
+                Guardar Cambios
               </Button>
             </div>
           </div>
