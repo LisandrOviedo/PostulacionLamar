@@ -63,10 +63,13 @@ export function Landing() {
   useEffect(() => {
     if (empleado.changePassword) {
       return navigate("/empleado/cambioClave");
-    } else if (empleado.activo) {
+    } else if (
+      (empleado.activo && empleado.rol === "empleado") ||
+      empleado.rol === "admin"
+    ) {
       return navigate("/form/datosPersonales");
     }
-  }, [empleado, navigate]);
+  }, [empleado]);
 
   return (
     <div className="mt-24 sm:mt-32 flex flex-col justify-center items-center px-10 bg-white h-full">
