@@ -1,13 +1,19 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
-import { getAllCurriculos } from "../../redux/curriculos/curriculoAction";
+import {
+  getAllCurriculos,
+  getCurriculo,
+} from "../../redux/curriculos/curriculoAction";
 
-import { Title } from "../UI";
+import { Title, Button } from "../UI";
 
 export function Postulaciones() {
-  const curriculos = useSelector((state) => state.curriculos);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const curriculos = useSelector((state) => state.curriculos.curriculos);
 
   useEffect(() => {
     window.scroll(0, 0);
@@ -24,6 +30,16 @@ export function Postulaciones() {
     const formattedDate = `${day}/${month}/${year}`;
 
     return formattedDate;
+  };
+
+  const handleVerDetalles = (curriculo_id) => {
+    dispatch(getCurriculo(curriculo_id))
+      .then(() => {
+        navigate(`/curriculoDetalle/${curriculo_id}`);
+      })
+      .catch((error) => {
+        return error;
+      });
   };
 
   return (
@@ -103,10 +119,10 @@ export function Postulaciones() {
               </tr>
             </thead>
             <tbody>
-              {curriculos?.curriculos === "No existen curriculos" ? (
+              {curriculos === "No existen curriculos" ? (
                 <p className="text-center p-2">No existen curriculos!</p>
               ) : (
-                curriculos?.curriculos.map((curriculo, i) => (
+                curriculos?.map((curriculo, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
@@ -134,12 +150,14 @@ export function Postulaciones() {
                     </td>
                     <td className="px-4 py-4">{curriculo.estado}</td>
                     <td className="px-4 py-4">
-                      <a
-                        href="#"
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      <Button
+                        className="m-0"
+                        onClick={() =>
+                          handleVerDetalles(curriculo.curriculo_id)
+                        }
                       >
                         Detalles
-                      </a>
+                      </Button>
                     </td>
                   </tr>
                 ))
