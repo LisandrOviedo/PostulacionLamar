@@ -10,7 +10,7 @@ import { Button, Input, Title } from "../UI";
 import { getLogin, resetEmpleados } from "../../redux/empleados/empleadoAction";
 import { resetCurriculos } from "../../redux/curriculos/curriculoAction";
 
-export function Landing() {
+export function CreateCurriculo() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -72,7 +72,7 @@ export function Landing() {
   }, [empleado]);
 
   return (
-    <div className="mt-24 sm:mt-32 flex flex-col justify-center items-center px-10 bg-white h-full">
+    <div className="mt-24 flex flex-col justify-center items-center px-10 bg-white h-full">
       <Title>Identificación de Talentos</Title>
       <br />
       <p className="text-center text-sm sm:text-base">
