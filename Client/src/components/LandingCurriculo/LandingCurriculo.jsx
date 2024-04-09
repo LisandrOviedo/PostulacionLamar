@@ -58,7 +58,7 @@ export function LandingCurriculo() {
   };
 
   return (
-    <div className="mt-24 flex flex-col justify-start items-center px-10 h-screen">
+    <div className="mt-24 sm:mt-32 flex flex-col justify-start items-center px-10 h-full">
       <Title>Identificación de Talentos</Title>
       <br />
       <p className="text-justify text-sm sm:text-base">

@@ -18,7 +18,7 @@ export function Home() {
   }, []);
 
   return (
-    <div className="mt-24 flex flex-col justify-center items-center bg-white gap-2">
+    <div className="mt-24 sm:mt-32 flex flex-col justify-center items-center bg-white gap-2">
       <Title>Página de Inicio</Title>
       <Title>{`${empleado.nombres} ${empleado.apellidos}`}</Title>
     </div>
