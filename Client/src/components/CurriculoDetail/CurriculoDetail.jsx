@@ -56,6 +56,12 @@ export function CurriculoDetail() {
     window.scroll(0, 0);
 
     dispatch(getAllAreasInteresActivas());
+
+    document.title = "Grupo Lamar - Detalles del Currículo";
+
+    return () => {
+      document.title = "Grupo Lamar";
+    };
   }, []);
 
   const handleInputChangeCurriculo = (event) => {

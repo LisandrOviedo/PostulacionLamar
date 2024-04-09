@@ -19,6 +19,12 @@ export function Postulaciones() {
     window.scroll(0, 0);
 
     dispatch(getAllCurriculos());
+
+    document.title = "Grupo Lamar - Postulaciones (Admin)";
+
+    return () => {
+      document.title = "Grupo Lamar";
+    };
   }, []);
 
   const convertirFecha = (fecha) => {

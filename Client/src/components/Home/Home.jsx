@@ -9,6 +9,12 @@ export function Home() {
 
   useEffect(() => {
     window.scroll(0, 0);
+
+    document.title = "Grupo Lamar - Inicio";
+
+    return () => {
+      document.title = "Grupo Lamar";
+    };
   }, []);
 
   return (

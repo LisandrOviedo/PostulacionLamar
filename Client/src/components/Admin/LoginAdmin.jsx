@@ -60,6 +60,12 @@ export function LoginAdmin() {
 
     dispatch(resetEmpleados());
     dispatch(resetCurriculos());
+
+    document.title = "Grupo Lamar - Login (Admin)";
+
+    return () => {
+      document.title = "Grupo Lamar";
+    };
   }, []);
 
   useEffect(() => {
@@ -82,7 +88,7 @@ export function LoginAdmin() {
   };
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center">
+    <div className="flex mt-14 sm:mt-0 sm:h-screen flex-col items-center justify-center">
       <div className="flex flex-col items-center justify-center">
         <div>
           <Link
@@ -100,7 +106,7 @@ export function LoginAdmin() {
         </div>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-[40%] sm:max-w-sm space-y-6">
+      <div className="mt-10 w-[70%] sm:w-[50%] md:w-[40%] lg:w-[30%] space-y-6">
         <div>
           <Label htmlFor="cedula">Número de cédula</Label>
           <div className="mt-2">
