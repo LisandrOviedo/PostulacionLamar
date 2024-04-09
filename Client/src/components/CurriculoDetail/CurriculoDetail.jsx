@@ -6,31 +6,32 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
-import { postCurriculo } from "../../redux/curriculos/curriculoAction";
+import { putCurriculo } from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
 import Swal from "sweetalert2";
 
-export function Curriculo() {
+export function CurriculoDetail() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const empleado = useSelector((state) => state.empleados.empleado);
-
-  const curriculo = useSelector((state) => state.curriculos.curriculo);
+  const curriculoEmpleado = useSelector(
+    (state) => state.curriculos.curriculoEmpleado
+  );
 
   const areas_interes_activas = useSelector(
     (state) => state.areas_interes.areas_interes_activas
   );
 
   const [datosCurriculo, setDatosCurriculo] = useState({
-    grado_instruccion: "Basico",
-    titulos_obtenidos: [],
-    disponibilidad_viajar: true,
-    disponibilidad_cambio_residencia: false,
-    areas_interes: [],
-    experiencias: [],
+    grado_instruccion: curriculoEmpleado.grado_instruccion,
+    titulos_obtenidos: curriculoEmpleado.Titulo_Obtenidos,
+    disponibilidad_viajar: curriculoEmpleado.disponibilidad_viajar,
+    disponibilidad_cambio_residencia:
+      curriculoEmpleado.disponibilidad_cambio_residencia,
+    areas_interes: curriculoEmpleado.Areas_Interes,
+    experiencias: curriculoEmpleado.Experiencia,
   });
 
   const [isHidden, setIsHidden] = useState(true);
@@ -55,13 +56,13 @@ export function Curriculo() {
     window.scroll(0, 0);
 
     dispatch(getAllAreasInteresActivas());
-  }, []);
 
-  useEffect(() => {
-    if (curriculo && curriculo.curriculo_id) {
-      navigate("/");
-    }
-  }, [curriculo]);
+    document.title = "Grupo Lamar - Detalles del Currículo";
+
+    return () => {
+      document.title = "Grupo Lamar";
+    };
+  }, []);
 
   const handleInputChangeCurriculo = (event) => {
     const { name, value } = event.target;
@@ -259,7 +260,11 @@ export function Curriculo() {
     });
   };
 
-  const handleCreateCurriculo = async (event) => {
+  const handleCancel = () => {
+    navigate("/home");
+  };
+
+  const handleUpdateCurriculo = async (event) => {
     event.preventDefault();
 
     const input = document.getElementById("pdf");
@@ -281,7 +286,7 @@ export function Curriculo() {
 
     const formData = new FormData();
     formData.append("pdf", pdf);
-    formData.append("empleado_id", empleado.empleado_id);
+    formData.append("curriculo_id", curriculoEmpleado.curriculo_id);
     formData.append("grado_instruccion", datosCurriculo.grado_instruccion);
     formData.append("centro_educativo", datosCurriculo.centro_educativo);
     formData.append(
@@ -295,7 +300,7 @@ export function Curriculo() {
 
     try {
       dispatch(
-        postCurriculo(
+        putCurriculo(
           formData,
           datosCurriculo.areas_interes,
           datosCurriculo.titulos_obtenidos,
@@ -309,9 +314,9 @@ export function Curriculo() {
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
-      <Title>Datos Currículo</Title>
+      <Title>Detalles Currículo</Title>
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
-      <form>
+      {curriculoEmpleado && curriculoEmpleado?.curriculo_id ? (
         <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
           <div>
             <Label htmlFor="grado_instruccion">
@@ -343,7 +348,7 @@ export function Curriculo() {
                 name="titulo_obtenido"
                 placeholder="Ingrese el nombre del título"
               />
-              <Button className="m-0" onClick={handleAddTituloObtenido}>
+              <Button className="m-0 w-auto" onClick={handleAddTituloObtenido}>
                 Agregar
               </Button>
             </div>
@@ -426,7 +431,7 @@ export function Curriculo() {
                     )
                   : null}
               </Select>
-              <Button className="m-0" onClick={handleAddArea}>
+              <Button className="m-0 w-auto" onClick={handleAddArea}>
                 Agregar
               </Button>
             </div>
@@ -534,7 +539,7 @@ export function Curriculo() {
                 name="empresa_centro_educativo"
                 placeholder="Ingrese el nombre de la empresa / centro educativo"
               />
-              <Button className="m-0" onClick={handleAddExperiencia}>
+              <Button className="m-0 w-auto" onClick={handleAddExperiencia}>
                 Agregar
               </Button>
             </div>
@@ -590,13 +595,21 @@ export function Curriculo() {
               </tbody>
             </table>
           </div>
-          <div className="flex items-end col-span-3 justify-center">
-            <Button className="m-0" onClick={handleCreateCurriculo}>
-              Enviar Currículo
+          <div className="flex items-end">
+            <Button
+              className="m-0 w-auto bg-red-700 hover:bg-red-800 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+              onClick={handleCancel}
+            >
+              Cancelar / Salir
+            </Button>
+          </div>
+          <div className="flex items-end justify-center">
+            <Button className="m-0 w-auto" onClick={handleUpdateCurriculo}>
+              Guardar Cambios
             </Button>
           </div>
         </div>
-      </form>
+      ) : null}
     </div>
   );
 }

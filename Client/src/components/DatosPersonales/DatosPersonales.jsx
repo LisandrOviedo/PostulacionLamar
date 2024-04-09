@@ -1,60 +1,30 @@
 import React from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { getCargoActual } from "../../redux/empleados/empleadoAction";
 
-import { getCurriculoEmpleado } from "../../redux/curriculos/curriculoAction";
-
-import { Button, Input, Label, Title } from "../UI";
-
-import Swal from "sweetalert2";
+import { Input, Label, Title } from "../UI";
 
 export function DatosPersonales() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const cargo_actual = useSelector((state) => state.empleados.cargo_actual);
-
-  const curriculoEmpleado = useSelector(
-    (state) => state.curriculos.curriculoEmpleado
-  );
 
   useEffect(() => {
     window.scroll(0, 0);
 
     dispatch(getCargoActual(empleado.empleado_id));
 
-    dispatch(getCurriculoEmpleado(empleado.empleado_id));
+    document.title = "Grupo Lamar - Datos Personales";
+
+    return () => {
+      document.title = "Grupo Lamar";
+    };
   }, []);
-
-  const handleContinuar = async (event) => {
-    event.preventDefault();
-
-    if (curriculoEmpleado && curriculoEmpleado.curriculo_id) {
-      await Swal.fire({
-        title: "¡Atención!",
-        text: "Ya tienes un currículo registrado, serás redireccionado a sus detalles",
-        icon: "info",
-      });
-
-      return navigate(`/curriculoDetalle/${curriculoEmpleado.curriculo_id}`);
-    }
-
-    navigate("/form/curriculo");
-
-    return Swal.fire({
-      title: "Creación y envío del currículo",
-      text: "Llena los datos y presiona continuar",
-      icon: "info",
-      showConfirmButton: false,
-      timer: 3000,
-    });
-  };
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
@@ -213,12 +183,6 @@ export function DatosPersonales() {
               </div>
             </React.Fragment>
           )}
-
-          <div className="flex items-end col-span-3 justify-center">
-            <Button className="m-0" onClick={handleContinuar}>
-              Continuar
-            </Button>
-          </div>
         </div>
       </form>
     </div>

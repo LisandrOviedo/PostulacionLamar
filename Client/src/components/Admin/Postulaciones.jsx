@@ -1,18 +1,30 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
-import { getAllCurriculos } from "../../redux/curriculos/curriculoAction";
+import {
+  getAllCurriculos,
+  getCurriculo,
+} from "../../redux/curriculos/curriculoAction";
 
-import { Title } from "../UI";
+import { Title, Button } from "../UI";
 
 export function Postulaciones() {
-  const curriculos = useSelector((state) => state.curriculos);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const curriculos = useSelector((state) => state.curriculos.curriculos);
 
   useEffect(() => {
     window.scroll(0, 0);
 
     dispatch(getAllCurriculos());
+
+    document.title = "Grupo Lamar - Postulaciones (Admin)";
+
+    return () => {
+      document.title = "Grupo Lamar";
+    };
   }, []);
 
   const convertirFecha = (fecha) => {
@@ -26,6 +38,16 @@ export function Postulaciones() {
     return formattedDate;
   };
 
+  const handleVerDetalles = (curriculo_id) => {
+    dispatch(getCurriculo(curriculo_id))
+      .then(() => {
+        navigate(`/curriculoDetalle/${curriculo_id}`);
+      })
+      .catch((error) => {
+        return error;
+      });
+  };
+
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -33,7 +55,7 @@ export function Postulaciones() {
       </div>
 
       <div className="mt-8 sm:mx-auto w-full">
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div className="overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400">
             <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
               <tr>
@@ -103,10 +125,10 @@ export function Postulaciones() {
               </tr>
             </thead>
             <tbody>
-              {curriculos?.curriculos === "No existen curriculos" ? (
+              {curriculos === "No existen curriculos" ? (
                 <p className="text-center p-2">No existen curriculos!</p>
               ) : (
-                curriculos?.curriculos.map((curriculo, i) => (
+                curriculos?.map((curriculo, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
@@ -134,12 +156,14 @@ export function Postulaciones() {
                     </td>
                     <td className="px-4 py-4">{curriculo.estado}</td>
                     <td className="px-4 py-4">
-                      <a
-                        href="#"
-                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      <Button
+                        className="m-0"
+                        onClick={() =>
+                          handleVerDetalles(curriculo.curriculo_id)
+                        }
                       >
                         Detalles
-                      </a>
+                      </Button>
                     </td>
                   </tr>
                 ))

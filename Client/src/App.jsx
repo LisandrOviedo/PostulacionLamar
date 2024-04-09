@@ -1,14 +1,16 @@
 import "./App.css";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 import {
-  Curriculo,
+  CreateCurriculo,
   CurriculoDetail,
   Dashboard,
   DatosPersonales,
-  Landing,
-  Login,
+  Home,
+  LandingCurriculo,
+  LoginAdmin,
+  LoginEmpleado,
   Navbar,
   NotFound,
   Postulacion,
@@ -23,28 +25,32 @@ import { AuthGuardUpdatePassword } from "./guards/AuthGuardUpdatePassword";
 import { Suspense } from "react";
 
 function App() {
+  const { pathname } = useLocation();
+
   return (
     <div>
       <Suspense fallback={<>Cargando</>}>
-        <Navbar />
+        {pathname !== "/" && pathname !== "/admin/login" && <Navbar />}
         <Routes>
           <Route path="*" element={<NotFound />} />
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<LoginEmpleado />} />
 
           <Route element={<AuthGuardUpdatePassword />}>
             <Route path="/empleado/cambioClave" element={<UpdatePassword />} />
           </Route>
 
           <Route element={<AuthGuardEmpleado />}>
-            <Route path="/form/datosPersonales" element={<DatosPersonales />} />
-            <Route path="/form/curriculo" element={<Curriculo />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/datosPersonales" element={<DatosPersonales />} />
+            <Route path="/curriculo/info" element={<LandingCurriculo />} />
+            <Route path="/curriculo/registro" element={<CreateCurriculo />} />
             <Route
-              path="/curriculoDetalle/:curriculo_id"
+              path="/curriculo/curriculoDetalle/:curriculo_id"
               element={<CurriculoDetail />}
             />
           </Route>
 
-          <Route path="/admin/login" element={<Login />} />
+          <Route path="/admin/login" element={<LoginAdmin />} />
           <Route element={<AuthGuardAdmin />}>
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/admin/postulaciones" element={<Postulaciones />} />

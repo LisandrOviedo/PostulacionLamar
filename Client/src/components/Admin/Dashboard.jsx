@@ -5,6 +5,12 @@ import { Title } from "../UI";
 export function Dashboard() {
   useEffect(() => {
     window.scroll(0, 0);
+
+    document.title = "Grupo Lamar - Dashboard (Admin)";
+
+    return () => {
+      document.title = "Grupo Lamar";
+    };
   }, []);
 
   return (

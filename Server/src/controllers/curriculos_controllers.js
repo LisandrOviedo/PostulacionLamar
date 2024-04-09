@@ -166,6 +166,7 @@ const traerCurriculoEmpleado = async (empleado_id) => {
 };
 
 const crearCurriculo = async (
+  cedula,
   empleado_id,
   grado_instruccion,
   disponibilidad_viajar,
@@ -173,7 +174,7 @@ const crearCurriculo = async (
   originalname,
   path
 ) => {
-  if (!empleado_id || !grado_instruccion || !originalname || !path) {
+  if (!cedula || !empleado_id || !grado_instruccion || !originalname || !path) {
     throw new Error("Datos faltantes");
   }
 

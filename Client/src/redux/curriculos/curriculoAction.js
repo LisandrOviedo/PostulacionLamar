@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 
 import {
   allCurriculos,
+  curriculoDetail,
   createCurriculo,
   curriculoEmpleado,
   resetState,
@@ -16,6 +17,27 @@ export const getAllCurriculos = () => {
       const { data } = await axios.get(`${URL_SERVER}/curriculos`);
 
       return dispatch(allCurriculos(data));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const getCurriculo = (curriculo_id) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.get(
+        `${URL_SERVER}/curriculos/detalle/${curriculo_id}`
+      );
+
+      return dispatch(curriculoEmpleado(data));
     } catch (error) {
       Swal.fire({
         title: "Oops...",
