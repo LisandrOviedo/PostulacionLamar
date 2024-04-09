@@ -3,11 +3,12 @@ import "./App.css";
 import { Routes, Route, useLocation } from "react-router-dom";
 
 import {
-  Curriculo,
+  CreateCurriculo,
   CurriculoDetail,
   Dashboard,
   DatosPersonales,
   Home,
+  LandingCurriculo,
   LoginAdmin,
   LoginEmpleado,
   Navbar,
@@ -40,10 +41,11 @@ function App() {
 
           <Route element={<AuthGuardEmpleado />}>
             <Route path="/home" element={<Home />} />
-            <Route path="/form/datosPersonales" element={<DatosPersonales />} />
-            <Route path="/form/curriculo" element={<Curriculo />} />
+            <Route path="/datosPersonales" element={<DatosPersonales />} />
+            <Route path="/curriculo/info" element={<LandingCurriculo />} />
+            <Route path="/curriculo/registro" element={<CreateCurriculo />} />
             <Route
-              path="/curriculoDetalle/:curriculo_id"
+              path="/curriculo/curriculoDetalle/:curriculo_id"
               element={<CurriculoDetail />}
             />
           </Route>
