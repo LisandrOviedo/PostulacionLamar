@@ -65,7 +65,7 @@ export function CreateCurriculo() {
 
   useEffect(() => {
     if (curriculo && curriculo.curriculo_id) {
-      navigate("/");
+      navigate("/home");
     }
   }, [curriculo]);
 
@@ -287,6 +287,7 @@ export function CreateCurriculo() {
 
     const formData = new FormData();
     formData.append("pdf", pdf);
+    formData.append("cedula", empleado.cedula);
     formData.append("empleado_id", empleado.empleado_id);
     formData.append("grado_instruccion", datosCurriculo.grado_instruccion);
     formData.append("centro_educativo", datosCurriculo.centro_educativo);
@@ -314,295 +315,294 @@ export function CreateCurriculo() {
   };
 
   return (
-    <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
+    <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white">
       <Title>Datos Currículo</Title>
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
-      <form>
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
-          <div>
-            <Label htmlFor="grado_instruccion">
-              Grado de instrucción más alta obtenida
-            </Label>
-            <Select
-              id="grado_instruccion"
-              name="grado_instruccion"
-              value={datosCurriculo.grado_instruccion}
-              onChange={handleInputChangeCurriculo}
-            >
-              <option value="Basico">Básico</option>
-              <option value="Bachiller">Bachiller</option>
-              <option value="Tecnico Medio">Técnico Medio</option>
-              <option value="Tecnico Medio Superior">
-                Técnico Medio Superior
-              </option>
-              <option value="Universitario">Universitario</option>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="titulo_obtenido">
-              Títulos obtenidos (Agregar todos uno por uno)
-            </Label>
-            <div className="flex gap-4 w-full items-start">
-              <Input
-                id="titulo_obtenido"
-                type="text"
-                name="titulo_obtenido"
-                placeholder="Ingrese el nombre del título"
-              />
-              <Button className="m-0" onClick={handleAddTituloObtenido}>
-                Agregar
-              </Button>
-            </div>
-          </div>
-          <div>
-            <Label htmlFor="pdf">Adjunte su resumen curricular (PDF)</Label>
-            <input
-              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-              aria-describedby="file_input_help"
-              id="pdf"
-              type="file"
-              accept="application/pdf"
-              onChange={handlePDF}
-              name="pdf"
-            />
-            <p
-              className="mt-1 text-sm text-red-600 dark:text-gray-300"
-              id="file_input_help"
-            >
-              ¡Solo archivos en formato PDF!
-            </p>
-          </div>
-          <div className="md:col-span-3">
-            <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
-              <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
-                <tr className="text-white">
-                  <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">
-                      Títulos obtenidos agregados
-                    </div>
-                  </th>
-                  <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Acción</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {datosCurriculo.titulos_obtenidos.map((titulo_obtenido, i) => (
-                  <tr
-                    key={i}
-                    className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
-                  >
-                    <td className="px-4 py-4">{titulo_obtenido.nombre}</td>
-                    <td className="px-4 py-4">
-                      <a
-                        href="#"
-                        className="font-medium text-red-600 dark:text-blue-500"
-                        onClick={handleDeleteTituloObtenido}
-                      >
-                        Borrar
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div>
-            <Label htmlFor="area_interes_id">
-              Indica cuál es tu área de interés laboral
-            </Label>
-            <div className="flex gap-4 w-full items-start">
-              <Select
-                id="area_interes_id"
-                name="area_interes_id"
-                className="inline-block"
-              >
-                {areas_interes_activas?.length > 0
-                  ? areas_interes_activas?.map(
-                      (area, i) =>
-                        area.activo && (
-                          <option
-                            key={i}
-                            name={area.nombre}
-                            value={area.area_interes_id}
-                          >
-                            {area.nombre}
-                          </option>
-                        )
-                    )
-                  : null}
-              </Select>
-              <Button className="m-0" onClick={handleAddArea}>
-                Agregar
-              </Button>
-            </div>
-          </div>
-          <div className="flex items-center justify-center gap-2">
-            <input
-              id="disponibilidad_viajar"
-              name="disponibilidad_viajar"
-              type="checkbox"
-              checked={datosCurriculo.disponibilidad_viajar}
-              onChange={handleCheckedChangeCurriculo}
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            />
-            <Label htmlFor="disponibilidad_viajar">
-              ¿Posees disponibilidad para viajar?
-            </Label>
-          </div>
-          <div className="flex items-center justify-center gap-2">
-            <input
-              id="disponibilidad_cambio_residencia"
-              name="disponibilidad_cambio_residencia"
-              type="checkbox"
-              checked={datosCurriculo.disponibilidad_cambio_residencia}
-              onChange={handleCheckedChangeCurriculo}
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            />
-            <Label htmlFor="disponibilidad_cambio_residencia">
-              ¿Posees disponibilidad para cambio de residencia?
-            </Label>
-          </div>
-          <div className="md:col-span-3">
-            <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
-              <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
-                <tr className="text-white">
-                  <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">
-                      Areas de interés seleccionadas
-                    </div>
-                  </th>
-                  <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Acción</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {datosCurriculo.areas_interes.map((area, i) => (
-                  <tr
-                    key={i}
-                    className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
-                  >
-                    <td className="px-4 py-4">{area.nombre}</td>
-                    <td className="px-4 py-4">
-                      <a
-                        href="#"
-                        className="font-medium text-red-600 dark:text-blue-500"
-                        onClick={handleDeleteArea}
-                      >
-                        Borrar
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div>
-            <Label htmlFor="tipo">
-              ¿Posees experiencia laboral o realizaste algún curso?
-            </Label>
-            <Select id="tipo" name="tipo" onChange={handleTipoExpSelected}>
-              <option value="Ninguno">Ninguno</option>
-              <option value="Laboral">Experiencia Laboral</option>
-              <option value="Curso">Experiencia Curso</option>
-            </Select>
-          </div>
-          <div className={` ${isHidden ? "hidden" : ""}`}>
-            <Label htmlFor="cargo_titulo">
-              Cargo laboral o título conseguido (Agregar todos uno por uno)
-            </Label>
 
+      <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
+        <div>
+          <Label htmlFor="grado_instruccion">
+            Grado de instrucción más alta obtenida
+          </Label>
+          <Select
+            id="grado_instruccion"
+            name="grado_instruccion"
+            value={datosCurriculo.grado_instruccion}
+            onChange={handleInputChangeCurriculo}
+          >
+            <option value="Basico">Básico</option>
+            <option value="Bachiller">Bachiller</option>
+            <option value="Tecnico Medio">Técnico Medio</option>
+            <option value="Tecnico Medio Superior">
+              Técnico Medio Superior
+            </option>
+            <option value="Universitario">Universitario</option>
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="titulo_obtenido">
+            Títulos obtenidos (Agregar todos uno por uno)
+          </Label>
+          <div className="flex gap-4 w-full items-start">
             <Input
-              id="cargo_titulo"
+              id="titulo_obtenido"
               type="text"
-              name="cargo_titulo"
-              placeholder="Ingrese el nombre del cargo o título"
+              name="titulo_obtenido"
+              placeholder="Ingrese el nombre del título"
             />
-          </div>
-          <div className={` ${isHidden ? "hidden" : ""}`}>
-            <Label htmlFor="duracion">Duración de la experiencia</Label>
-            <Select id="duracion" name="duracion">
-              <option value="Menos de 1 año">Menos de 1 año</option>
-              <option value="1-2 años">1-2 años</option>
-              <option value="3-4 años">3-4 años</option>
-              <option value="5 años o más">5 años o más</option>
-            </Select>
-          </div>
-          <div className={` ${isHidden ? "hidden" : ""}`}>
-            <Label htmlFor="empresa_centro_educativo">
-              Nombre de la empresa / centro educativo
-            </Label>
-            <div className="flex gap-4 w-full items-start">
-              <Input
-                id="empresa_centro_educativo"
-                type="text"
-                name="empresa_centro_educativo"
-                placeholder="Ingrese el nombre de la empresa / centro educativo"
-              />
-              <Button className="m-0" onClick={handleAddExperiencia}>
-                Agregar
-              </Button>
-            </div>
-          </div>
-          <div className="md:col-span-3">
-            <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
-              <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
-                <tr className="text-white">
-                  <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">
-                      Experiencias agregadas
-                    </div>
-                  </th>
-                  <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Cargo / Título</div>
-                  </th>
-                  <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Duración</div>
-                  </th>
-                  <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">
-                      Empresa / Centro Educativo
-                    </div>
-                  </th>
-                  <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Acción</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {datosCurriculo.experiencias.map((experiencia, i) => (
-                  <tr
-                    key={i}
-                    className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
-                  >
-                    <td className="px-4 py-4">{experiencia.tipo}</td>
-                    <td className="px-4 py-4">{experiencia.cargo_titulo}</td>
-                    <td className="px-4 py-4">{experiencia.duracion}</td>
-                    <td className="px-4 py-4">
-                      {experiencia.empresa_centro_educativo}
-                    </td>
-                    <td className="px-4 py-4">
-                      <a
-                        href="#"
-                        className="font-medium text-red-600 dark:text-blue-500"
-                        onClick={handleDeleteExp}
-                      >
-                        Borrar
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="flex items-end col-span-3 justify-center">
-            <Button className="m-0" onClick={handleCreateCurriculo}>
-              Enviar Currículo
+            <Button className="m-0 w-auto" onClick={handleAddTituloObtenido}>
+              Agregar
             </Button>
           </div>
         </div>
-      </form>
+        <div>
+          <Label htmlFor="pdf">Adjunte su resumen curricular (PDF)</Label>
+          <input
+            className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+            aria-describedby="file_input_help"
+            id="pdf"
+            type="file"
+            accept="application/pdf"
+            onChange={handlePDF}
+            name="pdf"
+          />
+          <p
+            className="mt-1 text-sm text-red-600 dark:text-gray-300"
+            id="file_input_help"
+          >
+            ¡Solo archivos en formato PDF!
+          </p>
+        </div>
+        <div className="md:col-span-3">
+          <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
+            <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
+              <tr className="text-white">
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">
+                    Títulos obtenidos agregados
+                  </div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Acción</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {datosCurriculo.titulos_obtenidos.map((titulo_obtenido, i) => (
+                <tr
+                  key={i}
+                  className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
+                >
+                  <td className="px-4 py-4">{titulo_obtenido.nombre}</td>
+                  <td className="px-4 py-4">
+                    <a
+                      href="#"
+                      className="font-medium text-red-600 dark:text-blue-500"
+                      onClick={handleDeleteTituloObtenido}
+                    >
+                      Borrar
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <Label htmlFor="area_interes_id">
+            Indica cuál es tu área de interés laboral
+          </Label>
+          <div className="flex gap-4 w-full items-start">
+            <Select
+              id="area_interes_id"
+              name="area_interes_id"
+              className="inline-block"
+            >
+              {areas_interes_activas?.length > 0
+                ? areas_interes_activas?.map(
+                    (area, i) =>
+                      area.activo && (
+                        <option
+                          key={i}
+                          name={area.nombre}
+                          value={area.area_interes_id}
+                        >
+                          {area.nombre}
+                        </option>
+                      )
+                  )
+                : null}
+            </Select>
+            <Button className="m-0 w-auto" onClick={handleAddArea}>
+              Agregar
+            </Button>
+          </div>
+        </div>
+        <div className="flex items-center justify-center gap-2">
+          <input
+            id="disponibilidad_viajar"
+            name="disponibilidad_viajar"
+            type="checkbox"
+            checked={datosCurriculo.disponibilidad_viajar}
+            onChange={handleCheckedChangeCurriculo}
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          />
+          <Label htmlFor="disponibilidad_viajar">
+            ¿Posees disponibilidad para viajar?
+          </Label>
+        </div>
+        <div className="flex items-center justify-center gap-2">
+          <input
+            id="disponibilidad_cambio_residencia"
+            name="disponibilidad_cambio_residencia"
+            type="checkbox"
+            checked={datosCurriculo.disponibilidad_cambio_residencia}
+            onChange={handleCheckedChangeCurriculo}
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          />
+          <Label htmlFor="disponibilidad_cambio_residencia">
+            ¿Posees disponibilidad para cambio de residencia?
+          </Label>
+        </div>
+        <div className="md:col-span-3">
+          <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
+            <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
+              <tr className="text-white">
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">
+                    Areas de interés seleccionadas
+                  </div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Acción</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {datosCurriculo.areas_interes.map((area, i) => (
+                <tr
+                  key={i}
+                  className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
+                >
+                  <td className="px-4 py-4">{area.nombre}</td>
+                  <td className="px-4 py-4">
+                    <a
+                      href="#"
+                      className="font-medium text-red-600 dark:text-blue-500"
+                      onClick={handleDeleteArea}
+                    >
+                      Borrar
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <Label htmlFor="tipo">
+            ¿Posees experiencia laboral o realizaste algún curso?
+          </Label>
+          <Select id="tipo" name="tipo" onChange={handleTipoExpSelected}>
+            <option value="Ninguno">Ninguno</option>
+            <option value="Laboral">Experiencia Laboral</option>
+            <option value="Curso">Experiencia Curso</option>
+          </Select>
+        </div>
+        <div className={` ${isHidden ? "hidden" : ""}`}>
+          <Label htmlFor="cargo_titulo">
+            Cargo laboral o título conseguido (Agregar todos uno por uno)
+          </Label>
+
+          <Input
+            id="cargo_titulo"
+            type="text"
+            name="cargo_titulo"
+            placeholder="Ingrese el nombre del cargo o título"
+          />
+        </div>
+        <div className={` ${isHidden ? "hidden" : ""}`}>
+          <Label htmlFor="duracion">Duración de la experiencia</Label>
+          <Select id="duracion" name="duracion">
+            <option value="Menos de 1 año">Menos de 1 año</option>
+            <option value="1-2 años">1-2 años</option>
+            <option value="3-4 años">3-4 años</option>
+            <option value="5 años o más">5 años o más</option>
+          </Select>
+        </div>
+        <div className={` ${isHidden ? "hidden" : ""}`}>
+          <Label htmlFor="empresa_centro_educativo">
+            Nombre de la empresa / centro educativo
+          </Label>
+          <div className="flex gap-4 w-full items-start">
+            <Input
+              id="empresa_centro_educativo"
+              type="text"
+              name="empresa_centro_educativo"
+              placeholder="Ingrese el nombre de la empresa / centro educativo"
+            />
+            <Button className="m-0 w-auto" onClick={handleAddExperiencia}>
+              Agregar
+            </Button>
+          </div>
+        </div>
+        <div className="md:col-span-3">
+          <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
+            <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
+              <tr className="text-white">
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">
+                    Experiencias agregadas
+                  </div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Cargo / Título</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Duración</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">
+                    Empresa / Centro Educativo
+                  </div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Acción</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {datosCurriculo.experiencias.map((experiencia, i) => (
+                <tr
+                  key={i}
+                  className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
+                >
+                  <td className="px-4 py-4">{experiencia.tipo}</td>
+                  <td className="px-4 py-4">{experiencia.cargo_titulo}</td>
+                  <td className="px-4 py-4">{experiencia.duracion}</td>
+                  <td className="px-4 py-4">
+                    {experiencia.empresa_centro_educativo}
+                  </td>
+                  <td className="px-4 py-4">
+                    <a
+                      href="#"
+                      className="font-medium text-red-600 dark:text-blue-500"
+                      onClick={handleDeleteExp}
+                    >
+                      Borrar
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="md:col-span-3 flex justify-center items-center">
+          <Button className="m-0 w-auto" onClick={handleCreateCurriculo}>
+            Enviar Currículo
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
