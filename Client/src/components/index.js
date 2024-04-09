@@ -1,9 +1,9 @@
 import { CreateCurriculo } from "./CreateCurriculo/CreateCurriculo";
-import { Curriculo } from "./Form/Curriculo";
 import { CurriculoDetail } from "./CurriculoDetail/CurriculoDetail";
 import { Dashboard } from "./Admin/Dashboard";
-import { DatosPersonales } from "./Form/DatosPersonales";
+import { DatosPersonales } from "./DatosPersonales/DatosPersonales";
 import { Home } from "./Home/Home";
+import { LandingCurriculo } from "./LandingCurriculo/LandingCurriculo";
 import { LoginAdmin } from "./Admin/LoginAdmin";
 import { LoginEmpleado } from "./LoginEmpleado/LoginEmpleado";
 import { Navbar } from "./Navbar/Navbar";
@@ -14,11 +14,11 @@ import { UpdatePassword } from "./UpdatePassword/UpdatePassword";
 
 export {
   CreateCurriculo,
-  Curriculo,
   CurriculoDetail,
   Dashboard,
   DatosPersonales,
   Home,
+  LandingCurriculo,
   LoginAdmin,
   LoginEmpleado,
   Navbar,
