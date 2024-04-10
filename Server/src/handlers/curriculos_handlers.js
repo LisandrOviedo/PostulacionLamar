@@ -43,24 +43,18 @@ const getCurriculoEmpleado = async (req, res) => {
 
 const postCurriculo = async (req, res) => {
   const {
-    cedula,
     empleado_id,
     grado_instruccion,
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
   } = req.body;
 
-  const { originalname, path } = req.file;
-
   try {
     const response = await crearCurriculo(
-      cedula,
       empleado_id,
       grado_instruccion,
       disponibilidad_viajar,
-      disponibilidad_cambio_residencia,
-      originalname,
-      path
+      disponibilidad_cambio_residencia
     );
 
     return res.status(201).json(response);
@@ -77,16 +71,12 @@ const putCurriculo = async (req, res) => {
     disponibilidad_cambio_residencia,
   } = req.body;
 
-  const { originalname, path } = req.file;
-
   try {
     const response = await modificarCurriculo(
       curriculo_id,
       grado_instruccion,
       disponibilidad_viajar,
-      disponibilidad_cambio_residencia,
-      originalname,
-      path
+      disponibilidad_cambio_residencia
     );
 
     return res.json(response);

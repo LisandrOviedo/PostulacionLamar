@@ -31,14 +31,6 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
-    nombre_pdf: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    ruta_pdf: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     estado: {
       type: DataTypes.ENUM("Pendiente por revisar", "Revisado"),
       defaultValue: "Pendiente por revisar",

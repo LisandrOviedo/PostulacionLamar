@@ -166,15 +166,12 @@ const traerCurriculoEmpleado = async (empleado_id) => {
 };
 
 const crearCurriculo = async (
-  cedula,
   empleado_id,
   grado_instruccion,
   disponibilidad_viajar,
-  disponibilidad_cambio_residencia,
-  originalname,
-  path
+  disponibilidad_cambio_residencia
 ) => {
-  if (!cedula || !empleado_id || !grado_instruccion || !originalname || !path) {
+  if (!empleado_id || !grado_instruccion) {
     throw new Error("Datos faltantes");
   }
 
@@ -188,22 +185,11 @@ const crearCurriculo = async (
         grado_instruccion: grado_instruccion,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
-        nombre_pdf: originalname,
-        ruta_pdf: path,
       },
     });
 
     if (created) {
       return curriculo;
-    }
-
-    const fs = require("fs");
-    const rutaArchivo = path;
-
-    try {
-      fs.unlinkSync(rutaArchivo);
-    } catch (error) {
-      console.error("Error al eliminar el archivo PDF: " + error);
     }
 
     throw new Error("Ya existe un curriculo para ese empleado");
@@ -216,33 +202,20 @@ const modificarCurriculo = async (
   curriculo_id,
   grado_instruccion,
   disponibilidad_viajar,
-  disponibilidad_cambio_residencia,
-  originalname,
-  path
+  disponibilidad_cambio_residencia
 ) => {
-  if (!curriculo_id || !grado_instruccion || !originalname || !path) {
+  if (!curriculo_id || !grado_instruccion) {
     throw new Error("Datos faltantes");
   }
 
   try {
-    const curriculo = await traerCurriculo(curriculo_id);
-
-    const fs = require("fs");
-    const rutaArchivo = curriculo.ruta_pdf;
-
-    try {
-      fs.unlinkSync(rutaArchivo);
-    } catch (error) {
-      console.error("Error al eliminar el archivo PDF: " + error);
-    }
+    await traerCurriculo(curriculo_id);
 
     await Curriculo.update(
       {
         grado_instruccion: grado_instruccion,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
-        nombre_pdf: originalname,
-        ruta_pdf: path,
         estado: "Pendiente por revisar",
       },
       {
