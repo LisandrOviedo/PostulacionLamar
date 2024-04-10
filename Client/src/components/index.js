@@ -1,3 +1,4 @@
+import { AnexarDocumentos } from "./AnexarDocumentos/AnexarDocumentos";
 import { CreateCurriculo } from "./CreateCurriculo/CreateCurriculo";
 import { CurriculoDetail } from "./CurriculoDetail/CurriculoDetail";
 import { Dashboard } from "./Admin/Dashboard";
@@ -13,6 +14,7 @@ import { Postulaciones } from "./Admin/Postulaciones";
 import { UpdatePassword } from "./UpdatePassword/UpdatePassword";
 
 export {
+  AnexarDocumentos,
   CreateCurriculo,
   CurriculoDetail,
   Dashboard,

@@ -3,6 +3,7 @@ import "./App.css";
 import { Routes, Route, useLocation } from "react-router-dom";
 
 import {
+  AnexarDocumentos,
   CreateCurriculo,
   CurriculoDetail,
   Dashboard,
@@ -47,6 +48,10 @@ function App() {
             <Route
               path="/curriculo/curriculoDetalle/:curriculo_id"
               element={<CurriculoDetail />}
+            />
+            <Route
+              path="/documentos/:empleado_id"
+              element={<AnexarDocumentos />}
             />
           </Route>
 
