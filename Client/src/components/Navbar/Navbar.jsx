@@ -9,10 +9,9 @@ export function Navbar() {
   const [isHovered, setIsHovered] = useState(false);
 
   const toggleMenu = (index) => {
-    setIsOpen((prevState) => ({
-      ...prevState,
-      [index]: !prevState[index],
-    }));
+    setIsOpen({
+      [index]: [index],
+    });
   };
 
   const toggleMenuBurger = () => {
