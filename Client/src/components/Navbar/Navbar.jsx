@@ -173,7 +173,7 @@ export function Navbar() {
                       </li>
                       <li>
                         <Link
-                          to="/home"
+                          to="/documentos"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Anexar documentos
