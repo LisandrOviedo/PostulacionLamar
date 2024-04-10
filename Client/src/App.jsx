@@ -50,7 +50,7 @@ function App() {
               element={<CurriculoDetail />}
             />
             <Route
-              path="/documentos/:empleado_id"
+              path="/documentos"
               element={<AnexarDocumentos />}
             />
           </Route>
