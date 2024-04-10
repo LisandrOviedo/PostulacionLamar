@@ -97,6 +97,7 @@ export function Navbar() {
                   <Link
                     to="/home"
                     className="block text-white hover:text-[#F0C95C]"
+                    onClick={() => toggleMenu({})}
                   >
                     <div className="flex items-center justify-between p-2">
                       <div className="mx-auto">Inicio</div>
@@ -198,6 +199,7 @@ export function Navbar() {
                   <Link
                     to="/admin/dashboard"
                     className="block text-white hover:text-[#F0C95C]"
+                    onClick={() => toggleMenu({})}
                   >
                     <div className="flex items-center justify-between p-2">
                       <div className="mx-auto">Inicio</div>
@@ -242,6 +244,7 @@ export function Navbar() {
                     <Link
                       to="/admin/postulaciones"
                       className="block text-white hover:text-[#F0C95C]"
+                      onClick={() => toggleMenu({})}
                     >
                       <div className="flex items-center justify-between p-2">
                         <div className="mx-auto">Postulaciones</div>
@@ -252,6 +255,7 @@ export function Navbar() {
                     <Link
                       to="/admin/login"
                       className="block text-white hover:text-[#F0C95C]"
+                      onClick={() => toggleMenu({})}
                     >
                       <div className="flex items-center justify-between p-2">
                         <div className="mx-auto">Cerrar Sesión</div>
