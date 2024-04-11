@@ -175,6 +175,7 @@ export function AnexarDocumentos() {
       cuenta_bancaria.value
     ) {
       const formData = new FormData();
+      formData.append("empleado_id", empleado.empleado_id);
       formData.append("cedula", empleado.cedula);
 
       if (foto_carnet.value) {
