@@ -121,3 +121,25 @@ export const resetEmpleados = () => {
     }
   };
 };
+
+export const postDocumentos = async (formData) => {
+  const URL_POST_DOCUMENTOS = `${URL_SERVER}/documentos_empleados`;
+
+  try {
+    await axios.post(URL_POST_DOCUMENTOS, formData);
+
+    return Swal.fire({
+      text: "Documentos subidos",
+      icon: "success",
+    });
+  } catch (error) {
+    Swal.fire({
+      title: "Oops...",
+      text: `${error.response.data.error}`,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    throw new Error();
+  }
+};
