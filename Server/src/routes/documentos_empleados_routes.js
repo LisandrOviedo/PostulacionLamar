@@ -44,9 +44,7 @@ const upload = multer({ storage: storage });
 
 documentos_empleados.get("/detalle/:empleado_id", getAnexos);
 
-documentos_empleados.post("/", upload.array("anexos", 20), (req, res) => {
-  res.send("Terminó");
-});
+documentos_empleados.post("/", upload.array("anexos", 20), postAnexos);
 
 documentos_empleados.put("/modificar", upload.array("anexos", 20), putAnexos);
 

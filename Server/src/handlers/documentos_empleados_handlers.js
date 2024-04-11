@@ -17,10 +17,11 @@ const getAnexos = async (req, res) => {
 };
 
 const postAnexos = async (req, res) => {
-  const { empleado_id } = req.file;
+  const { empleado_id } = req.body;
+  const anexos = req.files;
 
   try {
-    const response = await crearAnexos(empleado_id);
+    const response = await crearAnexos(empleado_id, anexos);
 
     return res.status(201).json(response);
   } catch (error) {
