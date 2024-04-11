@@ -47,6 +47,10 @@ export function CurriculoDetail() {
 
   const [isHidden, setIsHidden] = useState(true);
 
+  const [isLoad, setIsLoad] = useState({
+    areas_interes: true,
+  });
+
   const handleInputChangeCurriculo = (event) => {
     const { name, value } = event.target;
 
@@ -101,6 +105,10 @@ export function CurriculoDetail() {
       ],
     });
 
+    if (!isLoad.areas_interes) {
+      setIsLoad({ ...isLoad, areas_interes: true });
+    }
+
     select.selectedIndex = 0;
     return;
   };
@@ -115,6 +123,10 @@ export function CurriculoDetail() {
       ...datosCurriculo,
       areas_interes: updatedAreasInteres,
     });
+
+    if (!updatedAreasInteres.length) {
+      setIsLoad({ ...isLoad, areas_interes: false });
+    }
   };
 
   const handleAddTituloObtenido = (event) => {
@@ -350,7 +362,9 @@ export function CurriculoDetail() {
               <Select
                 id="area_interes_id"
                 name="area_interes_id"
-                className="inline-block"
+                className={`inline-block ${
+                  isLoad.areas_interes ? null : "border-red-500"
+                }`}
               >
                 {areas_interes_activas?.length > 0
                   ? areas_interes_activas?.map(

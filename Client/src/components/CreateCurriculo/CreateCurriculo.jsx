@@ -34,6 +34,10 @@ export function CreateCurriculo() {
 
   const [isHidden, setIsHidden] = useState(true);
 
+  const [isLoad, setIsLoad] = useState({
+    areas_interes: false,
+  });
+
   useEffect(() => {
     window.scroll(0, 0);
 
@@ -100,6 +104,10 @@ export function CreateCurriculo() {
       ],
     });
 
+    if (!isLoad.areas_interes) {
+      setIsLoad({ ...isLoad, areas_interes: true });
+    }
+
     select.selectedIndex = 0;
     return;
   };
@@ -114,6 +122,10 @@ export function CreateCurriculo() {
       ...datosCurriculo,
       areas_interes: updatedAreasInteres,
     });
+
+    if (!updatedAreasInteres.length) {
+      setIsLoad({ ...isLoad, areas_interes: false });
+    }
   };
 
   const handleAddTituloObtenido = (event) => {
@@ -356,7 +368,9 @@ export function CreateCurriculo() {
             <Select
               id="area_interes_id"
               name="area_interes_id"
-              className="inline-block"
+              className={`inline-block ${
+                isLoad.areas_interes ? null : "border-red-500"
+              }`}
             >
               {areas_interes_activas?.length > 0
                 ? areas_interes_activas?.map(
