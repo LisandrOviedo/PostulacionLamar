@@ -6,6 +6,7 @@ import {
   createEmpleado,
   empleadoByID,
   cargoActualEmpleado,
+  allDocumentos,
   resetState,
 } from "./empleadoSlice";
 
@@ -128,10 +129,54 @@ export const postDocumentos = async (formData) => {
   try {
     await axios.post(URL_POST_DOCUMENTOS, formData);
 
-    return Swal.fire({
+    await Swal.fire({
       text: "Documentos subidos",
       icon: "success",
     });
+
+    window.location.reload();
+    window.scroll(0, 0);
+    return;
+  } catch (error) {
+    Swal.fire({
+      title: "Oops...",
+      text: `${error.response.data.error}`,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    throw new Error();
+  }
+};
+
+export const getDocumentos = (empleado_id) => {
+  const URL_GET_DOCUMENTOS = `${URL_SERVER}/documentos_empleados/detalle/${empleado_id}`;
+
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.get(URL_GET_DOCUMENTOS);
+
+      return dispatch(allDocumentos(data));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const getDocumento = async (cedula, originalname) => {
+  const URL_GET_DOCUMENTO = `${URL_SERVER}/documentos_empleados/documento/${cedula}/${originalname}`;
+
+  try {
+    const { data } = await axios.get(URL_GET_DOCUMENTO);
+
+    return dispatch(allDocumentos(data));
   } catch (error) {
     Swal.fire({
       title: "Oops...",

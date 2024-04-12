@@ -4,6 +4,7 @@ const initialState = {
   empleados: [],
   empleado: {},
   cargo_actual: [],
+  documentos: [],
 };
 
 export const empleadoSlice = createSlice({
@@ -11,7 +12,7 @@ export const empleadoSlice = createSlice({
   initialState,
   reducers: {
     allEmpleados: (state, action) => {
-      state.empleados = action.payload.empleados;
+      state.empleados = action.payload;
     },
     createEmpleado: (state, action) => {
       state.empleado = action.payload;
@@ -21,6 +22,9 @@ export const empleadoSlice = createSlice({
     },
     cargoActualEmpleado: (state, action) => {
       state.cargo_actual = action.payload;
+    },
+    allDocumentos: (state, action) => {
+      state.documentos = action.payload;
     },
     resetState: () => {
       return initialState;
@@ -33,6 +37,7 @@ export const {
   createEmpleado,
   empleadoByID,
   cargoActualEmpleado,
+  allDocumentos,
   resetState,
 } = empleadoSlice.actions;
 export default empleadoSlice.reducer;
