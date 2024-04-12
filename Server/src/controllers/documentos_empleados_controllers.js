@@ -34,30 +34,36 @@ const crearAnexos = async (empleado_id, anexos) => {
 
     let fallidos = "";
 
-    anexos.forEach(async (anexo) => {
-      const [documento, created] = await Documentos_Empleado.findOrCreate({
-        where: {
-          empleado_id: empleado_id,
-          ruta_documento: anexo.path,
-        },
-        defaults: {
-          empleado_id: empleado_id,
-          ruta_documento: anexo.path,
-        },
-      });
+    for (const key in anexos) {
+      const arreglo = anexos[key];
 
-      if (!created) {
-        if (fallidos === "") {
-          fallidos = anexo.originalname;
-          return;
-        }
+      for (const elemento of arreglo) {
+        const [documento, created] = await Documentos_Empleado.findOrCreate({
+          where: {
+            empleado_id: empleado_id,
+            tipo_documento: elemento.fieldname,
+            ruta_documento: elemento.path,
+          },
+          defaults: {
+            empleado_id: empleado_id,
+            tipo_documento: elemento.fieldname,
+            ruta_documento: elemento.path,
+          },
+        });
 
-        if (fallidos !== "") {
-          fallidos = fallidos + ` ${anexo.originalname}`;
-          return;
+        if (!created) {
+          if (fallidos === "") {
+            fallidos = elemento.originalname;
+            return;
+          }
+
+          if (fallidos !== "") {
+            fallidos = fallidos + ` ${elemento.originalname}`;
+            return;
+          }
         }
       }
-    });
+    }
 
     if (fallidos !== "") {
       throw new Error(
