@@ -44,8 +44,36 @@ const upload = multer({ storage: storage });
 
 documentos_empleados.get("/detalle/:empleado_id", getAnexos);
 
-documentos_empleados.post("/", upload.array("anexos", 20), postAnexos);
+documentos_empleados.post(
+  "/",
+  upload.fields([
+    { name: "foto_carnet", maxCount: 1 },
+    { name: "foto_cedula", maxCount: 1 },
+    { name: "rif", maxCount: 1 },
+    { name: "resumen_curricular", maxCount: 1 },
+    { name: "titulo_bachiller", maxCount: 1 },
+    { name: "titulos_universitarios", maxCount: 1 },
+    { name: "otros_estudios", maxCount: 1 },
+    { name: "referencia_personal", maxCount: 1 },
+    { name: "cuenta_bancaria", maxCount: 1 },
+  ]),
+  postAnexos
+);
 
-documentos_empleados.put("/modificar", upload.array("anexos", 20), putAnexos);
+documentos_empleados.put(
+  "/modificar",
+  upload.fields([
+    { name: "foto_carnet", maxCount: 1 },
+    { name: "foto_cedula", maxCount: 1 },
+    { name: "rif", maxCount: 1 },
+    { name: "resumen_curricular", maxCount: 1 },
+    { name: "titulo_bachiller", maxCount: 1 },
+    { name: "titulos_universitarios", maxCount: 1 },
+    { name: "otros_estudios", maxCount: 1 },
+    { name: "referencia_personal", maxCount: 1 },
+    { name: "cuenta_bancaria", maxCount: 1 },
+  ]),
+  putAnexos
+);
 
 module.exports = documentos_empleados;
