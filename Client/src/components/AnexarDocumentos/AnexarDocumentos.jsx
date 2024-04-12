@@ -248,8 +248,8 @@ export function AnexarDocumentos() {
 
       <div className="flex flex-col mt-5 mb-5 gap-3">
         <div className="mx-auto ">
-          <table className="w-auto text-xs text-left rtl:text-right dark:text-gray-400">
-            <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
+          <table className="w-auto text-sm text-left rtl:text-right dark:text-gray-400">
+            <thead className="text-sm uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
               <tr className="text-white">
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Tipo Documento</div>
