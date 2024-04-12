@@ -25,7 +25,7 @@ module.exports = (sequelize) => {
         "referencia_personal",
         "cuenta_bancaria"
       ),
-      allowNull: true,
+      allowNull: false,
     },
     ruta_documento: {
       type: DataTypes.STRING,
