@@ -28,6 +28,7 @@ export function CreateCurriculo() {
     titulos_obtenidos: [],
     disponibilidad_viajar: true,
     disponibilidad_cambio_residencia: false,
+    cantidad_hijos: "0",
     areas_interes: [],
     experiencias: [],
   });
@@ -252,6 +253,30 @@ export function CreateCurriculo() {
       ...datosCurriculo,
       titulos_obtenidos: updatedTitulosObtenidos,
     });
+  };
+
+  const handleValidateChildrens = () => {
+    const input = document.getElementById("cantidad_hijos");
+
+    if (input.value < 0) {
+      input.value = 0;
+    }
+
+    if (input.value > 15) {
+      input.value = 15;
+    }
+
+    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
+  };
+
+  const handleValidateChildrensEmpty = () => {
+    const input = document.getElementById("cantidad_hijos");
+
+    if (!input.value) {
+      input.value = 0;
+    }
+
+    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
   };
 
   const handleCreateCurriculo = async (event) => {
@@ -515,6 +540,19 @@ export function CreateCurriculo() {
               Agregar
             </Button>
           </div>
+        </div>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="cantidad_hijos">Cantidad de hijos</Label>
+          <Input
+            id="cantidad_hijos"
+            type="number"
+            name="cantidad_hijos"
+            min="0"
+            max="15"
+            defaultValue="0"
+            onChange={handleValidateChildrens}
+            onBlur={handleValidateChildrensEmpty}
+          />
         </div>
         <div className="md:col-span-3">
           <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
