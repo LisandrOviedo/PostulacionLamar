@@ -13,7 +13,7 @@ module.exports = (sequelize) => {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    tipo_documento: {
+    tipo: {
       type: DataTypes.ENUM(
         "foto_carnet",
         "foto_cedula",
@@ -27,7 +27,11 @@ module.exports = (sequelize) => {
       ),
       allowNull: false,
     },
-    ruta_documento: {
+    nombre: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    ruta: {
       type: DataTypes.STRING,
       allowNull: false,
     },
