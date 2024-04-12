@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 const { Empleado, Documentos_Empleado } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
@@ -11,6 +13,9 @@ const traerAnexos = async (empleado_id) => {
     await traerEmpleado(empleado_id);
 
     const anexos = await Documentos_Empleado.findAll({
+      attributes: {
+        exclude: ["documento_empleado_id", "empleado_id", "activo"],
+      },
       where: { empleado_id: empleado_id },
     });
 
@@ -32,44 +37,41 @@ const crearAnexos = async (empleado_id, anexos) => {
   try {
     await traerEmpleado(empleado_id);
 
-    let fallidos = "";
-
     for (const key in anexos) {
       const arreglo = anexos[key];
 
       for (const elemento of arreglo) {
-        const [documento, created] = await Documentos_Empleado.findOrCreate({
+        const documentosActuales = await Documentos_Empleado.findAll({
           where: {
             empleado_id: empleado_id,
-            tipo_documento: elemento.fieldname,
-            ruta_documento: elemento.path,
-          },
-          defaults: {
-            empleado_id: empleado_id,
-            tipo_documento: elemento.fieldname,
-            ruta_documento: elemento.path,
+            tipo: elemento.fieldname,
           },
         });
 
-        if (!created) {
-          if (fallidos === "") {
-            fallidos = elemento.originalname;
-            return;
-          }
+        documentosActuales.forEach((documentoActual) => {
+          const rutaArchivo = documentoActual.ruta;
 
-          if (fallidos !== "") {
-            fallidos = fallidos + ` ${elemento.originalname}`;
-            return;
-          }
-        }
+          fs.unlink(rutaArchivo, (error) => {
+            if (error) {
+              console.error("Error al borrar el archivo:", error);
+            }
+          });
+        });
+
+        await Documentos_Empleado.destroy({
+          where: {
+            empleado_id: empleado_id,
+            tipo: elemento.fieldname,
+          },
+        });
+
+        await Documentos_Empleado.create({
+          empleado_id: empleado_id,
+          tipo: elemento.fieldname,
+          nombre: elemento.filename,
+          ruta: elemento.path,
+        });
       }
-    }
-
-    if (fallidos !== "") {
-      throw new Error(
-        "Estos anexos no se pudieron guardar porque ya existen: ",
-        fallidos
-      );
     }
   } catch (error) {
     throw new Error("Error al crear los anexos: " + error.message);
