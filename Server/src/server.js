@@ -9,6 +9,12 @@ server.use(cors());
 server.use(morgan("dev"));
 server.use(express.json({ limit: "65mb" })); //Límite máximo en el tamaño de los datos JSON que el servidor puede manejar de una sola vez, para evitar posibles ataques de denegación de servicio (DoS) o abusos.
 
+const path = require("path");
+
+server.use(
+  express.static(path.join(__dirname, `../public/documentosEmpleados/`))
+);
+
 server.use(router);
 
 module.exports = server;
