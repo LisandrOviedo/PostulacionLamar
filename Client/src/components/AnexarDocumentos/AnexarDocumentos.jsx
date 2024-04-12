@@ -179,37 +179,37 @@ export function AnexarDocumentos() {
       formData.append("cedula", empleado.cedula);
 
       if (foto_carnet.value) {
-        formData.append("anexos", foto_carnet_file);
+        formData.append("foto_carnet", foto_carnet_file);
       }
 
       if (foto_cedula.value) {
-        formData.append("anexos", foto_cedula_file);
+        formData.append("foto_cedula", foto_cedula_file);
       }
 
       if (rif.value) {
-        formData.append("anexos", rif_file);
+        formData.append("rif", rif_file);
       }
 
       if (resumen_curricular.value) {
-        formData.append("anexos", resumen_curricular_file);
+        formData.append("resumen_curricular", resumen_curricular_file);
       }
 
       if (titulo_bachiller.value) {
-        formData.append("anexos", titulo_bachiller_file);
+        formData.append("titulo_bachiller", titulo_bachiller_file);
       }
 
       if (titulos_universitarios.value) {
-        formData.append("anexos", titulos_universitarios_file);
+        formData.append("titulos_universitarios", titulos_universitarios_file);
       }
 
       if (otros_estudios.value) {
-        formData.append("anexos", otros_estudios_file);
+        formData.append("otros_estudios", otros_estudios_file);
       }
       if (referencia_personal.value) {
-        formData.append("anexos", referencia_personal_file);
+        formData.append("referencia_personal", referencia_personal_file);
       }
       if (cuenta_bancaria.value) {
-        formData.append("anexos", cuenta_bancaria_file);
+        formData.append("cuenta_bancaria", cuenta_bancaria_file);
       }
 
       try {
