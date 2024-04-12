@@ -1,21 +1,26 @@
 import React from "react";
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { Button, Label, Title, InputFile } from "../UI";
+import { Button, Title, InputFile } from "../UI";
 
-import { postDocumentos } from "../../redux/empleados/empleadoAction";
+import {
+  postDocumentos,
+  getDocumentos,
+  getDocumento,
+} from "../../redux/empleados/empleadoAction";
 
 import Swal from "sweetalert2";
 
 export function AnexarDocumentos() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const empleado = useSelector((state) => state.empleados.empleado);
+  const anexos = useSelector((state) => state.empleados.documentos);
+
+  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const [isLoad, setIsLoad] = useState({
     foto_carnet: false,
@@ -32,7 +37,9 @@ export function AnexarDocumentos() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    document.title = "Grupo Lamar - Registrar Documentos";
+    document.title = "Grupo Lamar - Mis Documentos";
+
+    dispatch(getDocumentos(empleado.empleado_id));
 
     return () => {
       document.title = "Grupo Lamar";
@@ -228,168 +235,436 @@ export function AnexarDocumentos() {
     });
   };
 
+  const handleOpenDocument = (filename) => {
+    const URL_GET_DOCUMENTOS = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${filename}`;
+
+    window.open(URL_GET_DOCUMENTOS, "_blank");
+  };
+
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white">
       <Title>Mis documentos</Title>
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
 
-      <div className="grid gap-10 grid-cols-1 md:grid-cols-2 mt-5 mb-5">
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="foto_carnet">
-            Adjunte una foto tipo carnet{" "}
-            <span className="mt-1 text-sm text-red-600 dark:text-gray-300">
-              (JPG, JPEG, PNG)
-            </span>
-          </Label>
-          <InputFile
-            id="foto_carnet"
-            name="foto_carnet"
-            accept=".jpg, .jpeg, .png"
-            onChange={handleValidateImage}
-            className={`${
-              isLoad.foto_carnet ? "border-green-500" : "border-red-500"
-            }`}
-          />
+      <div className="flex flex-col mt-5 mb-5 gap-3">
+        <div className="mx-auto ">
+          <table className="w-auto text-xs text-left rtl:text-right dark:text-gray-400">
+            <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
+              <tr className="text-white">
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Tipo Documento</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Nombre Documento</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Acción</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Cargar / Actualizar</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-4 py-4">Foto Carnet</td>
+                {anexos &&
+                anexos.find((anexo) => anexo.tipo === "foto_carnet") ? (
+                  <>
+                    <td className="px-4 py-4">
+                      {
+                        anexos.find((anexo) => anexo.tipo === "foto_carnet")
+                          .nombre
+                      }
+                    </td>
+                    <td className="px-4 py-4">
+                      <Button
+                        className="m-0 w-auto"
+                        onClick={() =>
+                          handleOpenDocument(
+                            anexos.find((anexo) => anexo.tipo === "foto_carnet")
+                              .nombre
+                          )
+                        }
+                      >
+                        Ver
+                      </Button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="px-4 py-4 text-red-800">No cargado</td>
+                    <td className="px-4 py-4"></td>
+                  </>
+                )}
+                <td className="px-4 py-4">
+                  <InputFile
+                    id="foto_carnet"
+                    name="foto_carnet"
+                    accept=".jpg, .jpeg, .png"
+                    onChange={handleValidateImage}
+                    className={`${
+                      isLoad.foto_carnet ? "border-green-500" : ""
+                    }`}
+                  />
+                </td>
+              </tr>
+              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-4 py-4">Foto Cédula</td>
+                {anexos &&
+                anexos.find((anexo) => anexo.tipo === "foto_cedula") ? (
+                  <>
+                    <td className="px-4 py-4">
+                      {
+                        anexos.find((anexo) => anexo.tipo === "foto_cedula")
+                          .nombre
+                      }
+                    </td>
+                    <td className="px-4 py-4">
+                      <Button
+                        className="m-0 w-auto"
+                        onClick={() =>
+                          handleOpenDocument(
+                            anexos.find((anexo) => anexo.tipo === "foto_cedula")
+                              .nombre
+                          )
+                        }
+                      >
+                        Ver
+                      </Button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="px-4 py-4 text-red-800">No cargado</td>
+                    <td className="px-4 py-4"></td>
+                  </>
+                )}
+                <td className="px-4 py-4">
+                  <InputFile
+                    id="foto_cedula"
+                    name="foto_cedula"
+                    accept=".jpg, .jpeg, .png, application/pdf"
+                    onChange={handleValidateImagePDF}
+                    className={`${
+                      isLoad.foto_cedula ? "border-green-500" : ""
+                    }`}
+                  />
+                </td>
+              </tr>
+              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-4 py-4">RIF</td>
+                {anexos && anexos.find((anexo) => anexo.tipo === "rif") ? (
+                  <>
+                    <td className="px-4 py-4">
+                      {anexos.find((anexo) => anexo.tipo === "rif").nombre}
+                    </td>
+                    <td className="px-4 py-4">
+                      <Button
+                        className="m-0 w-auto"
+                        onClick={() =>
+                          handleOpenDocument(
+                            anexos.find((anexo) => anexo.tipo === "rif").nombre
+                          )
+                        }
+                      >
+                        Ver
+                      </Button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="px-4 py-4 text-red-800">No cargado</td>
+                    <td className="px-4 py-4"></td>
+                  </>
+                )}
+                <td className="px-4 py-4">
+                  <InputFile
+                    id="rif"
+                    name="rif"
+                    accept="application/pdf"
+                    onChange={handleValidatePDF}
+                    className={`${isLoad.rif ? "border-green-500" : ""}`}
+                  />
+                </td>
+              </tr>
+              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-4 py-4">Resumen Curricular</td>
+                {anexos &&
+                anexos.find((anexo) => anexo.tipo === "resumen_curricular") ? (
+                  <>
+                    <td className="px-4 py-4">
+                      {
+                        anexos.find(
+                          (anexo) => anexo.tipo === "resumen_curricular"
+                        ).nombre
+                      }
+                    </td>
+                    <td className="px-4 py-4">
+                      <Button
+                        className="m-0 w-auto"
+                        onClick={() =>
+                          handleOpenDocument(
+                            anexos.find(
+                              (anexo) => anexo.tipo === "resumen_curricular"
+                            ).nombre
+                          )
+                        }
+                      >
+                        Ver
+                      </Button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="px-4 py-4 text-red-800">No cargado</td>
+                    <td className="px-4 py-4"></td>
+                  </>
+                )}
+                <td className="px-4 py-4">
+                  <InputFile
+                    id="resumen_curricular"
+                    name="resumen_curricular"
+                    accept="application/pdf"
+                    onChange={handleValidatePDF}
+                    className={`${
+                      isLoad.resumen_curricular ? "border-green-500" : ""
+                    }`}
+                  />
+                </td>
+              </tr>
+              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-4 py-4">Título Bachiller</td>
+                {anexos &&
+                anexos.find((anexo) => anexo.tipo === "titulo_bachiller") ? (
+                  <>
+                    <td className="px-4 py-4">
+                      {
+                        anexos.find(
+                          (anexo) => anexo.tipo === "titulo_bachiller"
+                        ).nombre
+                      }
+                    </td>
+                    <td className="px-4 py-4">
+                      <Button
+                        className="m-0 w-auto"
+                        onClick={() =>
+                          handleOpenDocument(
+                            anexos.find(
+                              (anexo) => anexo.tipo === "titulo_bachiller"
+                            ).nombre
+                          )
+                        }
+                      >
+                        Ver
+                      </Button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="px-4 py-4 text-red-800">No cargado</td>
+                    <td className="px-4 py-4"></td>
+                  </>
+                )}
+                <td className="px-4 py-4">
+                  <InputFile
+                    id="titulo_bachiller"
+                    name="titulo_bachiller"
+                    accept=".jpg, .jpeg, .png, application/pdf"
+                    onChange={handleValidateImagePDF}
+                    className={`${
+                      isLoad.titulo_bachiller ? "border-green-500" : ""
+                    }`}
+                  />
+                </td>
+              </tr>
+              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-4 py-4">Títulos Universitarios</td>
+                {anexos &&
+                anexos.find(
+                  (anexo) => anexo.tipo === "titulos_universitarios"
+                ) ? (
+                  <>
+                    <td className="px-4 py-4">
+                      {
+                        anexos.find(
+                          (anexo) => anexo.tipo === "titulos_universitarios"
+                        ).nombre
+                      }
+                    </td>
+                    <td className="px-4 py-4">
+                      <Button
+                        className="m-0 w-auto"
+                        onClick={() =>
+                          handleOpenDocument(
+                            anexos.find(
+                              (anexo) => anexo.tipo === "titulos_universitarios"
+                            ).nombre
+                          )
+                        }
+                      >
+                        Ver
+                      </Button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="px-4 py-4 text-red-800">No cargado</td>
+                    <td className="px-4 py-4"></td>
+                  </>
+                )}
+                <td className="px-4 py-4">
+                  <InputFile
+                    id="titulos_universitarios"
+                    name="titulos_universitarios"
+                    accept="application/pdf"
+                    onChange={handleValidatePDF}
+                    className={`${
+                      isLoad.titulos_universitarios ? "border-green-500" : ""
+                    }`}
+                  />
+                </td>
+              </tr>
+              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-4 py-4">Otros Estudios</td>
+                {anexos &&
+                anexos.find((anexo) => anexo.tipo === "otros_estudios") ? (
+                  <>
+                    <td className="px-4 py-4">
+                      {
+                        anexos.find((anexo) => anexo.tipo === "otros_estudios")
+                          .nombre
+                      }
+                    </td>
+                    <td className="px-4 py-4">
+                      <Button
+                        className="m-0 w-auto"
+                        onClick={() =>
+                          handleOpenDocument(
+                            anexos.find(
+                              (anexo) => anexo.tipo === "otros_estudios"
+                            ).nombre
+                          )
+                        }
+                      >
+                        Ver
+                      </Button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="px-4 py-4 text-red-800">No cargado</td>
+                    <td className="px-4 py-4"></td>
+                  </>
+                )}
+                <td className="px-4 py-4">
+                  <InputFile
+                    id="otros_estudios"
+                    name="otros_estudios"
+                    accept="application/pdf"
+                    onChange={handleValidatePDF}
+                    className={`${
+                      isLoad.otros_estudios ? "border-green-500" : ""
+                    }`}
+                  />
+                </td>
+              </tr>
+              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-4 py-4">Referencias Personales</td>
+                {anexos &&
+                anexos.find((anexo) => anexo.tipo === "referencia_personal") ? (
+                  <>
+                    <td className="px-4 py-4">
+                      {
+                        anexos.find(
+                          (anexo) => anexo.tipo === "referencia_personal"
+                        ).nombre
+                      }
+                    </td>
+                    <td className="px-4 py-4">
+                      <Button
+                        className="m-0 w-auto"
+                        onClick={() =>
+                          handleOpenDocument(
+                            anexos.find(
+                              (anexo) => anexo.tipo === "referencia_personal"
+                            ).nombre
+                          )
+                        }
+                      >
+                        Ver
+                      </Button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="px-4 py-4 text-red-800">No cargado</td>
+                    <td className="px-4 py-4"></td>
+                  </>
+                )}
+                <td className="px-4 py-4">
+                  <InputFile
+                    id="referencia_personal"
+                    name="referencia_personal"
+                    accept="application/pdf"
+                    onChange={handleValidatePDF}
+                    className={`${
+                      isLoad.referencia_personal ? "border-green-500" : ""
+                    }`}
+                  />
+                </td>
+              </tr>
+              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-4 py-4">Soporte Cuenta Bancaria</td>
+                {anexos &&
+                anexos.find((anexo) => anexo.tipo === "cuenta_bancaria") ? (
+                  <>
+                    <td className="px-4 py-4">
+                      {
+                        anexos.find((anexo) => anexo.tipo === "cuenta_bancaria")
+                          .nombre
+                      }
+                    </td>
+                    <td className="px-4 py-4">
+                      <Button
+                        className="m-0 w-auto"
+                        onClick={() =>
+                          handleOpenDocument(
+                            anexos.find(
+                              (anexo) => anexo.tipo === "cuenta_bancaria"
+                            ).nombre
+                          )
+                        }
+                      >
+                        Ver
+                      </Button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="px-4 py-4 text-red-800">No cargado</td>
+                    <td className="px-4 py-4"></td>
+                  </>
+                )}
+                <td className="px-4 py-4">
+                  <InputFile
+                    id="cuenta_bancaria"
+                    name="cuenta_bancaria"
+                    accept=".jpg, .jpeg, .png, application/pdf"
+                    onChange={handleValidateImagePDF}
+                    className={`${
+                      isLoad.cuenta_bancaria ? "border-green-500" : ""
+                    }`}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="foto_cedula">
-            Adjunte su cédula de identidad{" "}
-            <span className="mt-1 text-sm text-red-600 dark:text-gray-300">
-              (JPG, JPEG, PNG, PDF)
-            </span>
-          </Label>
-          <InputFile
-            id="foto_cedula"
-            name="foto_cedula"
-            accept=".jpg, .jpeg, .png, application/pdf"
-            onChange={handleValidateImagePDF}
-            className={`${
-              isLoad.foto_cedula ? "border-green-500" : "border-red-500"
-            }`}
-          />
-        </div>
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="rif">
-            Adjunte su RIF{" "}
-            <span className="mt-1 text-sm text-red-600 dark:text-gray-300">
-              (PDF)
-            </span>
-          </Label>
-          <InputFile
-            id="rif"
-            name="rif"
-            accept="application/pdf"
-            onChange={handleValidatePDF}
-            className={`${isLoad.rif ? "border-green-500" : "border-red-500"}`}
-          />
-        </div>
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="resumen_curricular">
-            Adjunte su resumen curricular{" "}
-            <span className="mt-1 text-sm text-red-600 dark:text-gray-300">
-              (PDF)
-            </span>
-          </Label>
-          <InputFile
-            id="resumen_curricular"
-            name="resumen_curricular"
-            accept="application/pdf"
-            onChange={handleValidatePDF}
-            className={`${
-              isLoad.resumen_curricular ? "border-green-500" : "border-red-500"
-            }`}
-          />
-        </div>
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="titulo_bachiller">
-            Adjunte su título de bachiller{" "}
-            <span className="mt-1 text-sm text-red-600 dark:text-gray-300">
-              (JPG, JPEG, PNG, PDF)
-            </span>
-          </Label>
-          <InputFile
-            id="titulo_bachiller"
-            name="titulo_bachiller"
-            accept=".jpg, .jpeg, .png, application/pdf"
-            onChange={handleValidateImagePDF}
-            className={`${
-              isLoad.titulo_bachiller ? "border-green-500" : "border-red-500"
-            }`}
-          />
-        </div>
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="titulos_universitarios">
-            Adjunte sus títulos universitarios (todos en un solo archivo){" "}
-            <span className="mt-1 text-sm text-red-600 dark:text-gray-300">
-              (PDF)
-            </span>
-          </Label>
-          <InputFile
-            id="titulos_universitarios"
-            name="titulos_universitarios"
-            accept="application/pdf"
-            onChange={handleValidatePDF}
-            className={`${
-              isLoad.titulos_universitarios
-                ? "border-green-500"
-                : "border-red-500"
-            }`}
-          />
-        </div>
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="otros_estudios">
-            Adjunte sus otros estudios (todos en un solo archivo){" "}
-            <span className="mt-1 text-sm text-red-600 dark:text-gray-300">
-              (PDF)
-            </span>
-          </Label>
-          <InputFile
-            id="otros_estudios"
-            name="otros_estudios"
-            accept="application/pdf"
-            onChange={handleValidatePDF}
-            className={`${
-              isLoad.otros_estudios ? "border-green-500" : "border-red-500"
-            }`}
-          />
-        </div>
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="referencia_personal">
-            Adjunte dos (2) referencias personales (en un solo archivo){" "}
-            <span className="mt-1 text-sm text-red-600 dark:text-gray-300">
-              (PDF)
-            </span>
-          </Label>
-          <InputFile
-            id="referencia_personal"
-            name="referencia_personal"
-            accept="application/pdf"
-            onChange={handleValidatePDF}
-            className={`${
-              isLoad.referencia_personal ? "border-green-500" : "border-red-500"
-            }`}
-          />
-        </div>
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="cuenta_bancaria">
-            Adjunte soporte de su cuenta bancaria{" "}
-            <span className="mt-1 text-sm text-red-600 dark:text-gray-300">
-              (JPG, JPEG, PNG, PDF)
-            </span>
-          </Label>
-          <InputFile
-            id="cuenta_bancaria"
-            name="cuenta_bancaria"
-            accept=".jpg, .jpeg, .png, application/pdf"
-            onChange={handleValidateImagePDF}
-            className={`${
-              isLoad.cuenta_bancaria ? "border-green-500" : "border-red-500"
-            }`}
-          />
-        </div>
-        <div className="md:col-span-2 flex justify-center items-center">
+
+        <div className="flex justify-center items-center">
           <Button className="m-0 w-auto" onClick={handleCreateAnexos}>
-            Enviar Documentos
+            Actualizar Documentos
           </Button>
         </div>
       </div>
