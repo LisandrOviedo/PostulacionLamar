@@ -2,14 +2,13 @@ const { Router } = require("express");
 const {
   getAnexos,
   postAnexos,
-  putAnexos,
 } = require("../handlers/documentos_empleados_handlers");
 
 const documentos_empleados = Router();
 
 const multer = require("multer");
 const path = require("path");
-const MIMETYPES = ["image/jpeg", "image/jpg", "application/pdf"];
+const MIMETYPES = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
 const fs = require("fs");
 
 const storage = multer.diskStorage({
@@ -68,22 +67,6 @@ documentos_empleados.post(
     { name: "cuenta_bancaria", maxCount: 1 },
   ]),
   postAnexos
-);
-
-documentos_empleados.put(
-  "/modificar",
-  upload.fields([
-    { name: "foto_carnet", maxCount: 1 },
-    { name: "foto_cedula", maxCount: 1 },
-    { name: "rif", maxCount: 1 },
-    { name: "resumen_curricular", maxCount: 1 },
-    { name: "titulo_bachiller", maxCount: 1 },
-    { name: "titulos_universitarios", maxCount: 1 },
-    { name: "otros_estudios", maxCount: 1 },
-    { name: "referencia_personal", maxCount: 1 },
-    { name: "cuenta_bancaria", maxCount: 1 },
-  ]),
-  putAnexos
 );
 
 module.exports = documentos_empleados;

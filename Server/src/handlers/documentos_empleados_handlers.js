@@ -29,20 +29,7 @@ const postAnexos = async (req, res) => {
   }
 };
 
-const putAnexos = async (req, res) => {
-  const { empleado_id } = req.file;
-
-  try {
-    const response = await modificarAnexos(empleado_id);
-
-    return res.json(response);
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
-  }
-};
-
 module.exports = {
   getAnexos,
   postAnexos,
-  putAnexos,
 };
