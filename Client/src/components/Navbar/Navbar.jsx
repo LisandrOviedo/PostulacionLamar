@@ -146,14 +146,6 @@ export function Navbar() {
                           Datos personales
                         </Link>
                       </li>
-                      <li>
-                        <Link
-                          to="/home"
-                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
-                        >
-                          Solicitar reinicio de contraseña
-                        </Link>
-                      </li>
                     </ul>
                   </li>
                   <li>
@@ -195,6 +187,14 @@ export function Navbar() {
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Anexar documentos
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/home"
+                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                        >
+                          Aplicar Test de Valoración Actitudinal
                         </Link>
                       </li>
                     </ul>
