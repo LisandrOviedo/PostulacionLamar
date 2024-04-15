@@ -72,6 +72,39 @@ export function AnexarDocumentos() {
     setIsLoad({ ...isLoad, [name]: true });
   };
 
+  const handleValidatePDFDOC = (event) => {
+    const input = event.target;
+    const file = input.files[0];
+    const { name } = event.target;
+
+    if (!file) {
+      setIsLoad({ ...isLoad, [name]: false });
+      return;
+    }
+
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      input.value = "";
+      setIsLoad({ ...isLoad, [name]: false });
+
+      Swal.fire({
+        title: "Oops...",
+        text: "¡Solo se permiten archivos PDF / DOC / DOCX!",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2500,
+      });
+      return;
+    }
+
+    setIsLoad({ ...isLoad, [name]: true });
+  };
+
   const handleValidateImage = (event) => {
     const input = event.target;
     const file = input.files[0];
@@ -420,8 +453,8 @@ export function AnexarDocumentos() {
                   <InputFile
                     id="resumen_curricular"
                     name="resumen_curricular"
-                    accept="application/pdf"
-                    onChange={handleValidatePDF}
+                    accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    onChange={handleValidatePDFDOC}
                     className={`${
                       isLoad.resumen_curricular ? "border-green-500" : ""
                     }`}
@@ -601,8 +634,8 @@ export function AnexarDocumentos() {
                   <InputFile
                     id="referencia_personal"
                     name="referencia_personal"
-                    accept="application/pdf"
-                    onChange={handleValidatePDF}
+                    accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    onChange={handleValidatePDFDOC}
                     className={`${
                       isLoad.referencia_personal ? "border-green-500" : ""
                     }`}
