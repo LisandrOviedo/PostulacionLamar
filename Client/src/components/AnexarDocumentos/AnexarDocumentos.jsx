@@ -1,5 +1,3 @@
-import React from "react";
-
 import { useEffect, useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -9,7 +7,6 @@ import { Button, Title, InputFile } from "../UI";
 import {
   postDocumentos,
   getDocumentos,
-  getDocumento,
 } from "../../redux/empleados/empleadoAction";
 
 import Swal from "sweetalert2";
@@ -138,9 +135,7 @@ export function AnexarDocumentos() {
     setIsLoad({ ...isLoad, [name]: true });
   };
 
-  const handleCreateAnexos = async (event) => {
-    event.preventDefault();
-
+  const handleCreateAnexos = async () => {
     const foto_carnet = document.getElementById("foto_carnet");
     const foto_carnet_file = foto_carnet.files[0];
 
