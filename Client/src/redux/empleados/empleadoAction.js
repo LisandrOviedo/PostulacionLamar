@@ -170,21 +170,31 @@ export const getDocumentos = (empleado_id) => {
   };
 };
 
-export const getDocumento = async (cedula, originalname) => {
-  const URL_GET_DOCUMENTO = `${URL_SERVER}/documentos_empleados/documento/${cedula}/${originalname}`;
+export const putFotoEmpleado = (formData) => {
+  const URL_PUT_FOTOEMPLEADO = `${URL_SERVER}/empleados/modificarFoto`;
 
-  try {
-    const { data } = await axios.get(URL_GET_DOCUMENTO);
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.put(URL_PUT_FOTOEMPLEADO, formData);
 
-    return dispatch(allDocumentos(data));
-  } catch (error) {
-    Swal.fire({
-      title: "Oops...",
-      text: `${error.response.data.error}`,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-    });
-    throw new Error();
-  }
+      dispatch(createEmpleado(data));
+
+      return Swal.fire({
+        text: "¡Cambios guardados exitosamente!",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 2000,
+        width: "20em",
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
 };

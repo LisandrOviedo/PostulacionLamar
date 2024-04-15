@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 const { Empleado, Cargo, Cargo_Empleado, Empresa } = require("../db");
 
 const bcrypt = require("bcrypt");
@@ -252,6 +254,42 @@ const modificarEmpleado = async (
   }
 };
 
+const modificarFotoEmpleado = async (empleado_id, filename, path) => {
+  if (!empleado_id || !filename || !path) {
+    throw new Error("Datos faltantes");
+  }
+
+  try {
+    const empleado = await traerEmpleado(empleado_id);
+
+    const rutaArchivo = empleado.foto_perfil_ruta;
+
+    if (rutaArchivo) {
+      fs.unlink(rutaArchivo, (error) => {
+        if (error) {
+          console.error("Error al borrar el archivo:", error);
+        }
+      });
+    }
+
+    await Empleado.update(
+      {
+        foto_perfil_nombre: filename,
+        foto_perfil_ruta: path,
+      },
+      {
+        where: {
+          empleado_id: empleado_id,
+        },
+      }
+    );
+
+    return await traerEmpleado(empleado_id);
+  } catch (error) {
+    throw new Error("Error al modificar el empleado: " + error.message);
+  }
+};
+
 const inactivarEmpleado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error("Datos faltantes");
@@ -281,5 +319,6 @@ module.exports = {
   crearEmpleado,
   actualizarClaveEmpleado,
   modificarEmpleado,
+  modificarFotoEmpleado,
   inactivarEmpleado,
 };

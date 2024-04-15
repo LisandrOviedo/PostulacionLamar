@@ -40,9 +40,13 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(150),
       allowNull: false,
     },
-    foto_perfil: {
+    foto_perfil_nombre: {
       type: DataTypes.STRING,
-      allowNull: true,
+      defaultValue: null,
+    },
+    foto_perfil_ruta: {
+      type: DataTypes.STRING,
+      defaultValue: null,
     },
     activo: {
       type: DataTypes.BOOLEAN,

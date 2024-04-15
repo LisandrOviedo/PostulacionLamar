@@ -6,6 +6,7 @@ const {
   crearEmpleado,
   actualizarClaveEmpleado,
   modificarEmpleado,
+  modificarFotoEmpleado,
   inactivarEmpleado,
 } = require("../controllers/empleados_controllers");
 
@@ -91,6 +92,7 @@ const putClaveEmpleado = async (req, res) => {
 const putEmpleado = async (req, res) => {
   const {
     empleado_id,
+    rol,
     cedula,
     nombres,
     apellidos,
@@ -103,6 +105,7 @@ const putEmpleado = async (req, res) => {
   try {
     const response = await modificarEmpleado(
       empleado_id,
+      rol,
       cedula,
       nombres,
       apellidos,
@@ -111,6 +114,19 @@ const putEmpleado = async (req, res) => {
       direccion,
       activo
     );
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const putFotoEmpleado = async (req, res) => {
+  const { empleado_id } = req.body;
+  const { filename, path } = req.file;
+
+  try {
+    const response = await modificarFotoEmpleado(empleado_id, filename, path);
 
     return res.json(response);
   } catch (error) {
@@ -138,5 +154,6 @@ module.exports = {
   postEmpleado,
   putClaveEmpleado,
   putEmpleado,
+  putFotoEmpleado,
   deleteEmpleado,
 };

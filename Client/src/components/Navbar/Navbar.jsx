@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 
 import { Logo } from "../UI";
 
@@ -7,6 +8,8 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState({});
   const [isOpenBurger, setIsOpenBurger] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+
+  const empleado = useSelector((state) => state.empleados.empleado);
 
   const toggleMenu = (index) => {
     setIsOpen({
@@ -25,6 +28,9 @@ export function Navbar() {
   const { pathname } = useLocation();
 
   const asideRef = useRef(null);
+
+  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
+  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${empleado.foto_perfil_nombre}`;
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -46,7 +52,7 @@ export function Navbar() {
         document.removeEventListener("mousedown", handleOutsideClick);
       }
     };
-  }, []);
+  }, [empleado]);
 
   return (
     <div className="w-full z-999 fixed top-0 select-none">
@@ -65,7 +71,19 @@ export function Navbar() {
         </div>
         <div className="flex items-center space-x-4 mr-6">
           <span className="text-white text-sm md:text-base">Bienvenido/a</span>
-          <img src="/Person.svg" alt="Icono de Perfil" className="w-6 sm:w-8" />
+          {empleado.foto_perfil_nombre ? (
+            <img
+              src={FOTO_PERFIL}
+              alt="Icono de Perfil"
+              className="w-6 sm:w-8"
+            />
+          ) : (
+            <img
+              src="/Person.svg"
+              alt="Icono de Perfil"
+              className="w-6 sm:w-8"
+            />
+          )}
         </div>
       </nav>
 
