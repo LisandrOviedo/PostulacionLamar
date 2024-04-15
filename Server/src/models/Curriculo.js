@@ -31,6 +31,10 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
+    cantidad_hijos: {
+      type: DataTypes.INTEGER(2),
+      allowNull: false,
+    },
     estado: {
       type: DataTypes.ENUM("Pendiente por revisar", "Revisado"),
       defaultValue: "Pendiente por revisar",

@@ -29,6 +29,7 @@ export function CurriculoDetail() {
     disponibilidad_viajar: curriculoEmpleado.disponibilidad_viajar,
     disponibilidad_cambio_residencia:
       curriculoEmpleado.disponibilidad_cambio_residencia,
+    cantidad_hijos: curriculoEmpleado.cantidad_hijos,
     areas_interes: curriculoEmpleado.Areas_Interes,
     experiencias: curriculoEmpleado.Experiencia,
   });
@@ -255,9 +256,31 @@ export function CurriculoDetail() {
     });
   };
 
-  const handleUpdateCurriculo = async (event) => {
-    event.preventDefault();
+  const handleValidateChildrens = () => {
+    const input = document.getElementById("cantidad_hijos");
 
+    if (input.value < 0) {
+      input.value = 0;
+    }
+
+    if (input.value > 15) {
+      input.value = 15;
+    }
+
+    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
+  };
+
+  const handleValidateChildrensEmpty = () => {
+    const input = document.getElementById("cantidad_hijos");
+
+    if (!input.value) {
+      input.value = 0;
+    }
+
+    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
+  };
+
+  const handleUpdateCurriculo = async () => {
     if (
       !datosCurriculo.grado_instruccion ||
       !datosCurriculo.areas_interes.length
@@ -509,6 +532,19 @@ export function CurriculoDetail() {
                 Agregar
               </Button>
             </div>
+          </div>
+          <div className="flex flex-col place-content-between">
+            <Label htmlFor="cantidad_hijos">Cantidad de hijos</Label>
+            <Input
+              id="cantidad_hijos"
+              type="number"
+              name="cantidad_hijos"
+              min="0"
+              max="15"
+              value={datosCurriculo.cantidad_hijos}
+              onChange={handleValidateChildrens}
+              onBlur={handleValidateChildrensEmpty}
+            />
           </div>
           <div className="md:col-span-3">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">

@@ -221,7 +221,7 @@ export const putCurriculo = (datosCurriculo) => {
       }
 
       return Swal.fire({
-        title: "¡Curriculo actualizado exitosamente!",
+        text: "¡Curriculo actualizado exitosamente!",
         icon: "success",
         showConfirmButton: false,
         timer: 2000,
