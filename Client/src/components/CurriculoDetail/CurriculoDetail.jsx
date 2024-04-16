@@ -343,7 +343,7 @@ export function CurriculoDetail() {
               </Button>
             </div>
           </div>
-          <div className="md:col-span-3">
+          <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
               <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
                 <tr className="text-white">
@@ -390,7 +390,7 @@ export function CurriculoDetail() {
                   isLoad.areas_interes ? null : "border-red-500"
                 }`}
               >
-                {areas_interes_activas?.length > 0
+                {areas_interes_activas?.length
                   ? areas_interes_activas?.map(
                       (area, i) =>
                         area.activo && (
@@ -436,7 +436,7 @@ export function CurriculoDetail() {
               ¿Posees disponibilidad para cambio de residencia?
             </Label>
           </div>
-          <div className="md:col-span-3">
+          <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
               <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
                 <tr className="text-white">
@@ -547,7 +547,7 @@ export function CurriculoDetail() {
               onBlur={handleValidateChildrensEmpty}
             />
           </div>
-          <div className="md:col-span-3">
+          <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
               <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
                 <tr className="text-white">
