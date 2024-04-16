@@ -8,8 +8,15 @@ const {
 } = require("../controllers/curriculos_controllers");
 
 const getCurriculos = async (req, res) => {
+  const { filters, orders, paginaActual, limitePorPagina } = req.body;
+
   try {
-    const response = await todosLosCurriculos();
+    const response = await todosLosCurriculos(
+      filters,
+      orders,
+      paginaActual,
+      limitePorPagina
+    );
 
     return res.json(response);
   } catch (error) {

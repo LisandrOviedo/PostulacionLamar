@@ -8,7 +8,14 @@ const {
 
 const { traerEmpleado } = require("./empleados_controllers");
 
-const todosLosCurriculos = async () => {
+const todosLosCurriculos = async (
+  filters,
+  orders,
+  paginaActual,
+  limitePorPagina
+) => {
+  const offset = (paginaActual - 1) * limitePorPagina;
+
   try {
     const curriculos = await Curriculo.findAll({
       attributes: {
@@ -43,6 +50,10 @@ const todosLosCurriculos = async () => {
           },
         },
       ],
+      where: { name: "hola" },
+      order: [orders],
+      offset,
+      limit: limitePorPagina,
     });
 
     if (!curriculos) {

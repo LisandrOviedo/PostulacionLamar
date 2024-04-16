@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -21,10 +21,42 @@ export function Postulaciones() {
     (state) => state.areas_interes.areas_interes_activas
   );
 
+  const [filters, setFilters] = useState({
+    where: {},
+    orders: {},
+    paginaActual: "1",
+    limitePorPagina: "2",
+  });
+
+  const handleChangePagination = (e) => {
+    const { name, value } = e.target;
+    setFilters({ ...filters, [name]: value });
+  };
+
+  const handleChangeFilters = (e) => {
+    const { name, value } = e.target;
+
+    if (value === "") {
+      const { [name]: _, ...updatedWhere } = filters.where;
+      setFilters({
+        ...filters,
+        where: updatedWhere,
+      });
+    } else {
+      setFilters({
+        ...filters,
+        where: {
+          ...filters.where,
+          [name]: value,
+        },
+      });
+    }
+  };
+
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllCurriculos());
+    // dispatch(getAllCurriculos());
     dispatch(getAllAreasInteresActivas());
 
     document.title = "Grupo Lamar - Postulaciones (Admin)";
@@ -63,9 +95,13 @@ export function Postulaciones() {
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
         <div className="flex flex-col place-content-between">
           <Label htmlFor="buscar_por">Buscar por</Label>
-          <Select id="buscar_por" name="buscar_por">
+          <Select
+            id="buscar_por"
+            name="buscar_por"
+            onChange={handleChangeFilters}
+          >
             <option value="cedula">Número de cédula</option>
-            <option value="nombre_apellido">Nombre / Apellido</option>
+            <option value="apellidos">Apellidos</option>
           </Select>
         </div>
         <div className="flex w-full items-end">
@@ -76,9 +112,13 @@ export function Postulaciones() {
           />
         </div>
         <div className="flex flex-col place-content-between">
-          <Label htmlFor="area_interes">Filtrar por área de interés</Label>
-          <Select id="area_interes" name="area_interes">
-            <option value="All">Todos</option>
+          <Label htmlFor="area_interes_id">Filtrar por área de interés</Label>
+          <Select
+            id="area_interes_id"
+            name="area_interes_id"
+            onChange={handleChangeFilters}
+          >
+            <option value="">Todos</option>
             {areas_interes_activas?.length
               ? areas_interes_activas?.map(
                   (area, i) =>
@@ -97,10 +137,23 @@ export function Postulaciones() {
         </div>
         <div className="flex flex-col place-content-between">
           <Label htmlFor="estado">Filtrar por estado</Label>
-          <Select id="estado" name="estado">
-            <option value="All">Todos</option>
+          <Select id="estado" name="estado" onChange={handleChangeFilters}>
+            <option value="">Todos</option>
             <option value="Pendiente por revisar">Pendiente por revisar</option>
             <option value="Revisado">Revisado</option>
+          </Select>
+        </div>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="limitePorPagina">Límite por página</Label>
+          <Select
+            id="limitePorPagina"
+            name="limitePorPagina"
+            defaultValue={filters.limitePorPagina}
+            onChange={handleChangePagination}
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
           </Select>
         </div>
         <div className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start">
