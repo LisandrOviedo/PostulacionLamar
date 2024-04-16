@@ -100,8 +100,7 @@ export const postCurriculo = (datosCurriculo) => {
       }
 
       return Swal.fire({
-        title: "¡Currículo enviado exitosamente!",
-        text: "Si deseas actualizar o ver los detalles de tu currículo, debes iniciar sesión nuevamente",
+        text: "¡Currículo enviado exitosamente!",
         icon: "success",
         showConfirmButton: false,
         timer: 4000,
