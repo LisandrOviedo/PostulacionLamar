@@ -49,15 +49,16 @@ function App() {
               path="/curriculo/curriculoDetalle/:curriculo_id"
               element={<CurriculoDetail />}
             />
-            <Route
-              path="/documentos"
-              element={<AnexarDocumentos />}
-            />
+            <Route path="/documentos" element={<AnexarDocumentos />} />
           </Route>
 
           <Route path="/admin/login" element={<LoginAdmin />} />
           <Route element={<AuthGuardAdmin />}>
             <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route
+              path="/admin/datosPersonales"
+              element={<DatosPersonales />}
+            />
             <Route path="/admin/postulaciones" element={<Postulaciones />} />
             <Route path="/admin/postulacion/:id" element={<Postulacion />} />
           </Route>
