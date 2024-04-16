@@ -170,7 +170,8 @@ const crearCurriculo = async (
   grado_instruccion,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
-  cantidad_hijos
+  cantidad_hijos,
+  habilidades_tecnicas
 ) => {
   if (!empleado_id || !grado_instruccion) {
     throw new Error("Datos faltantes");
@@ -187,6 +188,7 @@ const crearCurriculo = async (
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
         cantidad_hijos: cantidad_hijos,
+        habilidades_tecnicas: habilidades_tecnicas,
       },
     });
 
@@ -205,7 +207,8 @@ const modificarCurriculo = async (
   grado_instruccion,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
-  cantidad_hijos
+  cantidad_hijos,
+  habilidades_tecnicas
 ) => {
   if (!curriculo_id || !grado_instruccion) {
     throw new Error("Datos faltantes");
@@ -220,6 +223,7 @@ const modificarCurriculo = async (
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
         cantidad_hijos: cantidad_hijos,
+        habilidades_tecnicas: habilidades_tecnicas,
         estado: "Pendiente por revisar",
       },
       {

@@ -48,6 +48,7 @@ const postCurriculo = async (req, res) => {
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
     cantidad_hijos,
+    habilidades_tecnicas,
   } = req.body;
 
   try {
@@ -56,7 +57,8 @@ const postCurriculo = async (req, res) => {
       grado_instruccion,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
-      cantidad_hijos
+      cantidad_hijos,
+      habilidades_tecnicas
     );
 
     return res.status(201).json(response);
@@ -72,6 +74,7 @@ const putCurriculo = async (req, res) => {
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
     cantidad_hijos,
+    habilidades_tecnicas,
   } = req.body;
 
   try {
@@ -80,7 +83,8 @@ const putCurriculo = async (req, res) => {
       grado_instruccion,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
-      cantidad_hijos
+      cantidad_hijos,
+      habilidades_tecnicas
     );
 
     return res.json(response);

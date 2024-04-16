@@ -35,6 +35,10 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER(2),
       allowNull: false,
     },
+    habilidades_tecnicas: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     estado: {
       type: DataTypes.ENUM("Pendiente por revisar", "Revisado"),
       defaultValue: "Pendiente por revisar",

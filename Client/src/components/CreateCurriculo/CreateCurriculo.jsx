@@ -29,6 +29,7 @@ export function CreateCurriculo() {
     disponibilidad_viajar: true,
     disponibilidad_cambio_residencia: false,
     cantidad_hijos: "0",
+    habilidades_tecnicas: "",
     areas_interes: [],
     experiencias: [],
   });
@@ -604,6 +605,19 @@ export function CreateCurriculo() {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="md:col-span-3 flex flex-col place-content-between">
+          <Label htmlFor="cantidad_hijos">Habilidades técnicas</Label>
+          <div className="mt-2">
+            <textarea
+              id="habilidades_tecnicas"
+              name="habilidades_tecnicas"
+              rows="3"
+              className="text-sm resize-none block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              placeholder="Escribe tus habilidades técnicas"
+              onChange={handleInputChangeCurriculo}
+            ></textarea>
+          </div>
         </div>
         <div className="md:col-span-3 flex justify-center items-center">
           <Button className="m-0 w-auto" onClick={handleCreateCurriculo}>
