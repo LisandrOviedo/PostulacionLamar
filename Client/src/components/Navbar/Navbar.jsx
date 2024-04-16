@@ -75,13 +75,13 @@ export function Navbar() {
             <img
               src={FOTO_PERFIL}
               alt="Icono de Perfil"
-              className="w-6 sm:w-8"
+              className="inline-block h-6 w-6 sm:h-8 sm:w-8 rounded-full ring-2 ring-[#F0C95C]"
             />
           ) : (
             <img
               src="/Person.svg"
               alt="Icono de Perfil"
-              className="w-6 sm:w-8"
+              className="inline-block h-6 w-6 sm:h-8 sm:w-8 rounded-full ring-2 ring-[#F0C95C]"
             />
           )}
         </div>
@@ -242,21 +242,24 @@ export function Navbar() {
                     >
                       <li>
                         <Link
-                          to="/admin/dashboard"
+                          to="/admin/datosPersonales"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Datos personales
                         </Link>
                       </li>
-                      <li>
-                        <Link
-                          to="/admin/dashboard"
-                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
-                        >
-                          Solicitar reinicio de contraseña
-                        </Link>
-                      </li>
                     </ul>
+                  </li>
+                  <li>
+                    <Link
+                      to="/admin/empleados"
+                      className="block text-white hover:text-[#F0C95C]"
+                      onClick={() => toggleMenu({})}
+                    >
+                      <div className="flex items-center justify-between p-2">
+                        <div className="mx-auto">Empleados</div>
+                      </div>
+                    </Link>
                   </li>
                   <li>
                     <Link
