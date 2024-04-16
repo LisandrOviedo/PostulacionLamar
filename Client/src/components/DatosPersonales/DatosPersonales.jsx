@@ -92,7 +92,7 @@ export function DatosPersonales() {
           id="preview_foto"
           src={imagen}
           alt="Imgen del perfil"
-          className="w-32 h-32 border border-[#002846] rounded bg-gray-400 cursor-pointer"
+          className="w-32 h-32 border border-[#002846] bg-gray-400 cursor-pointer rounded-full ring-2 ring-[#F0C95C]"
           onClick={() => document.getElementById("foto_perfil").click()}
         />
         <Label htmlFor="foto_perfil">Imagen del perfil</Label>
