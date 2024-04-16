@@ -7,7 +7,9 @@ import {
   getCurriculo,
 } from "../../redux/curriculos/curriculoAction";
 
-import { Title, Button } from "../UI";
+import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
+
+import { Button, Input, Label, Select, Title } from "../UI";
 
 export function Postulaciones() {
   const dispatch = useDispatch();
@@ -15,10 +17,15 @@ export function Postulaciones() {
 
   const curriculos = useSelector((state) => state.curriculos.curriculos);
 
+  const areas_interes_activas = useSelector(
+    (state) => state.areas_interes.areas_interes_activas
+  );
+
   useEffect(() => {
     window.scroll(0, 0);
 
     dispatch(getAllCurriculos());
+    dispatch(getAllAreasInteresActivas());
 
     document.title = "Grupo Lamar - Postulaciones (Admin)";
 
@@ -53,10 +60,56 @@ export function Postulaciones() {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Title>Postulaciones</Title>
       </div>
-
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="buscar_por">Buscar por</Label>
+          <Select id="buscar_por" name="buscar_por">
+            <option value="cedula">Número de cédula</option>
+            <option value="nombre_apellido">Nombre / Apellido</option>
+          </Select>
+        </div>
+        <div className="flex w-full items-end">
+          <Input
+            type="text"
+            id="input_search"
+            placeholder="Escribe aquí tu búsqueda"
+          />
+        </div>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="area_interes">Filtrar por área de interés</Label>
+          <Select id="area_interes" name="area_interes">
+            <option value="All">Todos</option>
+            {areas_interes_activas?.length
+              ? areas_interes_activas?.map(
+                  (area, i) =>
+                    area.activo && (
+                      <option
+                        key={i}
+                        name={area.nombre}
+                        value={area.area_interes_id}
+                      >
+                        {area.nombre}
+                      </option>
+                    )
+                )
+              : null}
+          </Select>
+        </div>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="estado">Filtrar por estado</Label>
+          <Select id="estado" name="estado">
+            <option value="All">Todos</option>
+            <option value="Pendiente por revisar">Pendiente por revisar</option>
+            <option value="Revisado">Revisado</option>
+          </Select>
+        </div>
+        <div className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start">
+          <Button className="m-0 w-auto">Buscar</Button>
+        </div>
+      </div>
       <div className="mt-8 sm:mx-auto w-full">
-        <div className="overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400">
+        <div className=" overflow-x-auto shadow-md rounded-lg">
+          <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400 mb-8">
             <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-4 py-3">
@@ -108,16 +161,7 @@ export function Postulaciones() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    Estado
-                    <a href="#">
-                      <img
-                        src="/sort.svg"
-                        alt="Sort.svg"
-                        className="w-3 h-3 ms-1.5"
-                      ></img>
-                    </a>
-                  </div>
+                  <div className="flex items-center">Estado</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
