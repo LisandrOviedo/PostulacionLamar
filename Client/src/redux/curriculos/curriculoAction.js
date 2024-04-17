@@ -6,6 +6,10 @@ import {
   curriculoDetail,
   createCurriculo,
   curriculoEmpleado,
+  paginaActual,
+  limitePorPagina,
+  filtros,
+  resetFilters,
   resetState,
 } from "./curriculoSlice";
 
@@ -17,6 +21,74 @@ export const getAllCurriculos = () => {
       const { data } = await axios.get(`${URL_SERVER}/curriculos`);
 
       return dispatch(allCurriculos(data));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const postPaginaActual = (pagina_actual) => {
+  return async (dispatch) => {
+    try {
+      return dispatch(paginaActual(pagina_actual));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const postLimitePorPagina = (limite_pagina) => {
+  return async (dispatch) => {
+    try {
+      return dispatch(limitePorPagina(limite_pagina));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const postFiltros = (filters) => {
+  return async (dispatch) => {
+    try {
+      return dispatch(filtros(filters));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const deleteFiltros = () => {
+  return async (dispatch) => {
+    try {
+      return dispatch(resetFilters());
     } catch (error) {
       Swal.fire({
         title: "Oops...",

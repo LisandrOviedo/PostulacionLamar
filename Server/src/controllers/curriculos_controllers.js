@@ -1,3 +1,5 @@
+const { Op } = require("sequelize");
+
 const {
   Curriculo,
   Empleado,
@@ -8,12 +10,7 @@ const {
 
 const { traerEmpleado } = require("./empleados_controllers");
 
-const todosLosCurriculos = async (
-  filters,
-  orders,
-  paginaActual,
-  limitePorPagina
-) => {
+const todosLosCurriculos = async (filters, paginaActual, limitePorPagina) => {
   const offset = (paginaActual - 1) * limitePorPagina;
 
   try {
@@ -27,6 +24,12 @@ const todosLosCurriculos = async (
           attributes: {
             exclude: ["createdAt", "updatedAt"],
           },
+          where: {
+            [Op.or]: [
+              { cedula: { [Op.like]: `%${filters.cedula}%` } },
+              { apellidos: { [Op.like]: `%${filters.apellidos}%` } },
+            ],
+          },
         },
         {
           model: Areas_Interes,
@@ -36,6 +39,9 @@ const todosLosCurriculos = async (
           through: {
             attributes: ["area_interes_curriculo_id"],
           },
+          where: filters.area_interes_id
+            ? { area_interes_id: filters.area_interes_id }
+            : {},
         },
         {
           model: Titulo_Obtenido,
@@ -50,8 +56,7 @@ const todosLosCurriculos = async (
           },
         },
       ],
-      where: { name: "hola" },
-      order: [orders],
+      where: filters.estado ? { estado: filters.estado } : {},
       offset,
       limit: limitePorPagina,
     });

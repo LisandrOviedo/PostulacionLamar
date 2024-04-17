@@ -4,6 +4,9 @@ const initialState = {
   curriculos: [],
   curriculo: {},
   curriculoEmpleado: {},
+  paginaActual: 1,
+  limitePorPagina: 2,
+  filtros: {},
 };
 
 export const curriculoSlice = createSlice({
@@ -22,6 +25,18 @@ export const curriculoSlice = createSlice({
     curriculoDetail: (state, action) => {
       state.curriculoEmpleado = action.payload;
     },
+    paginaActual: (state, action) => {
+      state.paginaActual = action.payload;
+    },
+    limitePorPagina: (state, action) => {
+      state.limitePorPagina = action.payload;
+    },
+    filtros: (state, action) => {
+      state.filtros = action.payload;
+    },
+    resetFilters: (state) => {
+      state.filtros = {};
+    },
     resetState: () => {
       return initialState;
     },
@@ -33,6 +48,10 @@ export const {
   createCurriculo,
   curriculoEmpleado,
   curriculoDetail,
+  paginaActual,
+  limitePorPagina,
+  filtros,
+  resetFilters,
   resetState,
 } = curriculoSlice.actions;
 export default curriculoSlice.reducer;
