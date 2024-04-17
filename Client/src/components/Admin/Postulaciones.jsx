@@ -5,6 +5,10 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   getAllCurriculos,
   getCurriculo,
+  postPaginaActual,
+  postLimitePorPagina,
+  postFiltros,
+  deleteFiltros,
 } from "../../redux/curriculos/curriculoAction";
 
 import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
@@ -17,40 +21,76 @@ export function Postulaciones() {
 
   const curriculos = useSelector((state) => state.curriculos.curriculos);
 
+  const paginaActual = useSelector((state) => state.curriculos.paginaActual);
+
+  const limitePorPagina = useSelector(
+    (state) => state.curriculos.limitePorPagina
+  );
+
+  const filtros = useSelector((state) => state.curriculos.filtros);
+
   const areas_interes_activas = useSelector(
     (state) => state.areas_interes.areas_interes_activas
   );
 
   const [filters, setFilters] = useState({
-    where: {},
-    orders: {},
-    paginaActual: "1",
-    limitePorPagina: "2",
+    cedula: filtros.cedula || "",
+    apellidos: filtros.apellidos || "",
+    area_interes_id: filtros.area_interes_id || "",
+    estado: filtros.estado || "",
   });
 
   const handleChangePagination = (e) => {
-    const { name, value } = e.target;
-    setFilters({ ...filters, [name]: value });
+    const { value } = e.target;
+
+    dispatch(postLimitePorPagina(value));
   };
 
   const handleChangeFilters = (e) => {
     const { name, value } = e.target;
 
-    if (value === "") {
-      const { [name]: _, ...updatedWhere } = filters.where;
-      setFilters({
-        ...filters,
-        where: updatedWhere,
-      });
-    } else {
-      setFilters({
-        ...filters,
-        where: {
-          ...filters.where,
-          [name]: value,
-        },
+    setFilters({ ...filters, [name]: value });
+  };
+
+  const handleChangeFiltersInput = (e) => {
+    const { value } = e.target;
+
+    const buscarPor = document.getElementById("buscar_por");
+    const valueBuscarPor = buscarPor.value;
+
+    setFilters({ ...filters, [valueBuscarPor]: value });
+  };
+
+  const handleChangeFiltersSelect = (e) => {
+    const { value } = e.target;
+
+    const buscarPor = document.getElementById("input_search");
+    const valueBuscarPor = buscarPor.value;
+
+    if (valueBuscarPor) {
+      setFilters((prevFilters) => {
+        let updatedFilters = { ...prevFilters };
+
+        if (value === "cedula") {
+          updatedFilters.apellidos = "";
+        } else if (value === "apellidos") {
+          updatedFilters.cedula = "";
+        }
+
+        return { ...updatedFilters, [value]: valueBuscarPor };
       });
     }
+  };
+
+  const handleResetFilters = () => {
+    dispatch(deleteFiltros()).then(function () {
+      window.location.reload();
+      window.scroll(0, 0);
+    });
+  };
+
+  const handleFind = () => {
+    dispatch(postFiltros(filters));
   };
 
   useEffect(() => {
@@ -65,6 +105,11 @@ export function Postulaciones() {
       document.title = "Grupo Lamar";
     };
   }, []);
+
+  useEffect(() => {
+    console.log(limitePorPagina);
+    console.log(filtros);
+  }, [limitePorPagina, paginaActual, filtros]);
 
   const convertirFecha = (fecha) => {
     const isoDateString = fecha;
@@ -98,7 +143,8 @@ export function Postulaciones() {
           <Select
             id="buscar_por"
             name="buscar_por"
-            onChange={handleChangeFilters}
+            onChange={handleChangeFiltersSelect}
+            defaultValue={filtros.apellidos ? "apellidos" : "cedula"}
           >
             <option value="cedula">Número de cédula</option>
             <option value="apellidos">Apellidos</option>
@@ -109,6 +155,14 @@ export function Postulaciones() {
             type="text"
             id="input_search"
             placeholder="Escribe aquí tu búsqueda"
+            onChange={handleChangeFiltersInput}
+            defaultValue={
+              filtros.apellidos
+                ? `${filtros.apellidos}`
+                : filtros.cedula
+                ? `${filtros.cedula}`
+                : ""
+            }
           />
         </div>
         <div className="flex flex-col place-content-between">
@@ -117,6 +171,7 @@ export function Postulaciones() {
             id="area_interes_id"
             name="area_interes_id"
             onChange={handleChangeFilters}
+            value={filters.area_interes_id}
           >
             <option value="">Todos</option>
             {areas_interes_activas?.length
@@ -137,7 +192,12 @@ export function Postulaciones() {
         </div>
         <div className="flex flex-col place-content-between">
           <Label htmlFor="estado">Filtrar por estado</Label>
-          <Select id="estado" name="estado" onChange={handleChangeFilters}>
+          <Select
+            id="estado"
+            name="estado"
+            onChange={handleChangeFilters}
+            value={filters.estado}
+          >
             <option value="">Todos</option>
             <option value="Pendiente por revisar">Pendiente por revisar</option>
             <option value="Revisado">Revisado</option>
@@ -148,7 +208,7 @@ export function Postulaciones() {
           <Select
             id="limitePorPagina"
             name="limitePorPagina"
-            defaultValue={filters.limitePorPagina}
+            defaultValue={limitePorPagina}
             onChange={handleChangePagination}
           >
             <option value="1">1</option>
@@ -157,7 +217,12 @@ export function Postulaciones() {
           </Select>
         </div>
         <div className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start">
-          <Button className="m-0 w-auto">Buscar</Button>
+          <Button className="m-0 w-auto" onClick={handleResetFilters}>
+            Restablecer Filtros
+          </Button>
+          <Button className="m-0 w-auto" onClick={handleFind}>
+            Buscar
+          </Button>
         </div>
       </div>
       <div className="mt-8 sm:mx-auto w-full">
