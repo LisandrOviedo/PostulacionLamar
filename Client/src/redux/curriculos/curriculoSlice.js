@@ -5,7 +5,7 @@ const initialState = {
   curriculo: {},
   curriculoEmpleado: {},
   paginaActual: 1,
-  limitePorPagina: 10,
+  limitePorPagina: 2,
   filtros: {
     cedula: "",
     apellidos: "",
