@@ -85,7 +85,6 @@ export function Postulaciones() {
   const handleResetFilters = () => {
     dispatch(deleteFiltros()).then(function () {
       window.location.reload();
-      window.scroll(0, 0);
     });
   };
 
@@ -96,7 +95,6 @@ export function Postulaciones() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    // dispatch(getAllCurriculos());
     dispatch(getAllAreasInteresActivas());
 
     document.title = "Grupo Lamar - Postulaciones (Admin)";
@@ -107,9 +105,10 @@ export function Postulaciones() {
   }, []);
 
   useEffect(() => {
-    console.log(limitePorPagina);
-    console.log(filtros);
-  }, [limitePorPagina, paginaActual, filtros]);
+    window.scroll(0, 0);
+
+    dispatch(getAllCurriculos(filtros, paginaActual, limitePorPagina));
+  }, [filtros, paginaActual, limitePorPagina]);
 
   const convertirFecha = (fecha) => {
     const isoDateString = fecha;
@@ -211,17 +210,17 @@ export function Postulaciones() {
             defaultValue={limitePorPagina}
             onChange={handleChangePagination}
           >
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
           </Select>
         </div>
-        <div className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start">
-          <Button className="m-0 w-auto" onClick={handleResetFilters}>
-            Restablecer Filtros
-          </Button>
+        <div className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start gap-2">
           <Button className="m-0 w-auto" onClick={handleFind}>
             Buscar
+          </Button>
+          <Button className="m-0 w-auto" onClick={handleResetFilters}>
+            Restablecer Filtros
           </Button>
         </div>
       </div>
@@ -287,10 +286,11 @@ export function Postulaciones() {
               </tr>
             </thead>
             <tbody>
-              {curriculos === "No existen curriculos" ? (
+              {curriculos === "No existen curriculos" ||
+              !curriculos.curriculos.length ? (
                 <p className="text-center p-2">No existen curriculos!</p>
               ) : (
-                curriculos?.map((curriculo, i) => (
+                curriculos.curriculos?.map((curriculo, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
