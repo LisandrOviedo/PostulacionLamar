@@ -15,10 +15,13 @@ import {
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-export const getAllCurriculos = () => {
+export const getAllCurriculos = (filtros, paginaActual, limitePorPagina) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(`${URL_SERVER}/curriculos`);
+      const { data } = await axios.post(
+        `${URL_SERVER}/curriculos/allCurriculos`,
+        { filtros, paginaActual, limitePorPagina }
+      );
 
       return dispatch(allCurriculos(data));
     } catch (error) {
