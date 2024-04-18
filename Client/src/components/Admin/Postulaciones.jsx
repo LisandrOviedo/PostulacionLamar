@@ -132,7 +132,7 @@ export function Postulaciones() {
   };
 
   return (
-    <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8">
+    <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Title>Postulaciones</Title>
       </div>
@@ -210,6 +210,7 @@ export function Postulaciones() {
             defaultValue={limitePorPagina}
             onChange={handleChangePagination}
           >
+            <option value="2">2</option>
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="30">30</option>
@@ -226,7 +227,7 @@ export function Postulaciones() {
       </div>
       <div className="mt-8 sm:mx-auto w-full">
         <div className=" overflow-x-auto shadow-md rounded-lg">
-          <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400 mb-8">
+          <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400">
             <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-4 py-3">
@@ -287,8 +288,12 @@ export function Postulaciones() {
             </thead>
             <tbody>
               {curriculos === "No existen curriculos" ||
-              !curriculos.curriculos.length ? (
-                <p className="text-center p-2">No existen curriculos!</p>
+              !curriculos.curriculos?.length ? (
+                <tr>
+                  <td colSpan="9" className="text-center p-2">
+                    <p>¡No existen registros!</p>
+                  </td>
+                </tr>
               ) : (
                 curriculos.curriculos?.map((curriculo, i) => (
                   <tr
@@ -333,6 +338,79 @@ export function Postulaciones() {
             </tbody>
           </table>
         </div>
+        <nav
+          className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
+          aria-label="Table navigation"
+        >
+          <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+            Mostrando{" "}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {paginaActual * limitePorPagina - limitePorPagina}-
+              {paginaActual * limitePorPagina > curriculos.totalRegistros
+                ? curriculos.totalRegistros
+                : paginaActual * limitePorPagina}
+            </span>{" "}
+            de{" "}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {curriculos.totalRegistros}
+            </span>{" "}
+            registros
+          </span>
+          <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+            <li>
+              <span
+                onClick={() => console.log("presionastexd")}
+                // className={`inline-block ${
+                //   isLoad.areas_interes ? null : "border-red-500"
+                // }`}
+                className={`flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
+                ${
+                  paginaActual === 1
+                    ? null
+                    : "cursor-pointer hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-white"
+                }`}
+              >
+                Pág. Anterior
+              </span>
+            </li>
+
+            <li>
+              <a
+                href="#"
+                aria-current="page"
+                className="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+              >
+                1
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                2
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                {Math.ceil(
+                  curriculos.totalRegistros / limitePorPagina
+                ).toString()}
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                Pág. Siguiente
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   );
