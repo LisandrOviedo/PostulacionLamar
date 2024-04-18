@@ -11,61 +11,66 @@ const {
 const { traerEmpleado } = require("./empleados_controllers");
 
 const todosLosCurriculos = async (filters, paginaActual, limitePorPagina) => {
+  if (!filters || !paginaActual || !limitePorPagina) {
+    throw new Error("Datos faltantes");
+  }
+
   const offset = (paginaActual - 1) * limitePorPagina;
 
   try {
-    const curriculos = await Curriculo.findAll({
-      attributes: {
-        exclude: ["empleado_id"],
-      },
-      include: [
-        {
-          model: Empleado,
-          attributes: {
-            exclude: ["createdAt", "updatedAt"],
-          },
-          where: {
-            [Op.or]: [
-              { cedula: { [Op.like]: `%${filters.cedula}%` } },
-              { apellidos: { [Op.like]: `%${filters.apellidos}%` } },
-            ],
-          },
+    const { count: totalRegistros, rows: curriculos } =
+      await Curriculo.findAndCountAll({
+        attributes: {
+          exclude: ["empleado_id"],
         },
-        {
-          model: Areas_Interes,
-          attributes: {
-            exclude: ["activo", "createdAt", "updatedAt"],
+        include: [
+          {
+            model: Empleado,
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+            where: filters.cedula
+              ? { cedula: { [Op.like]: `%${filters.cedula}%` } }
+              : filters.apellidos
+              ? { apellidos: { [Op.like]: `%${filters.apellidos}%` } }
+              : {},
           },
-          through: {
-            attributes: ["area_interes_curriculo_id"],
+          {
+            model: Areas_Interes,
+            attributes: {
+              exclude: ["activo", "createdAt", "updatedAt"],
+            },
+            through: {
+              attributes: ["area_interes_curriculo_id"],
+            },
+            where: filters.area_interes_id
+              ? { area_interes_id: filters.area_interes_id }
+              : {},
           },
-          where: filters.area_interes_id
-            ? { area_interes_id: filters.area_interes_id }
-            : {},
-        },
-        {
-          model: Titulo_Obtenido,
-          attributes: {
-            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+          {
+            model: Titulo_Obtenido,
+            attributes: {
+              exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+            },
           },
-        },
-        {
-          model: Experiencia,
-          attributes: {
-            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+          {
+            model: Experiencia,
+            attributes: {
+              exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+            },
           },
-        },
-      ],
-      where: filters.estado ? { estado: filters.estado } : {},
-      offset,
-      limit: limitePorPagina,
-    });
+        ],
+        where: filters.estado ? { estado: filters.estado } : {},
+        offset,
+        limit: limitePorPagina,
+        distinct: true,
+      });
 
     if (!curriculos) {
       throw new Error("No existen curriculos");
     }
 
-    return curriculos;
+    return { totalRegistros, curriculos };
   } catch (error) {
     throw new Error("Error al traer todos los curriculos: " + error.message);
   }
