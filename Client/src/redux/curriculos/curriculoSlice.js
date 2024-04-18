@@ -1,12 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  curriculos: [],
+  curriculos: {},
   curriculo: {},
   curriculoEmpleado: {},
   paginaActual: 1,
-  limitePorPagina: 2,
-  filtros: {},
+  limitePorPagina: 10,
+  filtros: {
+    cedula: "",
+    apellidos: "",
+    area_interes_id: "",
+    estado: "",
+  },
 };
 
 export const curriculoSlice = createSlice({
@@ -35,7 +40,12 @@ export const curriculoSlice = createSlice({
       state.filtros = action.payload;
     },
     resetFilters: (state) => {
-      state.filtros = {};
+      state.filtros = {
+        cedula: "",
+        apellidos: "",
+        area_interes_id: "",
+        estado: "",
+      };
     },
     resetState: () => {
       return initialState;
