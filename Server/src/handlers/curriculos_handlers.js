@@ -8,13 +8,13 @@ const {
 } = require("../controllers/curriculos_controllers");
 
 const getCurriculos = async (req, res) => {
-  const { filters, paginaActual, limitePorPagina } = req.body;
+  const { filtros, paginaActual, limitePorPagina } = req.body;
 
   try {
     const response = await todosLosCurriculos(
-      filters,
-      paginaActual,
-      limitePorPagina
+      filtros,
+      parseInt(paginaActual),
+      parseInt(limitePorPagina)
     );
 
     return res.json(response);

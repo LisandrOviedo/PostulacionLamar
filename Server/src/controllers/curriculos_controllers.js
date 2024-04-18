@@ -10,8 +10,8 @@ const {
 
 const { traerEmpleado } = require("./empleados_controllers");
 
-const todosLosCurriculos = async (filters, paginaActual, limitePorPagina) => {
-  if (!filters || !paginaActual || !limitePorPagina) {
+const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
+  if (!paginaActual || !limitePorPagina) {
     throw new Error("Datos faltantes");
   }
 
@@ -29,10 +29,10 @@ const todosLosCurriculos = async (filters, paginaActual, limitePorPagina) => {
             attributes: {
               exclude: ["createdAt", "updatedAt"],
             },
-            where: filters.cedula
-              ? { cedula: { [Op.like]: `%${filters.cedula}%` } }
-              : filters.apellidos
-              ? { apellidos: { [Op.like]: `%${filters.apellidos}%` } }
+            where: filtros.cedula
+              ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
+              : filtros.apellidos
+              ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
               : {},
           },
           {
@@ -43,8 +43,8 @@ const todosLosCurriculos = async (filters, paginaActual, limitePorPagina) => {
             through: {
               attributes: ["area_interes_curriculo_id"],
             },
-            where: filters.area_interes_id
-              ? { area_interes_id: filters.area_interes_id }
+            where: filtros.area_interes_id
+              ? { area_interes_id: filtros.area_interes_id }
               : {},
           },
           {
@@ -60,7 +60,7 @@ const todosLosCurriculos = async (filters, paginaActual, limitePorPagina) => {
             },
           },
         ],
-        where: filters.estado ? { estado: filters.estado } : {},
+        where: filtros.estado ? { estado: filtros.estado } : {},
         offset,
         limit: limitePorPagina,
         distinct: true,
