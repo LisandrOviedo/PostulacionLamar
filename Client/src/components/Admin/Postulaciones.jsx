@@ -38,12 +38,17 @@ export function Postulaciones() {
     apellidos: filtros.apellidos || "",
     area_interes_id: filtros.area_interes_id || "",
     estado: filtros.estado || "",
+    orden: filtros.orden || {},
   });
 
   const handleChangePagination = (e) => {
     const { value } = e.target;
 
     dispatch(postLimitePorPagina(value));
+
+    if (paginaActual !== 1) {
+      dispatch(postPaginaActual(1));
+    }
   };
 
   const handleChangeFilters = (e) => {
@@ -129,6 +134,67 @@ export function Postulaciones() {
       .catch((error) => {
         return error;
       });
+  };
+
+  const firstPage = () => {
+    dispatch(postPaginaActual(1));
+  };
+
+  const changeOrder = (e) => {
+    const { name } = e.target;
+
+    if (!Object.keys(filters.orden).length) {
+      return setFilters({ ...filters, orden: { [name]: "ASC" } });
+    } else if (filters.orden[name] === "ASC") {
+      setFilters({ ...filters, orden: {} });
+      return setFilters({ ...filters, orden: { [name]: "DESC" } });
+    } else if (filters.orden[name] === "DESC") {
+      return setFilters({ ...filters, orden: {} });
+    } else {
+      return setFilters({ ...filters, orden: { [name]: "ASC" } });
+    }
+  };
+
+  const lastPage = () => {
+    dispatch(
+      postPaginaActual(Math.ceil(curriculos.totalRegistros / limitePorPagina))
+    );
+  };
+
+  const paginaAnterior = () => {
+    if (paginaActual > 1) {
+      dispatch(postPaginaActual(paginaActual - 1));
+    }
+  };
+
+  const paginaSiguiente = () => {
+    if (paginaActual < Math.ceil(curriculos.totalRegistros / limitePorPagina)) {
+      dispatch(postPaginaActual(paginaActual + 1));
+    }
+  };
+
+  const calcularMostrarPaginas = (paginaActual, totalPages) => {
+    const rango = 2; // Cantidad de páginas a mostrar a cada lado de la página actual
+    const paginasMostradas = rango * 2 + 1; // Cantidad total de páginas a mostrar
+
+    let inicio;
+    let fin;
+
+    if (paginaActual - rango <= 1) {
+      // Si la página actual está cerca del inicio
+      inicio = 2;
+      fin = Math.min(paginasMostradas, totalPages - 1);
+    } else if (paginaActual + rango >= totalPages) {
+      // Si la página actual está cerca del final
+      inicio = Math.max(totalPages - paginasMostradas, 2);
+      fin = totalPages - 1;
+    } else {
+      // Si la página actual está en el medio
+      inicio = paginaActual - rango;
+      fin = paginaActual + rango;
+    }
+
+    return Array.from({ length: fin - inicio + 1 }, (_, i) => inicio + i);
   };
 
   return (
@@ -233,13 +299,14 @@ export function Postulaciones() {
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
                     Nombre Completo
-                    <a href="#">
-                      <img
-                        src="/sort.svg"
-                        alt="Sort.svg"
-                        className="w-3 h-3 ms-1.5"
-                      ></img>
-                    </a>
+                    <img
+                      id="apellidos"
+                      name="apellidos"
+                      onClick={changeOrder}
+                      src="/sort.svg"
+                      alt="Sort.svg"
+                      className="w-3 h-3 ms-1.5 cursor-pointer"
+                    ></img>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -257,25 +324,27 @@ export function Postulaciones() {
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
                     Grado Instrucción
-                    <a href="#">
-                      <img
-                        src="/sort.svg"
-                        alt="Sort.svg"
-                        className="w-3 h-3 ms-1.5"
-                      ></img>
-                    </a>
+                    <img
+                      id="grado_instruccion"
+                      name="grado_instruccion"
+                      onClick={changeOrder}
+                      src="/sort.svg"
+                      alt="Sort.svg"
+                      className="w-3 h-3 ms-1.5 cursor-pointer"
+                    ></img>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
                     Últ. Modif.
-                    <a href="#">
-                      <img
-                        src="/sort.svg"
-                        alt="Sort.svg"
-                        className="w-3 h-3 ms-1.5"
-                      ></img>
-                    </a>
+                    <img
+                      id="updatedAt"
+                      name="updatedAt"
+                      onClick={changeOrder}
+                      src="/sort.svg"
+                      alt="Sort.svg"
+                      className="w-3 h-3 ms-1.5 cursor-pointer"
+                    ></img>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -338,10 +407,7 @@ export function Postulaciones() {
             </tbody>
           </table>
         </div>
-        <nav
-          className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
-          aria-label="Table navigation"
-        >
+        <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">
           <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
             Mostrando{" "}
             <span className="font-semibold text-gray-900 dark:text-white">
@@ -354,18 +420,15 @@ export function Postulaciones() {
             <span className="font-semibold text-gray-900 dark:text-white">
               {curriculos.totalRegistros}
             </span>{" "}
-            registros
+            registros. Página actual: {paginaActual}
           </span>
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
               <span
-                onClick={() => console.log("presionastexd")}
-                // className={`inline-block ${
-                //   isLoad.areas_interes ? null : "border-red-500"
-                // }`}
+                onClick={paginaAnterior}
                 className={`flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
                 ${
-                  paginaActual === 1
+                  paginaActual <= 1
                     ? null
                     : "cursor-pointer hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}
@@ -375,39 +438,64 @@ export function Postulaciones() {
             </li>
 
             <li>
-              <a
-                href="#"
-                aria-current="page"
-                className="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+              <span
+                onClick={firstPage}
+                className={`cursor-pointer flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                  paginaActual === 1
+                    ? "font-semibold text-blue-600 bg-blue-50"
+                    : ""
+                }`}
               >
                 1
-              </a>
+              </span>
             </li>
+            {calcularMostrarPaginas(
+              paginaActual,
+              Math.ceil(curriculos.totalRegistros / limitePorPagina)
+            ).map((page) => (
+              <li key={page}>
+                <span
+                  onClick={() => dispatch(postPaginaActual(page))}
+                  className={`cursor-pointer flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                    page === paginaActual
+                      ? "font-semibold text-blue-600 bg-blue-50"
+                      : ""
+                  }`}
+                >
+                  {page}
+                </span>
+              </li>
+            ))}
+            {Math.ceil(curriculos.totalRegistros / limitePorPagina) > 1 && (
+              <li>
+                <span
+                  onClick={lastPage}
+                  className={`cursor-pointer flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                    paginaActual ===
+                    Math.ceil(curriculos.totalRegistros / limitePorPagina)
+                      ? "font-semibold text-blue-600 bg-blue-50"
+                      : ""
+                  }`}
+                >
+                  {Math.ceil(
+                    curriculos.totalRegistros / limitePorPagina
+                  ).toString()}
+                </span>
+              </li>
+            )}
             <li>
-              <a
-                href="#"
-                className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                2
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                {Math.ceil(
-                  curriculos.totalRegistros / limitePorPagina
-                ).toString()}
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              <span
+                onClick={paginaSiguiente}
+                className={`flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
+                ${
+                  paginaActual >=
+                  Math.ceil(curriculos.totalRegistros / limitePorPagina)
+                    ? null
+                    : "cursor-pointer hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-white"
+                }`}
               >
                 Pág. Siguiente
-              </a>
+              </span>
             </li>
           </ul>
         </nav>
