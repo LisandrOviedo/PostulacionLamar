@@ -15,62 +15,72 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
     throw new Error("Datos faltantes");
   }
 
-  const offset = (paginaActual - 1) * limitePorPagina;
-
   try {
-    const { count: totalRegistros, rows: curriculos } =
-      await Curriculo.findAndCountAll({
-        attributes: {
-          exclude: ["empleado_id"],
+    const dataCurriculos = await Curriculo.findAll({
+      attributes: {
+        exclude: ["empleado_id"],
+      },
+      include: [
+        {
+          model: Empleado,
+          attributes: {
+            exclude: ["createdAt", "updatedAt"],
+          },
+          where: filtros.cedula
+            ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
+            : filtros.apellidos
+            ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
+            : {},
         },
-        include: [
-          {
-            model: Empleado,
-            attributes: {
-              exclude: ["createdAt", "updatedAt"],
-            },
-            where: filtros.cedula
-              ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
-              : filtros.apellidos
-              ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
-              : {},
+        {
+          model: Areas_Interes,
+          attributes: {
+            exclude: ["activo", "createdAt", "updatedAt"],
           },
-          {
-            model: Areas_Interes,
-            attributes: {
-              exclude: ["activo", "createdAt", "updatedAt"],
-            },
-            through: {
-              attributes: ["area_interes_curriculo_id"],
-            },
-            where: filtros.area_interes_id
-              ? { area_interes_id: filtros.area_interes_id }
-              : {},
+          through: {
+            attributes: ["area_interes_curriculo_id"],
           },
-          {
-            model: Titulo_Obtenido,
-            attributes: {
-              exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
-            },
+          where: filtros.area_interes_id
+            ? { area_interes_id: filtros.area_interes_id }
+            : {},
+        },
+        {
+          model: Titulo_Obtenido,
+          attributes: {
+            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
           },
-          {
-            model: Experiencia,
-            attributes: {
-              exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
-            },
+        },
+        {
+          model: Experiencia,
+          attributes: {
+            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
           },
-        ],
-        where: filtros.estado ? { estado: filtros.estado } : {},
-        offset,
-        limit: limitePorPagina,
-        distinct: true,
-      });
+        },
+      ],
+      where: filtros.estado ? { estado: filtros.estado } : {},
+      distinct: true,
+      order: [
+        filtros.orden_campo === "apellidos"
+          ? [Empleado, "apellidos", filtros.orden_por]
+          : filtros.orden_campo === "grado_instruccion"
+          ? ["grado_instruccion", filtros.orden_por]
+          : filtros.orden_campo === "updatedAt"
+          ? ["updatedAt", filtros.orden_por]
+          : null,
+      ].filter(Boolean),
+    });
 
-    if (!curriculos) {
+    if (!dataCurriculos) {
       throw new Error("No existen curriculos");
     }
 
-    return { totalRegistros, curriculos };
+    const indexEnd = paginaActual * limitePorPagina;
+    const indexStart = indexEnd - limitePorPagina;
+
+    const curriculos = dataCurriculos.slice(indexStart, indexEnd);
+    const cantidadPaginas = Math.ceil(dataCurriculos.length / limitePorPagina);
+
+    return { cantidadPaginas, curriculos };
   } catch (error) {
     throw new Error("Error al traer todos los curriculos: " + error.message);
   }
