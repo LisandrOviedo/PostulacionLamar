@@ -38,7 +38,8 @@ export function Postulaciones() {
     apellidos: filtros.apellidos || "",
     area_interes_id: filtros.area_interes_id || "",
     estado: filtros.estado || "",
-    orden: filtros.orden || {},
+    orden_campo: filtros.orden_campo || "",
+    orden_por: filtros.orden_por || "",
   });
 
   const handleChangePagination = (e) => {
@@ -136,29 +137,44 @@ export function Postulaciones() {
       });
   };
 
-  const firstPage = () => {
-    dispatch(postPaginaActual(1));
-  };
-
   const changeOrder = (e) => {
     const { name } = e.target;
 
-    if (!Object.keys(filters.orden).length) {
-      return setFilters({ ...filters, orden: { [name]: "ASC" } });
-    } else if (filters.orden[name] === "ASC") {
-      setFilters({ ...filters, orden: {} });
-      return setFilters({ ...filters, orden: { [name]: "DESC" } });
-    } else if (filters.orden[name] === "DESC") {
-      return setFilters({ ...filters, orden: {} });
-    } else {
-      return setFilters({ ...filters, orden: { [name]: "ASC" } });
-    }
-  };
+    if (!filters.orden_campo) {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        orden_campo: name,
+        orden_por: "ASC",
+      }));
 
-  const lastPage = () => {
-    dispatch(
-      postPaginaActual(Math.ceil(curriculos.totalRegistros / limitePorPagina))
-    );
+      return dispatch(
+        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      );
+    } else if (filters.orden_campo === name && filters.orden_por === "ASC") {
+      setFilters((prevFilters) => ({ ...prevFilters, orden_por: "DESC" }));
+
+      return dispatch(postFiltros({ ...filters, orden_por: "DESC" }));
+    } else if (filters.orden_campo === name && filters.orden_por === "DESC") {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        orden_campo: "",
+        orden_por: "",
+      }));
+
+      return dispatch(
+        postFiltros({ ...filters, orden_campo: "", orden_por: "" })
+      );
+    } else {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        orden_campo: name,
+        orden_por: "ASC",
+      }));
+
+      return dispatch(
+        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      );
+    }
   };
 
   const paginaAnterior = () => {
@@ -168,34 +184,35 @@ export function Postulaciones() {
   };
 
   const paginaSiguiente = () => {
-    if (paginaActual < Math.ceil(curriculos.totalRegistros / limitePorPagina)) {
+    if (paginaActual < curriculos.cantidadPaginas) {
       dispatch(postPaginaActual(paginaActual + 1));
     }
   };
 
-  const calcularMostrarPaginas = (paginaActual, totalPages) => {
-    const rango = 2; // Cantidad de páginas a mostrar a cada lado de la página actual
-    const paginasMostradas = rango * 2 + 1; // Cantidad total de páginas a mostrar
+  function calcularPaginasARenderizar(paginaActual, totalPaginas) {
+    const paginasARenderizar = [];
 
-    let inicio;
-    let fin;
+    // Calcular el rango de páginas a renderizar
+    let inicio = Math.max(1, paginaActual - 2);
+    let fin = Math.min(totalPaginas, paginaActual + 2);
 
-    if (paginaActual - rango <= 1) {
-      // Si la página actual está cerca del inicio
-      inicio = 2;
-      fin = Math.min(paginasMostradas, totalPages - 1);
-    } else if (paginaActual + rango >= totalPages) {
-      // Si la página actual está cerca del final
-      inicio = Math.max(totalPages - paginasMostradas, 2);
-      fin = totalPages - 1;
-    } else {
-      // Si la página actual está en el medio
-      inicio = paginaActual - rango;
-      fin = paginaActual + rango;
+    // Agregar la primera página si no está duplicada
+    if (inicio > 1) {
+      paginasARenderizar.push(1);
     }
 
-    return Array.from({ length: fin - inicio + 1 }, (_, i) => inicio + i);
-  };
+    // Agregar páginas intermedias
+    for (let i = inicio; i <= fin; i++) {
+      paginasARenderizar.push(i);
+    }
+
+    // Agregar la última página si no está duplicada
+    if (fin < totalPaginas) {
+      paginasARenderizar.push(totalPaginas);
+    }
+
+    return paginasARenderizar;
+  }
 
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
@@ -303,10 +320,18 @@ export function Postulaciones() {
                       id="apellidos"
                       name="apellidos"
                       onClick={changeOrder}
-                      src="/sort.svg"
-                      alt="Sort.svg"
-                      className="w-3 h-3 ms-1.5 cursor-pointer"
-                    ></img>
+                      src={
+                        filters.orden_campo === "apellidos" &&
+                        filters.orden_por === "ASC"
+                          ? "/SortAZ.svg"
+                          : filters.orden_campo === "apellidos" &&
+                            filters.orden_por === "DESC"
+                          ? "/SortZA.svg"
+                          : "/Sort.svg"
+                      }
+                      alt="Icon Sort"
+                      className="w-5 h-5 ms-1.5 cursor-pointer"
+                    />
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -328,10 +353,18 @@ export function Postulaciones() {
                       id="grado_instruccion"
                       name="grado_instruccion"
                       onClick={changeOrder}
-                      src="/sort.svg"
-                      alt="Sort.svg"
-                      className="w-3 h-3 ms-1.5 cursor-pointer"
-                    ></img>
+                      src={
+                        filters.orden_campo === "grado_instruccion" &&
+                        filters.orden_por === "ASC"
+                          ? "/SortAZ.svg"
+                          : filters.orden_campo === "grado_instruccion" &&
+                            filters.orden_por === "DESC"
+                          ? "/SortZA.svg"
+                          : "/Sort.svg"
+                      }
+                      alt="Icon Sort"
+                      className="w-5 h-5 ms-1.5 cursor-pointer"
+                    />
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -341,10 +374,18 @@ export function Postulaciones() {
                       id="updatedAt"
                       name="updatedAt"
                       onClick={changeOrder}
-                      src="/sort.svg"
-                      alt="Sort.svg"
-                      className="w-3 h-3 ms-1.5 cursor-pointer"
-                    ></img>
+                      src={
+                        filters.orden_campo === "updatedAt" &&
+                        filters.orden_por === "ASC"
+                          ? "/SortAZ.svg"
+                          : filters.orden_campo === "updatedAt" &&
+                            filters.orden_por === "DESC"
+                          ? "/SortZA.svg"
+                          : "/Sort.svg"
+                      }
+                      alt="Icon Sort"
+                      className="w-5 h-5 ms-1.5 cursor-pointer"
+                    />
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -412,13 +453,13 @@ export function Postulaciones() {
             Mostrando{" "}
             <span className="font-semibold text-gray-900 dark:text-white">
               {paginaActual * limitePorPagina - limitePorPagina}-
-              {paginaActual * limitePorPagina > curriculos.totalRegistros
-                ? curriculos.totalRegistros
+              {paginaActual * limitePorPagina > curriculos.cantidadPaginas
+                ? curriculos.cantidadPaginas
                 : paginaActual * limitePorPagina}
             </span>{" "}
             de{" "}
             <span className="font-semibold text-gray-900 dark:text-white">
-              {curriculos.totalRegistros}
+              {curriculos.cantidadPaginas}
             </span>{" "}
             registros. Página actual: {paginaActual}
           </span>
@@ -436,22 +477,9 @@ export function Postulaciones() {
                 Pág. Anterior
               </span>
             </li>
-
-            <li>
-              <span
-                onClick={firstPage}
-                className={`cursor-pointer flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
-                  paginaActual === 1
-                    ? "font-semibold text-blue-600 bg-blue-50"
-                    : ""
-                }`}
-              >
-                1
-              </span>
-            </li>
-            {calcularMostrarPaginas(
+            {calcularPaginasARenderizar(
               paginaActual,
-              Math.ceil(curriculos.totalRegistros / limitePorPagina)
+              curriculos.cantidadPaginas
             ).map((page) => (
               <li key={page}>
                 <span
@@ -466,30 +494,12 @@ export function Postulaciones() {
                 </span>
               </li>
             ))}
-            {Math.ceil(curriculos.totalRegistros / limitePorPagina) > 1 && (
-              <li>
-                <span
-                  onClick={lastPage}
-                  className={`cursor-pointer flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
-                    paginaActual ===
-                    Math.ceil(curriculos.totalRegistros / limitePorPagina)
-                      ? "font-semibold text-blue-600 bg-blue-50"
-                      : ""
-                  }`}
-                >
-                  {Math.ceil(
-                    curriculos.totalRegistros / limitePorPagina
-                  ).toString()}
-                </span>
-              </li>
-            )}
             <li>
               <span
                 onClick={paginaSiguiente}
                 className={`flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
                 ${
-                  paginaActual >=
-                  Math.ceil(curriculos.totalRegistros / limitePorPagina)
+                  paginaActual >= curriculos.cantidadPaginas
                     ? null
                     : "cursor-pointer hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}
