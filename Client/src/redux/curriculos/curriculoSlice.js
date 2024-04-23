@@ -11,6 +11,8 @@ const initialState = {
     apellidos: "",
     area_interes_id: "",
     estado: "",
+    orden_campo: "",
+    orden_por: "",
   },
 };
 
