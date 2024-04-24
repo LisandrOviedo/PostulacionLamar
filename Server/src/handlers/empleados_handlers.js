@@ -11,8 +11,14 @@ const {
 } = require("../controllers/empleados_controllers");
 
 const getEmpleados = async (req, res) => {
+  const { filtros, paginaActual, limitePorPagina } = req.body;
+
   try {
-    const response = await todosLosEmpleados();
+    const response = await todosLosEmpleados(
+      filtros,
+      parseInt(paginaActual),
+      parseInt(limitePorPagina)
+    );
 
     return res.json(response);
   } catch (error) {
@@ -57,7 +63,7 @@ const getCargoActual = async (req, res) => {
 };
 
 const postEmpleado = async (req, res) => {
-  const { rol_id, cedula, nombres, apellidos, correo, telefono, direccion } =
+  const { rol_id, cedula, nombres, apellidos, telefono, correo, direccion } =
     req.body;
 
   try {
@@ -66,8 +72,8 @@ const postEmpleado = async (req, res) => {
       cedula,
       nombres,
       apellidos,
-      correo,
       telefono,
+      correo,
       direccion
     );
 
@@ -96,8 +102,8 @@ const putEmpleado = async (req, res) => {
     cedula,
     nombres,
     apellidos,
-    correo,
     telefono,
+    correo,
     direccion,
     activo,
   } = req.body;
@@ -109,8 +115,8 @@ const putEmpleado = async (req, res) => {
       cedula,
       nombres,
       apellidos,
-      correo,
       telefono,
+      correo,
       direccion,
       activo
     );

@@ -1,3 +1,5 @@
+const { Op } = require("sequelize");
+
 const fs = require("fs");
 
 const { Empleado, Roles, Cargo, Cargo_Empleado, Empresa } = require("../db");
@@ -6,25 +8,50 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = process.env;
 
-const todosLosEmpleados = async () => {
-  try {
-    const empleados = await Empleado.findAll({
-      attributes: {
-        exclude: ["rol_id", "clave"],
-      },
-      include: [
-        {
-          model: Roles,
-          attributes: ["rol_id", "nombre"],
-        },
-      ],
-    });
+const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
+  if (!paginaActual || !limitePorPagina) {
+    throw new Error("Datos faltantes");
+  }
 
-    if (!empleados) {
+  try {
+    const { count: totalRegistros, rows: dataEmpleados } =
+      await Empleado.findAndCountAll({
+        attributes: {
+          exclude: ["rol_id", "clave"],
+        },
+        where: {
+          [Op.and]: [
+            filtros.cedula
+              ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
+              : filtros.apellidos
+              ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
+              : {},
+            filtros.activo ? { activo: filtros.activo } : {},
+          ],
+        },
+        distinct: true,
+        order: [
+          filtros.orden_campo === "apellidos"
+            ? ["apellidos", filtros.orden_por]
+            : filtros.orden_campo === "activo"
+            ? ["activo", filtros.orden_por]
+            : filtros.orden_campo === "updatedAt"
+            ? ["updatedAt", filtros.orden_por]
+            : null,
+        ].filter(Boolean),
+      });
+
+    if (!dataEmpleados) {
       throw new Error("No existen empleados");
     }
 
-    return empleados;
+    const indexEnd = paginaActual * limitePorPagina;
+    const indexStart = indexEnd - limitePorPagina;
+
+    const empleados = dataEmpleados.slice(indexStart, indexEnd);
+    const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
+
+    return { cantidadPaginas, totalRegistros, empleados };
   } catch (error) {
     throw new Error("Error al traer todos los empleados: " + error.message);
   }
@@ -161,11 +188,11 @@ const crearEmpleado = async (
   cedula,
   nombres,
   apellidos,
-  correo,
   telefono,
+  correo,
   direccion
 ) => {
-  if (!cedula || !nombres || !apellidos || !correo || !telefono || !direccion) {
+  if (!cedula || !nombres || !apellidos || !telefono || !correo || !direccion) {
     throw new Error("Datos faltantes");
   }
 
@@ -180,8 +207,8 @@ const crearEmpleado = async (
         clave: claveCifrada,
         nombres: nombres,
         apellidos: apellidos,
-        correo: correo,
         telefono: telefono,
+        correo: correo,
         direccion: direccion,
       },
     });
@@ -233,8 +260,8 @@ const modificarEmpleado = async (
   cedula,
   nombres,
   apellidos,
-  correo,
   telefono,
+  correo,
   direccion,
   activo
 ) => {
@@ -244,8 +271,8 @@ const modificarEmpleado = async (
     !cedula ||
     !nombres ||
     !apellidos ||
-    !correo ||
     !telefono ||
+    !correo ||
     !direccion ||
     !activo
   ) {
@@ -261,8 +288,8 @@ const modificarEmpleado = async (
         cedula: cedula,
         nombres: nombres,
         apellidos: apellidos,
-        correo: correo,
         telefono: telefono,
+        correo: correo,
         direccion: direccion,
         activo: activo,
       },
