@@ -44,10 +44,29 @@ const {
   Empleado,
   Empresa,
   Experiencia,
+  Roles,
   Titulo_Obtenido,
 } = sequelize.models;
 
 // RELACIONES DE MODELOS (TABLAS)
+// Roles 1:1 Empleado
+Roles.hasOne(Empleado, {
+  foreignKey: {
+    allowNull: false,
+    name: "rol_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+Empleado.belongsTo(Roles, {
+  foreignKey: {
+    allowNull: false,
+    name: "rol_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+
 // Empleado 1:1 Curriculo
 Empleado.hasOne(Curriculo, {
   foreignKey: {
@@ -182,5 +201,6 @@ module.exports = {
   Empleado,
   Empresa,
   Experiencia,
+  Roles,
   Titulo_Obtenido,
 };
