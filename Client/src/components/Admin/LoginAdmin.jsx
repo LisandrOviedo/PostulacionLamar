@@ -64,12 +64,12 @@ export function LoginAdmin() {
   }, []);
 
   useEffect(() => {
-    if (empleado.activo && empleado.rol === "empleado") {
+    if (empleado.activo && empleado.Role?.nombre === "empleado") {
       Swal.fire({
         text: "Datos incorrectos",
         icon: "error",
       });
-    } else if (empleado.activo && empleado.rol === "admin") {
+    } else if (empleado.activo && empleado.Role?.nombre === "admin") {
       return navigate("/admin/dashboard");
     }
   }, [empleado]);

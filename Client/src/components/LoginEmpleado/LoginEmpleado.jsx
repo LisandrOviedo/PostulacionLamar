@@ -64,11 +64,11 @@ export function LoginEmpleado() {
   }, []);
 
   useEffect(() => {
-    if (empleado.changePassword) {
+    if (empleado?.changePassword) {
       return navigate("/empleado/cambioClave");
     } else if (
-      (empleado.activo && empleado.rol === "empleado") ||
-      empleado.rol === "admin"
+      (empleado.activo && empleado.Role?.nombre === "empleado") ||
+      empleado.Role?.nombre === "admin"
     ) {
       return navigate("/home");
     }
