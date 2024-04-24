@@ -15,6 +15,13 @@ import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresA
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
+import {
+  calcularPaginasARenderizar,
+  infoPaginador,
+} from "../../utils/paginacion";
+
+import { DDMMYYYY } from "../../utils/formatearFecha";
+
 export function Postulaciones() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -116,17 +123,6 @@ export function Postulaciones() {
     dispatch(getAllCurriculos(filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
 
-  const convertirFecha = (fecha) => {
-    const isoDateString = fecha;
-    const isoDate = new Date(isoDateString);
-    const day = String(isoDate.getDate()).padStart(2, "0");
-    const month = String(isoDate.getMonth() + 1).padStart(2, "0");
-    const year = String(isoDate.getFullYear());
-    const formattedDate = `${day}/${month}/${year}`;
-
-    return formattedDate;
-  };
-
   const handleVerDetalles = (curriculo_id) => {
     dispatch(getCurriculo(curriculo_id))
       .then(() => {
@@ -188,31 +184,6 @@ export function Postulaciones() {
       dispatch(postPaginaActual(paginaActual + 1));
     }
   };
-
-  function calcularPaginasARenderizar(paginaActual, totalPaginas) {
-    const paginasARenderizar = [];
-
-    // Calcular el rango de páginas a renderizar
-    let inicio = Math.max(1, paginaActual - 2);
-    let fin = Math.min(totalPaginas, paginaActual + 2);
-
-    // Agregar la primera página si no está duplicada
-    if (inicio > 1) {
-      paginasARenderizar.push(1);
-    }
-
-    // Agregar páginas intermedias
-    for (let i = inicio; i <= fin; i++) {
-      paginasARenderizar.push(i);
-    }
-
-    // Agregar la última página si no está duplicada
-    if (fin < totalPaginas) {
-      paginasARenderizar.push(totalPaginas);
-    }
-
-    return paginasARenderizar;
-  }
 
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
@@ -436,7 +407,7 @@ export function Postulaciones() {
                     </td>
                     <td className="px-4 py-4">{curriculo.grado_instruccion}</td>
                     <td className="px-4 py-4">
-                      {convertirFecha(curriculo.updatedAt)}
+                      {DDMMYYYY(curriculo.updatedAt)}
                     </td>
                     <td className="px-4 py-4">{curriculo.estado}</td>
                     <td className="px-4 py-4">
@@ -456,20 +427,11 @@ export function Postulaciones() {
           </table>
         </div>
         <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">
-          <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
-            Mostrando{" "}
-            <span className="font-semibold text-gray-900 dark:text-white">
-              {paginaActual * limitePorPagina - limitePorPagina}-
-              {paginaActual * limitePorPagina > curriculos.totalRegistros
-                ? curriculos.totalRegistros
-                : paginaActual * limitePorPagina}
-            </span>{" "}
-            de{" "}
-            <span className="font-semibold text-gray-900 dark:text-white">
-              {curriculos.totalRegistros}
-            </span>{" "}
-            registros. Página actual: {paginaActual}
-          </span>
+          {infoPaginador(
+            paginaActual,
+            limitePorPagina,
+            curriculos.totalRegistros
+          )}
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
               <a
