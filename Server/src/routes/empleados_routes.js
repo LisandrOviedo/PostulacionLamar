@@ -50,11 +50,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-empleados.get("/", getEmpleados);
 empleados.get("/detalle/:empleado_id", getEmpleado);
 empleados.get("/cargoActual/:empleado_id", getCargoActual);
 empleados.get("/login", getLogin);
 
+empleados.post("/allEmpleados", getEmpleados);
 empleados.post("/", postEmpleado);
 
 empleados.put("/modificarClave", putClaveEmpleado);
