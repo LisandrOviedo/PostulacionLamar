@@ -8,9 +8,10 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: UUIDV4,
     },
-    rol: {
-      type: DataTypes.ENUM("empleado", "admin"),
-      defaultValue: "empleado",
+    rol_id: {
+      // Campo relacionado
+      type: DataTypes.UUID,
+      allowNull: false,
     },
     cedula: {
       type: DataTypes.INTEGER(10),

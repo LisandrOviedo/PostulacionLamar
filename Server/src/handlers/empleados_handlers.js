@@ -57,12 +57,12 @@ const getCargoActual = async (req, res) => {
 };
 
 const postEmpleado = async (req, res) => {
-  const { rol, cedula, nombres, apellidos, correo, telefono, direccion } =
+  const { rol_id, cedula, nombres, apellidos, correo, telefono, direccion } =
     req.body;
 
   try {
     const response = await crearEmpleado(
-      rol,
+      rol_id,
       cedula,
       nombres,
       apellidos,
@@ -92,7 +92,7 @@ const putClaveEmpleado = async (req, res) => {
 const putEmpleado = async (req, res) => {
   const {
     empleado_id,
-    rol,
+    rol_id,
     cedula,
     nombres,
     apellidos,
@@ -105,7 +105,7 @@ const putEmpleado = async (req, res) => {
   try {
     const response = await modificarEmpleado(
       empleado_id,
-      rol,
+      rol_id,
       cedula,
       nombres,
       apellidos,

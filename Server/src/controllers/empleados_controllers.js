@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const { Empleado, Cargo, Cargo_Empleado, Empresa } = require("../db");
+const { Empleado, Roles, Cargo, Cargo_Empleado, Empresa } = require("../db");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -10,8 +10,14 @@ const todosLosEmpleados = async () => {
   try {
     const empleados = await Empleado.findAll({
       attributes: {
-        exclude: ["clave"],
+        exclude: ["rol_id", "clave"],
       },
+      include: [
+        {
+          model: Roles,
+          attributes: ["rol_id", "nombre"],
+        },
+      ],
     });
 
     if (!empleados) {
@@ -30,7 +36,17 @@ const traerEmpleado = async (empleado_id) => {
   }
 
   try {
-    const empleado = await Empleado.findByPk(empleado_id);
+    const empleado = await Empleado.findByPk(empleado_id, {
+      attributes: {
+        exclude: ["rol_id", "clave"],
+      },
+      include: [
+        {
+          model: Roles,
+          attributes: ["rol_id", "nombre"],
+        },
+      ],
+    });
 
     if (!empleado) {
       throw new Error("No existe ese empleado");
@@ -88,7 +104,16 @@ const login = async (cedula, clave) => {
 
   try {
     const empleado = await Empleado.findOne({
+      attributes: {
+        exclude: ["rol_id"],
+      },
       where: { cedula: cedula },
+      include: [
+        {
+          model: Roles,
+          attributes: ["rol_id", "nombre"],
+        },
+      ],
     });
 
     if (!empleado) {
@@ -132,7 +157,7 @@ const login = async (cedula, clave) => {
 };
 
 const crearEmpleado = async (
-  rol,
+  rol_id,
   cedula,
   nombres,
   apellidos,
@@ -148,9 +173,9 @@ const crearEmpleado = async (
     const claveCifrada = await bcrypt.hash("1234", 10);
 
     const [empleado, created] = await Empleado.findOrCreate({
-      where: { cedula: cedula, rol: rol },
+      where: { cedula: cedula, rol_id: rol_id },
       defaults: {
-        rol: rol,
+        rol_id: rol_id,
         cedula: cedula,
         clave: claveCifrada,
         nombres: nombres,
@@ -204,7 +229,7 @@ const actualizarClaveEmpleado = async (empleado_id, clave) => {
 
 const modificarEmpleado = async (
   empleado_id,
-  rol,
+  rol_id,
   cedula,
   nombres,
   apellidos,
@@ -215,7 +240,7 @@ const modificarEmpleado = async (
 ) => {
   if (
     !empleado_id ||
-    !rol ||
+    !rol_id ||
     !cedula ||
     !nombres ||
     !apellidos ||
@@ -232,7 +257,7 @@ const modificarEmpleado = async (
 
     await Empleado.update(
       {
-        rol: rol,
+        rol_id: rol_id,
         cedula: cedula,
         nombres: nombres,
         apellidos: apellidos,
