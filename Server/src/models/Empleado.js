@@ -29,13 +29,13 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
-    correo: {
-      type: DataTypes.STRING(150),
-      allowNull: true,
-    },
     telefono: {
       type: DataTypes.STRING(15),
       allowNull: false,
+    },
+    correo: {
+      type: DataTypes.STRING(150),
+      allowNull: true,
     },
     direccion: {
       type: DataTypes.STRING(150),
@@ -52,6 +52,7 @@ module.exports = (sequelize) => {
     activo: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
+      allowNull: false,
     },
   });
 };

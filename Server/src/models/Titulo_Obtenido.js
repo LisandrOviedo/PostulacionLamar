@@ -20,6 +20,7 @@ module.exports = (sequelize) => {
     activo: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
+      allowNull: false,
     },
   });
 };
