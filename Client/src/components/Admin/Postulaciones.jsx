@@ -300,17 +300,24 @@ export function Postulaciones() {
           </Select>
         </div>
         <div className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start gap-2">
-          <Button className="m-0 w-auto" onClick={handleFind}>
-            Buscar
-          </Button>
-          <Button className="m-0 w-auto" onClick={handleResetFilters}>
-            Restablecer Filtros
-          </Button>
+          <a href="#tabla">
+            <Button className="m-0 w-auto" onClick={handleFind}>
+              Buscar
+            </Button>
+          </a>
+          <a href="#tabla">
+            <Button className="m-0 w-auto" onClick={handleResetFilters}>
+              Restablecer Filtros
+            </Button>
+          </a>
         </div>
       </div>
       <div className="mt-8 sm:mx-auto w-full">
         <div className=" overflow-x-auto shadow-md rounded-lg">
-          <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400">
+          <table
+            id="tabla"
+            className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400"
+          >
             <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-4 py-3">
@@ -453,59 +460,62 @@ export function Postulaciones() {
             Mostrando{" "}
             <span className="font-semibold text-gray-900 dark:text-white">
               {paginaActual * limitePorPagina - limitePorPagina}-
-              {paginaActual * limitePorPagina > curriculos.cantidadPaginas
-                ? curriculos.cantidadPaginas
+              {paginaActual * limitePorPagina > curriculos.totalRegistros
+                ? curriculos.totalRegistros
                 : paginaActual * limitePorPagina}
             </span>{" "}
             de{" "}
             <span className="font-semibold text-gray-900 dark:text-white">
-              {curriculos.cantidadPaginas}
+              {curriculos.totalRegistros}
             </span>{" "}
             registros. Página actual: {paginaActual}
           </span>
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
-              <span
+              <a
+                href="#tabla"
                 onClick={paginaAnterior}
-                className={`flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
+                className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
                 ${
                   paginaActual <= 1
-                    ? null
-                    : "cursor-pointer hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-white"
+                    ? "cursor-default"
+                    : "cursor-pointer hover:text-black hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}
               >
                 Pág. Anterior
-              </span>
+              </a>
             </li>
             {calcularPaginasARenderizar(
               paginaActual,
               curriculos.cantidadPaginas
             ).map((page) => (
               <li key={page}>
-                <span
+                <a
+                  href="#tabla"
                   onClick={() => dispatch(postPaginaActual(page))}
-                  className={`cursor-pointer flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                  className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                     page === paginaActual
-                      ? "font-semibold text-blue-600 bg-blue-50"
+                      ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"
                       : ""
                   }`}
                 >
                   {page}
-                </span>
+                </a>
               </li>
             ))}
             <li>
-              <span
+              <a
+                href="#tabla"
                 onClick={paginaSiguiente}
-                className={`flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
+                className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
                 ${
                   paginaActual >= curriculos.cantidadPaginas
-                    ? null
-                    : "cursor-pointer hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-700 dark:hover:text-white"
+                    ? "cursor-default"
+                    : "cursor-pointer hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}
               >
                 Pág. Siguiente
-              </span>
+              </a>
             </li>
           </ul>
         </nav>
