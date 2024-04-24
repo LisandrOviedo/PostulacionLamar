@@ -31,7 +31,8 @@ function App() {
   return (
     <div>
       <Suspense fallback={<>Cargando</>}>
-        {pathname !== "/" && pathname !== "/admin/login" && <Navbar />}
+        {pathname.toLowerCase() !== "/" &&
+          pathname.toLowerCase() !== "/admin/login" && <Navbar />}
         <Routes>
           <Route path="*" element={<NotFound />} />
           <Route path="/" element={<LoginEmpleado />} />
