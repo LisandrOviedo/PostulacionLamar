@@ -16,59 +16,60 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
   }
 
   try {
-    const dataCurriculos = await Curriculo.findAll({
-      attributes: {
-        exclude: ["empleado_id"],
-      },
-      include: [
-        {
-          model: Empleado,
-          attributes: {
-            exclude: ["createdAt", "updatedAt"],
-          },
-          where: filtros.cedula
-            ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
-            : filtros.apellidos
-            ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
-            : {},
+    const { count: totalRegistros, rows: dataCurriculos } =
+      await Curriculo.findAndCountAll({
+        attributes: {
+          exclude: ["empleado_id"],
         },
-        {
-          model: Areas_Interes,
-          attributes: {
-            exclude: ["activo", "createdAt", "updatedAt"],
+        include: [
+          {
+            model: Empleado,
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+            where: filtros.cedula
+              ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
+              : filtros.apellidos
+              ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
+              : {},
           },
-          through: {
-            attributes: ["area_interes_curriculo_id"],
+          {
+            model: Areas_Interes,
+            attributes: {
+              exclude: ["activo", "createdAt", "updatedAt"],
+            },
+            through: {
+              attributes: ["area_interes_curriculo_id"],
+            },
+            where: filtros.area_interes_id
+              ? { area_interes_id: filtros.area_interes_id }
+              : {},
           },
-          where: filtros.area_interes_id
-            ? { area_interes_id: filtros.area_interes_id }
-            : {},
-        },
-        {
-          model: Titulo_Obtenido,
-          attributes: {
-            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+          {
+            model: Titulo_Obtenido,
+            attributes: {
+              exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+            },
           },
-        },
-        {
-          model: Experiencia,
-          attributes: {
-            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+          {
+            model: Experiencia,
+            attributes: {
+              exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+            },
           },
-        },
-      ],
-      where: filtros.estado ? { estado: filtros.estado } : {},
-      distinct: true,
-      order: [
-        filtros.orden_campo === "apellidos"
-          ? [Empleado, "apellidos", filtros.orden_por]
-          : filtros.orden_campo === "grado_instruccion"
-          ? ["grado_instruccion", filtros.orden_por]
-          : filtros.orden_campo === "updatedAt"
-          ? ["updatedAt", filtros.orden_por]
-          : null,
-      ].filter(Boolean),
-    });
+        ],
+        where: filtros.estado ? { estado: filtros.estado } : {},
+        distinct: true,
+        order: [
+          filtros.orden_campo === "apellidos"
+            ? [Empleado, "apellidos", filtros.orden_por]
+            : filtros.orden_campo === "grado_instruccion"
+            ? ["grado_instruccion", filtros.orden_por]
+            : filtros.orden_campo === "updatedAt"
+            ? ["updatedAt", filtros.orden_por]
+            : null,
+        ].filter(Boolean),
+      });
 
     if (!dataCurriculos) {
       throw new Error("No existen curriculos");
@@ -78,9 +79,9 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
     const indexStart = indexEnd - limitePorPagina;
 
     const curriculos = dataCurriculos.slice(indexStart, indexEnd);
-    const cantidadPaginas = Math.ceil(dataCurriculos.length / limitePorPagina);
+    const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
 
-    return { cantidadPaginas, curriculos };
+    return { cantidadPaginas, totalRegistros, curriculos };
   } catch (error) {
     throw new Error("Error al traer todos los curriculos: " + error.message);
   }
