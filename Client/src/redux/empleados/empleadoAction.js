@@ -7,6 +7,10 @@ import {
   empleadoByID,
   cargoActualEmpleado,
   allDocumentos,
+  paginaActual,
+  limitePorPagina,
+  filtros,
+  resetFilters,
   resetState,
 } from "./empleadoSlice";
 
@@ -186,6 +190,96 @@ export const putFotoEmpleado = (formData) => {
         timer: 2000,
         width: "20em",
       });
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const getAllEmpleados = (filtros, paginaActual, limitePorPagina) => {
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.post(
+        `${URL_SERVER}/empleados/allEmpleados`,
+        { filtros, paginaActual, limitePorPagina }
+      );
+
+      return dispatch(allEmpleados(data));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const postPaginaActual = (pagina_actual) => {
+  return async (dispatch) => {
+    try {
+      return dispatch(paginaActual(pagina_actual));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const postLimitePorPagina = (limite_pagina) => {
+  return async (dispatch) => {
+    try {
+      return dispatch(limitePorPagina(limite_pagina));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const postFiltros = (filters) => {
+  return async (dispatch) => {
+    try {
+      return dispatch(filtros(filters));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const deleteFiltros = () => {
+  return async (dispatch) => {
+    try {
+      return dispatch(resetFilters());
     } catch (error) {
       Swal.fire({
         title: "Oops...",

@@ -8,6 +8,7 @@ import {
   CurriculoDetail,
   Dashboard,
   DatosPersonales,
+  Empleados,
   Home,
   LandingCurriculo,
   LoginAdmin,
@@ -36,11 +37,13 @@ function App() {
         <Routes>
           <Route path="*" element={<NotFound />} />
           <Route path="/" element={<LoginEmpleado />} />
+          <Route path="/admin/login" element={<LoginAdmin />} />
 
           <Route element={<AuthGuardUpdatePassword />}>
             <Route path="/empleado/cambioClave" element={<UpdatePassword />} />
           </Route>
 
+          {/* Rutas Empleado */}
           <Route element={<AuthGuardEmpleado />}>
             <Route path="/home" element={<Home />} />
             <Route path="/datosPersonales" element={<DatosPersonales />} />
@@ -53,7 +56,7 @@ function App() {
             <Route path="/documentos" element={<AnexarDocumentos />} />
           </Route>
 
-          <Route path="/admin/login" element={<LoginAdmin />} />
+          {/* Rutas Admin */}
           <Route element={<AuthGuardAdmin />}>
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route
@@ -61,7 +64,16 @@ function App() {
               element={<DatosPersonales />}
             />
             <Route path="/admin/postulaciones" element={<Postulaciones />} />
-            <Route path="/admin/postulacion/:id" element={<Postulacion />} />
+            <Route
+              path="/admin/postulacion/:curriculo_id"
+              element={<Postulacion />}
+            />
+
+            <Route path="/admin/empleados" element={<Empleados />} />
+            {/* <Route
+              path="/admin/empleado/:empleado_id"
+              element={<Empleado />}
+            /> */}
           </Route>
         </Routes>
       </Suspense>

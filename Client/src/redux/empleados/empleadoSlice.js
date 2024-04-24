@@ -1,10 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  empleados: [],
+  empleados: {},
   empleado: {},
+  empleadoDetail: {},
   cargo_actual: [],
   documentos: [],
+  paginaActual: 1,
+  limitePorPagina: 2,
+  filtros: {
+    cedula: "",
+    apellidos: "",
+    activo: "",
+    orden_campo: "",
+    orden_por: "",
+  },
 };
 
 export const empleadoSlice = createSlice({
@@ -26,6 +36,24 @@ export const empleadoSlice = createSlice({
     allDocumentos: (state, action) => {
       state.documentos = action.payload;
     },
+    paginaActual: (state, action) => {
+      state.paginaActual = action.payload;
+    },
+    limitePorPagina: (state, action) => {
+      state.limitePorPagina = action.payload;
+    },
+    filtros: (state, action) => {
+      state.filtros = action.payload;
+    },
+    resetFilters: (state) => {
+      state.filtros = {
+        cedula: "",
+        apellidos: "",
+        activo: "",
+        orden_campo: "",
+        orden_por: "",
+      };
+    },
     resetState: () => {
       return initialState;
     },
@@ -38,6 +66,10 @@ export const {
   empleadoByID,
   cargoActualEmpleado,
   allDocumentos,
+  paginaActual,
+  limitePorPagina,
+  filtros,
+  resetFilters,
   resetState,
 } = empleadoSlice.actions;
 export default empleadoSlice.reducer;
