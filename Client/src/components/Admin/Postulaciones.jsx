@@ -293,23 +293,29 @@ export function Postulaciones() {
               <tr>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    Nombre Completo
-                    <img
+                    <a
+                      href="#tabla"
                       id="apellidos"
                       name="apellidos"
                       onClick={changeOrder}
-                      src={
-                        filters.orden_campo === "apellidos" &&
-                        filters.orden_por === "ASC"
-                          ? "/SortAZ.svg"
-                          : filters.orden_campo === "apellidos" &&
-                            filters.orden_por === "DESC"
-                          ? "/SortZA.svg"
-                          : "/Sort.svg"
-                      }
-                      alt="Icon Sort"
-                      className="w-5 h-5 ms-1.5 cursor-pointer"
-                    />
+                      className="text-black hover:text-black flex items-center"
+                    >
+                      Nombre Completos
+                      <img
+                        name="apellidos"
+                        src={
+                          filters.orden_campo === "apellidos" &&
+                          filters.orden_por === "ASC"
+                            ? "/SortAZ.svg"
+                            : filters.orden_campo === "apellidos" &&
+                              filters.orden_por === "DESC"
+                            ? "/SortZA.svg"
+                            : "/Sort.svg"
+                        }
+                        alt="Icon Sort"
+                        className="w-5 h-5 ms-1.5 cursor-pointer"
+                      />
+                    </a>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -326,44 +332,56 @@ export function Postulaciones() {
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    Grado Instrucción
-                    <img
+                    <a
+                      href="#tabla"
                       id="grado_instruccion"
                       name="grado_instruccion"
                       onClick={changeOrder}
-                      src={
-                        filters.orden_campo === "grado_instruccion" &&
-                        filters.orden_por === "ASC"
-                          ? "/SortAZ.svg"
-                          : filters.orden_campo === "grado_instruccion" &&
-                            filters.orden_por === "DESC"
-                          ? "/SortZA.svg"
-                          : "/Sort.svg"
-                      }
-                      alt="Icon Sort"
-                      className="w-5 h-5 ms-1.5 cursor-pointer"
-                    />
+                      className="text-black hover:text-black flex items-center"
+                    >
+                      Grado Instrucción
+                      <img
+                        name="grado_instruccion"
+                        src={
+                          filters.orden_campo === "grado_instruccion" &&
+                          filters.orden_por === "ASC"
+                            ? "/SortAZ.svg"
+                            : filters.orden_campo === "grado_instruccion" &&
+                              filters.orden_por === "DESC"
+                            ? "/SortZA.svg"
+                            : "/Sort.svg"
+                        }
+                        alt="Icon Sort"
+                        className="w-5 h-5 ms-1.5 cursor-pointer"
+                      />
+                    </a>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    Últ. Modif.
-                    <img
+                    <a
+                      href="#tabla"
                       id="updatedAt"
                       name="updatedAt"
                       onClick={changeOrder}
-                      src={
-                        filters.orden_campo === "updatedAt" &&
-                        filters.orden_por === "ASC"
-                          ? "/SortAZ.svg"
-                          : filters.orden_campo === "updatedAt" &&
-                            filters.orden_por === "DESC"
-                          ? "/SortZA.svg"
-                          : "/Sort.svg"
-                      }
-                      alt="Icon Sort"
-                      className="w-5 h-5 ms-1.5 cursor-pointer"
-                    />
+                      className="text-black hover:text-black flex items-center"
+                    >
+                      Últ. Modif.
+                      <img
+                        name="updatedAt"
+                        src={
+                          filters.orden_campo === "updatedAt" &&
+                          filters.orden_por === "ASC"
+                            ? "/SortAZ.svg"
+                            : filters.orden_campo === "updatedAt" &&
+                              filters.orden_por === "DESC"
+                            ? "/SortZA.svg"
+                            : "/Sort.svg"
+                        }
+                        alt="Icon Sort"
+                        className="w-5 h-5 ms-1.5 cursor-pointer"
+                      />
+                    </a>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -412,7 +430,7 @@ export function Postulaciones() {
                     <td className="px-4 py-4">{curriculo.estado}</td>
                     <td className="px-4 py-4">
                       <Button
-                        className="m-0"
+                        className="m-0 w-auto"
                         onClick={() =>
                           handleVerDetalles(curriculo.curriculo_id)
                         }
