@@ -2,7 +2,7 @@ import { clsx } from "clsx";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import validations from "./validations";
+import validations from "../../utils/validationsUpdatePassword";
 
 import { useSelector } from "react-redux";
 
@@ -30,6 +30,11 @@ export function UpdatePassword() {
 
     try {
       await putPassword(body);
+      if (empleado.rol === "admin") {
+        navigate("/admin/login");
+        return;
+      }
+
       navigate("/");
     } catch (error) {
       return error;
@@ -89,9 +94,11 @@ export function UpdatePassword() {
         maxLength="4"
         required
       />
-      <p className="text-base sm:text-lg text-red-700 font-bold text-center">
-        {errors.clave}
-      </p>
+      {errors.clave && (
+        <p className="text-base sm:text-lg text-red-700 font-bold text-center">
+          {errors.clave}
+        </p>
+      )}
       <br />
       <Input
         className="w-32 text-center"
@@ -106,23 +113,21 @@ export function UpdatePassword() {
         maxLength="4"
         required
       />
-      <p className="text-base sm:text-lg text-red-700 font-bold text-center">
-        {errors.confirmarClave}
-      </p>
+      {errors.confirmarClave && (
+        <p className="text-base sm:text-lg text-red-700 font-bold text-center">
+          {errors.confirmarClave}
+        </p>
+      )}
       <Button
         id="btn_continuar"
         type="submit"
         onClick={handleFindCI}
         disabled={
-          Object.keys(errors).length > 0 ||
-          Object.keys(data.clave).length <= 0 ||
-          Object.keys(data.confirmarClave).length <= 0
+          Object.keys(errors).length || !data.clave || !data.confirmarClave
         }
-        className={clsx("", {
+        className={clsx("w-auto", {
           "opacity-50":
-            Object.keys(errors).length > 0 ||
-            Object.keys(data.clave).length <= 0 ||
-            Object.keys(data.confirmarClave).length <= 0,
+            Object.keys(errors).length || !data.clave || !data.confirmarClave,
         })}
       >
         Continuar
