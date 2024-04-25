@@ -8,8 +8,14 @@ const {
 } = require("../controllers/curriculos_controllers");
 
 const getCurriculos = async (req, res) => {
+  const { filtros, paginaActual, limitePorPagina } = req.body;
+
   try {
-    const response = await todosLosCurriculos();
+    const response = await todosLosCurriculos(
+      filtros,
+      parseInt(paginaActual),
+      parseInt(limitePorPagina)
+    );
 
     return res.json(response);
   } catch (error) {
@@ -43,24 +49,22 @@ const getCurriculoEmpleado = async (req, res) => {
 
 const postCurriculo = async (req, res) => {
   const {
-    cedula,
     empleado_id,
     grado_instruccion,
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
+    cantidad_hijos,
+    habilidades_tecnicas,
   } = req.body;
-
-  const { originalname, path } = req.file;
 
   try {
     const response = await crearCurriculo(
-      cedula,
       empleado_id,
       grado_instruccion,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
-      originalname,
-      path
+      cantidad_hijos,
+      habilidades_tecnicas
     );
 
     return res.status(201).json(response);
@@ -75,9 +79,9 @@ const putCurriculo = async (req, res) => {
     grado_instruccion,
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
+    cantidad_hijos,
+    habilidades_tecnicas,
   } = req.body;
-
-  const { originalname, path } = req.file;
 
   try {
     const response = await modificarCurriculo(
@@ -85,8 +89,8 @@ const putCurriculo = async (req, res) => {
       grado_instruccion,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
-      originalname,
-      path
+      cantidad_hijos,
+      habilidades_tecnicas
     );
 
     return res.json(response);

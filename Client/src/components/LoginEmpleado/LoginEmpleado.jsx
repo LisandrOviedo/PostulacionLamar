@@ -45,14 +45,9 @@ export function LoginEmpleado() {
   };
 
   const handleOnChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-
-    setErrors(
-      validations({
-        ...data,
-        [e.target.name]: e.target.value,
-      })
-    );
+    const { name, value } = e.target;
+    setData({ ...data, [name]: value });
+    setErrors(validations({ ...data, [name]: value }));
   };
 
   useEffect(() => {
@@ -69,11 +64,11 @@ export function LoginEmpleado() {
   }, []);
 
   useEffect(() => {
-    if (empleado.changePassword) {
+    if (empleado?.changePassword) {
       return navigate("/empleado/cambioClave");
     } else if (
-      (empleado.activo && empleado.rol === "empleado") ||
-      empleado.rol === "admin"
+      (empleado.activo && empleado.Role?.nombre === "empleado") ||
+      empleado.Role?.nombre === "admin"
     ) {
       return navigate("/home");
     }
@@ -159,18 +154,13 @@ export function LoginEmpleado() {
         <div className="flex items-center justify-center">
           <Button
             id="btn_continuar"
-            type="submit"
             onClick={handleLogin}
             disabled={
-              Object.keys(errors).length > 0 ||
-              Object.keys(data.cedula).length <= 0 ||
-              Object.keys(data.clave).length <= 0
+              Object.keys(errors).length > 0 || !data.cedula || !data.clave
             }
             className={clsx("", {
               "opacity-50":
-                Object.keys(errors).length > 0 ||
-                Object.keys(data.cedula).length <= 0 ||
-                Object.keys(data.clave).length <= 0,
+                Object.keys(errors).length > 0 || !data.cedula || !data.clave,
             })}
           >
             Acceder

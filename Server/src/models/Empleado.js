@@ -8,9 +8,10 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: UUIDV4,
     },
-    rol: {
-      type: DataTypes.ENUM("empleado", "admin"),
-      defaultValue: "empleado",
+    rol_id: {
+      // Campo relacionado
+      type: DataTypes.UUID,
+      allowNull: false,
     },
     cedula: {
       type: DataTypes.INTEGER(10),
@@ -28,25 +29,30 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
-    correo: {
-      type: DataTypes.STRING(150),
-      allowNull: true,
-    },
     telefono: {
       type: DataTypes.STRING(15),
       allowNull: false,
+    },
+    correo: {
+      type: DataTypes.STRING(150),
+      allowNull: true,
     },
     direccion: {
       type: DataTypes.STRING(150),
       allowNull: false,
     },
-    foto_perfil: {
+    foto_perfil_nombre: {
       type: DataTypes.STRING,
-      allowNull: true,
+      defaultValue: null,
+    },
+    foto_perfil_ruta: {
+      type: DataTypes.STRING,
+      defaultValue: null,
     },
     activo: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
+      allowNull: false,
     },
   });
 };

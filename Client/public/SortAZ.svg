@@ -1,0 +1,3 @@
+<?xml version="1.0" ?><svg id="Слой_1" style="enable-background:new 0 0 139 139;" version="1.1" viewBox="0 0 139 139" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><style type="text/css">
+	.st0{fill:none;stroke:#000000;stroke-width:6;stroke-miterlimit:10;}
+</style><line class="st0" id="XMLID_3_" x1="69.5" x2="69.5" y1="26" y2="112.2"/><line class="st0" id="XMLID_8_" x1="56.8" x2="69.5" y1="94.2" y2="111.2"/><line class="st0" id="XMLID_21_" x1="69.5" x2="82.2" y1="111.2" y2="94.2"/><rect height="1.4" id="XMLID_23_" width="4.8" x="67.1" y="111.6"/></svg>

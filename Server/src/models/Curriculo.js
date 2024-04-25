@@ -31,11 +31,11 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
-    nombre_pdf: {
-      type: DataTypes.STRING,
+    cantidad_hijos: {
+      type: DataTypes.INTEGER(2),
       allowNull: false,
     },
-    ruta_pdf: {
+    habilidades_tecnicas: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -46,6 +46,7 @@ module.exports = (sequelize) => {
     activo: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
+      allowNull: false,
     },
   });
 };

@@ -3,15 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
-  getAllCurriculos,
-  getCurriculo,
+  getAllEmpleados,
+  getEmpleadoByID,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
   deleteFiltros,
-} from "../../redux/curriculos/curriculoAction";
-
-import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
+  putActivo,
+} from "../../redux/empleados/empleadoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
@@ -22,29 +21,24 @@ import {
 
 import { DDMMYYYY } from "../../utils/formatearFecha";
 
-export function Postulaciones() {
+export function Empleados() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const curriculos = useSelector((state) => state.curriculos.curriculos);
+  const empleados = useSelector((state) => state.empleados.empleados);
 
-  const paginaActual = useSelector((state) => state.curriculos.paginaActual);
+  const paginaActual = useSelector((state) => state.empleados.paginaActual);
 
   const limitePorPagina = useSelector(
-    (state) => state.curriculos.limitePorPagina
+    (state) => state.empleados.limitePorPagina
   );
 
-  const filtros = useSelector((state) => state.curriculos.filtros);
-
-  const areas_interes_activas = useSelector(
-    (state) => state.areas_interes.areas_interes_activas
-  );
+  const filtros = useSelector((state) => state.empleados.filtros);
 
   const [filters, setFilters] = useState({
     cedula: filtros.cedula || "",
     apellidos: filtros.apellidos || "",
-    area_interes_id: filtros.area_interes_id || "",
-    estado: filtros.estado || "",
+    activo: filtros.activo || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
   });
@@ -108,8 +102,6 @@ export function Postulaciones() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllAreasInteresActivas());
-
     document.title = "Grupo Lamar - Postulaciones (Admin)";
 
     return () => {
@@ -120,13 +112,13 @@ export function Postulaciones() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllCurriculos(filtros, paginaActual, limitePorPagina));
+    dispatch(getAllEmpleados(filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
 
-  const handleVerDetalles = (curriculo_id) => {
-    dispatch(getCurriculo(curriculo_id))
+  const handleVerDetalles = (empleado_id) => {
+    dispatch(getEmpleadoByID(empleado_id))
       .then(() => {
-        navigate(`/curriculoDetalle/${curriculo_id}`);
+        navigate(`/admin/empleado/${empleado_id}`);
       })
       .catch((error) => {
         return error;
@@ -180,15 +172,20 @@ export function Postulaciones() {
   };
 
   const paginaSiguiente = () => {
-    if (paginaActual < curriculos.cantidadPaginas) {
+    if (paginaActual < empleados.cantidadPaginas) {
       dispatch(postPaginaActual(paginaActual + 1));
     }
+  };
+
+  const handleChangeActivo = async (empleado_id) => {
+    await putActivo(empleado_id);
+    dispatch(getAllEmpleados(filtros, paginaActual, limitePorPagina));
   };
 
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <Title>Postulaciones</Title>
+        <Title>Empleados</Title>
       </div>
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
         <div className="flex flex-col place-content-between">
@@ -219,41 +216,16 @@ export function Postulaciones() {
           />
         </div>
         <div className="flex flex-col place-content-between">
-          <Label htmlFor="area_interes_id">Filtrar por área de interés</Label>
+          <Label htmlFor="activo">Filtrar por activo / inactivo</Label>
           <Select
-            id="area_interes_id"
-            name="area_interes_id"
+            id="activo"
+            name="activo"
             onChange={handleChangeFilters}
-            value={filters.area_interes_id}
+            value={filters.activo}
           >
             <option value="">Todos</option>
-            {areas_interes_activas?.length
-              ? areas_interes_activas?.map(
-                  (area, i) =>
-                    area.activo && (
-                      <option
-                        key={i}
-                        name={area.nombre}
-                        value={area.area_interes_id}
-                      >
-                        {area.nombre}
-                      </option>
-                    )
-                )
-              : null}
-          </Select>
-        </div>
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="estado">Filtrar por estado</Label>
-          <Select
-            id="estado"
-            name="estado"
-            onChange={handleChangeFilters}
-            value={filters.estado}
-          >
-            <option value="">Todos</option>
-            <option value="Pendiente por revisar">Pendiente por revisar</option>
-            <option value="Revisado">Revisado</option>
+            <option value="1">Activos</option>
+            <option value="0">Inactivos</option>
           </Select>
         </div>
         <div className="flex flex-col place-content-between">
@@ -300,7 +272,7 @@ export function Postulaciones() {
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Nombre Completos
+                      Nombre Completo
                       <img
                         name="apellidos"
                         src={
@@ -328,25 +300,22 @@ export function Postulaciones() {
                   <div className="flex items-center">Correo</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Áreas de Interés</div>
-                </th>
-                <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
                     <a
                       href="#tabla"
-                      id="grado_instruccion"
-                      name="grado_instruccion"
+                      id="activo"
+                      name="activo"
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Grado Instrucción
+                      Estado
                       <img
-                        name="grado_instruccion"
+                        name="activo"
                         src={
-                          filters.orden_campo === "grado_instruccion" &&
+                          filters.orden_campo === "activo" &&
                           filters.orden_por === "ASC"
                             ? "/SortAZ.svg"
-                            : filters.orden_campo === "grado_instruccion" &&
+                            : filters.orden_campo === "activo" &&
                               filters.orden_por === "DESC"
                             ? "/SortZA.svg"
                             : "/Sort.svg"
@@ -384,58 +353,54 @@ export function Postulaciones() {
                     </a>
                   </div>
                 </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Estado</div>
-                </th>
+
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {curriculos === "No existen curriculos" ||
-              !curriculos.curriculos?.length ? (
+              {empleados === "No existen empleados" ||
+              !empleados.empleados?.length ? (
                 <tr>
                   <td colSpan="9" className="text-center p-2">
                     <p>¡No existen registros!</p>
                   </td>
                 </tr>
               ) : (
-                curriculos.curriculos?.map((curriculo, i) => (
+                empleados.empleados?.map((empleado, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
                     <td className="px-4 py-4">
-                      {curriculo.Empleado.apellidos}{" "}
-                      {curriculo.Empleado.nombres}
+                      {empleado.apellidos} {empleado.nombres}
                     </td>
-                    <td className="px-4 py-4">{curriculo.Empleado.cedula}</td>
-                    <td className="px-4 py-4">{curriculo.Empleado.telefono}</td>
-                    <td className="px-4 py-4">{curriculo.Empleado.correo}</td>
+                    <td className="px-4 py-4">{empleado.cedula}</td>
+                    <td className="px-4 py-4">{empleado.telefono}</td>
+                    <td className="px-4 py-4">{empleado.correo}</td>
                     <td className="px-4 py-4">
-                      {curriculo.Areas_Interes.map(
-                        (area, index) =>
-                          `${area.nombre}${
-                            index !== curriculo.Areas_Interes.length - 1
-                              ? ", "
-                              : ""
-                          }`
-                      )}
+                      {empleado.activo ? "Activo" : "Inactivo"}
                     </td>
-                    <td className="px-4 py-4">{curriculo.grado_instruccion}</td>
                     <td className="px-4 py-4">
-                      {DDMMYYYY(curriculo.updatedAt)}
+                      {DDMMYYYY(empleado.updatedAt)}
                     </td>
-                    <td className="px-4 py-4">{curriculo.estado}</td>
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-4 flex gap-2">
                       <Button
                         className="m-0 w-auto"
-                        onClick={() =>
-                          handleVerDetalles(curriculo.curriculo_id)
-                        }
+                        onClick={() => handleVerDetalles(empleado.empleado_id)}
                       >
                         Detalles
+                      </Button>
+                      <Button
+                        className={`m-0 w-auto ${
+                          empleado.activo
+                            ? "bg-red-500 hover:bg-red-600 "
+                            : "bg-green-500 hover:bg-green-600"
+                        }`}
+                        onClick={() => handleChangeActivo(empleado.empleado_id)}
+                      >
+                        {empleado.activo ? "Inactivar" : "Activar"}
                       </Button>
                     </td>
                   </tr>
@@ -448,7 +413,7 @@ export function Postulaciones() {
           {infoPaginador(
             paginaActual,
             limitePorPagina,
-            curriculos.totalRegistros
+            empleados.totalRegistros
           )}
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
@@ -467,7 +432,7 @@ export function Postulaciones() {
             </li>
             {calcularPaginasARenderizar(
               paginaActual,
-              curriculos.cantidadPaginas
+              empleados.cantidadPaginas
             ).map((page) => (
               <li key={page}>
                 <a
@@ -489,7 +454,7 @@ export function Postulaciones() {
                 onClick={paginaSiguiente}
                 className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
                 ${
-                  paginaActual >= curriculos.cantidadPaginas
+                  paginaActual >= empleados.cantidadPaginas
                     ? "cursor-default"
                     : "cursor-pointer hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}

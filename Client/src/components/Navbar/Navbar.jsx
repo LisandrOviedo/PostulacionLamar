@@ -1,18 +1,23 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 
 import { Logo } from "../UI";
 
+import Swal from "sweetalert2";
+
 export function Navbar() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState({});
   const [isOpenBurger, setIsOpenBurger] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  const empleado = useSelector((state) => state.empleados.empleado);
+
   const toggleMenu = (index) => {
-    setIsOpen((prevState) => ({
-      ...prevState,
-      [index]: !prevState[index],
-    }));
+    setIsOpen({
+      [index]: [index],
+    });
   };
 
   const toggleMenuBurger = () => {
@@ -23,9 +28,33 @@ export function Navbar() {
     setIsHovered(!isHovered);
   };
 
+  const logout = (rol) => {
+    Swal.fire({
+      text: "¿Seguro que deseas salir?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (rol === "empleado") {
+          navigate("/");
+          return;
+        }
+        navigate("/admin/login");
+        return;
+      }
+    });
+  };
+
   const { pathname } = useLocation();
 
   const asideRef = useRef(null);
+
+  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
+  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${empleado.foto_perfil_nombre}`;
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -47,7 +76,7 @@ export function Navbar() {
         document.removeEventListener("mousedown", handleOutsideClick);
       }
     };
-  }, []);
+  }, [empleado]);
 
   return (
     <div className="w-full z-999 fixed top-0 select-none">
@@ -66,7 +95,19 @@ export function Navbar() {
         </div>
         <div className="flex items-center space-x-4 mr-6">
           <span className="text-white text-sm md:text-base">Bienvenido/a</span>
-          <img src="/Person.svg" alt="Icono de Perfil" className="w-6 sm:w-8" />
+          {empleado.foto_perfil_nombre ? (
+            <img
+              src={FOTO_PERFIL}
+              alt="Icono de Perfil"
+              className="inline-block h-6 w-6 sm:h-8 sm:w-8 rounded-full ring-2 ring-[#F0C95C]"
+            />
+          ) : (
+            <img
+              src="/Person.svg"
+              alt="Icono de Perfil"
+              className="inline-block h-6 w-6 sm:h-8 sm:w-8 rounded-full ring-2 ring-[#F0C95C]"
+            />
+          )}
         </div>
       </nav>
 
@@ -98,6 +139,7 @@ export function Navbar() {
                   <Link
                     to="/home"
                     className="block text-white hover:text-[#F0C95C]"
+                    onClick={() => toggleMenu({})}
                   >
                     <div className="flex items-center justify-between p-2">
                       <div className="mx-auto">Inicio</div>
@@ -126,14 +168,6 @@ export function Navbar() {
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Datos personales
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/home"
-                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
-                        >
-                          Solicitar reinicio de contraseña
                         </Link>
                       </li>
                     </ul>
@@ -173,23 +207,31 @@ export function Navbar() {
                       </li>
                       <li>
                         <Link
-                          to="/home"
+                          to="/documentos"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Anexar documentos
                         </Link>
                       </li>
+                      <li>
+                        <Link
+                          to="/home"
+                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                        >
+                          Aplicar Test de Valoración Actitudinal
+                        </Link>
+                      </li>
                     </ul>
                   </li>
                   <li>
-                    <Link
-                      to="/"
+                    <span
+                      onClick={() => logout("empleado")}
                       className="block text-white hover:text-[#F0C95C]"
                     >
                       <div className="flex items-center justify-between p-2">
                         <div className="mx-auto">Cerrar Sesión</div>
                       </div>
-                    </Link>
+                    </span>
                   </li>
                 </>
               )}
@@ -199,6 +241,7 @@ export function Navbar() {
                   <Link
                     to="/admin/dashboard"
                     className="block text-white hover:text-[#F0C95C]"
+                    onClick={() => toggleMenu({})}
                   >
                     <div className="flex items-center justify-between p-2">
                       <div className="mx-auto">Inicio</div>
@@ -223,26 +266,30 @@ export function Navbar() {
                     >
                       <li>
                         <Link
-                          to="/admin/dashboard"
+                          to="/admin/datosPersonales"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Datos personales
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/admin/dashboard"
-                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
-                        >
-                          Solicitar reinicio de contraseña
                         </Link>
                       </li>
                     </ul>
                   </li>
                   <li>
                     <Link
+                      to="/admin/empleados"
+                      className="block text-white hover:text-[#F0C95C]"
+                      onClick={() => toggleMenu({})}
+                    >
+                      <div className="flex items-center justify-between p-2">
+                        <div className="mx-auto">Empleados</div>
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       to="/admin/postulaciones"
                       className="block text-white hover:text-[#F0C95C]"
+                      onClick={() => toggleMenu({})}
                     >
                       <div className="flex items-center justify-between p-2">
                         <div className="mx-auto">Postulaciones</div>
@@ -250,14 +297,14 @@ export function Navbar() {
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      to="/admin/login"
+                    <span
+                      onClick={() => logout("admin")}
                       className="block text-white hover:text-[#F0C95C]"
                     >
                       <div className="flex items-center justify-between p-2">
                         <div className="mx-auto">Cerrar Sesión</div>
                       </div>
-                    </Link>
+                    </span>
                   </li>
                 </>
               )}

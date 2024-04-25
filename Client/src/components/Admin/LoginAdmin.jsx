@@ -45,14 +45,9 @@ export function LoginAdmin() {
   };
 
   const handleOnChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-
-    setErrors(
-      validations({
-        ...data,
-        [e.target.name]: e.target.value,
-      })
-    );
+    const { name, value } = e.target;
+    setData({ ...data, [name]: value });
+    setErrors(validations({ ...data, [name]: value }));
   };
 
   useEffect(() => {
@@ -69,12 +64,12 @@ export function LoginAdmin() {
   }, []);
 
   useEffect(() => {
-    if (empleado.activo && empleado.rol === "empleado") {
+    if (empleado.activo && empleado.Role?.nombre === "empleado") {
       Swal.fire({
         text: "Datos incorrectos",
         icon: "error",
       });
-    } else if (empleado.activo && empleado.rol === "admin") {
+    } else if (empleado.activo && empleado.Role?.nombre === "admin") {
       return navigate("/admin/dashboard");
     }
   }, [empleado]);
@@ -156,25 +151,26 @@ export function LoginAdmin() {
           </div>
         </div>
 
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center">
           <Button
             id="btn_continuar"
-            type="submit"
             onClick={handleLogin}
             disabled={
-              Object.keys(errors).length > 0 ||
-              Object.keys(data.cedula).length <= 0 ||
-              Object.keys(data.clave).length <= 0
+              Object.keys(errors).length > 0 || !data.cedula || !data.clave
             }
             className={clsx("", {
               "opacity-50":
-                Object.keys(errors).length > 0 ||
-                Object.keys(data.cedula).length <= 0 ||
-                Object.keys(data.clave).length <= 0,
+                Object.keys(errors).length > 0 || !data.cedula || !data.clave,
             })}
           >
             Acceder
           </Button>
+          <a
+            className="cursor-pointer font-semibold text-[#002846] hover:text-blue-800 text-xs sm:text-sm ml-2 sm:ml-0"
+            onClick={() => navigate("/")}
+          >
+            Ir a la vista de empleado
+          </a>
         </div>
       </div>
     </div>

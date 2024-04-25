@@ -1,3 +1,5 @@
+const { Op } = require("sequelize");
+
 const {
   Curriculo,
   Empleado,
@@ -8,48 +10,78 @@ const {
 
 const { traerEmpleado } = require("./empleados_controllers");
 
-const todosLosCurriculos = async () => {
-  try {
-    const curriculos = await Curriculo.findAll({
-      attributes: {
-        exclude: ["empleado_id"],
-      },
-      include: [
-        {
-          model: Empleado,
-          attributes: {
-            exclude: ["createdAt", "updatedAt"],
-          },
-        },
-        {
-          model: Areas_Interes,
-          attributes: {
-            exclude: ["activo", "createdAt", "updatedAt"],
-          },
-          through: {
-            attributes: ["area_interes_curriculo_id"],
-          },
-        },
-        {
-          model: Titulo_Obtenido,
-          attributes: {
-            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
-          },
-        },
-        {
-          model: Experiencia,
-          attributes: {
-            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
-          },
-        },
-      ],
-    });
+const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
+  if (!paginaActual || !limitePorPagina) {
+    throw new Error("Datos faltantes");
+  }
 
-    if (!curriculos) {
+  try {
+    const { count: totalRegistros, rows: dataCurriculos } =
+      await Curriculo.findAndCountAll({
+        attributes: {
+          exclude: ["empleado_id"],
+        },
+        include: [
+          {
+            model: Empleado,
+            attributes: {
+              exclude: ["createdAt", "updatedAt"],
+            },
+            where: filtros.cedula
+              ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
+              : filtros.apellidos
+              ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
+              : {},
+          },
+          {
+            model: Areas_Interes,
+            attributes: {
+              exclude: ["activo", "createdAt", "updatedAt"],
+            },
+            through: {
+              attributes: ["area_interes_curriculo_id"],
+            },
+            where: filtros.area_interes_id
+              ? { area_interes_id: filtros.area_interes_id }
+              : {},
+          },
+          {
+            model: Titulo_Obtenido,
+            attributes: {
+              exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+            },
+          },
+          {
+            model: Experiencia,
+            attributes: {
+              exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+            },
+          },
+        ],
+        where: filtros.estado ? { estado: filtros.estado } : {},
+        distinct: true,
+        order: [
+          filtros.orden_campo === "apellidos"
+            ? [Empleado, "apellidos", filtros.orden_por]
+            : filtros.orden_campo === "grado_instruccion"
+            ? ["grado_instruccion", filtros.orden_por]
+            : filtros.orden_campo === "updatedAt"
+            ? ["updatedAt", filtros.orden_por]
+            : null,
+        ].filter(Boolean),
+      });
+
+    if (!dataCurriculos) {
       throw new Error("No existen curriculos");
     }
 
-    return curriculos;
+    const indexEnd = paginaActual * limitePorPagina;
+    const indexStart = indexEnd - limitePorPagina;
+
+    const curriculos = dataCurriculos.slice(indexStart, indexEnd);
+    const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
+
+    return { cantidadPaginas, totalRegistros, curriculos };
   } catch (error) {
     throw new Error("Error al traer todos los curriculos: " + error.message);
   }
@@ -166,15 +198,14 @@ const traerCurriculoEmpleado = async (empleado_id) => {
 };
 
 const crearCurriculo = async (
-  cedula,
   empleado_id,
   grado_instruccion,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
-  originalname,
-  path
+  cantidad_hijos,
+  habilidades_tecnicas
 ) => {
-  if (!cedula || !empleado_id || !grado_instruccion || !originalname || !path) {
+  if (!empleado_id || !grado_instruccion) {
     throw new Error("Datos faltantes");
   }
 
@@ -188,22 +219,13 @@ const crearCurriculo = async (
         grado_instruccion: grado_instruccion,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
-        nombre_pdf: originalname,
-        ruta_pdf: path,
+        cantidad_hijos: cantidad_hijos,
+        habilidades_tecnicas: habilidades_tecnicas,
       },
     });
 
     if (created) {
       return curriculo;
-    }
-
-    const fs = require("fs");
-    const rutaArchivo = path;
-
-    try {
-      fs.unlinkSync(rutaArchivo);
-    } catch (error) {
-      console.error("Error al eliminar el archivo PDF: " + error);
     }
 
     throw new Error("Ya existe un curriculo para ese empleado");
@@ -217,32 +239,23 @@ const modificarCurriculo = async (
   grado_instruccion,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
-  originalname,
-  path
+  cantidad_hijos,
+  habilidades_tecnicas
 ) => {
-  if (!curriculo_id || !grado_instruccion || !originalname || !path) {
+  if (!curriculo_id || !grado_instruccion) {
     throw new Error("Datos faltantes");
   }
 
   try {
-    const curriculo = await traerCurriculo(curriculo_id);
-
-    const fs = require("fs");
-    const rutaArchivo = curriculo.ruta_pdf;
-
-    try {
-      fs.unlinkSync(rutaArchivo);
-    } catch (error) {
-      console.error("Error al eliminar el archivo PDF: " + error);
-    }
+    await traerCurriculo(curriculo_id);
 
     await Curriculo.update(
       {
         grado_instruccion: grado_instruccion,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
-        nombre_pdf: originalname,
-        ruta_pdf: path,
+        cantidad_hijos: cantidad_hijos,
+        habilidades_tecnicas: habilidades_tecnicas,
         estado: "Pendiente por revisar",
       },
       {

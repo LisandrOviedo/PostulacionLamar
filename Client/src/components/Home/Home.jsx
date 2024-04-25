@@ -1,14 +1,19 @@
 import { useEffect } from "react";
-
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Title } from "../UI";
 
+import { resetCurriculos } from "../../redux/curriculos/curriculoAction";
+
 export function Home() {
+  const dispatch = useDispatch();
+
   const empleado = useSelector((state) => state.empleados.empleado);
 
   useEffect(() => {
     window.scroll(0, 0);
+
+    dispatch(resetCurriculos());
 
     document.title = "Grupo Lamar - Inicio";
 

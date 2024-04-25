@@ -1,7 +1,9 @@
+import { AnexarDocumentos } from "./AnexarDocumentos/AnexarDocumentos";
 import { CreateCurriculo } from "./CreateCurriculo/CreateCurriculo";
 import { CurriculoDetail } from "./CurriculoDetail/CurriculoDetail";
 import { Dashboard } from "./Admin/Dashboard";
 import { DatosPersonales } from "./DatosPersonales/DatosPersonales";
+import { Empleados } from "./Admin/Empleados";
 import { Home } from "./Home/Home";
 import { LandingCurriculo } from "./LandingCurriculo/LandingCurriculo";
 import { LoginAdmin } from "./Admin/LoginAdmin";
@@ -13,10 +15,12 @@ import { Postulaciones } from "./Admin/Postulaciones";
 import { UpdatePassword } from "./UpdatePassword/UpdatePassword";
 
 export {
+  AnexarDocumentos,
   CreateCurriculo,
   CurriculoDetail,
   Dashboard,
   DatosPersonales,
+  Empleados,
   Home,
   LandingCurriculo,
   LoginAdmin,

@@ -6,17 +6,92 @@ import {
   curriculoDetail,
   createCurriculo,
   curriculoEmpleado,
+  paginaActual,
+  limitePorPagina,
+  filtros,
+  resetFilters,
   resetState,
 } from "./curriculoSlice";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-export const getAllCurriculos = () => {
+export const getAllCurriculos = (filtros, paginaActual, limitePorPagina) => {
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(`${URL_SERVER}/curriculos`);
+      const { data } = await axios.post(
+        `${URL_SERVER}/curriculos/allCurriculos`,
+        { filtros, paginaActual, limitePorPagina }
+      );
 
       return dispatch(allCurriculos(data));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const postPaginaActual = (pagina_actual) => {
+  return async (dispatch) => {
+    try {
+      return dispatch(paginaActual(pagina_actual));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const postLimitePorPagina = (limite_pagina) => {
+  return async (dispatch) => {
+    try {
+      return dispatch(limitePorPagina(limite_pagina));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const postFiltros = (filters) => {
+  return async (dispatch) => {
+    try {
+      return dispatch(filtros(filters));
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
+export const deleteFiltros = () => {
+  return async (dispatch) => {
+    try {
+      return dispatch(resetFilters());
     } catch (error) {
       Swal.fire({
         title: "Oops...",
@@ -74,32 +149,33 @@ export const getCurriculoEmpleado = (empleado_id) => {
 
 // POST CURRICULO
 
-export const postCurriculo = (
-  formData,
-  areas_interes,
-  titulos_obtenidos,
-  experiencias
-) => {
+export const postCurriculo = (datosCurriculo) => {
   const URL_CREATE_CURRICULO = `${URL_SERVER}/curriculos`;
 
   return async (dispatch) => {
     try {
-      const { data } = await axios.post(`${URL_CREATE_CURRICULO}`, formData);
+      const { data } = await axios.post(
+        `${URL_CREATE_CURRICULO}`,
+        datosCurriculo
+      );
+
       dispatch(createCurriculo(data));
 
-      await postAreasInteres(data.curriculo_id, areas_interes);
+      await postAreasInteres(data.curriculo_id, datosCurriculo.areas_interes);
 
-      if (titulos_obtenidos) {
-        await postTitulosObtenidos(data.curriculo_id, titulos_obtenidos);
+      if (datosCurriculo.titulos_obtenidos) {
+        await postTitulosObtenidos(
+          data.curriculo_id,
+          datosCurriculo.titulos_obtenidos
+        );
       }
 
-      if (experiencias) {
-        await postExperiencias(data.curriculo_id, experiencias);
+      if (datosCurriculo.experiencias) {
+        await postExperiencias(data.curriculo_id, datosCurriculo.experiencias);
       }
 
       return Swal.fire({
-        title: "¡Currículo enviado exitosamente!",
-        text: "Si deseas actualizar o ver los detalles de tu currículo, debes iniciar sesión nuevamente",
+        text: "¡Currículo enviado exitosamente!",
         icon: "success",
         showConfirmButton: false,
         timer: 4000,
@@ -198,30 +274,28 @@ export const resetCurriculos = () => {
 
 // UPDATE CURRICULO
 
-export const putCurriculo = (
-  formData,
-  areas_interes,
-  titulos_obtenidos,
-  experiencias
-) => {
+export const putCurriculo = (datosCurriculo) => {
   const URL_PUT_CURRICULO = `${URL_SERVER}/curriculos/modificar`;
 
   return async () => {
     try {
-      const { data } = await axios.put(`${URL_PUT_CURRICULO}`, formData);
+      const { data } = await axios.put(`${URL_PUT_CURRICULO}`, datosCurriculo);
 
-      await putAreasInteres(data.curriculo_id, areas_interes);
+      await putAreasInteres(data.curriculo_id, datosCurriculo.areas_interes);
 
-      if (titulos_obtenidos) {
-        await putTitulosObtenidos(data.curriculo_id, titulos_obtenidos);
+      if (datosCurriculo.titulos_obtenidos) {
+        await putTitulosObtenidos(
+          data.curriculo_id,
+          datosCurriculo.titulos_obtenidos
+        );
       }
 
-      if (experiencias) {
-        await putExperiencias(data.curriculo_id, experiencias);
+      if (datosCurriculo.experiencias) {
+        await putExperiencias(data.curriculo_id, datosCurriculo.experiencias);
       }
 
       return Swal.fire({
-        title: "¡Curriculo actualizado exitosamente!",
+        text: "¡Curriculo actualizado exitosamente!",
         icon: "success",
         showConfirmButton: false,
         timer: 2000,

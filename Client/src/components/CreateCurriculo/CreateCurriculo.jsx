@@ -18,38 +18,27 @@ export function CreateCurriculo() {
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const curriculo = useSelector((state) => state.curriculos.curriculo);
-
   const areas_interes_activas = useSelector(
     (state) => state.areas_interes.areas_interes_activas
   );
 
   const [datosCurriculo, setDatosCurriculo] = useState({
+    empleado_id: empleado.empleado_id,
     grado_instruccion: "Basico",
     titulos_obtenidos: [],
     disponibilidad_viajar: true,
     disponibilidad_cambio_residencia: false,
+    cantidad_hijos: "0",
+    habilidades_tecnicas: "",
     areas_interes: [],
     experiencias: [],
   });
 
   const [isHidden, setIsHidden] = useState(true);
 
-  const handlePDF = (event) => {
-    const input = event.target;
-    const pdf = input.files[0];
-
-    if (!pdf) {
-      return; // No se seleccionó ningún archivo
-    }
-
-    const allowedTypes = ["application/pdf"];
-
-    if (!allowedTypes.includes(pdf.type)) {
-      input.value = ""; // Borra el valor del campo de entrada
-      return alert("¡Solo se permiten archivos PDF!");
-    }
-  };
+  const [isLoad, setIsLoad] = useState({
+    areas_interes: false,
+  });
 
   useEffect(() => {
     window.scroll(0, 0);
@@ -62,12 +51,6 @@ export function CreateCurriculo() {
       document.title = "Grupo Lamar";
     };
   }, []);
-
-  useEffect(() => {
-    if (curriculo && curriculo.curriculo_id) {
-      navigate("/home");
-    }
-  }, [curriculo]);
 
   const handleInputChangeCurriculo = (event) => {
     const { name, value } = event.target;
@@ -123,6 +106,10 @@ export function CreateCurriculo() {
       ],
     });
 
+    if (!isLoad.areas_interes) {
+      setIsLoad({ ...isLoad, areas_interes: true });
+    }
+
     select.selectedIndex = 0;
     return;
   };
@@ -137,6 +124,10 @@ export function CreateCurriculo() {
       ...datosCurriculo,
       areas_interes: updatedAreasInteres,
     });
+
+    if (!updatedAreasInteres.length) {
+      setIsLoad({ ...isLoad, areas_interes: false });
+    }
   };
 
   const handleAddTituloObtenido = (event) => {
@@ -265,14 +256,34 @@ export function CreateCurriculo() {
     });
   };
 
+  const handleValidateChildrens = () => {
+    const input = document.getElementById("cantidad_hijos");
+
+    if (input.value < 0) {
+      input.value = 0;
+    }
+
+    if (input.value > 15) {
+      input.value = 15;
+    }
+
+    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
+  };
+
+  const handleValidateChildrensEmpty = () => {
+    const input = document.getElementById("cantidad_hijos");
+
+    if (!input.value) {
+      input.value = 0;
+    }
+
+    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
+  };
+
   const handleCreateCurriculo = async (event) => {
     event.preventDefault();
 
-    const input = document.getElementById("pdf");
-    const pdf = input.files[0];
-
     if (
-      !input.value ||
       !datosCurriculo.grado_instruccion ||
       !datosCurriculo.areas_interes.length
     ) {
@@ -285,30 +296,15 @@ export function CreateCurriculo() {
       });
     }
 
-    const formData = new FormData();
-    formData.append("pdf", pdf);
-    formData.append("cedula", empleado.cedula);
-    formData.append("empleado_id", empleado.empleado_id);
-    formData.append("grado_instruccion", datosCurriculo.grado_instruccion);
-    formData.append("centro_educativo", datosCurriculo.centro_educativo);
-    formData.append(
-      "disponibilidad_viajar",
-      datosCurriculo.disponibilidad_viajar
-    );
-    formData.append(
-      "disponibilidad_cambio_residencia",
-      datosCurriculo.disponibilidad_cambio_residencia
-    );
-
     try {
-      dispatch(
-        postCurriculo(
-          formData,
-          datosCurriculo.areas_interes,
-          datosCurriculo.titulos_obtenidos,
-          datosCurriculo.experiencias
-        )
-      );
+      dispatch(postCurriculo(datosCurriculo))
+        .then(() => {
+          // Acciones a realizar después de que se resuelva la promesa exitosamente
+          navigate("/home");
+        })
+        .catch((error) => {
+          return error;
+        });
     } catch (error) {
       return error;
     }
@@ -320,7 +316,7 @@ export function CreateCurriculo() {
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
 
       <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
-        <div>
+        <div className="flex flex-col place-content-between">
           <Label htmlFor="grado_instruccion">
             Grado de instrucción más alta obtenida
           </Label>
@@ -339,7 +335,7 @@ export function CreateCurriculo() {
             <option value="Universitario">Universitario</option>
           </Select>
         </div>
-        <div>
+        <div className="md:col-span-2 flex flex-col place-content-between">
           <Label htmlFor="titulo_obtenido">
             Títulos obtenidos (Agregar todos uno por uno)
           </Label>
@@ -355,25 +351,7 @@ export function CreateCurriculo() {
             </Button>
           </div>
         </div>
-        <div>
-          <Label htmlFor="pdf">Adjunte su resumen curricular (PDF)</Label>
-          <input
-            className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-            aria-describedby="file_input_help"
-            id="pdf"
-            type="file"
-            accept="application/pdf"
-            onChange={handlePDF}
-            name="pdf"
-          />
-          <p
-            className="mt-1 text-sm text-red-600 dark:text-gray-300"
-            id="file_input_help"
-          >
-            ¡Solo archivos en formato PDF!
-          </p>
-        </div>
-        <div className="md:col-span-3">
+        <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
           <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
             <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
               <tr className="text-white">
@@ -408,7 +386,7 @@ export function CreateCurriculo() {
             </tbody>
           </table>
         </div>
-        <div>
+        <div className="flex flex-col place-content-between md:col-span-2 lg:col-span-1">
           <Label htmlFor="area_interes_id">
             Indica cuál es tu área de interés laboral
           </Label>
@@ -416,9 +394,11 @@ export function CreateCurriculo() {
             <Select
               id="area_interes_id"
               name="area_interes_id"
-              className="inline-block"
+              className={`inline-block ${
+                isLoad.areas_interes ? null : "border-red-500"
+              }`}
             >
-              {areas_interes_activas?.length > 0
+              {areas_interes_activas?.length
                 ? areas_interes_activas?.map(
                     (area, i) =>
                       area.activo && (
@@ -464,7 +444,7 @@ export function CreateCurriculo() {
             ¿Posees disponibilidad para cambio de residencia?
           </Label>
         </div>
-        <div className="md:col-span-3">
+        <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
           <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
             <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
               <tr className="text-white">
@@ -499,7 +479,7 @@ export function CreateCurriculo() {
             </tbody>
           </table>
         </div>
-        <div>
+        <div className="flex flex-col place-content-between">
           <Label htmlFor="tipo">
             ¿Posees experiencia laboral o realizaste algún curso?
           </Label>
@@ -509,7 +489,13 @@ export function CreateCurriculo() {
             <option value="Curso">Experiencia Curso</option>
           </Select>
         </div>
-        <div className={` ${isHidden ? "hidden" : ""}`}>
+        <div
+          className={` ${
+            isHidden
+              ? "hidden"
+              : "flex flex-col place-content-between md:col-span-2 lg:col-span-1"
+          }`}
+        >
           <Label htmlFor="cargo_titulo">
             Cargo laboral o título conseguido (Agregar todos uno por uno)
           </Label>
@@ -521,7 +507,11 @@ export function CreateCurriculo() {
             placeholder="Ingrese el nombre del cargo o título"
           />
         </div>
-        <div className={` ${isHidden ? "hidden" : ""}`}>
+        <div
+          className={` ${
+            isHidden ? "hidden" : "flex flex-col place-content-between"
+          }`}
+        >
           <Label htmlFor="duracion">Duración de la experiencia</Label>
           <Select id="duracion" name="duracion">
             <option value="Menos de 1 año">Menos de 1 año</option>
@@ -530,7 +520,13 @@ export function CreateCurriculo() {
             <option value="5 años o más">5 años o más</option>
           </Select>
         </div>
-        <div className={` ${isHidden ? "hidden" : ""}`}>
+        <div
+          className={` ${
+            isHidden
+              ? "hidden"
+              : "flex flex-col place-content-between md:col-span-2"
+          }`}
+        >
           <Label htmlFor="empresa_centro_educativo">
             Nombre de la empresa / centro educativo
           </Label>
@@ -546,7 +542,20 @@ export function CreateCurriculo() {
             </Button>
           </div>
         </div>
-        <div className="md:col-span-3">
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="cantidad_hijos">Cantidad de hijos</Label>
+          <Input
+            id="cantidad_hijos"
+            type="number"
+            name="cantidad_hijos"
+            min="0"
+            max="15"
+            defaultValue="0"
+            onChange={handleValidateChildrens}
+            onBlur={handleValidateChildrensEmpty}
+          />
+        </div>
+        <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
           <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
             <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
               <tr className="text-white">
@@ -596,6 +605,19 @@ export function CreateCurriculo() {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="md:col-span-3 flex flex-col place-content-between">
+          <Label htmlFor="cantidad_hijos">Habilidades técnicas</Label>
+          <div className="mt-2">
+            <textarea
+              id="habilidades_tecnicas"
+              name="habilidades_tecnicas"
+              rows="3"
+              className="text-sm resize-none block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              placeholder="Escribe tus habilidades técnicas"
+              onChange={handleInputChangeCurriculo}
+            ></textarea>
+          </div>
         </div>
         <div className="md:col-span-3 flex justify-center items-center">
           <Button className="m-0 w-auto" onClick={handleCreateCurriculo}>

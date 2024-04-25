@@ -1,22 +1,57 @@
-const { Empleado, Cargo, Cargo_Empleado, Empresa } = require("../db");
+const { Op } = require("sequelize");
+
+const fs = require("fs");
+
+const { Empleado, Roles, Cargo, Cargo_Empleado, Empresa } = require("../db");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = process.env;
 
-const todosLosEmpleados = async () => {
-  try {
-    const empleados = await Empleado.findAll({
-      attributes: {
-        exclude: ["clave"],
-      },
-    });
+const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
+  if (!paginaActual || !limitePorPagina) {
+    throw new Error("Datos faltantes");
+  }
 
-    if (!empleados) {
+  try {
+    const { count: totalRegistros, rows: dataEmpleados } =
+      await Empleado.findAndCountAll({
+        attributes: {
+          exclude: ["rol_id", "clave"],
+        },
+        where: {
+          [Op.and]: [
+            filtros.cedula
+              ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
+              : filtros.apellidos
+              ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
+              : {},
+            filtros.activo ? { activo: filtros.activo } : {},
+          ],
+        },
+        distinct: true,
+        order: [
+          filtros.orden_campo === "apellidos"
+            ? ["apellidos", filtros.orden_por]
+            : filtros.orden_campo === "activo"
+            ? ["activo", filtros.orden_por]
+            : filtros.orden_campo === "updatedAt"
+            ? ["updatedAt", filtros.orden_por]
+            : null,
+        ].filter(Boolean),
+      });
+
+    if (!dataEmpleados) {
       throw new Error("No existen empleados");
     }
 
-    return empleados;
+    const indexEnd = paginaActual * limitePorPagina;
+    const indexStart = indexEnd - limitePorPagina;
+
+    const empleados = dataEmpleados.slice(indexStart, indexEnd);
+    const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
+
+    return { cantidadPaginas, totalRegistros, empleados };
   } catch (error) {
     throw new Error("Error al traer todos los empleados: " + error.message);
   }
@@ -28,7 +63,17 @@ const traerEmpleado = async (empleado_id) => {
   }
 
   try {
-    const empleado = await Empleado.findByPk(empleado_id);
+    const empleado = await Empleado.findByPk(empleado_id, {
+      attributes: {
+        exclude: ["rol_id", "clave"],
+      },
+      include: [
+        {
+          model: Roles,
+          attributes: ["rol_id", "nombre"],
+        },
+      ],
+    });
 
     if (!empleado) {
       throw new Error("No existe ese empleado");
@@ -86,7 +131,16 @@ const login = async (cedula, clave) => {
 
   try {
     const empleado = await Empleado.findOne({
+      attributes: {
+        exclude: ["rol_id"],
+      },
       where: { cedula: cedula },
+      include: [
+        {
+          model: Roles,
+          attributes: ["rol_id", "nombre"],
+        },
+      ],
     });
 
     if (!empleado) {
@@ -130,15 +184,15 @@ const login = async (cedula, clave) => {
 };
 
 const crearEmpleado = async (
-  rol,
+  rol_id,
   cedula,
   nombres,
   apellidos,
-  correo,
   telefono,
+  correo,
   direccion
 ) => {
-  if (!cedula || !nombres || !apellidos || !correo || !telefono || !direccion) {
+  if (!cedula || !nombres || !apellidos || !telefono || !correo || !direccion) {
     throw new Error("Datos faltantes");
   }
 
@@ -146,15 +200,15 @@ const crearEmpleado = async (
     const claveCifrada = await bcrypt.hash("1234", 10);
 
     const [empleado, created] = await Empleado.findOrCreate({
-      where: { cedula: cedula, rol: rol },
+      where: { cedula: cedula, rol_id: rol_id },
       defaults: {
-        rol: rol,
+        rol_id: rol_id,
         cedula: cedula,
         clave: claveCifrada,
         nombres: nombres,
         apellidos: apellidos,
-        correo: correo,
         telefono: telefono,
+        correo: correo,
         direccion: direccion,
       },
     });
@@ -202,23 +256,23 @@ const actualizarClaveEmpleado = async (empleado_id, clave) => {
 
 const modificarEmpleado = async (
   empleado_id,
-  rol,
+  rol_id,
   cedula,
   nombres,
   apellidos,
-  correo,
   telefono,
+  correo,
   direccion,
   activo
 ) => {
   if (
     !empleado_id ||
-    !rol ||
+    !rol_id ||
     !cedula ||
     !nombres ||
     !apellidos ||
-    !correo ||
     !telefono ||
+    !correo ||
     !direccion ||
     !activo
   ) {
@@ -230,14 +284,50 @@ const modificarEmpleado = async (
 
     await Empleado.update(
       {
-        rol: rol,
+        rol_id: rol_id,
         cedula: cedula,
         nombres: nombres,
         apellidos: apellidos,
-        correo: correo,
         telefono: telefono,
+        correo: correo,
         direccion: direccion,
         activo: activo,
+      },
+      {
+        where: {
+          empleado_id: empleado_id,
+        },
+      }
+    );
+
+    return await traerEmpleado(empleado_id);
+  } catch (error) {
+    throw new Error("Error al modificar el empleado: " + error.message);
+  }
+};
+
+const modificarFotoEmpleado = async (empleado_id, filename, path) => {
+  if (!empleado_id || !filename || !path) {
+    throw new Error("Datos faltantes");
+  }
+
+  try {
+    const empleado = await traerEmpleado(empleado_id);
+
+    const rutaArchivo = empleado.foto_perfil_ruta;
+
+    if (rutaArchivo) {
+      fs.unlink(rutaArchivo, (error) => {
+        if (error) {
+          console.error("Error al borrar el archivo:", error);
+        }
+      });
+    }
+
+    await Empleado.update(
+      {
+        foto_perfil_nombre: filename,
+        foto_perfil_ruta: path,
       },
       {
         where: {
@@ -281,5 +371,6 @@ module.exports = {
   crearEmpleado,
   actualizarClaveEmpleado,
   modificarEmpleado,
+  modificarFotoEmpleado,
   inactivarEmpleado,
 };

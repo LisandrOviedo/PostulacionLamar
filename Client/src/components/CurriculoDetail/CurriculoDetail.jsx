@@ -1,7 +1,6 @@
 import React from "react";
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -14,7 +13,6 @@ import Swal from "sweetalert2";
 
 export function CurriculoDetail() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const curriculoEmpleado = useSelector(
     (state) => state.curriculos.curriculoEmpleado
@@ -25,44 +23,35 @@ export function CurriculoDetail() {
   );
 
   const [datosCurriculo, setDatosCurriculo] = useState({
+    curriculo_id: curriculoEmpleado.curriculo_id,
     grado_instruccion: curriculoEmpleado.grado_instruccion,
     titulos_obtenidos: curriculoEmpleado.Titulo_Obtenidos,
     disponibilidad_viajar: curriculoEmpleado.disponibilidad_viajar,
     disponibilidad_cambio_residencia:
       curriculoEmpleado.disponibilidad_cambio_residencia,
+    cantidad_hijos: curriculoEmpleado.cantidad_hijos,
+    habilidades_tecnicas: curriculoEmpleado.habilidades_tecnicas,
     areas_interes: curriculoEmpleado.Areas_Interes,
     experiencias: curriculoEmpleado.Experiencia,
   });
-
-  const [isHidden, setIsHidden] = useState(true);
-
-  const handlePDF = (event) => {
-    const input = event.target;
-    const pdf = input.files[0];
-
-    if (!pdf) {
-      return; // No se seleccionó ningún archivo
-    }
-
-    const allowedTypes = ["application/pdf"];
-
-    if (!allowedTypes.includes(pdf.type)) {
-      input.value = ""; // Borra el valor del campo de entrada
-      return alert("¡Solo se permiten archivos PDF!");
-    }
-  };
 
   useEffect(() => {
     window.scroll(0, 0);
 
     dispatch(getAllAreasInteresActivas());
 
-    document.title = "Grupo Lamar - Detalles del Currículo";
+    document.title = "Grupo Lamar - Modificar Currículo";
 
     return () => {
       document.title = "Grupo Lamar";
     };
   }, []);
+
+  const [isHidden, setIsHidden] = useState(true);
+
+  const [isLoad, setIsLoad] = useState({
+    areas_interes: true,
+  });
 
   const handleInputChangeCurriculo = (event) => {
     const { name, value } = event.target;
@@ -118,6 +107,10 @@ export function CurriculoDetail() {
       ],
     });
 
+    if (!isLoad.areas_interes) {
+      setIsLoad({ ...isLoad, areas_interes: true });
+    }
+
     select.selectedIndex = 0;
     return;
   };
@@ -132,6 +125,10 @@ export function CurriculoDetail() {
       ...datosCurriculo,
       areas_interes: updatedAreasInteres,
     });
+
+    if (!updatedAreasInteres.length) {
+      setIsLoad({ ...isLoad, areas_interes: false });
+    }
   };
 
   const handleAddTituloObtenido = (event) => {
@@ -260,18 +257,32 @@ export function CurriculoDetail() {
     });
   };
 
-  const handleCancel = () => {
-    navigate("/home");
+  const handleValidateChildrens = () => {
+    const input = document.getElementById("cantidad_hijos");
+
+    if (input.value < 0) {
+      input.value = 0;
+    }
+
+    if (input.value > 15) {
+      input.value = 15;
+    }
+
+    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
   };
 
-  const handleUpdateCurriculo = async (event) => {
-    event.preventDefault();
+  const handleValidateChildrensEmpty = () => {
+    const input = document.getElementById("cantidad_hijos");
 
-    const input = document.getElementById("pdf");
-    const pdf = input.files[0];
+    if (!input.value) {
+      input.value = 0;
+    }
 
+    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
+  };
+
+  const handleUpdateCurriculo = async () => {
     if (
-      !input.value ||
       !datosCurriculo.grado_instruccion ||
       !datosCurriculo.areas_interes.length
     ) {
@@ -284,29 +295,8 @@ export function CurriculoDetail() {
       });
     }
 
-    const formData = new FormData();
-    formData.append("pdf", pdf);
-    formData.append("curriculo_id", curriculoEmpleado.curriculo_id);
-    formData.append("grado_instruccion", datosCurriculo.grado_instruccion);
-    formData.append("centro_educativo", datosCurriculo.centro_educativo);
-    formData.append(
-      "disponibilidad_viajar",
-      datosCurriculo.disponibilidad_viajar
-    );
-    formData.append(
-      "disponibilidad_cambio_residencia",
-      datosCurriculo.disponibilidad_cambio_residencia
-    );
-
     try {
-      dispatch(
-        putCurriculo(
-          formData,
-          datosCurriculo.areas_interes,
-          datosCurriculo.titulos_obtenidos,
-          datosCurriculo.experiencias
-        )
-      );
+      dispatch(putCurriculo(datosCurriculo));
     } catch (error) {
       return error;
     }
@@ -318,7 +308,7 @@ export function CurriculoDetail() {
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
       {curriculoEmpleado && curriculoEmpleado?.curriculo_id ? (
         <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
-          <div>
+          <div className="flex flex-col place-content-between">
             <Label htmlFor="grado_instruccion">
               Grado de instrucción más alta obtenida
             </Label>
@@ -337,11 +327,11 @@ export function CurriculoDetail() {
               <option value="Universitario">Universitario</option>
             </Select>
           </div>
-          <div>
+          <div className="md:col-span-2 flex flex-col place-content-between">
             <Label htmlFor="titulo_obtenido">
               Títulos obtenidos (Agregar todos uno por uno)
             </Label>
-            <div className="flex gap-4 w-full items-start">
+            <div className="flex gap-4">
               <Input
                 id="titulo_obtenido"
                 type="text"
@@ -353,25 +343,7 @@ export function CurriculoDetail() {
               </Button>
             </div>
           </div>
-          <div>
-            <Label htmlFor="pdf">Adjunte su resumen curricular (PDF)</Label>
-            <input
-              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-              aria-describedby="file_input_help"
-              id="pdf"
-              type="file"
-              accept="application/pdf"
-              onChange={handlePDF}
-              name="pdf"
-            />
-            <p
-              className="mt-1 text-sm text-red-600 dark:text-gray-300"
-              id="file_input_help"
-            >
-              ¡Solo archivos en formato PDF!
-            </p>
-          </div>
-          <div className="md:col-span-3">
+          <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
               <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
                 <tr className="text-white">
@@ -406,17 +378,19 @@ export function CurriculoDetail() {
               </tbody>
             </table>
           </div>
-          <div>
+          <div className="flex flex-col place-content-between md:col-span-2 lg:col-span-1">
             <Label htmlFor="area_interes_id">
               Indica cuál es tu área de interés laboral
             </Label>
-            <div className="flex gap-4 w-full items-start">
+            <div className="flex gap-4">
               <Select
                 id="area_interes_id"
                 name="area_interes_id"
-                className="inline-block"
+                className={`inline-block ${
+                  isLoad.areas_interes ? null : "border-red-500"
+                }`}
               >
-                {areas_interes_activas?.length > 0
+                {areas_interes_activas?.length
                   ? areas_interes_activas?.map(
                       (area, i) =>
                         area.activo && (
@@ -462,7 +436,7 @@ export function CurriculoDetail() {
               ¿Posees disponibilidad para cambio de residencia?
             </Label>
           </div>
-          <div className="md:col-span-3">
+          <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
               <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
                 <tr className="text-white">
@@ -497,7 +471,7 @@ export function CurriculoDetail() {
               </tbody>
             </table>
           </div>
-          <div>
+          <div className="flex flex-col place-content-between">
             <Label htmlFor="tipo">
               ¿Posees experiencia laboral o realizaste algún curso?
             </Label>
@@ -507,7 +481,13 @@ export function CurriculoDetail() {
               <option value="Curso">Experiencia Curso</option>
             </Select>
           </div>
-          <div className={` ${isHidden ? "hidden" : ""}`}>
+          <div
+            className={` ${
+              isHidden
+                ? "hidden"
+                : "flex flex-col place-content-between md:col-span-2 lg:col-span-1"
+            }`}
+          >
             <Label htmlFor="cargo_titulo">
               Cargo laboral o título conseguido (Agregar todos uno por uno)
             </Label>
@@ -519,7 +499,11 @@ export function CurriculoDetail() {
               placeholder="Ingrese el nombre del cargo o título"
             />
           </div>
-          <div className={` ${isHidden ? "hidden" : ""}`}>
+          <div
+            className={` ${
+              isHidden ? "hidden" : "flex flex-col place-content-between"
+            }`}
+          >
             <Label htmlFor="duracion">Duración de la experiencia</Label>
             <Select id="duracion" name="duracion">
               <option value="Menos de 1 año">Menos de 1 año</option>
@@ -528,7 +512,13 @@ export function CurriculoDetail() {
               <option value="5 años o más">5 años o más</option>
             </Select>
           </div>
-          <div className={` ${isHidden ? "hidden" : ""}`}>
+          <div
+            className={` ${
+              isHidden
+                ? "hidden"
+                : "flex flex-col place-content-between md:col-span-2"
+            }`}
+          >
             <Label htmlFor="empresa_centro_educativo">
               Nombre de la empresa / centro educativo
             </Label>
@@ -544,7 +534,20 @@ export function CurriculoDetail() {
               </Button>
             </div>
           </div>
-          <div className="md:col-span-3">
+          <div className="flex flex-col place-content-between">
+            <Label htmlFor="cantidad_hijos">Cantidad de hijos</Label>
+            <Input
+              id="cantidad_hijos"
+              type="number"
+              name="cantidad_hijos"
+              min="0"
+              max="15"
+              value={datosCurriculo.cantidad_hijos}
+              onChange={handleValidateChildrens}
+              onBlur={handleValidateChildrensEmpty}
+            />
+          </div>
+          <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
               <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
                 <tr className="text-white">
@@ -595,15 +598,21 @@ export function CurriculoDetail() {
               </tbody>
             </table>
           </div>
-          <div className="flex items-end">
-            <Button
-              className="m-0 w-auto bg-red-700 hover:bg-red-800 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-              onClick={handleCancel}
-            >
-              Cancelar / Salir
-            </Button>
+          <div className="md:col-span-3 flex flex-col place-content-between">
+            <Label htmlFor="cantidad_hijos">Habilidades técnicas</Label>
+            <div className="mt-2">
+              <textarea
+                id="habilidades_tecnicas"
+                name="habilidades_tecnicas"
+                rows="3"
+                className="text-sm resize-none block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                placeholder="Escribe tus habilidades técnicas"
+                onChange={handleInputChangeCurriculo}
+                value={datosCurriculo.habilidades_tecnicas}
+              ></textarea>
+            </div>
           </div>
-          <div className="flex items-end justify-center">
+          <div className="md:col-span-3 flex justify-center items-center">
             <Button className="m-0 w-auto" onClick={handleUpdateCurriculo}>
               Guardar Cambios
             </Button>
