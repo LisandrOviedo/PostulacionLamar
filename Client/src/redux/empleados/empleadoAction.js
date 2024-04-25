@@ -203,6 +203,31 @@ export const putFotoEmpleado = (formData) => {
   };
 };
 
+export const putActivo = async (empleado_id) => {
+  const URL_PUT_ACTIVO = `${URL_SERVER}/empleados/inactivar`;
+
+  try {
+    await axios.put(URL_PUT_ACTIVO, { empleado_id });
+
+    return Swal.fire({
+      text: "¡Empleado actualizado exitosamente!",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1000,
+      width: "20em",
+    });
+  } catch (error) {
+    Swal.fire({
+      title: "Oops...",
+      text: `${error.response.data.error}`,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    throw new Error();
+  }
+};
+
 export const getAllEmpleados = (filtros, paginaActual, limitePorPagina) => {
   return async (dispatch) => {
     try {

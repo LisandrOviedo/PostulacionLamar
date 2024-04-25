@@ -9,6 +9,7 @@ import {
   postLimitePorPagina,
   postFiltros,
   deleteFiltros,
+  putActivo,
 } from "../../redux/empleados/empleadoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
@@ -176,6 +177,11 @@ export function Empleados() {
     }
   };
 
+  const handleChangeActivo = async (empleado_id) => {
+    await putActivo(empleado_id);
+    dispatch(getAllEmpleados(filtros, paginaActual, limitePorPagina));
+  };
+
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -259,23 +265,29 @@ export function Empleados() {
               <tr>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    Nombre Completo
-                    <img
+                    <a
+                      href="#tabla"
                       id="apellidos"
                       name="apellidos"
                       onClick={changeOrder}
-                      src={
-                        filters.orden_campo === "apellidos" &&
-                        filters.orden_por === "ASC"
-                          ? "/SortAZ.svg"
-                          : filters.orden_campo === "apellidos" &&
-                            filters.orden_por === "DESC"
-                          ? "/SortZA.svg"
-                          : "/Sort.svg"
-                      }
-                      alt="Icon Sort"
-                      className="w-5 h-5 ms-1.5 cursor-pointer"
-                    />
+                      className="text-black hover:text-black flex items-center"
+                    >
+                      Nombre Completo
+                      <img
+                        name="apellidos"
+                        src={
+                          filters.orden_campo === "apellidos" &&
+                          filters.orden_por === "ASC"
+                            ? "/SortAZ.svg"
+                            : filters.orden_campo === "apellidos" &&
+                              filters.orden_por === "DESC"
+                            ? "/SortZA.svg"
+                            : "/Sort.svg"
+                        }
+                        alt="Icon Sort"
+                        className="w-5 h-5 ms-1.5 cursor-pointer"
+                      />
+                    </a>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -289,28 +301,59 @@ export function Empleados() {
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    Últ. Modif.
-                    <img
-                      id="updatedAt"
-                      name="updatedAt"
+                    <a
+                      href="#tabla"
+                      id="activo"
+                      name="activo"
                       onClick={changeOrder}
-                      src={
-                        filters.orden_campo === "updatedAt" &&
-                        filters.orden_por === "ASC"
-                          ? "/SortAZ.svg"
-                          : filters.orden_campo === "updatedAt" &&
-                            filters.orden_por === "DESC"
-                          ? "/SortZA.svg"
-                          : "/Sort.svg"
-                      }
-                      alt="Icon Sort"
-                      className="w-5 h-5 ms-1.5 cursor-pointer"
-                    />
+                      className="text-black hover:text-black flex items-center"
+                    >
+                      Estado
+                      <img
+                        name="activo"
+                        src={
+                          filters.orden_campo === "activo" &&
+                          filters.orden_por === "ASC"
+                            ? "/SortAZ.svg"
+                            : filters.orden_campo === "activo" &&
+                              filters.orden_por === "DESC"
+                            ? "/SortZA.svg"
+                            : "/Sort.svg"
+                        }
+                        alt="Icon Sort"
+                        className="w-5 h-5 ms-1.5 cursor-pointer"
+                      />
+                    </a>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Estado</div>
+                  <div className="flex items-center">
+                    <a
+                      href="#tabla"
+                      id="updatedAt"
+                      name="updatedAt"
+                      onClick={changeOrder}
+                      className="text-black hover:text-black flex items-center"
+                    >
+                      Últ. Modif.
+                      <img
+                        name="updatedAt"
+                        src={
+                          filters.orden_campo === "updatedAt" &&
+                          filters.orden_por === "ASC"
+                            ? "/SortAZ.svg"
+                            : filters.orden_campo === "updatedAt" &&
+                              filters.orden_por === "DESC"
+                            ? "/SortZA.svg"
+                            : "/Sort.svg"
+                        }
+                        alt="Icon Sort"
+                        className="w-5 h-5 ms-1.5 cursor-pointer"
+                      />
+                    </a>
+                  </div>
                 </th>
+
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
                 </th>
@@ -337,17 +380,27 @@ export function Empleados() {
                     <td className="px-4 py-4">{empleado.telefono}</td>
                     <td className="px-4 py-4">{empleado.correo}</td>
                     <td className="px-4 py-4">
-                      {DDMMYYYY(empleado.updatedAt)}
-                    </td>
-                    <td className="px-4 py-4">
                       {empleado.activo ? "Activo" : "Inactivo"}
                     </td>
                     <td className="px-4 py-4">
+                      {DDMMYYYY(empleado.updatedAt)}
+                    </td>
+                    <td className="px-4 py-4 flex gap-2">
                       <Button
-                        className="m-0"
+                        className="m-0 w-auto"
                         onClick={() => handleVerDetalles(empleado.empleado_id)}
                       >
                         Detalles
+                      </Button>
+                      <Button
+                        className={`m-0 w-auto ${
+                          empleado.activo
+                            ? "bg-red-500 hover:bg-red-600 "
+                            : "bg-green-500 hover:bg-green-600"
+                        }`}
+                        onClick={() => handleChangeActivo(empleado.empleado_id)}
+                      >
+                        {empleado.activo ? "Inactivar" : "Activar"}
                       </Button>
                     </td>
                   </tr>
