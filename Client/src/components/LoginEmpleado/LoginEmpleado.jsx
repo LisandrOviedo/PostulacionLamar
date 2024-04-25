@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import validations from "./validations";
+import validations from "../../utils/validationsLogin";
 
 import { Button, Input, Label, Title } from "../UI";
 
@@ -24,6 +24,9 @@ export function LoginEmpleado() {
   });
 
   const [errors, setErrors] = useState({});
+
+  const [primerUseEffectCompletado, setPrimerUseEffectCompletado] =
+    useState(false);
 
   const handleLogin = () => {
     const { cedula, clave } = data;
@@ -64,12 +67,25 @@ export function LoginEmpleado() {
   }, []);
 
   useEffect(() => {
+    if (!primerUseEffectCompletado) {
+      setPrimerUseEffectCompletado(true);
+      return;
+    }
+
     if (empleado?.changePassword) {
       return navigate("/empleado/cambioClave");
     } else if (
       (empleado.activo && empleado.Role?.nombre === "empleado") ||
       empleado.Role?.nombre === "admin"
     ) {
+      Swal.fire({
+        title: "¡Bienvenido!",
+        text: "Sesión iniciada correctamente",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+        width: "20em",
+      });
       return navigate("/home");
     }
   }, [empleado]);
@@ -116,9 +132,11 @@ export function LoginEmpleado() {
               maxLength="9"
               required
             />
-            <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-              {errors.cedula}
-            </p>
+            {errors.cedula && (
+              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                {errors.cedula}
+              </p>
+            )}
           </div>
         </div>
 
@@ -145,9 +163,11 @@ export function LoginEmpleado() {
               minLength="1"
               required
             />
-            <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-              {errors.clave}
-            </p>
+            {errors.clave && (
+              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                {errors.clave}
+              </p>
+            )}
           </div>
         </div>
 
@@ -155,12 +175,10 @@ export function LoginEmpleado() {
           <Button
             id="btn_continuar"
             onClick={handleLogin}
-            disabled={
-              Object.keys(errors).length > 0 || !data.cedula || !data.clave
-            }
+            disabled={Object.keys(errors).length || !data.cedula || !data.clave}
             className={clsx("", {
               "opacity-50":
-                Object.keys(errors).length > 0 || !data.cedula || !data.clave,
+                Object.keys(errors).length || !data.cedula || !data.clave,
             })}
           >
             Acceder

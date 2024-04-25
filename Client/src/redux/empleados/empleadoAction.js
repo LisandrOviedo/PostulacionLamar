@@ -24,15 +24,6 @@ export const getLogin = (cedula, clave) => {
       const { data } = await axios(URL_LOGIN);
 
       dispatch(createEmpleado(data));
-
-      return Swal.fire({
-        title: "¡Bienvenido!",
-        text: "Sesión iniciada correctamente",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 1500,
-        width: "20em",
-      });
     } catch (error) {
       Swal.fire({
         title: "Oops...",
