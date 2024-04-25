@@ -168,7 +168,11 @@ const login = async (cedula, clave) => {
 
       // return token;
 
-      return { empleado_id: empleado.empleado_id, changePassword: true };
+      return {
+        empleado_id: empleado.empleado_id,
+        changePassword: true,
+        rol: empleado.Role.nombre,
+      };
     }
 
     // const token = jwt.sign(
