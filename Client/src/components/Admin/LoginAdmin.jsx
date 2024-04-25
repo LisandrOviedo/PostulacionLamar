@@ -151,7 +151,7 @@ export function LoginAdmin() {
           </div>
         </div>
 
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center">
           <Button
             id="btn_continuar"
             onClick={handleLogin}
@@ -165,6 +165,12 @@ export function LoginAdmin() {
           >
             Acceder
           </Button>
+          <a
+            className="cursor-pointer font-semibold text-[#002846] hover:text-blue-800 text-xs sm:text-sm ml-2 sm:ml-0"
+            onClick={() => navigate("/")}
+          >
+            Ir a la vista de empleado
+          </a>
         </div>
       </div>
     </div>
