@@ -1,4 +1,4 @@
-import React from "react";
+import { clsx } from "clsx";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,8 @@ import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresA
 import { postCurriculo } from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
+
+import validations from "../../utils/validationsCurriculo";
 
 import Swal from "sweetalert2";
 
@@ -34,6 +36,8 @@ export function CreateCurriculo() {
     experiencias: [],
   });
 
+  const [errors, setErrors] = useState({});
+
   const [isHidden, setIsHidden] = useState(true);
 
   const [isLoad, setIsLoad] = useState({
@@ -56,6 +60,10 @@ export function CreateCurriculo() {
     const { name, value } = event.target;
 
     setDatosCurriculo({ ...datosCurriculo, [name]: value });
+
+    if (name === "habilidades_tecnicas") {
+      setErrors(validations({ ...errors, [name]: value }));
+    }
   };
 
   const handleCheckedChangeCurriculo = (event) => {
@@ -79,11 +87,16 @@ export function CreateCurriculo() {
     }
   };
 
-  const handleAddArea = (event) => {
-    event.preventDefault();
-
+  const handleAddArea = () => {
     if (datosCurriculo.areas_interes.length === 3) {
-      return alert("Solo puedes agregar máximo 3 áreas de interés");
+      Swal.fire({
+        title: "Oops...",
+        text: "Solo puedes agregar máximo 3 áreas de interés",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
     }
 
     const select = document.getElementById("area_interes_id");
@@ -95,7 +108,14 @@ export function CreateCurriculo() {
     );
 
     if (areaValidatorInclude) {
-      return alert("Ya has agregado esta área de interés");
+      Swal.fire({
+        title: "Oops...",
+        text: "Ya has agregado esta área de interés",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
     }
 
     setDatosCurriculo({
@@ -130,14 +150,20 @@ export function CreateCurriculo() {
     }
   };
 
-  const handleAddTituloObtenido = (event) => {
-    event.preventDefault();
-
+  const handleAddTituloObtenido = () => {
     const select = document.getElementById("titulo_obtenido");
 
     if (!select.value) {
       select.focus();
-      return alert("Debes ingresar el nombre del título obtenido");
+
+      Swal.fire({
+        title: "Oops...",
+        text: "Debes ingresar el nombre del título obtenido",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
     }
 
     let duplicado = false;
@@ -152,7 +178,15 @@ export function CreateCurriculo() {
     if (duplicado) {
       select.value = "";
       select.focus();
-      return alert("Ya has agregado un título obtenido con ese nombre");
+
+      Swal.fire({
+        title: "Oops...",
+        text: "Ya has agregado un título obtenido con ese nombre",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
     }
 
     setDatosCurriculo({
@@ -168,9 +202,7 @@ export function CreateCurriculo() {
     return;
   };
 
-  const handleAddExperiencia = (event) => {
-    event.preventDefault();
-
+  const handleAddExperiencia = () => {
     const tipo = document.getElementById("tipo");
     const cargo_titulo = document.getElementById("cargo_titulo");
     const duracion = document.getElementById("duracion");
@@ -178,15 +210,17 @@ export function CreateCurriculo() {
       "empresa_centro_educativo"
     );
 
-    if (tipo.value === "Ninguno") {
-      return alert("Debes seleccionar un tipo de experiencia");
-    }
-
     if (!cargo_titulo.value || !empresa_centro_educativo) {
       cargo_titulo.focus();
-      return alert(
-        "Debes escribir el nombre del cargo o título y el nombre de la empresa o centro educativo"
-      );
+
+      Swal.fire({
+        title: "Oops...",
+        text: "Debes escribir el nombre del cargo o título y el nombre de la empresa o centro educativo",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
     }
 
     let duplicado = false;
@@ -208,9 +242,15 @@ export function CreateCurriculo() {
       cargo_titulo.value = "";
       empresa_centro_educativo.value = "";
       cargo_titulo.focus();
-      return alert(
-        "Ya has agregado una experiencia con ese cargo / título en esa empresa / centro educativo"
-      );
+
+      Swal.fire({
+        title: "Oops...",
+        text: "Ya has agregado una experiencia con ese cargo / título en esa empresa / centro educativo",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
     }
 
     setDatosCurriculo({
@@ -280,9 +320,7 @@ export function CreateCurriculo() {
     setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
   };
 
-  const handleCreateCurriculo = async (event) => {
-    event.preventDefault();
-
+  const handleCreateCurriculo = async () => {
     if (
       !datosCurriculo.grado_instruccion ||
       !datosCurriculo.areas_interes.length
@@ -308,6 +346,12 @@ export function CreateCurriculo() {
     } catch (error) {
       return error;
     }
+  };
+
+  const handleValidate = (e) => {
+    const { name, value } = e.target;
+
+    setErrors(validations({ ...errors, [name]: value }));
   };
 
   return (
@@ -344,9 +388,21 @@ export function CreateCurriculo() {
               id="titulo_obtenido"
               type="text"
               name="titulo_obtenido"
+              onChange={handleValidate}
               placeholder="Ingrese el nombre del título"
             />
-            <Button className="m-0 w-auto" onClick={handleAddTituloObtenido}>
+            {errors.titulo_obtenido && (
+              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                {errors.titulo_obtenido}
+              </p>
+            )}
+            <Button
+              onClick={handleAddTituloObtenido}
+              disabled={errors.titulo_obtenido}
+              className={clsx("m-0 w-auto ", {
+                "opacity-50": errors.hasOwnProperty("titulo_obtenido"),
+              })}
+            >
               Agregar
             </Button>
           </div>
@@ -499,13 +555,20 @@ export function CreateCurriculo() {
           <Label htmlFor="cargo_titulo">
             Cargo laboral o título conseguido (Agregar todos uno por uno)
           </Label>
-
-          <Input
-            id="cargo_titulo"
-            type="text"
-            name="cargo_titulo"
-            placeholder="Ingrese el nombre del cargo o título"
-          />
+          <div className="flex gap-4 w-full items-center">
+            <Input
+              id="cargo_titulo"
+              type="text"
+              name="cargo_titulo"
+              onChange={handleValidate}
+              placeholder="Ingrese el nombre del cargo o título"
+            />
+            {errors.cargo_titulo && (
+              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                {errors.cargo_titulo}
+              </p>
+            )}
+          </div>
         </div>
         <div
           className={` ${
@@ -530,14 +593,28 @@ export function CreateCurriculo() {
           <Label htmlFor="empresa_centro_educativo">
             Nombre de la empresa / centro educativo
           </Label>
-          <div className="flex gap-4 w-full items-start">
+          <div className="flex gap-4 w-full items-center">
             <Input
               id="empresa_centro_educativo"
               type="text"
               name="empresa_centro_educativo"
+              onChange={handleValidate}
               placeholder="Ingrese el nombre de la empresa / centro educativo"
             />
-            <Button className="m-0 w-auto" onClick={handleAddExperiencia}>
+            {errors.empresa_centro_educativo && (
+              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                {errors.empresa_centro_educativo}
+              </p>
+            )}
+            <Button
+              onClick={handleAddExperiencia}
+              disabled={errors.empresa_centro_educativo || errors.cargo_titulo}
+              className={clsx("m-0 w-auto ", {
+                "opacity-50":
+                  errors.hasOwnProperty("empresa_centro_educativo") ||
+                  errors.hasOwnProperty("cargo_titulo"),
+              })}
+            >
               Agregar
             </Button>
           </div>
@@ -607,7 +684,7 @@ export function CreateCurriculo() {
           </table>
         </div>
         <div className="md:col-span-3 flex flex-col place-content-between">
-          <Label htmlFor="cantidad_hijos">Habilidades técnicas</Label>
+          <Label htmlFor="habilidades_tecnicas">Habilidades técnicas</Label>
           <div className="mt-2">
             <textarea
               id="habilidades_tecnicas"
@@ -617,6 +694,11 @@ export function CreateCurriculo() {
               placeholder="Escribe tus habilidades técnicas"
               onChange={handleInputChangeCurriculo}
             ></textarea>
+            {errors.habilidades_tecnicas && (
+              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                {errors.habilidades_tecnicas}
+              </p>
+            )}
           </div>
         </div>
         <div className="md:col-span-3 flex justify-center items-center">
