@@ -4,9 +4,10 @@ const {
   login,
   traerCargoActual,
   crearEmpleado,
-  actualizarClaveEmpleado,
+  actualizarClaveTemporalEmpleado,
   modificarEmpleado,
   modificarFotoEmpleado,
+  actualizarClaveEmpleado,
   inactivarEmpleado,
 } = require("../controllers/empleados_controllers");
 
@@ -83,11 +84,11 @@ const postEmpleado = async (req, res) => {
   }
 };
 
-const putClaveEmpleado = async (req, res) => {
+const putClaveTemporalEmpleado = async (req, res) => {
   const { empleado_id, clave } = req.body;
 
   try {
-    const response = await actualizarClaveEmpleado(empleado_id, clave);
+    const response = await actualizarClaveTemporalEmpleado(empleado_id, clave);
 
     return res.json(response);
   } catch (error) {
@@ -140,6 +141,22 @@ const putFotoEmpleado = async (req, res) => {
   }
 };
 
+const putClaveEmpleado = async (req, res) => {
+  const { empleado_id, claveAnterior, claveNueva } = req.body;
+
+  try {
+    const response = await actualizarClaveEmpleado(
+      empleado_id,
+      claveAnterior,
+      claveNueva
+    );
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 const deleteEmpleado = async (req, res) => {
   const { empleado_id } = req.body;
 
@@ -158,8 +175,9 @@ module.exports = {
   getLogin,
   getCargoActual,
   postEmpleado,
-  putClaveEmpleado,
+  putClaveTemporalEmpleado,
   putEmpleado,
   putFotoEmpleado,
+  putClaveEmpleado,
   deleteEmpleado,
 };

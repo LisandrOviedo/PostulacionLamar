@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 import { Button, Input, Title } from "../UI";
 
-import { putPassword } from "../../redux/empleados/empleadoAction";
+import { putPasswordTemporal } from "../../redux/empleados/empleadoAction";
 
 export function UpdatePassword() {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export function UpdatePassword() {
     };
 
     try {
-      await putPassword(body);
+      await putPasswordTemporal(body);
       if (empleado.rol === "admin") {
         navigate("/admin/login");
         return;

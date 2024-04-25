@@ -79,11 +79,11 @@ export const getCargoActual = (empleado_id) => {
   };
 };
 
-export const putPassword = async (body) => {
-  const URL_PUT_PASSWORD = `${URL_SERVER}/empleados/modificarClave`;
+export const putPasswordTemporal = async (body) => {
+  const URL_PUT_PASSWORD_TEMPORAL = `${URL_SERVER}/empleados/modificarClaveTemporal`;
 
   try {
-    await axios.put(URL_PUT_PASSWORD, body);
+    await axios.put(URL_PUT_PASSWORD_TEMPORAL, body);
 
     return Swal.fire({
       text: "Su contraseña ha sido actualizada exitosamente, proceda a loguearse para continuar",
