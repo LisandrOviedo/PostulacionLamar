@@ -1,10 +1,13 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 
 import { Logo } from "../UI";
 
+import Swal from "sweetalert2";
+
 export function Navbar() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState({});
   const [isOpenBurger, setIsOpenBurger] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -23,6 +26,27 @@ export function Navbar() {
 
   const toggleHover = () => {
     setIsHovered(!isHovered);
+  };
+
+  const logout = (rol) => {
+    Swal.fire({
+      text: "¿Seguro que deseas salir?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if (rol === "empleado") {
+          navigate("/");
+          return;
+        }
+        navigate("/admin/login");
+        return;
+      }
+    });
   };
 
   const { pathname } = useLocation();
@@ -200,14 +224,14 @@ export function Navbar() {
                     </ul>
                   </li>
                   <li>
-                    <Link
-                      to="/"
+                    <span
+                      onClick={() => logout("empleado")}
                       className="block text-white hover:text-[#F0C95C]"
                     >
                       <div className="flex items-center justify-between p-2">
                         <div className="mx-auto">Cerrar Sesión</div>
                       </div>
-                    </Link>
+                    </span>
                   </li>
                 </>
               )}
@@ -273,15 +297,14 @@ export function Navbar() {
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      to="/admin/login"
+                    <span
+                      onClick={() => logout("admin")}
                       className="block text-white hover:text-[#F0C95C]"
-                      onClick={() => toggleMenu({})}
                     >
                       <div className="flex items-center justify-between p-2">
                         <div className="mx-auto">Cerrar Sesión</div>
                       </div>
-                    </Link>
+                    </span>
                   </li>
                 </>
               )}
