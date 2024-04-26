@@ -360,7 +360,9 @@ const actualizarClaveEmpleado = async (
   }
 
   try {
-    const empleado = await traerEmpleado(empleado_id);
+    const empleado = await Empleado.findByPk(empleado_id, {
+      attributes: ["clave"],
+    });
 
     const compararClaves = await bcrypt.compare(claveAnterior, empleado.clave);
 
