@@ -15,6 +15,11 @@ export function BarraNavegacion() {
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const toggleMenu = (index) => {
+    if (isOpen.hasOwnProperty(index)) {
+      setIsOpen({});
+      return;
+    }
+
     setIsOpen({
       [index]: [index],
     });
@@ -110,7 +115,6 @@ export function BarraNavegacion() {
           )}
         </div>
       </nav>
-
       <aside
         ref={asideRef}
         id="sidebar"
@@ -158,7 +162,7 @@ export function BarraNavegacion() {
                     <ul
                       className={
                         isOpen[0]
-                          ? "flex flex-col gap-3 my-3 p-2 border border-[#F0C95C]"
+                          ? "flex flex-col gap-3 my-3 p-2 border bg-sky-950"
                           : "hidden"
                       }
                     >
@@ -168,6 +172,14 @@ export function BarraNavegacion() {
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Datos personales
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/actualizarClave"
+                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                        >
+                          Actualizar contraseña
                         </Link>
                       </li>
                     </ul>
@@ -185,7 +197,7 @@ export function BarraNavegacion() {
                     <ul
                       className={
                         isOpen[1]
-                          ? "flex flex-col gap-3 my-3 p-2 border border-[#F0C95C]"
+                          ? "flex flex-col gap-3 my-3 p-2 border bg-sky-950"
                           : "hidden"
                       }
                     >
@@ -260,7 +272,7 @@ export function BarraNavegacion() {
                     <ul
                       className={
                         isOpen[0]
-                          ? "flex flex-col gap-3 my-3 p-2 border border-[#F0C95C]"
+                          ? "flex flex-col gap-3 my-3 p-2 border bg-sky-950"
                           : "hidden"
                       }
                     >
@@ -270,6 +282,14 @@ export function BarraNavegacion() {
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Datos personales
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/admin/actualizarClave"
+                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                        >
+                          Actualizar contraseña
                         </Link>
                       </li>
                     </ul>
