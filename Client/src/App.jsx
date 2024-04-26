@@ -81,6 +81,10 @@ function App() {
               path="/admin/empleado/:empleado_id"
               element={<Empleado />}
             /> */}
+            <Route
+              path="/admin/actualizarClave"
+              element={<ActualizarClave />}
+            />
           </Route>
         </Routes>
       </Suspense>
