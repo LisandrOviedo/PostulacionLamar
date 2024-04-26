@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export function NotFound() {
+export function PaginaNoEncontrada() {
   const navigate = useNavigate();
 
   useEffect(() => {

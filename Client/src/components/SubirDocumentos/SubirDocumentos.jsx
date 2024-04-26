@@ -11,7 +11,7 @@ import {
 
 import Swal from "sweetalert2";
 
-export function AnexarDocumentos() {
+export function SubirDocumentos() {
   const dispatch = useDispatch();
 
   const empleado = useSelector((state) => state.empleados.empleado);

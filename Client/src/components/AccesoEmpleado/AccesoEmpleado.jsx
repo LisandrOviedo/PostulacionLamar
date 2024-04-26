@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import validations from "../../utils/validationsLogin";
+import validations from "../../utils/validacionesAcceso";
 
 import { Button, Input, Label, Title } from "../UI";
 
@@ -12,7 +12,7 @@ import { resetCurriculos } from "../../redux/curriculos/curriculoAction";
 
 import Swal from "sweetalert2";
 
-export function LoginAdmin() {
+export function AccesoEmpleado() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -59,7 +59,7 @@ export function LoginAdmin() {
     dispatch(resetEmpleados());
     dispatch(resetCurriculos());
 
-    document.title = "Grupo Lamar - Login (Admin)";
+    document.title = "Grupo Lamar - Login";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -72,12 +72,12 @@ export function LoginAdmin() {
       return;
     }
 
-    if (empleado.activo && empleado.Role?.nombre === "empleado") {
-      Swal.fire({
-        text: "Datos incorrectos",
-        icon: "error",
-      });
-    } else if (empleado.activo && empleado.Role?.nombre === "admin") {
+    if (empleado?.changePassword) {
+      return navigate("/actualizarClaveTemporal");
+    } else if (
+      (empleado.activo && empleado.Role?.nombre === "empleado") ||
+      empleado.Role?.nombre === "admin"
+    ) {
       Swal.fire({
         title: "¡Bienvenido!",
         text: "Sesión iniciada correctamente",
@@ -86,7 +86,7 @@ export function LoginAdmin() {
         timer: 1500,
         width: "20em",
       });
-      return navigate("/admin/dashboard");
+      return navigate("/inicio");
     }
   }, [empleado]);
 
@@ -112,7 +112,7 @@ export function LoginAdmin() {
         </div>
         <div>
           <Title className="mt-4 text-2xl font-bold leading-9 tracking-tight">
-            Acceso Administrador
+            Acceso Empleado
           </Title>
         </div>
       </div>
@@ -132,7 +132,7 @@ export function LoginAdmin() {
               maxLength="9"
               required
             />
-            {errors.clave && (
+            {errors.cedula && (
               <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
                 {errors.cedula}
               </p>
@@ -171,7 +171,7 @@ export function LoginAdmin() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex items-center justify-center">
           <Button
             id="btn_continuar"
             onClick={handleLogin}
@@ -183,12 +183,6 @@ export function LoginAdmin() {
           >
             Acceder
           </Button>
-          <a
-            className="cursor-pointer font-semibold text-[#002846] hover:text-blue-800 text-xs sm:text-sm ml-2 sm:ml-0"
-            onClick={() => navigate("/")}
-          >
-            Ir a la vista de empleado
-          </a>
         </div>
       </div>
     </div>

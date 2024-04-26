@@ -10,11 +10,11 @@ import { postCurriculo } from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
-import validations from "../../utils/validationsCurriculo";
+import validations from "../../utils/validacionesCurriculo";
 
 import Swal from "sweetalert2";
 
-export function CreateCurriculo() {
+export function CrearCurriculo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -338,7 +338,7 @@ export function CreateCurriculo() {
       dispatch(postCurriculo(datosCurriculo))
         .then(() => {
           // Acciones a realizar después de que se resuelva la promesa exitosamente
-          navigate("/home");
+          navigate("/inicio");
         })
         .catch((error) => {
           return error;

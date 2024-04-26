@@ -9,11 +9,11 @@ import { putCurriculo } from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
-import validations from "../../utils/validationsCurriculo";
+import validations from "../../utils/validacionesCurriculo";
 
 import Swal from "sweetalert2";
 
-export function CurriculoDetail() {
+export function DetalleCurriculo() {
   const dispatch = useDispatch();
 
   const curriculoEmpleado = useSelector(

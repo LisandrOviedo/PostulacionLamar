@@ -5,7 +5,7 @@ import { Title } from "../UI";
 
 import { resetCurriculos } from "../../redux/curriculos/curriculoAction";
 
-export function Home() {
+export function Inicio() {
   const dispatch = useDispatch();
 
   const empleado = useSelector((state) => state.empleados.empleado);

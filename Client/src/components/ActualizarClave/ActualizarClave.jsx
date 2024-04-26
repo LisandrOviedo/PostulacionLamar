@@ -2,7 +2,7 @@ import { clsx } from "clsx";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import validations from "../../utils/validationsUpdatePassword";
+import validations from "../../utils/validacionesActualizarClave";
 
 import { useSelector } from "react-redux";
 
@@ -10,7 +10,7 @@ import { Button, Input, Title } from "../UI";
 
 import { putPasswordTemporal } from "../../redux/empleados/empleadoAction";
 
-export function UpdatePassword() {
+export function ActualizarClave() {
   const navigate = useNavigate();
 
   const empleado = useSelector((state) => state.empleados.empleado);
@@ -31,7 +31,7 @@ export function UpdatePassword() {
     try {
       await putPasswordTemporal(body);
       if (empleado.rol === "admin") {
-        navigate("/admin/login");
+        navigate("/admin/acceso");
         return;
       }
 

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import validations from "../../utils/validationsLogin";
+import validations from "../../utils/validacionesAcceso";
 
 import { Button, Input, Label, Title } from "../UI";
 
@@ -12,7 +12,7 @@ import { resetCurriculos } from "../../redux/curriculos/curriculoAction";
 
 import Swal from "sweetalert2";
 
-export function LoginEmpleado() {
+export function AccesoAdmin() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -59,7 +59,7 @@ export function LoginEmpleado() {
     dispatch(resetEmpleados());
     dispatch(resetCurriculos());
 
-    document.title = "Grupo Lamar - Login";
+    document.title = "Grupo Lamar - Login (Admin)";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -72,12 +72,12 @@ export function LoginEmpleado() {
       return;
     }
 
-    if (empleado?.changePassword) {
-      return navigate("/empleado/cambioClave");
-    } else if (
-      (empleado.activo && empleado.Role?.nombre === "empleado") ||
-      empleado.Role?.nombre === "admin"
-    ) {
+    if (empleado.activo && empleado.Role?.nombre === "empleado") {
+      Swal.fire({
+        text: "Datos incorrectos",
+        icon: "error",
+      });
+    } else if (empleado.activo && empleado.Role?.nombre === "admin") {
       Swal.fire({
         title: "¡Bienvenido!",
         text: "Sesión iniciada correctamente",
@@ -86,7 +86,7 @@ export function LoginEmpleado() {
         timer: 1500,
         width: "20em",
       });
-      return navigate("/home");
+      return navigate("/admin/panel");
     }
   }, [empleado]);
 
@@ -112,7 +112,7 @@ export function LoginEmpleado() {
         </div>
         <div>
           <Title className="mt-4 text-2xl font-bold leading-9 tracking-tight">
-            Acceso Empleado
+            Acceso Administrador
           </Title>
         </div>
       </div>
@@ -132,7 +132,7 @@ export function LoginEmpleado() {
               maxLength="9"
               required
             />
-            {errors.cedula && (
+            {errors.clave && (
               <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
                 {errors.cedula}
               </p>
@@ -171,7 +171,7 @@ export function LoginEmpleado() {
           </div>
         </div>
 
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center">
           <Button
             id="btn_continuar"
             onClick={handleLogin}
@@ -183,6 +183,12 @@ export function LoginEmpleado() {
           >
             Acceder
           </Button>
+          <a
+            className="cursor-pointer font-semibold text-[#002846] hover:text-blue-800 text-xs sm:text-sm ml-2 sm:ml-0"
+            onClick={() => navigate("/")}
+          >
+            Ir a la vista de empleado
+          </a>
         </div>
       </div>
     </div>

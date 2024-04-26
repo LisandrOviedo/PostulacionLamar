@@ -6,7 +6,7 @@ import { Logo } from "../UI";
 
 import Swal from "sweetalert2";
 
-export function Navbar() {
+export function BarraNavegacion() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState({});
   const [isOpenBurger, setIsOpenBurger] = useState(false);
@@ -43,7 +43,7 @@ export function Navbar() {
           navigate("/");
           return;
         }
-        navigate("/admin/login");
+        navigate("/admin/acceso");
         return;
       }
     });
@@ -137,7 +137,7 @@ export function Navbar() {
                 // EMPLEADOS
                 <>
                   <Link
-                    to="/home"
+                    to="/inicio"
                     className="block text-white hover:text-[#F0C95C]"
                     onClick={() => toggleMenu({})}
                   >
@@ -191,7 +191,7 @@ export function Navbar() {
                     >
                       <li>
                         <Link
-                          to="/home"
+                          to="/inicio"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Visualizar
@@ -215,7 +215,7 @@ export function Navbar() {
                       </li>
                       <li>
                         <Link
-                          to="/home"
+                          to="/inicio"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Aplicar Test de Valoración Actitudinal
@@ -239,7 +239,7 @@ export function Navbar() {
                 // ADMINISTRADORES
                 <>
                   <Link
-                    to="/admin/dashboard"
+                    to="/admin/panel"
                     className="block text-white hover:text-[#F0C95C]"
                     onClick={() => toggleMenu({})}
                   >
