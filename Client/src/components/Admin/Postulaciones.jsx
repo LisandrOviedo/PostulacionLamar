@@ -126,7 +126,7 @@ export function Postulaciones() {
   const handleVerDetalles = (curriculo_id) => {
     dispatch(getCurriculo(curriculo_id))
       .then(() => {
-        navigate(`/curriculoDetalle/${curriculo_id}`);
+        navigate(`/admin/postulacion/${curriculo_id}`);
       })
       .catch((error) => {
         return error;
