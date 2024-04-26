@@ -431,7 +431,7 @@ export function DetalleCurriculo() {
                 {datosCurriculo.titulos_obtenidos.map((titulo_obtenido, i) => (
                   <tr
                     key={i}
-                    className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
                     <td className="px-4 py-4">{titulo_obtenido.nombre}</td>
                     <td className="px-4 py-4">
@@ -524,7 +524,7 @@ export function DetalleCurriculo() {
                 {datosCurriculo.areas_interes.map((area, i) => (
                   <tr
                     key={i}
-                    className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
                     <td className="px-4 py-4">{area.nombre}</td>
                     <td className="px-4 py-4">
@@ -669,7 +669,7 @@ export function DetalleCurriculo() {
                 {datosCurriculo.experiencias.map((experiencia, i) => (
                   <tr
                     key={i}
-                    className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
                     <td className="px-4 py-4">{experiencia.tipo}</td>
                     <td className="px-4 py-4">{experiencia.cargo_titulo}</td>
