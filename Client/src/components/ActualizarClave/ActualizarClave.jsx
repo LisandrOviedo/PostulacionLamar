@@ -1,6 +1,5 @@
 import { clsx } from "clsx";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import validations from "../../utils/validacionesActualizarClave";
 
@@ -8,34 +7,30 @@ import { useSelector } from "react-redux";
 
 import { Button, Input, Title } from "../UI";
 
-import { putPasswordTemporal } from "../../redux/empleados/empleadoAction";
+import { putPassword } from "../../redux/empleados/empleadoAction";
 
 export function ActualizarClave() {
-  const navigate = useNavigate();
-
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const [data, setData] = useState({
-    clave: "",
+    claveAnterior: "",
+    claveNueva: "",
     confirmarClave: "",
   });
 
   const [errors, setErrors] = useState({});
 
-  const handleFindCI = async () => {
+  const handleUpdatePassword = async () => {
     const body = {
       empleado_id: empleado.empleado_id,
-      clave: data.clave,
+      claveAnterior: data.claveAnterior,
+      claveNueva: data.claveNueva,
     };
 
     try {
-      await putPasswordTemporal(body);
-      if (empleado.rol === "admin") {
-        navigate("/admin/acceso");
-        return;
-      }
+      await putPassword(body);
 
-      navigate("/");
+      window.location.reload();
     } catch (error) {
       return error;
     }
@@ -73,30 +68,39 @@ export function ActualizarClave() {
     <div className="mt-24 sm:mt-32 flex flex-col justify-center items-center px-10 bg-white h-full">
       <Title>Actualización de contraseña</Title>
       <br />
-      <p className="text-center text-sm sm:text-base">
-        ¡Hola, bienvenid@! Haz ingresado con una contraseña temporal, por
-        seguridad, para continuar deberás actualizar tu contraseña
-      </p>
-      <hr className="w-[50%] h-0.5 my-5 bg-gray-100 border-0" />
-      <label htmlFor="clave" className="text-center text-base sm:text-lg">
-        Ingrese su nueva contraseña (¡No la olvides!):
-      </label>
-      <br />
       <Input
         className="w-32 text-center"
         type="password"
-        name="clave"
-        id="clave"
-        value={data.clave}
+        name="claveAnterior"
+        id="claveAnterior"
+        value={data.claveAnterior}
         onChange={handleOnChange}
-        placeholder="Nueva clave"
+        placeholder="Clave Actual"
         minLength="4"
         maxLength="4"
         required
       />
-      {errors.clave && (
+      {errors.claveAnterior && (
         <p className="text-base sm:text-lg text-red-700 font-bold text-center">
-          {errors.clave}
+          {errors.claveAnterior}
+        </p>
+      )}
+      <br />
+      <Input
+        className="w-32 text-center"
+        type="password"
+        name="claveNueva"
+        id="claveNueva"
+        value={data.claveNueva}
+        onChange={handleOnChange}
+        placeholder="Clave Nueva"
+        minLength="4"
+        maxLength="4"
+        required
+      />
+      {errors.claveNueva && (
+        <p className="text-base sm:text-lg text-red-700 font-bold text-center">
+          {errors.claveNueva}
         </p>
       )}
       <br />
@@ -121,13 +125,19 @@ export function ActualizarClave() {
       <Button
         id="btn_continuar"
         type="submit"
-        onClick={handleFindCI}
+        onClick={handleUpdatePassword}
         disabled={
-          Object.keys(errors).length || !data.clave || !data.confirmarClave
+          Object.keys(errors).length ||
+          !data.claveAnterior ||
+          !data.claveNueva ||
+          !data.confirmarClave
         }
         className={clsx("w-auto", {
           "opacity-50":
-            Object.keys(errors).length || !data.clave || !data.confirmarClave,
+            Object.keys(errors).length ||
+            !data.claveAnterior ||
+            !data.claveNueva ||
+            !data.confirmarClave,
         })}
       >
         Continuar

@@ -79,6 +79,30 @@ export const getCargoActual = (empleado_id) => {
   };
 };
 
+export const putPassword = async (body) => {
+  const URL_PUT_PASSWORD = `${URL_SERVER}/empleados/modificarClave`;
+
+  try {
+    await axios.put(URL_PUT_PASSWORD, body);
+
+    return Swal.fire({
+      text: "Su contraseña ha sido actualizada exitosamente",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  } catch (error) {
+    Swal.fire({
+      title: "Oops...",
+      text: `${error.response.data.error}`,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    throw new Error();
+  }
+};
+
 export const putPasswordTemporal = async (body) => {
   const URL_PUT_PASSWORD_TEMPORAL = `${URL_SERVER}/empleados/modificarClaveTemporal`;
 

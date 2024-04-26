@@ -2,7 +2,7 @@ import { clsx } from "clsx";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import validations from "../../utils/validacionesActualizarClave";
+import validations from "../../utils/validacionesActualizarClaveTemporal";
 
 import { useSelector } from "react-redux";
 
@@ -22,7 +22,7 @@ export function ActualizarClaveTemporal() {
 
   const [errors, setErrors] = useState({});
 
-  const handleFindCI = async () => {
+  const handleUpdatePassword = async () => {
     const body = {
       empleado_id: empleado.empleado_id,
       clave: data.clave,
@@ -121,7 +121,7 @@ export function ActualizarClaveTemporal() {
       <Button
         id="btn_continuar"
         type="submit"
-        onClick={handleFindCI}
+        onClick={handleUpdatePassword}
         disabled={
           Object.keys(errors).length || !data.clave || !data.confirmarClave
         }
