@@ -7,6 +7,8 @@ const {
   inactivarCurriculo,
 } = require("../controllers/curriculos_controllers");
 
+const PDFDocument = require("pdfkit");
+
 const getCurriculos = async (req, res) => {
   const { filtros, paginaActual, limitePorPagina } = req.body;
 
@@ -24,12 +26,26 @@ const getCurriculos = async (req, res) => {
 };
 
 const getCurriculo = async (req, res) => {
-  const { curriculo_id } = req.params;
-
   try {
-    const response = await traerCurriculo(curriculo_id);
+    const doc = new PDFDocument();
 
-    return res.json(response);
+    // Establecer el nombre del archivo para la descarga
+    res.setHeader(
+      "Content-Disposition",
+      'attachment; filename="documento.pdf"'
+    );
+
+    // Pipe el PDF generado hacia la respuesta HTTP
+    doc.pipe(res);
+
+    // Agregar contenido al PDF
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(24)
+      .text("¡Hola, Mundo!", { align: "center" });
+
+    // Finalizar el PDF y enviar la respuesta
+    doc.end();
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }

@@ -10,7 +10,7 @@ const {
 
 const curriculos = Router();
 
-curriculos.get("/detalle/:curriculo_id", getCurriculo);
+curriculos.get("/detalle/:empleado_id", getCurriculo);
 curriculos.get("/detalleEmpleado/:empleado_id", getCurriculoEmpleado);
 
 curriculos.post("/allCurriculos", getCurriculos);

@@ -16,12 +16,15 @@ import {
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
 export const getAllCurriculos = (filtros, paginaActual, limitePorPagina) => {
+  const URL_ALL_CURRICULOS = `${URL_SERVER}/curriculos/allCurriculos`;
+
   return async (dispatch) => {
     try {
-      const { data } = await axios.post(
-        `${URL_SERVER}/curriculos/allCurriculos`,
-        { filtros, paginaActual, limitePorPagina }
-      );
+      const { data } = await axios.post(URL_ALL_CURRICULOS, {
+        filtros,
+        paginaActual,
+        limitePorPagina,
+      });
 
       return dispatch(allCurriculos(data));
     } catch (error) {
@@ -105,14 +108,30 @@ export const deleteFiltros = () => {
   };
 };
 
-export const getCurriculo = (curriculo_id) => {
-  return async (dispatch) => {
-    try {
-      const { data } = await axios.get(
-        `${URL_SERVER}/curriculos/detalle/${curriculo_id}`
-      );
+export const getCurriculo = (empleado_id, cedula) => {
+  // const URL_CURRICULO = `${URL_SERVER}/curriculos/detalleEmpleado/${empleado_id}`;
+  const URL_CURRICULO = `${URL_SERVER}/curriculos/detalle/${empleado_id}`;
 
-      return dispatch(curriculoEmpleado(data));
+  return (dispatch) => {
+    try {
+      axios({
+        url: URL_CURRICULO, // Cambia la URL según sea necesario
+        method: "GET",
+        responseType: "blob", // Especifica que la respuesta es un objeto Blob
+      })
+        .then((response) => {
+          // Crear un enlace de descarga
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", `Curriculo - ${cedula}.pdf`);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     } catch (error) {
       Swal.fire({
         title: "Oops...",
@@ -131,7 +150,7 @@ export const getCurriculoEmpleado = (empleado_id) => {
 
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(`${URL_CURRICULO_DETAIL}`);
+      const { data } = await axios.get(URL_CURRICULO_DETAIL);
 
       return dispatch(curriculoEmpleado(data));
     } catch (error) {
