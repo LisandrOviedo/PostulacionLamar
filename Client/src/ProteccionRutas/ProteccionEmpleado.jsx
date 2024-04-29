@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
-export const AuthGuardEmpleado = () => {
+export const ProteccionEmpleado = () => {
   const userState = useSelector((state) => state.empleados.empleado);
 
   return (userState.empleado_id && userState.Role?.nombre === "empleado") ||
@@ -12,4 +12,4 @@ export const AuthGuardEmpleado = () => {
   );
 };
 
-export default AuthGuardEmpleado;
+export default ProteccionEmpleado;

@@ -24,15 +24,6 @@ export const getLogin = (cedula, clave) => {
       const { data } = await axios(URL_LOGIN);
 
       dispatch(createEmpleado(data));
-
-      return Swal.fire({
-        title: "¡Bienvenido!",
-        text: "Sesión iniciada correctamente",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 1500,
-        width: "20em",
-      });
     } catch (error) {
       Swal.fire({
         title: "Oops...",
@@ -93,6 +84,30 @@ export const putPassword = async (body) => {
 
   try {
     await axios.put(URL_PUT_PASSWORD, body);
+
+    return Swal.fire({
+      text: "Su contraseña ha sido actualizada exitosamente",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  } catch (error) {
+    Swal.fire({
+      title: "Oops...",
+      text: `${error.response.data.error}`,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    throw new Error();
+  }
+};
+
+export const putPasswordTemporal = async (body) => {
+  const URL_PUT_PASSWORD_TEMPORAL = `${URL_SERVER}/empleados/modificarClaveTemporal`;
+
+  try {
+    await axios.put(URL_PUT_PASSWORD_TEMPORAL, body);
 
     return Swal.fire({
       text: "Su contraseña ha sido actualizada exitosamente, proceda a loguearse para continuar",

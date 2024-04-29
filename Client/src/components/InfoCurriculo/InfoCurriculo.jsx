@@ -9,7 +9,7 @@ import { Button, Title } from "../UI";
 
 import Swal from "sweetalert2";
 
-export function LandingCurriculo() {
+export function InfoCurriculo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

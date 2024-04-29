@@ -7,7 +7,7 @@ import {
   putFotoEmpleado,
 } from "../../redux/empleados/empleadoAction";
 
-import { Button, Input, InputFile, Label, Title } from "../UI";
+import { Button, InputFile, Title } from "../UI";
 
 import Swal from "sweetalert2";
 
@@ -87,125 +87,109 @@ export function DatosPersonales() {
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
       <Title>Datos Personales</Title>
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
-      <div className="flex flex-col items-center gap-2 mb-2">
-        <img
-          id="preview_foto"
-          src={imagen}
-          alt="Imgen del perfil"
-          className="w-32 h-32 border border-[#002846] bg-gray-400 cursor-pointer rounded-full ring-2 ring-[#F0C95C]"
-          onClick={() => document.getElementById("foto_perfil").click()}
-        />
-        <Label htmlFor="foto_perfil">Imagen del perfil</Label>
-        <InputFile
-          id="foto_perfil"
-          name="foto_perfil"
-          accept=".jpg, .jpeg, .png"
-          onChange={handleValidateImage}
-        />
+      <div className="flex items-center justify-center">
+        <div>
+          <div className="mt-6 border-t border-gray-100">
+            {empleado && (
+              <>
+                <dl className="divide-y divide-gray-100">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Nombre completo
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.nombres} {empleado.apellidos}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Número de cédula
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.cedula}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Correo electrónico
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.correo}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Número de contacto
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.telefono}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Dirección
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.direccion}
+                    </dd>
+                  </div>
+                </dl>
+              </>
+            )}
+            {cargo_actual?.Cargos?.length > 0 && (
+              <>
+                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <dt className="text-sm font-bold leading-6 text-gray-900">
+                    Cargo actual
+                  </dt>
+                  <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    {cargo_actual.Cargos[0].descripcion}
+                  </dd>
+                </div>
+                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <dt className="text-sm font-bold leading-6 text-gray-900">
+                    Nombre empresa
+                  </dt>
+                  <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    {cargo_actual.Cargos[0].Empresa.nombre}
+                  </dd>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-col items-center gap-2 mb-2">
+          <img
+            id="preview_foto"
+            src={imagen}
+            alt="Imgen del perfil"
+            className="w-32 h-32 border border-[#002846] bg-gray-400 cursor-pointer rounded-full ring-2 ring-[#F0C95C]"
+            onClick={() => document.getElementById("foto_perfil").click()}
+          />
+          <label htmlFor="foto_perfil" className="text-sm">
+            Imagen del perfil
+          </label>
+          <label
+            htmlFor="foto_perfil"
+            className="cursor-pointer hover:text-blue-600"
+          >
+            <img
+              src="/Upload.svg"
+              alt="Upload Icon"
+              className="w-5 h-5 inline-block mr-2"
+            />
+            Cargar nueva imagen
+          </label>
+          <InputFile
+            id="foto_perfil"
+            name="foto_perfil"
+            accept=".jpg, .jpeg, .png"
+            onChange={handleValidateImage}
+            className="hidden"
+          />
+        </div>
       </div>
       <div className="grid gap-6 md:grid-cols-3 mt-5 mb-5">
-        {empleado && (
-          <>
-            <div className="flex flex-col place-content-between">
-              <Label htmlFor="nombre_completo">Nombre completo</Label>
-              <Input
-                id="nombre_completo"
-                type="text"
-                name="nombre_completo"
-                value={`${empleado.nombres} ${empleado.apellidos}`}
-                readOnly
-              />
-            </div>
-            <div className="flex flex-col place-content-between">
-              <Label htmlFor="cedula">Cédula</Label>
-              <Input
-                id="cedula"
-                type="text"
-                name="cedula"
-                value={empleado.cedula}
-                readOnly
-              />
-            </div>
-            <div className="flex flex-col place-content-between">
-              <Label htmlFor="email">Correo electrónico</Label>
-              <Input
-                id="email"
-                type="email"
-                name="email"
-                value={empleado.correo}
-                readOnly
-              />
-            </div>
-            <div className="flex flex-col place-content-between">
-              <Label htmlFor="telefono">Número de contacto</Label>
-              <Input
-                id="telefono"
-                type="tel"
-                name="telefono"
-                pattern="[0-9]"
-                value={empleado.telefono}
-                readOnly
-              />
-            </div>
-            <div className="flex flex-col place-content-between">
-              <Label htmlFor="direccion">Dirección</Label>
-              <Input
-                id="direccion"
-                type="text"
-                name="direccion"
-                value={empleado.direccion}
-                readOnly
-              />
-            </div>
-          </>
-        )}
-        {cargo_actual?.Cargos?.length > 0 ? (
-          <>
-            <div className="flex flex-col place-content-between">
-              <Label htmlFor="cargo_actual">Cargo Actual</Label>
-              <Input
-                id="cargo_actual"
-                type="text"
-                name="cargo_actual"
-                value={cargo_actual.Cargos[0].descripcion}
-                readOnly
-              />
-            </div>
-            <div className="flex flex-col place-content-between">
-              <Label htmlFor="nombre_empresa">Empresa</Label>
-              <Input
-                id="nombre_empresa"
-                type="text"
-                name="nombre_empresa"
-                value={cargo_actual.Cargos[0].Empresa.nombre}
-                readOnly
-              />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="flex flex-col place-content-between">
-              <Label htmlFor="cargo_actual">Cargo Actual</Label>
-              <Input
-                id="cargo_actual"
-                type="text"
-                name="cargo_actual"
-                value=""
-                readOnly
-              />
-            </div>
-            <div className="flex flex-col place-content-between">
-              <Label htmlFor="nombre_empresa">Empresa</Label>
-              <Input
-                id="nombre_empresa"
-                type="text"
-                name="nombre_empresa"
-                value=""
-                readOnly
-              />
-            </div>
-          </>
-        )}
         <div className="md:col-span-3 flex justify-center items-center">
           <Button className="m-0 w-auto" onClick={handleSaveChanges}>
             Guardar Cambios

@@ -5,9 +5,10 @@ const {
   getCargoActual,
   getLogin,
   postEmpleado,
-  putClaveEmpleado,
+  putClaveTemporalEmpleado,
   putEmpleado,
   putFotoEmpleado,
+  putClaveEmpleado,
   deleteEmpleado,
 } = require("../handlers/empleados_handlers");
 
@@ -57,6 +58,7 @@ empleados.get("/login", getLogin);
 empleados.post("/allEmpleados", getEmpleados);
 empleados.post("/", postEmpleado);
 
+empleados.put("/modificarClaveTemporal", putClaveTemporalEmpleado);
 empleados.put("/modificarClave", putClaveEmpleado);
 empleados.put("/modificar", putEmpleado);
 empleados.put("/modificarFoto", upload.single("foto_perfil"), putFotoEmpleado);

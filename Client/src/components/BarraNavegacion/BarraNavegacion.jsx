@@ -6,7 +6,7 @@ import { Logo } from "../UI";
 
 import Swal from "sweetalert2";
 
-export function Navbar() {
+export function BarraNavegacion() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState({});
   const [isOpenBurger, setIsOpenBurger] = useState(false);
@@ -15,6 +15,11 @@ export function Navbar() {
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const toggleMenu = (index) => {
+    if (isOpen.hasOwnProperty(index)) {
+      setIsOpen({});
+      return;
+    }
+
     setIsOpen({
       [index]: [index],
     });
@@ -43,7 +48,7 @@ export function Navbar() {
           navigate("/");
           return;
         }
-        navigate("/admin/login");
+        navigate("/admin/acceso");
         return;
       }
     });
@@ -110,7 +115,6 @@ export function Navbar() {
           )}
         </div>
       </nav>
-
       <aside
         ref={asideRef}
         id="sidebar"
@@ -137,7 +141,7 @@ export function Navbar() {
                 // EMPLEADOS
                 <>
                   <Link
-                    to="/home"
+                    to="/inicio"
                     className="block text-white hover:text-[#F0C95C]"
                     onClick={() => toggleMenu({})}
                   >
@@ -158,7 +162,7 @@ export function Navbar() {
                     <ul
                       className={
                         isOpen[0]
-                          ? "flex flex-col gap-3 my-3 p-2 border border-[#F0C95C]"
+                          ? "flex flex-col gap-3 my-3 p-2 border bg-sky-950"
                           : "hidden"
                       }
                     >
@@ -168,6 +172,14 @@ export function Navbar() {
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Datos personales
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/actualizarClave"
+                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                        >
+                          Actualizar contraseña
                         </Link>
                       </li>
                     </ul>
@@ -185,13 +197,13 @@ export function Navbar() {
                     <ul
                       className={
                         isOpen[1]
-                          ? "flex flex-col gap-3 my-3 p-2 border border-[#F0C95C]"
+                          ? "flex flex-col gap-3 my-3 p-2 border bg-sky-950"
                           : "hidden"
                       }
                     >
                       <li>
                         <Link
-                          to="/home"
+                          to="/inicio"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Visualizar
@@ -215,7 +227,7 @@ export function Navbar() {
                       </li>
                       <li>
                         <Link
-                          to="/home"
+                          to="/inicio"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Aplicar Test de Valoración Actitudinal
@@ -239,7 +251,7 @@ export function Navbar() {
                 // ADMINISTRADORES
                 <>
                   <Link
-                    to="/admin/dashboard"
+                    to="/admin/panel"
                     className="block text-white hover:text-[#F0C95C]"
                     onClick={() => toggleMenu({})}
                   >
@@ -260,7 +272,7 @@ export function Navbar() {
                     <ul
                       className={
                         isOpen[0]
-                          ? "flex flex-col gap-3 my-3 p-2 border border-[#F0C95C]"
+                          ? "flex flex-col gap-3 my-3 p-2 border bg-sky-950"
                           : "hidden"
                       }
                     >
@@ -270,6 +282,14 @@ export function Navbar() {
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
                           Datos personales
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/admin/actualizarClave"
+                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                        >
+                          Actualizar contraseña
                         </Link>
                       </li>
                     </ul>

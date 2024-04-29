@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import validations from "./Validations/login";
+import validations from "../../utils/validacionesAcceso";
 
 import { Button, Input, Label, Title } from "../UI";
 
@@ -12,7 +12,7 @@ import { resetCurriculos } from "../../redux/curriculos/curriculoAction";
 
 import Swal from "sweetalert2";
 
-export function LoginAdmin() {
+export function AccesoAdmin() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -24,6 +24,9 @@ export function LoginAdmin() {
   });
 
   const [errors, setErrors] = useState({});
+
+  const [primerUseEffectCompletado, setPrimerUseEffectCompletado] =
+    useState(false);
 
   const handleLogin = () => {
     const { cedula, clave } = data;
@@ -64,13 +67,26 @@ export function LoginAdmin() {
   }, []);
 
   useEffect(() => {
+    if (!primerUseEffectCompletado) {
+      setPrimerUseEffectCompletado(true);
+      return;
+    }
+
     if (empleado.activo && empleado.Role?.nombre === "empleado") {
       Swal.fire({
         text: "Datos incorrectos",
         icon: "error",
       });
     } else if (empleado.activo && empleado.Role?.nombre === "admin") {
-      return navigate("/admin/dashboard");
+      Swal.fire({
+        title: "¡Bienvenido!",
+        text: "Sesión iniciada correctamente",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+        width: "20em",
+      });
+      return navigate("/admin/panel");
     }
   }, [empleado]);
 
@@ -116,9 +132,11 @@ export function LoginAdmin() {
               maxLength="9"
               required
             />
-            <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-              {errors.cedula}
-            </p>
+            {errors.clave && (
+              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                {errors.cedula}
+              </p>
+            )}
           </div>
         </div>
 
@@ -145,9 +163,11 @@ export function LoginAdmin() {
               minLength="1"
               required
             />
-            <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-              {errors.clave}
-            </p>
+            {errors.clave && (
+              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                {errors.clave}
+              </p>
+            )}
           </div>
         </div>
 
@@ -155,12 +175,10 @@ export function LoginAdmin() {
           <Button
             id="btn_continuar"
             onClick={handleLogin}
-            disabled={
-              Object.keys(errors).length > 0 || !data.cedula || !data.clave
-            }
+            disabled={Object.keys(errors).length || !data.cedula || !data.clave}
             className={clsx("", {
               "opacity-50":
-                Object.keys(errors).length > 0 || !data.cedula || !data.clave,
+                Object.keys(errors).length || !data.cedula || !data.clave,
             })}
           >
             Acceder

@@ -11,7 +11,7 @@ import {
 
 import Swal from "sweetalert2";
 
-export function AnexarDocumentos() {
+export function SubirDocumentos() {
   const dispatch = useDispatch();
 
   const empleado = useSelector((state) => state.empleados.empleado);
@@ -294,7 +294,7 @@ export function AnexarDocumentos() {
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
                 <td className="px-4 py-4">Foto Carnet</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "foto_carnet") ? (
@@ -337,7 +337,7 @@ export function AnexarDocumentos() {
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
                 <td className="px-4 py-4">Foto Cédula</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "foto_cedula") ? (
@@ -380,7 +380,7 @@ export function AnexarDocumentos() {
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
                 <td className="px-4 py-4">RIF</td>
                 {anexos && anexos.find((anexo) => anexo.tipo === "rif") ? (
                   <>
@@ -416,7 +416,7 @@ export function AnexarDocumentos() {
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
                 <td className="px-4 py-4">Resumen Curricular</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "resumen_curricular") ? (
@@ -461,7 +461,7 @@ export function AnexarDocumentos() {
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
                 <td className="px-4 py-4">Título Bachiller</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "titulo_bachiller") ? (
@@ -506,7 +506,7 @@ export function AnexarDocumentos() {
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
                 <td className="px-4 py-4">Títulos Universitarios</td>
                 {anexos &&
                 anexos.find(
@@ -553,7 +553,7 @@ export function AnexarDocumentos() {
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
                 <td className="px-4 py-4">Otros Estudios</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "otros_estudios") ? (
@@ -597,7 +597,7 @@ export function AnexarDocumentos() {
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
                 <td className="px-4 py-4">Referencias Personales</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "referencia_personal") ? (
@@ -642,7 +642,7 @@ export function AnexarDocumentos() {
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
                 <td className="px-4 py-4">Soporte Cuenta Bancaria</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "cuenta_bancaria") ? (

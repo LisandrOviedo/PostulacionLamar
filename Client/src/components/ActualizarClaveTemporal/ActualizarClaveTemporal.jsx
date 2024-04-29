@@ -2,15 +2,15 @@ import { clsx } from "clsx";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import validations from "./validations";
+import validations from "../../utils/validacionesActualizarClaveTemporal";
 
 import { useSelector } from "react-redux";
 
 import { Button, Input, Title } from "../UI";
 
-import { putPassword } from "../../redux/empleados/empleadoAction";
+import { putPasswordTemporal } from "../../redux/empleados/empleadoAction";
 
-export function UpdatePassword() {
+export function ActualizarClaveTemporal() {
   const navigate = useNavigate();
 
   const empleado = useSelector((state) => state.empleados.empleado);
@@ -22,14 +22,19 @@ export function UpdatePassword() {
 
   const [errors, setErrors] = useState({});
 
-  const handleFindCI = async () => {
+  const handleUpdatePassword = async () => {
     const body = {
       empleado_id: empleado.empleado_id,
       clave: data.clave,
     };
 
     try {
-      await putPassword(body);
+      await putPasswordTemporal(body);
+      if (empleado.rol === "admin") {
+        navigate("/admin/acceso");
+        return;
+      }
+
       navigate("/");
     } catch (error) {
       return error;
@@ -89,9 +94,11 @@ export function UpdatePassword() {
         maxLength="4"
         required
       />
-      <p className="text-base sm:text-lg text-red-700 font-bold text-center">
-        {errors.clave}
-      </p>
+      {errors.clave && (
+        <p className="text-base sm:text-lg text-red-700 font-bold text-center">
+          {errors.clave}
+        </p>
+      )}
       <br />
       <Input
         className="w-32 text-center"
@@ -106,23 +113,21 @@ export function UpdatePassword() {
         maxLength="4"
         required
       />
-      <p className="text-base sm:text-lg text-red-700 font-bold text-center">
-        {errors.confirmarClave}
-      </p>
+      {errors.confirmarClave && (
+        <p className="text-base sm:text-lg text-red-700 font-bold text-center">
+          {errors.confirmarClave}
+        </p>
+      )}
       <Button
         id="btn_continuar"
         type="submit"
-        onClick={handleFindCI}
+        onClick={handleUpdatePassword}
         disabled={
-          Object.keys(errors).length > 0 ||
-          Object.keys(data.clave).length <= 0 ||
-          Object.keys(data.confirmarClave).length <= 0
+          Object.keys(errors).length || !data.clave || !data.confirmarClave
         }
-        className={clsx("", {
+        className={clsx("w-auto", {
           "opacity-50":
-            Object.keys(errors).length > 0 ||
-            Object.keys(data.clave).length <= 0 ||
-            Object.keys(data.confirmarClave).length <= 0,
+            Object.keys(errors).length || !data.clave || !data.confirmarClave,
         })}
       >
         Continuar

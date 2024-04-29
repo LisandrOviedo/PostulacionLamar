@@ -168,7 +168,11 @@ const login = async (cedula, clave) => {
 
       // return token;
 
-      return { empleado_id: empleado.empleado_id, changePassword: true };
+      return {
+        empleado_id: empleado.empleado_id,
+        changePassword: true,
+        rol: empleado.Role.nombre,
+      };
     }
 
     // const token = jwt.sign(
@@ -223,7 +227,7 @@ const crearEmpleado = async (
   }
 };
 
-const actualizarClaveEmpleado = async (empleado_id, clave) => {
+const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
   if (!empleado_id || !clave) {
     throw new Error("Datos faltantes");
   }
@@ -342,6 +346,49 @@ const modificarFotoEmpleado = async (empleado_id, filename, path) => {
   }
 };
 
+const actualizarClaveEmpleado = async (
+  empleado_id,
+  claveAnterior,
+  claveNueva
+) => {
+  if (!empleado_id || !claveAnterior || !claveNueva) {
+    throw new Error("Datos faltantes");
+  }
+
+  if (claveNueva == "1234") {
+    throw new Error("Debes ingresar una contraseña diferente a 1234");
+  }
+
+  try {
+    const empleado = await Empleado.findByPk(empleado_id, {
+      attributes: ["clave"],
+    });
+
+    const compararClaves = await bcrypt.compare(claveAnterior, empleado.clave);
+
+    if (!compararClaves) {
+      throw new Error("Debes ingresar correctamente tu clave actual");
+    }
+
+    const claveCifradaNueva = await bcrypt.hash(claveNueva, 10);
+
+    await Empleado.update(
+      {
+        clave: claveCifradaNueva,
+      },
+      {
+        where: {
+          empleado_id: empleado_id,
+        },
+      }
+    );
+
+    return await traerEmpleado(empleado_id);
+  } catch (error) {
+    throw new Error("Error al modificar el empleado: " + error.message);
+  }
+};
+
 const inactivarEmpleado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error("Datos faltantes");
@@ -369,8 +416,9 @@ module.exports = {
   traerCargoActual,
   login,
   crearEmpleado,
-  actualizarClaveEmpleado,
+  actualizarClaveTemporalEmpleado,
   modificarEmpleado,
   modificarFotoEmpleado,
+  actualizarClaveEmpleado,
   inactivarEmpleado,
 };
