@@ -9,6 +9,7 @@ const {
   putEmpleado,
   putFotoEmpleado,
   putClaveEmpleado,
+  putReiniciarClave,
   deleteEmpleado,
 } = require("../handlers/empleados_handlers");
 
@@ -60,6 +61,7 @@ empleados.post("/", postEmpleado);
 
 empleados.put("/modificarClaveTemporal", putClaveTemporalEmpleado);
 empleados.put("/modificarClave", putClaveEmpleado);
+empleados.put("/reiniciarClave", putReiniciarClave);
 empleados.put("/modificar", putEmpleado);
 empleados.put("/modificarFoto", upload.single("foto_perfil"), putFotoEmpleado);
 empleados.put("/inactivar", deleteEmpleado);

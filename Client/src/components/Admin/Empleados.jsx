@@ -10,6 +10,7 @@ import {
   postFiltros,
   deleteFiltros,
   putActivo,
+  resetPassword,
 } from "../../redux/empleados/empleadoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
@@ -20,6 +21,8 @@ import {
 } from "../../utils/paginacion";
 
 import { DDMMYYYY } from "../../utils/formatearFecha";
+
+import Swal from "sweetalert2";
 
 export function Empleados() {
   const dispatch = useDispatch();
@@ -177,9 +180,38 @@ export function Empleados() {
     }
   };
 
-  const handleChangeActivo = async (empleado_id) => {
-    await putActivo(empleado_id);
-    dispatch(getAllEmpleados(filtros, paginaActual, limitePorPagina));
+  const handleChangeActivo = (empleado_id) => {
+    Swal.fire({
+      text: "¿Seguro que desea activar / desactivar el empleado?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "No",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await putActivo(empleado_id);
+        dispatch(getAllEmpleados(filtros, paginaActual, limitePorPagina));
+      }
+    });
+  };
+
+  const handleReiniciarClave = (empleado_id) => {
+    Swal.fire({
+      text: "¿Seguro que desea reiniciar la clave del empleado?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "No",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await resetPassword(empleado_id);
+        dispatch(getAllEmpleados(filtros, paginaActual, limitePorPagina));
+      }
+    });
   };
 
   return (
@@ -391,6 +423,14 @@ export function Empleados() {
                         onClick={() => handleVerDetalles(empleado.empleado_id)}
                       >
                         Detalles
+                      </Button>
+                      <Button
+                        className="m-0 w-auto bg-yellow-400 hover:bg-yellow-500"
+                        onClick={() =>
+                          handleReiniciarClave(empleado.empleado_id)
+                        }
+                      >
+                        Reiniciar Clave
                       </Button>
                       <Button
                         className={`m-0 w-auto ${

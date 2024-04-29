@@ -125,6 +125,31 @@ export const putPasswordTemporal = async (body) => {
   }
 };
 
+export const resetPassword = async (empleado_id) => {
+  const URL_RESET_PASSWORD = `${URL_SERVER}/empleados/reiniciarClave`;
+
+  try {
+    await axios.put(URL_RESET_PASSWORD, { empleado_id });
+
+    return Swal.fire({
+      text: `Su contraseña ha sido reiniciada exitosamente a "1234"`,
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1000,
+      width: "20em",
+    });
+  } catch (error) {
+    Swal.fire({
+      title: "Oops...",
+      text: `${error.response.data.error}`,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    throw new Error();
+  }
+};
+
 export const resetEmpleados = () => {
   return async (dispatch) => {
     try {

@@ -8,6 +8,7 @@ const {
   modificarEmpleado,
   modificarFotoEmpleado,
   actualizarClaveEmpleado,
+  reiniciarClaveEmpleado,
   inactivarEmpleado,
 } = require("../controllers/empleados_controllers");
 
@@ -157,6 +158,18 @@ const putClaveEmpleado = async (req, res) => {
   }
 };
 
+const putReiniciarClave = async (req, res) => {
+  const { empleado_id } = req.body;
+
+  try {
+    const response = await reiniciarClaveEmpleado(empleado_id);
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 const deleteEmpleado = async (req, res) => {
   const { empleado_id } = req.body;
 
@@ -179,5 +192,6 @@ module.exports = {
   putEmpleado,
   putFotoEmpleado,
   putClaveEmpleado,
+  putReiniciarClave,
   deleteEmpleado,
 };
