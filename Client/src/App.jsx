@@ -36,7 +36,10 @@ function App() {
     <div>
       <Suspense fallback={<>Cargando</>}>
         {pathname.toLowerCase() !== "/" &&
-          pathname.toLowerCase() !== "/admin/acceso" && <BarraNavegacion />}
+          pathname.toLowerCase() !== "/admin/acceso" &&
+          pathname.toLocaleLowerCase() !== "/actualizarclavetemporal" && (
+            <BarraNavegacion />
+          )}
         <Routes>
           <Route path="*" element={<PaginaNoEncontrada />} />
           <Route path="/" element={<AccesoEmpleado />} />
