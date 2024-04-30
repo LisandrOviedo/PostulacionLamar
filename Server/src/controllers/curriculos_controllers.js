@@ -8,8 +8,6 @@ const {
   Experiencia,
 } = require("../db");
 
-const { pdfKit } = require("../libs/pdfKit");
-
 const { traerEmpleado } = require("./empleados_controllers");
 
 const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
@@ -94,8 +92,23 @@ const traerCurriculo = async (empleado_id) => {
     throw new Error("Datos faltantes");
   }
 
+  const content = [];
+
   try {
-    
+    const curriculo = await traerCurriculoEmpleado(empleado_id);
+
+    content.push({
+      text: `Empleado: ${curriculo.Empleado.nombres}`,
+      fontSize: 14,
+      alignment: "center",
+    });
+
+    content.push({
+      text: "Prueba",
+      fontSize: 12,
+    });
+
+    return content;
   } catch (error) {
     throw new Error("Error al traer el curriculo: " + error.message);
   }

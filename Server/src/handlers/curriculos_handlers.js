@@ -26,25 +26,29 @@ const getCurriculos = async (req, res) => {
 };
 
 const getCurriculo = async (req, res) => {
+  const { empleado_id, cedula } = req.body;
+  const filename = `Curriculo - ${cedula}.pdf`;
+
   try {
-    const doc = new PDFDocument();
+    const doc = new PDFDocument({
+      bufferPages: true,
+      font: "Courier",
+    });
 
-    // Establecer el nombre del archivo para la descarga
-    res.setHeader(
-      "Content-Disposition",
-      'attachment; filename="documento.pdf"'
-    );
+    // Genera el contenido del PDF
+    const content = await traerCurriculo(empleado_id);
 
-    // Pipe el PDF generado hacia la respuesta HTTP
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
+
     doc.pipe(res);
 
-    // Agregar contenido al PDF
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(24)
-      .text("¡Hola, Mundo!", { align: "center" });
+    // Agrega el contenido al documento PDF
+    content.forEach((item) => {
+      doc.fontSize(item.fontSize).text(item.text, { align: item.alignment });
+      doc.moveDown();
+    });
 
-    // Finalizar el PDF y enviar la respuesta
     doc.end();
   } catch (error) {
     return res.status(400).json({ error: error.message });

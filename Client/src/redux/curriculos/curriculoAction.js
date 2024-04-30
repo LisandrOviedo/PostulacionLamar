@@ -109,29 +109,34 @@ export const deleteFiltros = () => {
 };
 
 export const getCurriculo = (empleado_id, cedula) => {
-  // const URL_CURRICULO = `${URL_SERVER}/curriculos/detalleEmpleado/${empleado_id}`;
-  const URL_CURRICULO = `${URL_SERVER}/curriculos/detalle/${empleado_id}`;
+  const URL_CURRICULO = `${URL_SERVER}/curriculos/detalle`;
 
-  return (dispatch) => {
+  return async () => {
+    const filename = `Curriculo - ${cedula}.pdf`;
+
     try {
-      axios({
-        url: URL_CURRICULO, // Cambia la URL según sea necesario
-        method: "GET",
-        responseType: "blob", // Especifica que la respuesta es un objeto Blob
-      })
-        .then((response) => {
-          // Crear un enlace de descarga
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", `Curriculo - ${cedula}.pdf`);
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      const response = await axios.post(
+        URL_CURRICULO,
+        { empleado_id: empleado_id, cedula: cedula },
+        {
+          responseType: "blob", // Establece responseType a "blob" para obtener el archivo en formato blob
+        }
+      );
+
+      // Crea una URL del blob de la respuesta
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      // Crea un enlace temporal y simula un clic en él para descargar el archivo
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Revoca la URL del blob después de descargar el archivo
+      window.URL.revokeObjectURL(url);
     } catch (error) {
       Swal.fire({
         title: "Oops...",
