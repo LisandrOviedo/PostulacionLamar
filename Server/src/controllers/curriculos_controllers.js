@@ -88,6 +88,7 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
 };
 
 const traerCurriculo = async (empleado_id) => {
+  // Cambiar
   if (!empleado_id) {
     throw new Error("Datos faltantes");
   }
@@ -98,14 +99,28 @@ const traerCurriculo = async (empleado_id) => {
     const curriculo = await traerCurriculoEmpleado(empleado_id);
 
     content.push({
-      text: `Empleado: ${curriculo.Empleado.nombres}`,
-      fontSize: 14,
-      alignment: "center",
+      titulo: "Datos Personales",
+      contenido: `
+      Empleado: ${curriculo.Empleado.nombres} ${curriculo.Empleado.apellidos}
+      
+      Cédula: ${curriculo.Empleado.cedula}
+      
+      Teléfono: ${curriculo.Empleado.telefono}
+      
+      Correo: ${curriculo.Empleado.correo}
+      
+      Dirección: ${curriculo.Empleado.direccion}`,
+    });
+
+    let areas = "";
+
+    curriculo.Areas_Interes.forEach((area, index) => {
+      areas = index === 0 ? area.nombre : areas + `, ${area.nombre}`;
     });
 
     content.push({
-      text: "Prueba",
-      fontSize: 12,
+      titulo: "Áreas de interés",
+      contenido: areas,
     });
 
     return content;
