@@ -7,6 +7,7 @@ const {
   inactivarCurriculo,
 } = require("../controllers/curriculos_controllers");
 
+const path = require("path");
 const PDFDocument = require("pdfkit");
 
 const getCurriculos = async (req, res) => {
@@ -32,7 +33,7 @@ const getCurriculo = async (req, res) => {
   try {
     const doc = new PDFDocument({
       bufferPages: true,
-      font: "Courier",
+      font: "Helvetica-Bold",
     });
 
     // Genera el contenido del PDF
@@ -43,11 +44,22 @@ const getCurriculo = async (req, res) => {
 
     doc.pipe(res);
 
+    doc.fontSize(14).text("Postulación", { align: "center" });
+    doc.fontSize(12);
+    doc.moveDown();
+
     // Agrega el contenido al documento PDF
-    content.forEach((item) => {
-      doc.fontSize(item.fontSize).text(item.text, { align: item.alignment });
-      doc.moveDown();
+    content.forEach(async (seccion) => {
+      doc.font("Helvetica-Bold"); // Fuente en negrita
+      doc.text(seccion.titulo, { underline: true });
+      doc.moveDown(0.5); // Espaciado después del título
+      doc.font("Helvetica"); // Volver a la fuente normal
+      doc.text(seccion.contenido);
+      doc.moveDown(); // Espaciado después de la sección
     });
+
+    const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
+    doc.image(logoPath, 15, 15, { width: 80 });
 
     doc.end();
   } catch (error) {
