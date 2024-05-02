@@ -57,6 +57,17 @@ const getCurriculoPDF = async (req, res) => {
 
     doc.pipe(res);
 
+    const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
+
+    const addLogo = () => {
+      doc.image(logoPath, 20, 15, { width: 80 });
+      doc.translate(0, 20);
+    };
+
+    addLogo();
+
+    doc.on("pageAdded", addLogo);
+
     doc.fontSize(14).text("Postulación", { align: "center" });
     doc.moveDown(0.5);
 
@@ -72,7 +83,7 @@ const getCurriculoPDF = async (req, res) => {
       seccion.contenido.forEach(async (campo) => {
         if (campo.titulo_campo === "Experiencias") {
           if (!campo.descripcion_campo.length) {
-            doc.fontSize(11).font("Helvetica").text("Ninguno", { indent: 20 });
+            doc.fontSize(11).font("Helvetica").text("No posee", { indent: 20 });
           } else {
             const table = {
               headers: [
@@ -113,7 +124,7 @@ const getCurriculoPDF = async (req, res) => {
               doc
                 .fontSize(11)
                 .font("Helvetica")
-                .text("Ninguno", { indent: 20 });
+                .text("No posee", { indent: 20 });
             } else {
               doc.font("Helvetica").fontSize(11).text(campo.descripcion_campo);
             }
@@ -122,7 +133,7 @@ const getCurriculoPDF = async (req, res) => {
               doc
                 .fontSize(11)
                 .font("Helvetica")
-                .text("Ninguno", { indent: 20 });
+                .text("No posee", { indent: 20 });
             } else {
               doc
                 .font("Helvetica")
@@ -135,9 +146,6 @@ const getCurriculoPDF = async (req, res) => {
         doc.moveDown();
       });
     });
-
-    const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
-    doc.image(logoPath, 20, 15, { width: 80 });
 
     doc.end();
   } catch (error) {
