@@ -9,6 +9,7 @@ const {
 } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
+const { traerAnexos } = require("./documentos_empleados_controllers");
 
 const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
   if (!paginaActual || !limitePorPagina) {
@@ -226,6 +227,62 @@ const traerCurriculoPDF = async (empleado_id) => {
   }
 };
 
+const traerCurriculoPDFAnexos = async (empleado_id) => {
+  if (!empleado_id) {
+    throw new Error("Datos faltantes");
+  }
+
+  const anexos = [];
+
+  try {
+    const documentos = await traerAnexos(empleado_id);
+
+    documentos.forEach((documento) => {
+      anexos.push(documento.ruta);
+    });
+
+    return anexos;
+  } catch (error) {
+    throw new Error("Error al traer el curriculo: " + error.message);
+  }
+};
+
+const cambiarEstadoRevisado = async (empleado_id) => {
+  if (!empleado_id) {
+    throw new Error("Datos faltantes");
+  }
+  try {
+    await traerEmpleado(empleado_id);
+
+    const curriculo = await Curriculo.findOne({
+      where: {
+        empleado_id: empleado_id,
+      },
+    });
+
+    if (curriculo.estado === "Pendiente por revisar") {
+      await Curriculo.update(
+        {
+          estado: "Revisado",
+        },
+        {
+          where: {
+            empleado_id: empleado_id,
+          },
+        }
+      );
+    }
+
+    return await Curriculo.findOne({
+      where: {
+        empleado_id: empleado_id,
+      },
+    });
+  } catch (error) {
+    throw new Error("Error al modificar el curriculo: " + error.message);
+  }
+};
+
 const traerCurriculoEmpleado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error("Datos faltantes");
@@ -380,6 +437,8 @@ module.exports = {
   todosLosCurriculos,
   traerCurriculo,
   traerCurriculoPDF,
+  traerCurriculoPDFAnexos,
+  cambiarEstadoRevisado,
   traerCurriculoEmpleado,
   crearCurriculo,
   modificarCurriculo,
