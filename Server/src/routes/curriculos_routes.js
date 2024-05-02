@@ -2,6 +2,7 @@ const { Router } = require("express");
 const {
   getCurriculos,
   getCurriculo,
+  getCurriculoPDF,
   getCurriculoEmpleado,
   postCurriculo,
   putCurriculo,
@@ -10,9 +11,10 @@ const {
 
 const curriculos = Router();
 
+curriculos.get("/detalle/:curriculo_id", getCurriculo);
 curriculos.get("/detalleEmpleado/:empleado_id", getCurriculoEmpleado);
 
-curriculos.post("/detalle", getCurriculo);
+curriculos.post("/detalle", getCurriculoPDF);
 curriculos.post("/allCurriculos", getCurriculos);
 curriculos.post("/", postCurriculo);
 

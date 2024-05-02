@@ -1,6 +1,7 @@
 const {
   todosLosCurriculos,
   traerCurriculo,
+  traerCurriculoPDF,
   traerCurriculoEmpleado,
   crearCurriculo,
   modificarCurriculo,
@@ -27,6 +28,18 @@ const getCurriculos = async (req, res) => {
 };
 
 const getCurriculo = async (req, res) => {
+  const { curriculo_id } = req.body;
+
+  try {
+    const response = await traerCurriculo(curriculo_id);
+
+    return res.status(201).json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const getCurriculoPDF = async (req, res) => {
   const { empleado_id, cedula } = req.body;
   const filename = `Curriculo - ${cedula}.pdf`;
 
@@ -37,7 +50,7 @@ const getCurriculo = async (req, res) => {
     });
 
     // Genera el contenido del PDF
-    const content = await traerCurriculo(empleado_id);
+    const content = await traerCurriculoPDF(empleado_id);
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
@@ -146,6 +159,7 @@ const deleteCurriculo = async (req, res) => {
 module.exports = {
   getCurriculos,
   getCurriculo,
+  getCurriculoPDF,
   getCurriculoEmpleado,
   postCurriculo,
   putCurriculo,

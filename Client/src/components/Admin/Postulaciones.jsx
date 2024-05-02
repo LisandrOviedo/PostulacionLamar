@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import {
   getAllCurriculos,
-  getCurriculo,
+  getCurriculoPDF,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
@@ -124,7 +124,7 @@ export function Postulaciones() {
   }, [filtros, paginaActual, limitePorPagina]);
 
   const handleVerDetalles = (empleado_id, cedula) => {
-    dispatch(getCurriculo(empleado_id, cedula));
+    dispatch(getCurriculoPDF(empleado_id, cedula));
   };
 
   const changeOrder = (e) => {

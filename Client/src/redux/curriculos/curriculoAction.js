@@ -108,7 +108,7 @@ export const deleteFiltros = () => {
   };
 };
 
-export const getCurriculo = (empleado_id, cedula) => {
+export const getCurriculoPDF = (empleado_id, cedula) => {
   const URL_CURRICULO = `${URL_SERVER}/curriculos/detalle`;
 
   return async () => {

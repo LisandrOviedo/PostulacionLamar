@@ -87,8 +87,19 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
   }
 };
 
-const traerCurriculo = async (empleado_id) => {
-  // Cambiar
+const traerCurriculo = async (curriculo_id) => {
+  if (!curriculo_id) {
+    throw new Error("Datos faltantes");
+  }
+
+  try {
+    return await Curriculo.findByPk(curriculo_id);
+  } catch (error) {
+    throw new Error("Error al traer el curriculo: " + error.message);
+  }
+};
+
+const traerCurriculoPDF = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error("Datos faltantes");
   }
@@ -282,6 +293,7 @@ const inactivarCurriculo = async (curriculo_id) => {
 module.exports = {
   todosLosCurriculos,
   traerCurriculo,
+  traerCurriculoPDF,
   traerCurriculoEmpleado,
   crearCurriculo,
   modificarCurriculo,
