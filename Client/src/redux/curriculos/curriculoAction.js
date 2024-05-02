@@ -150,6 +150,48 @@ export const getCurriculoPDF = (empleado_id, cedula) => {
   };
 };
 
+export const getCurriculoPDFAnexos = (empleado_id, cedula) => {
+  const URL_CURRICULO = `${URL_SERVER}/curriculos/detalleAnexos`;
+
+  return async () => {
+    const filename = `Curriculo - ${cedula}.pdf`;
+
+    try {
+      const response = await axios.post(
+        URL_CURRICULO,
+        { empleado_id: empleado_id, cedula: cedula },
+        {
+          responseType: "blob", // Establece responseType a "blob" para obtener el archivo en formato blob
+        }
+      );
+
+      // Crea una URL del blob de la respuesta
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      // Crea un enlace temporal y simula un clic en él para descargar el archivo
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Revoca la URL del blob después de descargar el archivo
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      throw new Error();
+    }
+  };
+};
+
 export const getCurriculoEmpleado = (empleado_id) => {
   const URL_CURRICULO_DETAIL = `${URL_SERVER}/curriculos/detalleEmpleado/${empleado_id}`;
 
