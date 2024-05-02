@@ -63,51 +63,72 @@ const getCurriculoPDF = async (req, res) => {
     // Agrega el contenido al documento PDF
     content.forEach((seccion) => {
       doc.moveDown();
-      doc.font("Helvetica-Bold");
-      doc.fontSize(12).text(seccion.titulo, { underline: true });
+      doc
+        .font("Helvetica-Bold")
+        .fontSize(12)
+        .text(seccion.titulo, { underline: true });
       doc.moveDown();
 
       seccion.contenido.forEach(async (campo) => {
         if (campo.titulo_campo === "Experiencias") {
-          const table = {
-            headers: [
-              "Tipo",
-              "Cargo / Título",
-              "Duración",
-              "Empresa / Centro Educativo",
-            ],
-            rows: [],
-          };
+          if (!campo.descripcion_campo.length) {
+            doc.fontSize(11).font("Helvetica").text("Ninguno", { indent: 20 });
+          } else {
+            const table = {
+              headers: [
+                "Tipo",
+                "Cargo / Título",
+                "Duración",
+                "Empresa / Centro Educativo",
+              ],
+              rows: [],
+            };
 
-          for (const experiencia of campo.descripcion_campo) {
-            const row = [
-              experiencia.tipo,
-              experiencia.cargo_titulo,
-              experiencia.duracion,
-              experiencia.empresa_centro_educativo,
-            ];
-            table.rows.push(row);
+            for (const experiencia of campo.descripcion_campo) {
+              const row = [
+                experiencia.tipo,
+                experiencia.cargo_titulo,
+                experiencia.duracion,
+                experiencia.empresa_centro_educativo,
+              ];
+              table.rows.push(row);
+            }
+
+            await doc.table(table, {
+              columnsSize: [50, 160, 90, 170],
+              prepareHeader: () => doc.font("Helvetica-Bold").fontSize(11),
+              prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+                doc.font("Helvetica").fontSize(10);
+              },
+            });
           }
-
-          await doc.table(table, {
-            columnsSize: [50, 160, 90, 170],
-            prepareHeader: () => doc.font("Helvetica-Bold").fontSize(11),
-            prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
-              doc.font("Helvetica").fontSize(10);
-            },
-          });
         } else {
           if (campo.titulo_campo) {
             doc
               .font("Helvetica-Bold")
               .fontSize(11)
               .text(campo.titulo_campo, { continued: true, indent: 20 });
-            doc.font("Helvetica").fontSize(11).text(campo.descripcion_campo);
+
+            if (!campo.descripcion_campo.length) {
+              doc
+                .fontSize(11)
+                .font("Helvetica")
+                .text("Ninguno", { indent: 20 });
+            } else {
+              doc.font("Helvetica").fontSize(11).text(campo.descripcion_campo);
+            }
           } else {
-            doc
-              .font("Helvetica")
-              .fontSize(11)
-              .text(campo.descripcion_campo, { indent: 20 });
+            if (!campo.descripcion_campo.length) {
+              doc
+                .fontSize(11)
+                .font("Helvetica")
+                .text("Ninguno", { indent: 20 });
+            } else {
+              doc
+                .font("Helvetica")
+                .fontSize(11)
+                .text(campo.descripcion_campo, { indent: 20 });
+            }
           }
         }
 
