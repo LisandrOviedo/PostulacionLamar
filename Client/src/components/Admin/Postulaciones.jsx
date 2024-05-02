@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   getAllCurriculos,
   getCurriculoPDF,
+  getCurriculoPDFAnexos,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
@@ -125,6 +126,10 @@ export function Postulaciones() {
 
   const handleVerDetalles = (empleado_id, cedula) => {
     dispatch(getCurriculoPDF(empleado_id, cedula));
+  };
+
+  const handleVerDetallesAnexos = (empleado_id, cedula) => {
+    dispatch(getCurriculoPDFAnexos(empleado_id, cedula));
   };
 
   const changeOrder = (e) => {
@@ -422,7 +427,7 @@ export function Postulaciones() {
                       {DDMMYYYY(curriculo.updatedAt)}
                     </td>
                     <td className="px-4 py-4">{curriculo.estado}</td>
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-4 flex gap-2 items-center">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
@@ -432,7 +437,18 @@ export function Postulaciones() {
                           )
                         }
                       >
-                        Detalles
+                        PDF
+                      </Button>
+                      <Button
+                        className="m-0 w-auto"
+                        onClick={() =>
+                          handleVerDetallesAnexos(
+                            curriculo.Empleado.empleado_id,
+                            curriculo.Empleado.cedula
+                          )
+                        }
+                      >
+                        Anexos
                       </Button>
                     </td>
                   </tr>
