@@ -137,7 +137,7 @@ const traerCurriculoPDF = async (empleado_id) => {
           descripcion_campo: curriculo.cantidad_hijos,
         },
         {
-          titulo_campo: "Grado de instrucción más alta: ",
+          titulo_campo: "Grado de instrucción: ",
           descripcion_campo: curriculo.grado_instruccion,
         },
       ],
