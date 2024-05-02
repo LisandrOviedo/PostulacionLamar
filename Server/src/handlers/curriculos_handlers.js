@@ -9,7 +9,7 @@ const {
 } = require("../controllers/curriculos_controllers");
 
 const path = require("path");
-const PDFDocument = require("pdfkit");
+const PDFDocument = require("pdfkit-table");
 
 const getCurriculos = async (req, res) => {
   const { filtros, paginaActual, limitePorPagina } = req.body;
@@ -58,21 +58,65 @@ const getCurriculoPDF = async (req, res) => {
     doc.pipe(res);
 
     doc.fontSize(14).text("Postulación", { align: "center" });
-    doc.fontSize(12);
-    doc.moveDown();
+    doc.moveDown(0.5);
 
     // Agrega el contenido al documento PDF
-    content.forEach(async (seccion) => {
-      doc.font("Helvetica-Bold"); // Fuente en negrita
-      doc.text(seccion.titulo, { underline: true });
-      doc.moveDown(0.5); // Espaciado después del título
-      doc.font("Helvetica"); // Volver a la fuente normal
-      doc.text(seccion.contenido);
-      doc.moveDown(); // Espaciado después de la sección
+    content.forEach((seccion) => {
+      doc.moveDown();
+      doc.font("Helvetica-Bold");
+      doc.fontSize(12).text(seccion.titulo, { underline: true });
+      doc.moveDown();
+
+      seccion.contenido.forEach(async (campo) => {
+        if (campo.titulo_campo === "Experiencias") {
+          const table = {
+            headers: [
+              "Tipo",
+              "Cargo / Título",
+              "Duración",
+              "Empresa / Centro Educativo",
+            ],
+            rows: [],
+          };
+
+          for (const experiencia of campo.descripcion_campo) {
+            const row = [
+              experiencia.tipo,
+              experiencia.cargo_titulo,
+              experiencia.duracion,
+              experiencia.empresa_centro_educativo,
+            ];
+            table.rows.push(row);
+          }
+
+          await doc.table(table, {
+            columnsSize: [50, 160, 90, 170],
+            prepareHeader: () => doc.font("Helvetica-Bold").fontSize(11),
+            prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+              doc.font("Helvetica").fontSize(10);
+            },
+          });
+        } else {
+          if (campo.titulo_campo) {
+            doc
+              .font("Helvetica-Bold")
+              .fontSize(11)
+              .text(campo.titulo_campo, { continued: true, indent: 20 });
+            doc.font("Helvetica").fontSize(11).text(campo.descripcion_campo);
+          } else {
+            doc
+              .font("Helvetica")
+              .fontSize(11)
+              .text(campo.descripcion_campo, { indent: 20 });
+          }
+        }
+
+        doc.moveDown();
+      });
     });
 
     const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
-    doc.image(logoPath, 15, 15, { width: 80 });
+    doc.image(logoPath, 20, 15, { width: 80 });
 
     doc.end();
   } catch (error) {

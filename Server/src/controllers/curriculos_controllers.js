@@ -111,16 +111,36 @@ const traerCurriculoPDF = async (empleado_id) => {
 
     content.push({
       titulo: "Datos Personales",
-      contenido: `
-      Empleado: ${curriculo.Empleado.nombres} ${curriculo.Empleado.apellidos}
-      
-      Cédula: ${curriculo.Empleado.cedula}
-      
-      Teléfono: ${curriculo.Empleado.telefono}
-      
-      Correo: ${curriculo.Empleado.correo}
-      
-      Dirección: ${curriculo.Empleado.direccion}`,
+      contenido: [
+        {
+          titulo_campo: "Nombre completo: ",
+          descripcion_campo: `${curriculo.Empleado.nombres} ${curriculo.Empleado.apellidos}`,
+        },
+        {
+          titulo_campo: "Número de cédula o identidad: ",
+          descripcion_campo: curriculo.Empleado.cedula,
+        },
+        {
+          titulo_campo: "Número de teléfono: ",
+          descripcion_campo: curriculo.Empleado.telefono,
+        },
+        {
+          titulo_campo: "Correo electrónico: ",
+          descripcion_campo: curriculo.Empleado.correo,
+        },
+        {
+          titulo_campo: "Dirección de vivienda: ",
+          descripcion_campo: curriculo.Empleado.direccion,
+        },
+        {
+          titulo_campo: "Cantidad hijos: ",
+          descripcion_campo: curriculo.cantidad_hijos,
+        },
+        {
+          titulo_campo: "Grado de instrucción más alta: ",
+          descripcion_campo: curriculo.grado_instruccion,
+        },
+      ],
     });
 
     let areas = "";
@@ -130,8 +150,74 @@ const traerCurriculoPDF = async (empleado_id) => {
     });
 
     content.push({
-      titulo: "Áreas de interés",
-      contenido: areas,
+      titulo: "Áreas de Interés",
+      contenido: [
+        {
+          descripcion_campo: areas,
+        },
+      ],
+    });
+
+    let titulos_obtenidos = "";
+
+    curriculo.Titulo_Obtenidos.forEach((titulo, index) => {
+      titulos_obtenidos =
+        index === 0 ? titulo.nombre : titulos_obtenidos + `, ${titulo.nombre}`;
+    });
+
+    content.push({
+      titulo: "Títulos Obtenidos",
+      contenido: [
+        {
+          descripcion_campo: titulos_obtenidos,
+        },
+      ],
+    });
+
+    let experiencias = [];
+
+    curriculo.Experiencia.forEach((experiencia) => {
+      experiencias.push({
+        tipo: experiencia.tipo,
+        cargo_titulo: experiencia.cargo_titulo,
+        duracion: experiencia.duracion,
+        empresa_centro_educativo: experiencia.empresa_centro_educativo,
+      });
+    });
+
+    content.push({
+      titulo: "Experiencias",
+      contenido: [
+        {
+          titulo_campo: "Experiencias",
+          descripcion_campo: experiencias,
+        },
+      ],
+    });
+
+    content.push({
+      titulo: "Habilidades Técnicas",
+      contenido: [
+        {
+          descripcion_campo: curriculo.habilidades_tecnicas,
+        },
+      ],
+    });
+
+    content.push({
+      titulo: "Disponibilidad",
+      contenido: [
+        {
+          titulo_campo: "¿Puede viajar? ",
+          descripcion_campo: curriculo.disponibilidad_viajar ? "Si" : "No",
+        },
+        {
+          titulo_campo: "¿Puede cambiar de residencia? ",
+          descripcion_campo: curriculo.disponibilidad_cambio_residencia
+            ? "Si"
+            : "No",
+        },
+      ],
     });
 
     return content;
