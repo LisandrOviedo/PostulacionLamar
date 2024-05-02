@@ -72,7 +72,9 @@ export function AccesoAdmin() {
       return;
     }
 
-    if (empleado.activo && empleado.Role?.nombre === "empleado") {
+    if (empleado?.changePassword) {
+      return navigate("/actualizarClaveTemporal");
+    } else if (empleado.activo && empleado.Role?.nombre === "empleado") {
       Swal.fire({
         text: "Datos incorrectos",
         icon: "error",

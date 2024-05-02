@@ -38,11 +38,11 @@ export const getLogin = (cedula, clave) => {
 };
 
 export const getEmpleadoByID = (empleado_id) => {
+  const URL_EMPLEADO_BY_ID = `${URL_SERVER}/empleados/detalle/${empleado_id}`;
+
   return async (dispatch) => {
     try {
-      const { data } = await axios(
-        `${URL_SERVER}/empleados/detalle/${empleado_id}`
-      );
+      const { data } = await axios(URL_EMPLEADO_BY_ID);
 
       return dispatch(empleadoByID(data));
     } catch (error) {
@@ -59,11 +59,11 @@ export const getEmpleadoByID = (empleado_id) => {
 };
 
 export const getCargoActual = (empleado_id) => {
+  const URL_CARGO_ACTUAL = `${URL_SERVER}/empleados/cargoActual/${empleado_id}`;
+
   return async (dispatch) => {
     try {
-      const { data } = await axios(
-        `${URL_SERVER}/empleados/cargoActual/${empleado_id}`
-      );
+      const { data } = await axios(URL_CARGO_ACTUAL);
 
       return dispatch(cargoActualEmpleado(data));
     } catch (error) {
@@ -112,6 +112,31 @@ export const putPasswordTemporal = async (body) => {
     return Swal.fire({
       text: "Su contraseña ha sido actualizada exitosamente, proceda a loguearse para continuar",
       icon: "success",
+    });
+  } catch (error) {
+    Swal.fire({
+      title: "Oops...",
+      text: `${error.response.data.error}`,
+      icon: "error",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    throw new Error();
+  }
+};
+
+export const resetPassword = async (empleado_id) => {
+  const URL_RESET_PASSWORD = `${URL_SERVER}/empleados/reiniciarClave`;
+
+  try {
+    await axios.put(URL_RESET_PASSWORD, { empleado_id });
+
+    return Swal.fire({
+      text: `Su contraseña ha sido reiniciada exitosamente a "1234"`,
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1000,
+      width: "20em",
     });
   } catch (error) {
     Swal.fire({
@@ -244,12 +269,15 @@ export const putActivo = async (empleado_id) => {
 };
 
 export const getAllEmpleados = (filtros, paginaActual, limitePorPagina) => {
+  const URL_ALL_EMPLEADOS = `${URL_SERVER}/empleados/allEmpleados`;
+
   return async (dispatch) => {
     try {
-      const { data } = await axios.post(
-        `${URL_SERVER}/empleados/allEmpleados`,
-        { filtros, paginaActual, limitePorPagina }
-      );
+      const { data } = await axios.post(URL_ALL_EMPLEADOS, {
+        filtros,
+        paginaActual,
+        limitePorPagina,
+      });
 
       return dispatch(allEmpleados(data));
     } catch (error) {

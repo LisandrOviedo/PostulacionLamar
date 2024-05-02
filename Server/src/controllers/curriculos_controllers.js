@@ -93,50 +93,48 @@ const traerCurriculo = async (curriculo_id) => {
   }
 
   try {
-    const curriculo = await Curriculo.findOne({
-      where: {
-        curriculo_id: curriculo_id,
-        activo: true,
-      },
-      attributes: {
-        exclude: ["empleado_id"],
-      },
-      include: [
-        {
-          model: Empleado,
-          attributes: {
-            exclude: ["createdAt", "updatedAt"],
-          },
-        },
-        {
-          model: Areas_Interes,
-          attributes: {
-            exclude: ["activo", "createdAt", "updatedAt"],
-          },
-          through: {
-            attributes: ["area_interes_curriculo_id"],
-          },
-        },
-        {
-          model: Titulo_Obtenido,
-          attributes: {
-            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
-          },
-        },
-        {
-          model: Experiencia,
-          attributes: {
-            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
-          },
-        },
-      ],
+    return await Curriculo.findByPk(curriculo_id);
+  } catch (error) {
+    throw new Error("Error al traer el curriculo: " + error.message);
+  }
+};
+
+const traerCurriculoPDF = async (empleado_id) => {
+  if (!empleado_id) {
+    throw new Error("Datos faltantes");
+  }
+
+  const content = [];
+
+  try {
+    const curriculo = await traerCurriculoEmpleado(empleado_id);
+
+    content.push({
+      titulo: "Datos Personales",
+      contenido: `
+      Empleado: ${curriculo.Empleado.nombres} ${curriculo.Empleado.apellidos}
+      
+      Cédula: ${curriculo.Empleado.cedula}
+      
+      Teléfono: ${curriculo.Empleado.telefono}
+      
+      Correo: ${curriculo.Empleado.correo}
+      
+      Dirección: ${curriculo.Empleado.direccion}`,
     });
 
-    if (!curriculo) {
-      throw new Error("No existe ese curriculo");
-    }
+    let areas = "";
 
-    return curriculo;
+    curriculo.Areas_Interes.forEach((area, index) => {
+      areas = index === 0 ? area.nombre : areas + `, ${area.nombre}`;
+    });
+
+    content.push({
+      titulo: "Áreas de interés",
+      contenido: areas,
+    });
+
+    return content;
   } catch (error) {
     throw new Error("Error al traer el curriculo: " + error.message);
   }
@@ -162,7 +160,7 @@ const traerCurriculoEmpleado = async (empleado_id) => {
         {
           model: Empleado,
           attributes: {
-            exclude: ["createdAt", "updatedAt"],
+            exclude: ["clave", "createdAt", "updatedAt"],
           },
         },
         {
@@ -295,6 +293,7 @@ const inactivarCurriculo = async (curriculo_id) => {
 module.exports = {
   todosLosCurriculos,
   traerCurriculo,
+  traerCurriculoPDF,
   traerCurriculoEmpleado,
   crearCurriculo,
   modificarCurriculo,

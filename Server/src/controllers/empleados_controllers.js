@@ -389,6 +389,33 @@ const actualizarClaveEmpleado = async (
   }
 };
 
+const reiniciarClaveEmpleado = async (empleado_id) => {
+  if (!empleado_id) {
+    throw new Error("Datos faltantes");
+  }
+
+  try {
+    await traerEmpleado(empleado_id);
+
+    const claveCifrada = await bcrypt.hash("1234", 10);
+
+    await Empleado.update(
+      {
+        clave: claveCifrada,
+      },
+      {
+        where: {
+          empleado_id: empleado_id,
+        },
+      }
+    );
+
+    return await traerEmpleado(empleado_id);
+  } catch (error) {
+    throw new Error("Error al modificar el empleado: " + error.message);
+  }
+};
+
 const inactivarEmpleado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error("Datos faltantes");
@@ -420,5 +447,6 @@ module.exports = {
   modificarEmpleado,
   modificarFotoEmpleado,
   actualizarClaveEmpleado,
+  reiniciarClaveEmpleado,
   inactivarEmpleado,
 };

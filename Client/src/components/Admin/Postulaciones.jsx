@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import {
   getAllCurriculos,
-  getCurriculo,
+  getCurriculoPDF,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
@@ -123,14 +123,8 @@ export function Postulaciones() {
     dispatch(getAllCurriculos(filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
 
-  const handleVerDetalles = (curriculo_id) => {
-    dispatch(getCurriculo(curriculo_id))
-      .then(() => {
-        navigate(`/admin/postulacion/${curriculo_id}`);
-      })
-      .catch((error) => {
-        return error;
-      });
+  const handleVerDetalles = (empleado_id, cedula) => {
+    dispatch(getCurriculoPDF(empleado_id, cedula));
   };
 
   const changeOrder = (e) => {
@@ -432,7 +426,10 @@ export function Postulaciones() {
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
-                          handleVerDetalles(curriculo.curriculo_id)
+                          handleVerDetalles(
+                            curriculo.Empleado.empleado_id,
+                            curriculo.Empleado.cedula
+                          )
                         }
                       >
                         Detalles
