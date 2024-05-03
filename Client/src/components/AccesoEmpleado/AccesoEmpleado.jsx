@@ -93,7 +93,7 @@ export function AccesoEmpleado() {
   const handleHelp = () => {
     return Swal.fire({
       title: "¡Atención!",
-      text: "Contacte al departamento de desarrollo para recuperar su contraseña",
+      text: "Contacte al departamento de Talento Humano para recuperar su contraseña",
       icon: "info",
     });
   };
