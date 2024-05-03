@@ -4,6 +4,8 @@ const {
   postAnexos,
 } = require("../handlers/documentos_empleados_handlers");
 
+const { DDMMYYYYHHMM } = require("../utils/formatearFecha");
+
 const documentos_empleados = Router();
 
 const multer = require("multer");
@@ -25,7 +27,7 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + " - " + file.originalname);
+    cb(null, `${DDMMYYYYHHMM()} - ${file.originalname}`);
   },
   limits: {
     fileSize: 10000000,
@@ -45,6 +47,7 @@ documentos_empleados.get("/detalle/:empleado_id", getAnexos);
 
 documentos_empleados.get("/documento/:cedula/:originalname", (req, res) => {
   const { cedula, originalname } = req.params;
+
   res.sendFile(
     path.join(
       __dirname,
