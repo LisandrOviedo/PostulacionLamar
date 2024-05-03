@@ -21,7 +21,9 @@ export function DatosPersonales() {
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
   const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${empleado.foto_perfil_nombre}`;
 
-  const [imagen, setImagen] = useState(FOTO_PERFIL || "/Person.svg");
+  const [imagen, setImagen] = useState(
+    empleado.foto_perfil_nombre ? FOTO_PERFIL : "/Person.svg"
+  );
 
   useEffect(() => {
     window.scroll(0, 0);
