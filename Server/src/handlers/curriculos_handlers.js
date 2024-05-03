@@ -10,6 +10,8 @@ const {
   inactivarCurriculo,
 } = require("../controllers/curriculos_controllers");
 
+const { DDMMYYYYHHMM } = require("../utils/formatearFecha");
+
 const path = require("path");
 const PDFDocument = require("pdfkit-table");
 const fs = require("fs");
@@ -49,7 +51,6 @@ const getCurriculoPDF = async (req, res) => {
   try {
     const doc = new PDFDocument({
       bufferPages: true,
-      font: "Helvetica-Bold",
     });
 
     // Genera el contenido del PDF
@@ -58,12 +59,26 @@ const getCurriculoPDF = async (req, res) => {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
 
+    // Guarda el PDF
     doc.pipe(res);
 
-    const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
+    // const pdf_path = path.join(
+    //   __dirname,
+    //   `../../public/documentosEmpleados/${cedula}/${DDMMYYYYHHMM()} - CV.pdf`
+    // );
+
+    // doc.pipe(fs.createWriteStream(pdf_path));
 
     const addLogo = () => {
-      doc.image(logoPath, 20, 15, { width: 80 });
+      const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
+
+      const currentPage = doc.bufferedPageRange().count;
+
+      doc.font("Helvetica").fontSize(10).text(`Página ${currentPage}`, {
+        align: "right",
+      });
+
+      doc.image(logoPath, 55, 35, { width: 80 });
       doc.translate(0, 20);
     };
 
@@ -123,7 +138,7 @@ const getCurriculoPDF = async (req, res) => {
               .fontSize(11)
               .text(campo.titulo_campo, { continued: true, indent: 20 });
 
-            if (!campo.descripcion_campo.length) {
+            if (!campo.descripcion_campo) {
               doc
                 .fontSize(11)
                 .font("Helvetica")
@@ -132,7 +147,7 @@ const getCurriculoPDF = async (req, res) => {
               doc.font("Helvetica").fontSize(11).text(campo.descripcion_campo);
             }
           } else {
-            if (!campo.descripcion_campo.length) {
+            if (!campo.descripcion_campo) {
               doc
                 .fontSize(11)
                 .font("Helvetica")
@@ -165,7 +180,6 @@ const getCurriculoPDFAnexos = async (req, res) => {
   try {
     const doc = new PDFDocument({
       bufferPages: true,
-      font: "Helvetica-Bold",
     });
 
     // Genera el contenido del PDF
@@ -177,10 +191,16 @@ const getCurriculoPDFAnexos = async (req, res) => {
 
     doc.pipe(res);
 
-    const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
-
     const addLogo = () => {
-      doc.image(logoPath, 20, 15, { width: 80 });
+      const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
+
+      const currentPage = doc.bufferedPageRange().count;
+
+      doc.font("Helvetica").fontSize(10).text(`Página ${currentPage}`, {
+        align: "right",
+      });
+
+      doc.image(logoPath, 55, 35, { width: 80 });
       doc.translate(0, 20);
     };
 
@@ -188,7 +208,10 @@ const getCurriculoPDFAnexos = async (req, res) => {
 
     doc.on("pageAdded", addLogo);
 
-    doc.fontSize(14).text("Postulación", { align: "center" });
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(14)
+      .text("Postulación", { align: "center" });
     doc.moveDown(0.5);
 
     // Agrega el contenido al documento PDF
@@ -240,7 +263,7 @@ const getCurriculoPDFAnexos = async (req, res) => {
               .fontSize(11)
               .text(campo.titulo_campo, { continued: true, indent: 20 });
 
-            if (!campo.descripcion_campo.length) {
+            if (!campo.descripcion_campo) {
               doc
                 .fontSize(11)
                 .font("Helvetica")
@@ -249,7 +272,7 @@ const getCurriculoPDFAnexos = async (req, res) => {
               doc.font("Helvetica").fontSize(11).text(campo.descripcion_campo);
             }
           } else {
-            if (!campo.descripcion_campo.length) {
+            if (!campo.descripcion_campo) {
               doc
                 .fontSize(11)
                 .font("Helvetica")
@@ -274,17 +297,28 @@ const getCurriculoPDFAnexos = async (req, res) => {
       const fileName = pathParts.pop();
       const fileExtension = fileName.split(".").pop();
 
-      // if (fileExtension === "pdf") {
-      //   doc.addPage().pdf(path);
-      // } else if (fileExtension === "doc" || fileExtension === "docx") {
-      //   doc.addPage().text(path.toString());
-      // } else
-      if (
+      if (fileExtension === "pdf") {
+        // doc.addPage().pdf(path);
+      } else if (fileExtension === "doc" || fileExtension === "docx") {
+        // doc.addPage().text(path.toString());
+      } else if (
         fileExtension === "jpeg" ||
         fileExtension === "jpg" ||
         fileExtension === "png"
       ) {
-        doc.addPage().image(anexo, { width: 400 });
+        const pageWidth = doc.page.width;
+        const pageHeight = doc.page.height;
+        const imageScale = 0.3; // Escala deseada de la imagen
+
+        const image = doc.openImage(anexo);
+
+        const imageWidth = image.width * imageScale; // Ancho deseado de la imagen
+        const imageHeight = image.height * imageScale; // Alto deseado de la imagen
+
+        const x = (pageWidth - imageWidth) / 2;
+        const y = (pageHeight - imageHeight) / 2;
+
+        doc.addPage().image(anexo, x, y, { scale: imageScale });
       }
     });
 
