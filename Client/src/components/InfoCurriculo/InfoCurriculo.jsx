@@ -24,7 +24,7 @@ export function InfoCurriculo() {
 
     dispatch(getCurriculoEmpleado(empleado.empleado_id));
 
-    document.title = "Grupo Lamar - Registrar Currículo";
+    document.title = "Grupo Lamar - Registrar Perfil Profesional";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -37,7 +37,7 @@ export function InfoCurriculo() {
     if (curriculoEmpleado && curriculoEmpleado.curriculo_id) {
       await Swal.fire({
         title: "¡Atención!",
-        text: "Ya tienes un currículo registrado, serás redireccionado a sus detalles",
+        text: "Ya tienes datos registrados, serás redireccionado a sus detalles",
         icon: "info",
       });
 
@@ -49,7 +49,7 @@ export function InfoCurriculo() {
     navigate("/curriculo/registro");
 
     return Swal.fire({
-      title: "Creación y envío del currículo",
+      title: "Creación del perfil profesional",
       text: "Llena los datos y presiona continuar",
       icon: "info",
       showConfirmButton: false,
