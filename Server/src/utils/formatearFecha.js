@@ -5,8 +5,9 @@ const DDMMYYYYHHMM = () => {
   const año = fechaHoraActual.getFullYear();
   const hora = String(fechaHoraActual.getHours()).padStart(2, "0");
   const minutos = String(fechaHoraActual.getMinutes()).padStart(2, "0");
+  const segundos = String(fechaHoraActual.getSeconds()).padStart(2, "0");
 
-  const fechaHoraFormateada = `${dia}-${mes}-${año} ${hora}-${minutos}`;
+  const fechaHoraFormateada = `${dia}-${mes}-${año} ${hora}-${minutos}-${segundos}`;
 
   return fechaHoraFormateada;
 };
