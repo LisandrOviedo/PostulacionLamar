@@ -108,35 +108,17 @@ export const deleteFiltros = () => {
   };
 };
 
-export const getCurriculoPDF = (empleado_id, cedula) => {
+export const postCurriculoPDF = (empleado_id, cedula) => {
   const URL_CURRICULO = `${URL_SERVER}/curriculos/detalle`;
 
   return async () => {
-    const filename = `Curriculo - ${cedula}.pdf`;
-
     try {
-      const response = await axios.post(
-        URL_CURRICULO,
-        { empleado_id: empleado_id, cedula: cedula },
-        {
-          responseType: "blob", // Establece responseType a "blob" para obtener el archivo en formato blob
-        }
-      );
+      const response = await axios.post(URL_CURRICULO, {
+        empleado_id: empleado_id,
+        cedula: cedula,
+      });
 
-      // Crea una URL del blob de la respuesta
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-
-      // Crea un enlace temporal y simula un clic en él para descargar el archivo
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", filename);
-      link.style.display = "none";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // Revoca la URL del blob después de descargar el archivo
-      window.URL.revokeObjectURL(url);
+      return response;
     } catch (error) {
       Swal.fire({
         title: "Oops...",
@@ -241,7 +223,7 @@ export const postCurriculo = (datosCurriculo) => {
       }
 
       return Swal.fire({
-        text: "¡Currículo enviado exitosamente!",
+        text: "¡Perfil profesional guardado exitosamente!",
         icon: "success",
         showConfirmButton: false,
         timer: 4000,
@@ -361,7 +343,7 @@ export const putCurriculo = (datosCurriculo) => {
       }
 
       return Swal.fire({
-        text: "¡Curriculo actualizado exitosamente!",
+        text: "¡Perfil profesional actualizado exitosamente!",
         icon: "success",
         showConfirmButton: false,
         timer: 2000,
