@@ -4,8 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 
 import {
   getAllCurriculos,
-  getCurriculoPDF,
-  getCurriculoPDFAnexos,
+  // getCurriculoPDF,
+  // getCurriculoPDFAnexos,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
@@ -125,11 +125,11 @@ export function Postulaciones() {
   }, [filtros, paginaActual, limitePorPagina]);
 
   const handleVerDetalles = (empleado_id, cedula) => {
-    dispatch(getCurriculoPDF(empleado_id, cedula));
+    // dispatch(getCurriculoPDF(empleado_id, cedula));
   };
 
   const handleVerDetallesAnexos = (empleado_id, cedula) => {
-    dispatch(getCurriculoPDFAnexos(empleado_id, cedula));
+    // dispatch(getCurriculoPDFAnexos(empleado_id, cedula));
   };
 
   const changeOrder = (e) => {
