@@ -78,6 +78,48 @@ const crearAnexos = async (empleado_id, anexos) => {
   }
 };
 
+const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
+  if (!filename || !pdf_path) {
+    throw new Error("Datos faltantes");
+  }
+
+  try {
+    const pdf_actual = await Documentos_Empleado.findOne({
+      where: {
+        empleado_id: empleado_id,
+        tipo: "perfil_pdf",
+      },
+    });
+
+    if (pdf_actual === null) {
+    } else {
+      const rutaArchivo = pdf_actual.ruta;
+
+      fs.unlink(rutaArchivo, (error) => {
+        if (error) {
+          console.error("Error al borrar el archivo:", error);
+        }
+      });
+    }
+
+    await Documentos_Empleado.destroy({
+      where: {
+        empleado_id: empleado_id,
+        tipo: "perfil_pdf",
+      },
+    });
+
+    await Documentos_Empleado.create({
+      empleado_id: empleado_id,
+      tipo: "perfil_pdf",
+      nombre: filename,
+      ruta: pdf_path,
+    });
+  } catch (error) {
+    throw new Error("Error al crear el anexo: " + error.message);
+  }
+};
+
 const modificarAnexos = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error("Datos faltantes");
@@ -136,5 +178,6 @@ const modificarAnexos = async (empleado_id) => {
 module.exports = {
   traerAnexos,
   crearAnexos,
+  crearCurriculoPDF,
   modificarAnexos,
 };
