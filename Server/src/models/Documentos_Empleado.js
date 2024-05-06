@@ -15,6 +15,7 @@ module.exports = (sequelize) => {
     },
     tipo: {
       type: DataTypes.ENUM(
+        "perfil_pdf",
         "foto_carnet",
         "foto_cedula",
         "rif",
