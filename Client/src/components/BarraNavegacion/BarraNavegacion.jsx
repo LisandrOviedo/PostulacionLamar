@@ -191,7 +191,7 @@ export function BarraNavegacion() {
                       className="flex items-center justify-between p-2 hover:text-[#F0C95C]"
                     >
                       <div className="mx-auto">
-                        <span>Currículo</span>
+                        <span>Perfil Profesional</span>
                       </div>
                     </div>
                     <ul
