@@ -10,6 +10,10 @@ const {
   inactivarCurriculo,
 } = require("../controllers/curriculos_controllers");
 
+const {
+  crearCurriculoPDF,
+} = require("../controllers/documentos_empleados_controllers");
+
 const { DDMMYYYYHHMM } = require("../utils/formatearFecha");
 
 const path = require("path");
@@ -46,32 +50,27 @@ const getCurriculo = async (req, res) => {
 
 const getCurriculoPDF = async (req, res) => {
   const { empleado_id, cedula } = req.body;
-  const filename = `Curriculo - ${cedula}.pdf`;
+  const filename = `${DDMMYYYYHHMM()} - CV.pdf`;
 
   try {
     const doc = new PDFDocument({
       bufferPages: true,
+      font: "Helvetica",
     });
 
     // Genera el contenido del PDF
     const content = await traerCurriculoPDF(empleado_id);
 
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
+    const pdf_path = path.join(
+      __dirname,
+      `../../public/documentosEmpleados/${cedula}/${filename}`
+    );
 
-    // Guarda el PDF
-    doc.pipe(res);
+    doc.pipe(fs.createWriteStream(pdf_path));
 
-    // const pdf_path = path.join(
-    //   __dirname,
-    //   `../../public/documentosEmpleados/${cedula}/${DDMMYYYYHHMM()} - CV.pdf`
-    // );
-
-    // doc.pipe(fs.createWriteStream(pdf_path));
+    const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
 
     const addLogo = () => {
-      const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
-
       const currentPage = doc.bufferedPageRange().count;
 
       doc.font("Helvetica").fontSize(10).text(`Página ${currentPage}`, {
@@ -79,18 +78,21 @@ const getCurriculoPDF = async (req, res) => {
       });
 
       doc.image(logoPath, 55, 35, { width: 80 });
-      doc.translate(0, 20);
+      doc.fillColor("black");
+      doc.moveDown();
     };
 
     addLogo();
 
     doc.on("pageAdded", addLogo);
 
-    doc.fontSize(14).text("Postulación", { align: "center" });
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(14)
+      .text("Perfil Profesional", { align: "center" });
     doc.moveDown(0.5);
 
-    // Agrega el contenido al documento PDF
-    content.forEach((seccion) => {
+    for (const seccion of content) {
       doc.moveDown();
       doc
         .font("Helvetica-Bold")
@@ -98,7 +100,7 @@ const getCurriculoPDF = async (req, res) => {
         .text(seccion.titulo, { underline: true });
       doc.moveDown();
 
-      seccion.contenido.forEach(async (campo) => {
+      for (const campo of seccion.contenido) {
         if (campo.titulo_campo === "Experiencias") {
           if (!campo.descripcion_campo.length) {
             doc.fontSize(11).font("Helvetica").text("No posee", { indent: 20 });
@@ -162,12 +164,16 @@ const getCurriculoPDF = async (req, res) => {
         }
 
         doc.moveDown();
-      });
-    });
+      }
+    }
 
     doc.end();
 
     await cambiarEstadoRevisado(empleado_id);
+
+    await crearCurriculoPDF(empleado_id, filename, pdf_path);
+
+    return res.status(201).json(filename);
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
