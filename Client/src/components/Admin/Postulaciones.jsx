@@ -27,6 +27,8 @@ export function Postulaciones() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
+
   const curriculos = useSelector((state) => state.curriculos.curriculos);
 
   const paginaActual = useSelector((state) => state.curriculos.paginaActual);
@@ -124,8 +126,10 @@ export function Postulaciones() {
     dispatch(getAllCurriculos(filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
 
-  const handleVerDetalles = (empleado_id, cedula) => {
-    // dispatch(getCurriculoPDF(empleado_id, cedula));
+  const handleVerDetalles = (cedula, ruta) => {
+    const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${cedula}/${ruta}`;
+
+    window.open(URL_GET_PDF, "_blank");
   };
 
   const handleVerDetallesAnexos = (empleado_id, cedula) => {
@@ -411,7 +415,9 @@ export function Postulaciones() {
                     </td>
                     <td className="px-4 py-4">{curriculo.Empleado.cedula}</td>
                     <td className="px-4 py-4">{curriculo.Empleado.telefono}</td>
-                    <td className="px-4 py-4">{curriculo.Empleado.correo}</td>
+                    <td className="px-4 py-4">
+                      {curriculo.Empleado.correo || "No posee"}
+                    </td>
                     <td className="px-4 py-4">
                       {curriculo.Areas_Interes.map(
                         (area, index) =>
@@ -432,8 +438,8 @@ export function Postulaciones() {
                         className="m-0 w-auto"
                         onClick={() =>
                           handleVerDetalles(
-                            curriculo.Empleado.empleado_id,
-                            curriculo.Empleado.cedula
+                            curriculo.Empleado.cedula,
+                            curriculo.Empleado.Documentos_Empleados[0].nombre
                           )
                         }
                       >
