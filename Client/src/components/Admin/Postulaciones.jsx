@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
   getAllCurriculos,
-  // getCurriculoPDF,
-  // getCurriculoPDFAnexos,
+  getCurriculoPDFAnexos,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
@@ -21,11 +19,12 @@ import {
   infoPaginador,
 } from "../../utils/paginacion";
 
+import Swal from "sweetalert2";
+
 import { DDMMYYYY } from "../../utils/formatearFecha";
 
 export function Postulaciones() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
@@ -126,14 +125,28 @@ export function Postulaciones() {
     dispatch(getAllCurriculos(filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
 
-  const handleVerDetalles = (cedula, ruta) => {
-    const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${cedula}/${ruta}`;
+  const handleVerDetalles = (cedula, nombre) => {
+    const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${cedula}/${nombre}`;
 
     window.open(URL_GET_PDF, "_blank");
   };
 
   const handleVerDetallesAnexos = (empleado_id, cedula) => {
-    // dispatch(getCurriculoPDFAnexos(empleado_id, cedula));
+    dispatch(getCurriculoPDFAnexos(empleado_id, cedula))
+      .then(() => {
+        const URL_GET_PDF_ANEXOS = `${URL_SERVER}/documentos_empleados/documento/${cedula}/Anexos ${cedula}.zip`;
+
+        window.open(URL_GET_PDF_ANEXOS, "_blank");
+      })
+      .catch((error) => {
+        Swal.fire({
+          title: "Oops...",
+          text: `${error.response.data.error}`,
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      });
   };
 
   const changeOrder = (e) => {
