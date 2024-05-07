@@ -6,6 +6,7 @@ const {
   Titulo_Obtenido,
   Areas_Interes,
   Experiencia,
+  Documentos_Empleado,
 } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
@@ -28,6 +29,13 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
             attributes: {
               exclude: ["createdAt", "updatedAt"],
             },
+            include: [
+              {
+                model: Documentos_Empleado,
+                attributes: ["tipo", "nombre"],
+                where: { tipo: "perfil_pdf" },
+              },
+            ],
             where: filtros.cedula
               ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
               : filtros.apellidos
