@@ -276,7 +276,7 @@ export function SubirDocumentos() {
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
 
       <div className="flex flex-col mt-5 mb-5 gap-3">
-        <div className="mx-auto ">
+        <div className="overflow-x-auto sm:mx-auto">
           <table className="w-auto text-sm text-left rtl:text-right dark:text-gray-400">
             <thead className="text-sm uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
               <tr className="text-white">
