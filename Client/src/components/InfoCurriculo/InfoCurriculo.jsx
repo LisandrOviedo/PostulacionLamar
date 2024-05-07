@@ -64,11 +64,12 @@ export function InfoCurriculo() {
       <p className="text-justify text-sm sm:text-base">
         A fin de identificar talentos potenciales en la organización, le
         invitamos a completar el siguiente formulario donde deberá indicar su
-        profesión y/o experiencia, así como tu área de interés laboral.
+        profesión y/o experiencia, así como su área de interés laboral, entre
+        otros.
       </p>
       <hr className="w-[50%] h-0.5 my-5 bg-gray-100 border-0" />
       <span className="text-base sm:text-lg text-center">
-        Observaciones para el llenado del formulario:
+        Observaciones para después del llenado del formulario:
       </span>
       <br />
       <ul className="list-disc text-justify sm:text-left text-sm sm:text-base">
@@ -77,8 +78,10 @@ export function InfoCurriculo() {
           Valoración Actitudinal
         </li>
         <li>
-          Cargar resumen curricular en formato PDF{" "}
-          <img className="w-[1.2rem] inline" src="/PDF.svg" alt="PDF Icon" />
+          Anexar resumen curricular en formato PDF{" "}
+          <img className="w-[1.2rem] inline" src="/PDF.svg" alt="PDF Icon" />{" "}
+          Además, anexar también el resto de documentos requeridos en el menú
+          Perfil Profesional / Anexar documentos.
         </li>
       </ul>
       <Button className="w-auto" onClick={handleContinuar}>
