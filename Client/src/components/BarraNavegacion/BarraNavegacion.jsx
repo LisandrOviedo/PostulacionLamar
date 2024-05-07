@@ -203,14 +203,6 @@ export function BarraNavegacion() {
                     >
                       <li>
                         <Link
-                          to="/inicio"
-                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
-                        >
-                          Visualizar
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
                           to="/curriculo/info"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                         >
