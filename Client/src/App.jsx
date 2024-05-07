@@ -17,7 +17,6 @@ import {
   AccesoAdmin,
   Empleados,
   PanelAdmin,
-  Postulacion,
   Postulaciones,
 } from "./components/";
 
@@ -74,11 +73,6 @@ function App() {
               element={<DatosPersonales />}
             />
             <Route path="/admin/postulaciones" element={<Postulaciones />} />
-            <Route
-              path="/admin/postulacion/:curriculo_id"
-              element={<Postulacion />}
-            />
-
             <Route path="/admin/empleados" element={<Empleados />} />
             {/* <Route
               path="/admin/empleado/:empleado_id"
