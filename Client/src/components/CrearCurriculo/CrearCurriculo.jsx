@@ -345,9 +345,21 @@ export function CrearCurriculo() {
           // Acciones a realizar después de que se resuelva la promesa exitosamente
           dispatch(postCurriculoPDF(empleado.empleado_id, empleado.cedula))
             .then((response) => {
-              const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${response.data}`;
+              Swal.fire({
+                text: "¿Deseas observar / descargar tu perfil?",
+                icon: "info",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si",
+                cancelButtonText: "No",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${response.data}`;
+                  window.open(URL_GET_PDF, "_blank");
+                }
+              });
 
-              window.open(URL_GET_PDF, "_blank");
               navigate("/inicio");
             })
             .catch((error) => {

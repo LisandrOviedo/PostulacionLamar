@@ -363,9 +363,21 @@ export function DetalleCurriculo() {
             )
           )
             .then((response) => {
-              const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${curriculoEmpleado.Empleado.cedula}/${response.data}`;
+              Swal.fire({
+                text: "¿Deseas observar / descargar tu perfil?",
+                icon: "info",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si",
+                cancelButtonText: "No",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${curriculoEmpleado.Empleado.cedula}/${response.data}`;
 
-              window.open(URL_GET_PDF, "_blank");
+                  window.open(URL_GET_PDF, "_blank");
+                }
+              });
             })
             .catch((error) => {
               console.error("Error en postCurriculoPDF:", error);
