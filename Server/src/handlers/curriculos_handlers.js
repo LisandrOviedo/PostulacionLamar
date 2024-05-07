@@ -80,6 +80,9 @@ const getCurriculoPDF = async (req, res) => {
 
     doc.on("pageAdded", () => {
       doc.fillColor("black");
+      doc.image(logoPath, 55, 35, { width: 80 });
+      doc.moveDown(2);
+      doc.moveDown();
     });
 
     for (const seccion of content) {
