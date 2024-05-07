@@ -84,7 +84,7 @@ export function BarraNavegacion() {
   }, [empleado]);
 
   return (
-    <div className="w-full z-999 fixed top-0 select-none">
+    <div className="w-full fixed top-0 select-none z-50">
       <nav className="bg-[#002846] p-1 flex items-center justify-between">
         <div className="text-white flex items-center">
           <Logo
@@ -143,7 +143,10 @@ export function BarraNavegacion() {
                   <Link
                     to="/inicio"
                     className="block text-white hover:text-[#F0C95C]"
-                    onClick={() => toggleMenu({})}
+                    onClick={() => {
+                      toggleMenuBurger();
+                      toggleMenu({});
+                    }}
                   >
                     <div className="flex items-center justify-between p-2">
                       <div className="mx-auto">Inicio</div>
@@ -170,6 +173,7 @@ export function BarraNavegacion() {
                         <Link
                           to="/datosPersonales"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                          onClick={toggleMenuBurger}
                         >
                           Datos personales
                         </Link>
@@ -178,6 +182,7 @@ export function BarraNavegacion() {
                         <Link
                           to="/actualizarClave"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                          onClick={toggleMenuBurger}
                         >
                           Actualizar contraseña
                         </Link>
@@ -205,6 +210,7 @@ export function BarraNavegacion() {
                         <Link
                           to="/curriculo/info"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                          onClick={toggleMenuBurger}
                         >
                           Crear / Modificar
                         </Link>
@@ -213,6 +219,7 @@ export function BarraNavegacion() {
                         <Link
                           to="/documentos"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                          onClick={toggleMenuBurger}
                         >
                           Anexar documentos
                         </Link>
@@ -221,6 +228,7 @@ export function BarraNavegacion() {
                         <Link
                           to="/inicio"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                          onClick={toggleMenuBurger}
                         >
                           Aplicar Test de Valoración Actitudinal
                         </Link>
@@ -245,7 +253,10 @@ export function BarraNavegacion() {
                   <Link
                     to="/admin/panel"
                     className="block text-white hover:text-[#F0C95C]"
-                    onClick={() => toggleMenu({})}
+                    onClick={() => {
+                      toggleMenuBurger();
+                      toggleMenu({});
+                    }}
                   >
                     <div className="flex items-center justify-between p-2">
                       <div className="mx-auto">Inicio</div>
@@ -272,6 +283,7 @@ export function BarraNavegacion() {
                         <Link
                           to="/admin/datosPersonales"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                          onClick={toggleMenuBurger}
                         >
                           Datos personales
                         </Link>
@@ -280,6 +292,7 @@ export function BarraNavegacion() {
                         <Link
                           to="/admin/actualizarClave"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                          onClick={toggleMenuBurger}
                         >
                           Actualizar contraseña
                         </Link>
@@ -290,7 +303,10 @@ export function BarraNavegacion() {
                     <Link
                       to="/admin/empleados"
                       className="block text-white hover:text-[#F0C95C]"
-                      onClick={() => toggleMenu({})}
+                      onClick={() => {
+                        toggleMenuBurger();
+                        toggleMenu({});
+                      }}
                     >
                       <div className="flex items-center justify-between p-2">
                         <div className="mx-auto">Empleados</div>
@@ -301,7 +317,10 @@ export function BarraNavegacion() {
                     <Link
                       to="/admin/postulaciones"
                       className="block text-white hover:text-[#F0C95C]"
-                      onClick={() => toggleMenu({})}
+                      onClick={() => {
+                        toggleMenuBurger();
+                        toggleMenu({});
+                      }}
                     >
                       <div className="flex items-center justify-between p-2">
                         <div className="mx-auto">Postulaciones</div>
