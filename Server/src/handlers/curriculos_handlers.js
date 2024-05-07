@@ -69,34 +69,23 @@ const getCurriculoPDF = async (req, res) => {
     doc.pipe(fs.createWriteStream(pdf_path));
 
     const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
+    doc.image(logoPath, 55, 35, { width: 80 });
 
-    const addLogo = () => {
-      const currentPage = doc.bufferedPageRange().count;
-
-      doc.font("Helvetica").fontSize(10).text(`Página ${currentPage}`, {
-        align: "right",
-      });
-
-      doc.image(logoPath, 55, 35, { width: 80 });
-      doc.fillColor("black");
-      doc.moveDown();
-    };
-
-    addLogo();
-
-    doc.on("pageAdded", addLogo);
-
+    doc.moveDown(2);
     doc
-      .font("Helvetica-Bold")
       .fontSize(14)
+      .font("Helvetica-Bold")
       .text("Perfil Profesional", { align: "center" });
-    doc.moveDown(0.5);
+    doc.moveDown();
+
+    doc.on("pageAdded", () => {
+      doc.fillColor("black");
+    });
 
     for (const seccion of content) {
-      doc.moveDown();
       doc
-        .font("Helvetica-Bold")
         .fontSize(12)
+        .font("Helvetica-Bold")
         .text(seccion.titulo, { underline: true });
       doc.moveDown();
 
@@ -105,40 +94,40 @@ const getCurriculoPDF = async (req, res) => {
           if (!campo.descripcion_campo.length) {
             doc.fontSize(11).font("Helvetica").text("No posee", { indent: 20 });
           } else {
-            const table = {
-              headers: [
-                "Tipo",
-                "Cargo / Título",
-                "Duración",
-                "Empresa / Centro Educativo",
-              ],
-              rows: [],
-            };
-
-            for (const experiencia of campo.descripcion_campo) {
-              const row = [
-                experiencia.tipo,
-                experiencia.cargo_titulo,
-                experiencia.duracion,
-                experiencia.empresa_centro_educativo,
-              ];
-              table.rows.push(row);
-            }
-
-            await doc.table(table, {
-              columnsSize: [50, 160, 90, 170],
-              prepareHeader: () => doc.font("Helvetica-Bold").fontSize(11),
-              prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
-                doc.font("Helvetica").fontSize(10);
-              },
-            });
+            (async function createTable() {
+              const table = {
+                headers: [
+                  "Tipo",
+                  "Cargo / Título",
+                  "Duración",
+                  "Empresa / Centro Educativo",
+                ],
+                rows: [],
+              };
+              for (const experiencia of campo.descripcion_campo) {
+                const row = [
+                  experiencia.tipo,
+                  experiencia.cargo_titulo,
+                  experiencia.duracion,
+                  experiencia.empresa_centro_educativo,
+                ];
+                table.rows.push(row);
+              }
+              await doc.table(table, {
+                columnsSize: [50, 160, 90, 170],
+                prepareHeader: () => doc.fontSize(11).font("Helvetica-Bold"),
+                prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+                  doc.fontSize(10).font("Helvetica");
+                },
+              });
+            })();
           }
         } else {
           if (campo.titulo_campo) {
-            doc
-              .font("Helvetica-Bold")
-              .fontSize(11)
-              .text(campo.titulo_campo, { continued: true, indent: 20 });
+            doc.fontSize(11).font("Helvetica-Bold").text(campo.titulo_campo, {
+              continued: true,
+              indent: 20,
+            });
 
             if (!campo.descripcion_campo) {
               doc
@@ -146,7 +135,7 @@ const getCurriculoPDF = async (req, res) => {
                 .font("Helvetica")
                 .text("No posee", { indent: 20 });
             } else {
-              doc.font("Helvetica").fontSize(11).text(campo.descripcion_campo);
+              doc.fontSize(11).font("Helvetica").text(campo.descripcion_campo);
             }
           } else {
             if (!campo.descripcion_campo) {
@@ -156,15 +145,14 @@ const getCurriculoPDF = async (req, res) => {
                 .text("No posee", { indent: 20 });
             } else {
               doc
-                .font("Helvetica")
                 .fontSize(11)
+                .font("Helvetica")
                 .text(campo.descripcion_campo, { indent: 20 });
             }
           }
         }
-
-        doc.moveDown();
       }
+      doc.moveDown();
     }
 
     doc.end();
@@ -214,17 +202,14 @@ const getCurriculoPDFAnexos = async (req, res) => {
 
     doc.on("pageAdded", addLogo);
 
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(14)
-      .text("Postulación", { align: "center" });
+    doc.font("Helvetica").fontSize(14).text("Postulación", { align: "center" });
     doc.moveDown(0.5);
 
     // Agrega el contenido al documento PDF
     content.forEach((seccion) => {
       doc.moveDown();
       doc
-        .font("Helvetica-Bold")
+        .font("Helvetica")
         .fontSize(12)
         .text(seccion.titulo, { underline: true });
       doc.moveDown();
@@ -256,7 +241,7 @@ const getCurriculoPDFAnexos = async (req, res) => {
 
             await doc.table(table, {
               columnsSize: [50, 160, 90, 170],
-              prepareHeader: () => doc.font("Helvetica-Bold").fontSize(11),
+              prepareHeader: () => doc.font("Helvetica").fontSize(11),
               prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
                 doc.font("Helvetica").fontSize(10);
               },
@@ -265,7 +250,7 @@ const getCurriculoPDFAnexos = async (req, res) => {
         } else {
           if (campo.titulo_campo) {
             doc
-              .font("Helvetica-Bold")
+              .font("Helvetica")
               .fontSize(11)
               .text(campo.titulo_campo, { continued: true, indent: 20 });
 
