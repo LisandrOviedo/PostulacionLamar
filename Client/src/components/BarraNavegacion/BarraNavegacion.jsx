@@ -191,7 +191,7 @@ export function BarraNavegacion() {
                       className="flex items-center justify-between p-2 hover:text-[#F0C95C]"
                     >
                       <div className="mx-auto">
-                        <span>Currículo</span>
+                        <span>Perfil Profesional</span>
                       </div>
                     </div>
                     <ul
@@ -201,14 +201,6 @@ export function BarraNavegacion() {
                           : "hidden"
                       }
                     >
-                      <li>
-                        <Link
-                          to="/inicio"
-                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
-                        >
-                          Visualizar
-                        </Link>
-                      </li>
                       <li>
                         <Link
                           to="/curriculo/info"

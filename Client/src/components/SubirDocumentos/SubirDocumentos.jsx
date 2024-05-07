@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -294,6 +295,43 @@ export function SubirDocumentos() {
               </tr>
             </thead>
             <tbody>
+              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-4 py-4">Perfil Profesional</td>
+                {anexos &&
+                anexos.find((anexo) => anexo.tipo === "perfil_pdf") ? (
+                  <>
+                    <td className="px-4 py-4">
+                      {
+                        anexos.find((anexo) => anexo.tipo === "perfil_pdf")
+                          .nombre
+                      }
+                    </td>
+                    <td className="px-4 py-4">
+                      <Button
+                        className="m-0 w-auto"
+                        onClick={() =>
+                          handleOpenDocument(
+                            anexos.find((anexo) => anexo.tipo === "perfil_pdf")
+                              .nombre
+                          )
+                        }
+                      >
+                        Ver
+                      </Button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="px-4 py-4 text-red-800">No cargado</td>
+                    <td className="px-4 py-4"></td>
+                  </>
+                )}
+                <td className="px-4 py-4">
+                  <Link to="/curriculo/info">
+                    <Button className="m-0 w-auto">Cargar / Actualizar</Button>
+                  </Link>
+                </td>
+              </tr>
               <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
                 <td className="px-4 py-4">Foto Carnet</td>
                 {anexos &&

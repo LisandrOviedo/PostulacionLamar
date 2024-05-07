@@ -13,7 +13,6 @@ import { SubirDocumentos } from "./SubirDocumentos/SubirDocumentos";
 import { AccesoAdmin } from "./Admin/AccesoAdmin";
 import { Empleados } from "./Admin/Empleados";
 import { PanelAdmin } from "./Admin/PanelAdmin";
-import { Postulacion } from "./Admin/Postulacion";
 import { Postulaciones } from "./Admin/Postulaciones";
 
 export {
@@ -31,6 +30,5 @@ export {
   AccesoAdmin,
   Empleados,
   PanelAdmin,
-  Postulacion,
   Postulaciones,
 };

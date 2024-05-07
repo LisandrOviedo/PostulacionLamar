@@ -5,7 +5,10 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
-import { putCurriculo } from "../../redux/curriculos/curriculoAction";
+import {
+  putCurriculo,
+  postCurriculoPDF,
+} from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
@@ -15,6 +18,8 @@ import Swal from "sweetalert2";
 
 export function DetalleCurriculo() {
   const dispatch = useDispatch();
+
+  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const curriculoEmpleado = useSelector(
     (state) => state.curriculos.curriculoEmpleado
@@ -44,7 +49,7 @@ export function DetalleCurriculo() {
 
     dispatch(getAllAreasInteresActivas());
 
-    document.title = "Grupo Lamar - Modificar Currículo";
+    document.title = "Grupo Lamar - Modificar Perfil Profesional";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -348,9 +353,29 @@ export function DetalleCurriculo() {
     }
 
     try {
-      dispatch(putCurriculo(datosCurriculo));
+      dispatch(putCurriculo(datosCurriculo))
+        .then(() => {
+          // Acciones a realizar después de que se resuelva la promesa exitosamente
+          dispatch(
+            postCurriculoPDF(
+              curriculoEmpleado.Empleado.empleado_id,
+              curriculoEmpleado.Empleado.cedula
+            )
+          )
+            .then((response) => {
+              const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${curriculoEmpleado.Empleado.cedula}/${response.data}`;
+
+              window.open(URL_GET_PDF, "_blank");
+            })
+            .catch((error) => {
+              console.error("Error en postCurriculoPDF:", error);
+            });
+        })
+        .catch((error) => {
+          console.error("Error en postCurriculo:", error);
+        });
     } catch (error) {
-      return error;
+      console.error("Error general:", error);
     }
   };
 
@@ -362,7 +387,7 @@ export function DetalleCurriculo() {
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
-      <Title>Detalles Currículo</Title>
+      <Title>Detalles Perfil Profesional</Title>
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
       {curriculoEmpleado && curriculoEmpleado?.curriculo_id ? (
         <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mt-5 mb-5">

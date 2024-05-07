@@ -24,7 +24,7 @@ export function InfoCurriculo() {
 
     dispatch(getCurriculoEmpleado(empleado.empleado_id));
 
-    document.title = "Grupo Lamar - Registrar Currículo";
+    document.title = "Grupo Lamar - Registrar Perfil Profesional";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -37,7 +37,7 @@ export function InfoCurriculo() {
     if (curriculoEmpleado && curriculoEmpleado.curriculo_id) {
       await Swal.fire({
         title: "¡Atención!",
-        text: "Ya tienes un currículo registrado, serás redireccionado a sus detalles",
+        text: "Ya tienes datos registrados, serás redireccionado a sus detalles",
         icon: "info",
       });
 
@@ -49,7 +49,7 @@ export function InfoCurriculo() {
     navigate("/curriculo/registro");
 
     return Swal.fire({
-      title: "Creación y envío del currículo",
+      title: "Creación del perfil profesional",
       text: "Llena los datos y presiona continuar",
       icon: "info",
       showConfirmButton: false,
@@ -64,11 +64,12 @@ export function InfoCurriculo() {
       <p className="text-justify text-sm sm:text-base">
         A fin de identificar talentos potenciales en la organización, le
         invitamos a completar el siguiente formulario donde deberá indicar su
-        profesión y/o experiencia, así como tu área de interés laboral.
+        profesión y/o experiencia, así como su área de interés laboral, entre
+        otros.
       </p>
       <hr className="w-[50%] h-0.5 my-5 bg-gray-100 border-0" />
       <span className="text-base sm:text-lg text-center">
-        Observaciones para el llenado del formulario:
+        Observaciones para después del llenado del formulario:
       </span>
       <br />
       <ul className="list-disc text-justify sm:text-left text-sm sm:text-base">
@@ -77,8 +78,10 @@ export function InfoCurriculo() {
           Valoración Actitudinal
         </li>
         <li>
-          Cargar resumen curricular en formato PDF{" "}
-          <img className="w-[1.2rem] inline" src="/PDF.svg" alt="PDF Icon" />
+          Anexar resumen curricular en formato PDF{" "}
+          <img className="w-[1.2rem] inline" src="/PDF.svg" alt="PDF Icon" />{" "}
+          Además, anexar también el resto de documentos requeridos en el menú
+          Perfil Profesional / Anexar documentos.
         </li>
       </ul>
       <Button className="w-auto" onClick={handleContinuar}>

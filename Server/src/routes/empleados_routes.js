@@ -13,6 +13,8 @@ const {
   deleteEmpleado,
 } = require("../handlers/empleados_handlers");
 
+const { DDMMYYYYHHMM } = require("../utils/formatearFecha");
+
 const { authenticateToken } = require("../auth/index");
 
 const empleados = Router();
@@ -36,7 +38,7 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + " - " + file.originalname);
+    cb(null, `${DDMMYYYYHHMM()} - ${file.originalname}`);
   },
   limits: {
     fileSize: 10000000,

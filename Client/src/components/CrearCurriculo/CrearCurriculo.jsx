@@ -6,7 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
-import { postCurriculo } from "../../redux/curriculos/curriculoAction";
+import {
+  postCurriculo,
+  postCurriculoPDF,
+} from "../../redux/curriculos/curriculoAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
@@ -17,6 +20,8 @@ import Swal from "sweetalert2";
 export function CrearCurriculo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
@@ -49,7 +54,7 @@ export function CrearCurriculo() {
 
     dispatch(getAllAreasInteresActivas());
 
-    document.title = "Grupo Lamar - Registrar Currículo";
+    document.title = "Grupo Lamar - Registrar Perfil Profesional";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -338,13 +343,22 @@ export function CrearCurriculo() {
       dispatch(postCurriculo(datosCurriculo))
         .then(() => {
           // Acciones a realizar después de que se resuelva la promesa exitosamente
-          navigate("/inicio");
+          dispatch(postCurriculoPDF(empleado.empleado_id, empleado.cedula))
+            .then((response) => {
+              const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${response.data}`;
+
+              window.open(URL_GET_PDF, "_blank");
+              navigate("/inicio");
+            })
+            .catch((error) => {
+              console.error("Error en postCurriculoPDF:", error);
+            });
         })
         .catch((error) => {
-          return error;
+          console.error("Error en postCurriculo:", error);
         });
     } catch (error) {
-      return error;
+      console.error("Error general:", error);
     }
   };
 
@@ -356,7 +370,7 @@ export function CrearCurriculo() {
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white">
-      <Title>Datos Currículo</Title>
+      <Title>Crear Perfil Profesional</Title>
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
 
       <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
@@ -703,7 +717,7 @@ export function CrearCurriculo() {
         </div>
         <div className="md:col-span-3 flex justify-center items-center">
           <Button className="m-0 w-auto" onClick={handleCreateCurriculo}>
-            Enviar Currículo
+            Guardar Cambios
           </Button>
         </div>
       </div>
