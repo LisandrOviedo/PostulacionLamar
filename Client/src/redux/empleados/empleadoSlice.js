@@ -4,7 +4,6 @@ const initialState = {
   empleados: {},
   empleado: {},
   empleadoDetail: {},
-  cargo_actual: [],
   documentos: [],
   paginaActual: 1,
   limitePorPagina: 2,
@@ -24,14 +23,11 @@ export const empleadoSlice = createSlice({
     allEmpleados: (state, action) => {
       state.empleados = action.payload;
     },
-    createEmpleado: (state, action) => {
+    empleadoLogin: (state, action) => {
       state.empleado = action.payload;
     },
-    empleadoByID: (state, action) => {
-      state.empleado = action.payload;
-    },
-    cargoActualEmpleado: (state, action) => {
-      state.cargo_actual = action.payload;
+    empleadoDetail: (state, action) => {
+      state.empleadoDetail = action.payload;
     },
     allDocumentos: (state, action) => {
       state.documentos = action.payload;
@@ -62,9 +58,8 @@ export const empleadoSlice = createSlice({
 
 export const {
   allEmpleados,
-  createEmpleado,
-  empleadoByID,
-  cargoActualEmpleado,
+  empleadoLogin,
+  empleadoDetail,
   allDocumentos,
   paginaActual,
   limitePorPagina,

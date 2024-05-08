@@ -2,7 +2,6 @@ const { Router } = require("express");
 const {
   getEmpleados,
   getEmpleado,
-  getCargoActual,
   getLogin,
   postEmpleado,
   putClaveTemporalEmpleado,
@@ -55,7 +54,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 empleados.get("/detalle/:empleado_id", getEmpleado);
-empleados.get("/cargoActual/:empleado_id", getCargoActual);
 empleados.get("/login", getLogin);
 
 empleados.post("/allEmpleados", getEmpleados);

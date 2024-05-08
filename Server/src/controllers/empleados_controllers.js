@@ -70,30 +70,8 @@ const traerEmpleado = async (empleado_id) => {
       include: [
         {
           model: Roles,
-          attributes: ["rol_id", "nombre"],
+          attributes: ["nombre"],
         },
-      ],
-    });
-
-    if (!empleado) {
-      throw new Error("No existe ese empleado");
-    }
-
-    return empleado;
-  } catch (error) {
-    throw new Error("Error al traer el empleado: " + error.message);
-  }
-};
-
-const traerCargoActual = async (empleado_id) => {
-  if (!empleado_id) {
-    throw new Error("Datos faltantes");
-  }
-
-  try {
-    const cargoActual = await Empleado.findByPk(empleado_id, {
-      attributes: [],
-      include: [
         {
           model: Cargo,
           through: {
@@ -114,11 +92,11 @@ const traerCargoActual = async (empleado_id) => {
       ],
     });
 
-    if (!cargoActual) {
-      throw new Error("No existe cargo actual para ese empleado");
+    if (!empleado) {
+      throw new Error("No existe ese empleado");
     }
 
-    return cargoActual;
+    return empleado;
   } catch (error) {
     throw new Error("Error al traer el empleado: " + error.message);
   }
@@ -181,7 +159,7 @@ const login = async (cedula, clave) => {
     //   { expiresIn: "8hr" }
     // );
 
-    return empleado;
+    return await traerEmpleado(empleado.empleado_id);
   } catch (error) {
     throw new Error("Error al loguear: " + error.message);
   }
@@ -440,7 +418,6 @@ const inactivarEmpleado = async (empleado_id) => {
 module.exports = {
   todosLosEmpleados,
   traerEmpleado,
-  traerCargoActual,
   login,
   crearEmpleado,
   actualizarClaveTemporalEmpleado,
