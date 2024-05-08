@@ -70,7 +70,7 @@ const traerEmpleado = async (empleado_id) => {
       include: [
         {
           model: Roles,
-          attributes: ["nombre"],
+          attributes: ["nombre", "descripcion"],
         },
         {
           model: Cargo,
