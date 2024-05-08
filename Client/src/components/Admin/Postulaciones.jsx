@@ -19,8 +19,6 @@ import {
   infoPaginador,
 } from "../../utils/paginacion";
 
-import Swal from "sweetalert2";
-
 import { DDMMYYYY } from "../../utils/formatearFecha";
 
 export function Postulaciones() {
@@ -139,13 +137,7 @@ export function Postulaciones() {
         window.open(URL_GET_PDF_ANEXOS, "_blank");
       })
       .catch((error) => {
-        Swal.fire({
-          title: "Oops...",
-          text: `${error.response.data.error}`,
-          icon: "error",
-          showConfirmButton: false,
-          timer: 2000,
-        });
+        return error;
       });
   };
 
