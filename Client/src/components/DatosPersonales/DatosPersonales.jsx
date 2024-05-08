@@ -2,10 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import {
-  getCargoActual,
-  putFotoEmpleado,
-} from "../../redux/empleados/empleadoAction";
+import { putFotoEmpleado } from "../../redux/empleados/empleadoAction";
 
 import { Button, InputFile, Title } from "../UI";
 
@@ -16,8 +13,6 @@ export function DatosPersonales() {
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const cargo_actual = useSelector((state) => state.empleados.cargo_actual);
-
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
   const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${empleado.foto_perfil_nombre}`;
 
@@ -27,8 +22,6 @@ export function DatosPersonales() {
 
   useEffect(() => {
     window.scroll(0, 0);
-
-    dispatch(getCargoActual(empleado.empleado_id));
 
     document.title = "Grupo Lamar - Datos Personales";
 
@@ -138,14 +131,14 @@ export function DatosPersonales() {
                 </dl>
               </>
             )}
-            {cargo_actual?.Cargos?.length > 0 && (
+            {empleado?.Cargos?.length > 0 && (
               <>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                   <dt className="text-sm font-bold leading-6 text-gray-900">
                     Cargo actual
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    {cargo_actual.Cargos[0].descripcion}
+                    {empleado.Cargos[0].descripcion}
                   </dd>
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -153,7 +146,7 @@ export function DatosPersonales() {
                     Nombre empresa
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    {cargo_actual.Cargos[0].Empresa.nombre}
+                    {empleado.Cargos[0].Empresa.nombre}
                   </dd>
                 </div>
               </>

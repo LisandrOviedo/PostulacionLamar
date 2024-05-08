@@ -363,14 +363,14 @@ export function CrearCurriculo() {
               navigate("/inicio");
             })
             .catch((error) => {
-              console.error("Error en postCurriculoPDF:", error);
+              return error;
             });
         })
         .catch((error) => {
-          console.error("Error en postCurriculo:", error);
+          return error;
         });
     } catch (error) {
-      console.error("Error general:", error);
+      return error;
     }
   };
 

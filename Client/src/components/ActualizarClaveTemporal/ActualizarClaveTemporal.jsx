@@ -30,6 +30,7 @@ export function ActualizarClaveTemporal() {
 
     try {
       await putPasswordTemporal(body);
+
       if (empleado.rol === "admin") {
         navigate("/admin/acceso");
         return;
