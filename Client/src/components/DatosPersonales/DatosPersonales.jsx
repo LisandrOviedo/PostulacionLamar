@@ -82,12 +82,20 @@ export function DatosPersonales() {
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
       <Title>Datos Personales</Title>
       <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center flex-col-reverse sm:flex-row">
         <div>
-          <div className="mt-6 border-t border-gray-100">
-            {empleado && (
-              <>
-                <dl className="divide-y divide-gray-100">
+          <div className="mt-4 border-t border-gray-100">
+            <dl className="divide-y divide-gray-100">
+              {empleado && (
+                <>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Tipo de usuario
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.Role.descripcion}
+                    </dd>
+                  </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
                       Nombre completo
@@ -109,7 +117,7 @@ export function DatosPersonales() {
                       Correo electrónico
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.correo}
+                      {empleado.correo ? empleado.correo : "No posee"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -128,29 +136,29 @@ export function DatosPersonales() {
                       {empleado.direccion}
                     </dd>
                   </div>
-                </dl>
-              </>
-            )}
-            {empleado?.Cargos?.length > 0 && (
-              <>
-                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                  <dt className="text-sm font-bold leading-6 text-gray-900">
-                    Cargo actual
-                  </dt>
-                  <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    {empleado.Cargos[0].descripcion}
-                  </dd>
-                </div>
-                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                  <dt className="text-sm font-bold leading-6 text-gray-900">
-                    Nombre empresa
-                  </dt>
-                  <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    {empleado.Cargos[0].Empresa.nombre}
-                  </dd>
-                </div>
-              </>
-            )}
+                </>
+              )}
+              {empleado?.Cargos?.length > 0 && (
+                <>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Cargo actual
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.Cargos[0].descripcion}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Nombre empresa
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.Cargos[0].Empresa.nombre}
+                    </dd>
+                  </div>
+                </>
+              )}
+            </dl>
           </div>
         </div>
         <div className="flex flex-col items-center gap-2 mb-2">
@@ -158,7 +166,7 @@ export function DatosPersonales() {
             id="preview_foto"
             src={imagen}
             alt="Imgen del perfil"
-            className="w-32 h-32 border border-[#002846] bg-gray-400 cursor-pointer rounded-full ring-2 ring-[#F0C95C]"
+            className="w-40 h-40 border border-[#002846] bg-gray-400 cursor-pointer rounded-full ring-2 ring-[#F0C95C]"
             onClick={() => document.getElementById("foto_perfil").click()}
           />
           <label htmlFor="foto_perfil" className="text-sm">
