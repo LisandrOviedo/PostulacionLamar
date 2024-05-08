@@ -1,11 +1,11 @@
 import axios from "axios";
-import Swal from "sweetalert2";
+
+import { alertError } from "../../utils/sweetAlert2";
 
 import {
   allEmpleados,
-  createEmpleado,
-  empleadoByID,
-  cargoActualEmpleado,
+  empleadoLogin,
+  empleadoDetail,
   allDocumentos,
   paginaActual,
   limitePorPagina,
@@ -23,57 +23,26 @@ export const getLogin = (cedula, clave) => {
     try {
       const { data } = await axios(URL_LOGIN);
 
-      dispatch(createEmpleado(data));
+      dispatch(empleadoLogin(data));
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
 };
 
-export const getEmpleadoByID = (empleado_id) => {
-  const URL_EMPLEADO_BY_ID = `${URL_SERVER}/empleados/detalle/${empleado_id}`;
+export const getEmpleadoDetail = (empleado_id) => {
+  const URL_EMPLEADO_DETAIL = `${URL_SERVER}/empleados/detalle/${empleado_id}`;
 
   return async (dispatch) => {
     try {
-      const { data } = await axios(URL_EMPLEADO_BY_ID);
+      const { data } = await axios(URL_EMPLEADO_DETAIL);
 
-      return dispatch(empleadoByID(data));
+      return dispatch(empleadoDetail(data));
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-      throw new Error();
-    }
-  };
-};
+      alertError(error);
 
-export const getCargoActual = (empleado_id) => {
-  const URL_CARGO_ACTUAL = `${URL_SERVER}/empleados/cargoActual/${empleado_id}`;
-
-  return async (dispatch) => {
-    try {
-      const { data } = await axios(URL_CARGO_ACTUAL);
-
-      return dispatch(cargoActualEmpleado(data));
-    } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
       throw new Error();
     }
   };
@@ -92,13 +61,8 @@ export const putPassword = async (body) => {
       timer: 1500,
     });
   } catch (error) {
-    Swal.fire({
-      title: "Oops...",
-      text: `${error.response.data.error}`,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    alertError(error);
+
     throw new Error();
   }
 };
@@ -114,13 +78,8 @@ export const putPasswordTemporal = async (body) => {
       icon: "success",
     });
   } catch (error) {
-    Swal.fire({
-      title: "Oops...",
-      text: `${error.response.data.error}`,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    alertError(error);
+
     throw new Error();
   }
 };
@@ -139,13 +98,8 @@ export const resetPassword = async (empleado_id) => {
       width: "20em",
     });
   } catch (error) {
-    Swal.fire({
-      title: "Oops...",
-      text: `${error.response.data.error}`,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    alertError(error);
+
     throw new Error();
   }
 };
@@ -155,13 +109,8 @@ export const resetEmpleados = () => {
     try {
       return dispatch(resetState());
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -174,7 +123,7 @@ export const postDocumentos = async (formData) => {
     await axios.post(URL_POST_DOCUMENTOS, formData);
 
     await Swal.fire({
-      text: "Documentos subidos",
+      text: "Documentos actualizados correctamente",
       icon: "success",
     });
 
@@ -182,13 +131,8 @@ export const postDocumentos = async (formData) => {
     window.scroll(0, 0);
     return;
   } catch (error) {
-    Swal.fire({
-      title: "Oops...",
-      text: `${error.response.data.error}`,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    alertError(error);
+
     throw new Error();
   }
 };
@@ -202,13 +146,8 @@ export const getDocumentos = (empleado_id) => {
 
       return dispatch(allDocumentos(data));
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -221,7 +160,7 @@ export const putFotoEmpleado = (formData) => {
     try {
       const { data } = await axios.put(URL_PUT_FOTOEMPLEADO, formData);
 
-      dispatch(createEmpleado(data));
+      dispatch(empleadoLogin(data));
 
       return Swal.fire({
         text: "¡Cambios guardados exitosamente!",
@@ -231,13 +170,8 @@ export const putFotoEmpleado = (formData) => {
         width: "20em",
       });
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -257,13 +191,8 @@ export const putActivo = async (empleado_id) => {
       width: "20em",
     });
   } catch (error) {
-    Swal.fire({
-      title: "Oops...",
-      text: `${error.response.data.error}`,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    alertError(error);
+
     throw new Error();
   }
 };
@@ -281,13 +210,8 @@ export const getAllEmpleados = (filtros, paginaActual, limitePorPagina) => {
 
       return dispatch(allEmpleados(data));
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -298,13 +222,8 @@ export const postPaginaActual = (pagina_actual) => {
     try {
       return dispatch(paginaActual(pagina_actual));
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -315,13 +234,8 @@ export const postLimitePorPagina = (limite_pagina) => {
     try {
       return dispatch(limitePorPagina(limite_pagina));
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -332,13 +246,8 @@ export const postFiltros = (filters) => {
     try {
       return dispatch(filtros(filters));
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -349,13 +258,8 @@ export const deleteFiltros = () => {
     try {
       return dispatch(resetFilters());
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };

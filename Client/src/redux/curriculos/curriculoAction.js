@@ -1,5 +1,6 @@
 import axios from "axios";
-import Swal from "sweetalert2";
+
+import { alertError } from "../../utils/sweetAlert2";
 
 import {
   allCurriculos,
@@ -28,13 +29,8 @@ export const getAllCurriculos = (filtros, paginaActual, limitePorPagina) => {
 
       return dispatch(allCurriculos(data));
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -45,13 +41,8 @@ export const postPaginaActual = (pagina_actual) => {
     try {
       return dispatch(paginaActual(pagina_actual));
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -62,13 +53,8 @@ export const postLimitePorPagina = (limite_pagina) => {
     try {
       return dispatch(limitePorPagina(limite_pagina));
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -79,13 +65,8 @@ export const postFiltros = (filters) => {
     try {
       return dispatch(filtros(filters));
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -96,13 +77,8 @@ export const deleteFiltros = () => {
     try {
       return dispatch(resetFilters());
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -120,13 +96,8 @@ export const postCurriculoPDF = (empleado_id, cedula) => {
 
       return response;
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -142,13 +113,8 @@ export const getCurriculoPDFAnexos = (empleado_id, cedula) => {
         cedula: cedula,
       });
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -163,13 +129,8 @@ export const getCurriculoEmpleado = (empleado_id) => {
 
       return dispatch(curriculoEmpleado(data));
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -209,13 +170,8 @@ export const postCurriculo = (datosCurriculo) => {
         timer: 4000,
       });
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -230,13 +186,8 @@ const postAreasInteres = async (curriculo_id, areas_interes) => {
       areas_interes,
     });
   } catch (error) {
-    Swal.fire({
-      title: "Oops...",
-      text: `${error.response.data.error}`,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    alertError(error);
+
     throw new Error();
   }
 };
@@ -250,13 +201,8 @@ const postTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
       titulos_obtenidos,
     });
   } catch (error) {
-    Swal.fire({
-      title: "Oops...",
-      text: `${error.response.data.error}`,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    alertError(error);
+
     throw new Error();
   }
 };
@@ -270,13 +216,8 @@ const postExperiencias = async (curriculo_id, experiencias) => {
       experiencias,
     });
   } catch (error) {
-    Swal.fire({
-      title: "Oops...",
-      text: `${error.response.data.error}`,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    alertError(error);
+
     throw new Error();
   }
 };
@@ -288,13 +229,8 @@ export const resetCurriculos = () => {
     try {
       return dispatch(resetState());
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -329,13 +265,8 @@ export const putCurriculo = (datosCurriculo) => {
         timer: 2000,
       });
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
@@ -353,13 +284,8 @@ const putAreasInteres = async (curriculo_id, areas_interes) => {
       areas_interes,
     });
   } catch (error) {
-    Swal.fire({
-      title: "Oops...",
-      text: `${error.response.data.error}`,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    alertError(error);
+
     throw new Error();
   }
 };
@@ -376,13 +302,8 @@ const putTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
       titulos_obtenidos,
     });
   } catch (error) {
-    Swal.fire({
-      title: "Oops...",
-      text: `${error.response.data.error}`,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    alertError(error);
+
     throw new Error();
   }
 };
@@ -399,13 +320,8 @@ const putExperiencias = async (curriculo_id, experiencias) => {
       experiencias,
     });
   } catch (error) {
-    Swal.fire({
-      title: "Oops...",
-      text: `${error.response.data.error}`,
-      icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    alertError(error);
+
     throw new Error();
   }
 };

@@ -1,7 +1,8 @@
 import axios from "axios";
-import Swal from "sweetalert2";
 
 import { allAreasInteresActivas } from "./areainteresSlice";
+
+import { alertError } from "../../utils/sweetAlert2";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
@@ -14,13 +15,8 @@ export const getAllAreasInteresActivas = () => {
 
       return dispatch(allAreasInteresActivas(data));
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
+
       throw new Error();
     }
   };
