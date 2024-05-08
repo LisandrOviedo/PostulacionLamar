@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import Swal from "sweetalert2";
+
 import { allAreasInteresActivas } from "./areainteresSlice";
 
 import { alertError } from "../../utils/sweetAlert2";
