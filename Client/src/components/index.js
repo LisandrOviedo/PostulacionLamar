@@ -11,6 +11,7 @@ import { PaginaNoEncontrada } from "./PaginaNoEncontrada/PaginaNoEncontrada";
 import { SubirDocumentos } from "./SubirDocumentos/SubirDocumentos";
 
 import { AccesoAdmin } from "./Admin/AccesoAdmin";
+import { DetalleEmpleado } from "./Admin/DetalleEmpleado";
 import { Empleados } from "./Admin/Empleados";
 import { PanelAdmin } from "./Admin/PanelAdmin";
 import { Postulaciones } from "./Admin/Postulaciones";
@@ -28,6 +29,7 @@ export {
   PaginaNoEncontrada,
   SubirDocumentos,
   AccesoAdmin,
+  DetalleEmpleado,
   Empleados,
   PanelAdmin,
   Postulaciones,

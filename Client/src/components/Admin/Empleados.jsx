@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import {
   getAllEmpleados,
-  getEmpleadoByID,
+  getEmpleadoDetail,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
@@ -119,13 +119,13 @@ export function Empleados() {
   }, [filtros, paginaActual, limitePorPagina]);
 
   const handleVerDetalles = (empleado_id) => {
-    dispatch(getEmpleadoByID(empleado_id))
-      .then(() => {
-        navigate(`/admin/empleado/${empleado_id}`);
-      })
-      .catch((error) => {
-        return error;
-      });
+    // dispatch(getEmpleadoDetail(empleado_id))
+    //   .then(() => {
+    //     navigate(`/admin/empleado/${empleado_id}`);
+    //   })
+    //   .catch((error) => {
+    //     return error;
+    //   });
   };
 
   const changeOrder = (e) => {

@@ -18,6 +18,7 @@ import {
   Empleados,
   PanelAdmin,
   Postulaciones,
+  DetalleEmpleado,
 } from "./components/";
 
 import {
@@ -74,10 +75,10 @@ function App() {
             />
             <Route path="/admin/postulaciones" element={<Postulaciones />} />
             <Route path="/admin/empleados" element={<Empleados />} />
-            {/* <Route
+            <Route
               path="/admin/empleado/:empleado_id"
-              element={<Empleado />}
-            /> */}
+              element={<DetalleEmpleado />}
+            />
             <Route
               path="/admin/actualizarClave"
               element={<ActualizarClave />}
