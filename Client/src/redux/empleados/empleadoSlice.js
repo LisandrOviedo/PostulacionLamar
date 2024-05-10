@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  token: "",
   empleados: {},
   empleado: {},
   empleadoDetail: {},
@@ -20,6 +21,9 @@ export const empleadoSlice = createSlice({
   name: "empleados",
   initialState,
   reducers: {
+    token: (state, action) => {
+      state.token = action.payload;
+    },
     allEmpleados: (state, action) => {
       state.empleados = action.payload;
     },
@@ -57,6 +61,7 @@ export const empleadoSlice = createSlice({
 });
 
 export const {
+  token,
   allEmpleados,
   empleadoLogin,
   empleadoDetail,
