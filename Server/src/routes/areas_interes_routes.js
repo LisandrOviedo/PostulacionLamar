@@ -10,20 +10,27 @@ const {
   deleteAreasInteresCurriculo,
 } = require("../handlers/areas_interes_handlers");
 
+const { authenticateToken } = require("../auth/index");
+
 const areasinteres = Router();
 
-areasinteres.get("/", getAreasInteres);
-areasinteres.get("/activas", getAreasInteresActivas);
-areasinteres.get("/detalle/:area_interes_id", getAreaInteres);
+areasinteres.get("/", authenticateToken, getAreasInteres);
+areasinteres.get("/activas", authenticateToken, getAreasInteresActivas);
+areasinteres.get(
+  "/detalle/:area_interes_id",
+  authenticateToken,
+  getAreaInteres
+);
 
-areasinteres.post("/", postAreaInteres);
-areasinteres.post("/agregarArea", postAreasInteresCurriculo);
+areasinteres.post("/", authenticateToken, postAreaInteres);
+areasinteres.post("/agregarArea", authenticateToken, postAreasInteresCurriculo);
 
-areasinteres.put("/modificar", putAreaInteres);
-areasinteres.put("/inactivar", deleteAreaInteres);
+areasinteres.put("/modificar", authenticateToken, putAreaInteres);
+areasinteres.put("/inactivar", authenticateToken, deleteAreaInteres);
 
 areasinteres.delete(
   "/eliminarAreas/:curriculo_id",
+  authenticateToken,
   deleteAreasInteresCurriculo
 );
 

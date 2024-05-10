@@ -53,17 +53,22 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-empleados.get("/detalle/:empleado_id", getEmpleado);
+empleados.get("/detalle/:empleado_id", authenticateToken, getEmpleado);
 empleados.get("/login", getLogin);
 
-empleados.post("/allEmpleados", getEmpleados);
-empleados.post("/", postEmpleado);
+empleados.post("/allEmpleados", authenticateToken, getEmpleados);
+empleados.post("/", authenticateToken, postEmpleado);
 
 empleados.put("/modificarClaveTemporal", putClaveTemporalEmpleado);
-empleados.put("/modificarClave", putClaveEmpleado);
-empleados.put("/reiniciarClave", putReiniciarClave);
-empleados.put("/modificar", putEmpleado);
-empleados.put("/modificarFoto", upload.single("foto_perfil"), putFotoEmpleado);
-empleados.put("/inactivar", deleteEmpleado);
+empleados.put("/modificarClave", authenticateToken, putClaveEmpleado);
+empleados.put("/reiniciarClave", authenticateToken, putReiniciarClave);
+empleados.put("/modificar", authenticateToken, putEmpleado);
+empleados.put(
+  "/modificarFoto",
+  authenticateToken,
+  upload.single("foto_perfil"),
+  putFotoEmpleado
+);
+empleados.put("/inactivar", authenticateToken, deleteEmpleado);
 
 module.exports = empleados;

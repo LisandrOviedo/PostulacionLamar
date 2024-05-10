@@ -4,6 +4,8 @@ const {
   postAnexos,
 } = require("../handlers/documentos_empleados_handlers");
 
+const { authenticateToken } = require("../auth/index");
+
 const { DDMMYYYYHHMM } = require("../utils/formatearFecha");
 
 const documentos_empleados = Router();
@@ -43,21 +45,26 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-documentos_empleados.get("/detalle/:empleado_id", getAnexos);
+documentos_empleados.get("/detalle/:empleado_id", authenticateToken, getAnexos);
 
-documentos_empleados.get("/documento/:cedula/:originalname", (req, res) => {
-  const { cedula, originalname } = req.params;
+documentos_empleados.get(
+  "/documento/:cedula/:originalname",
+  authenticateToken,
+  (req, res) => {
+    const { cedula, originalname } = req.params;
 
-  res.sendFile(
-    path.join(
-      __dirname,
-      `../../public/documentosEmpleados/${cedula}/${originalname}`
-    )
-  );
-});
+    res.sendFile(
+      path.join(
+        __dirname,
+        `../../public/documentosEmpleados/${cedula}/${originalname}`
+      )
+    );
+  }
+);
 
 documentos_empleados.post(
   "/",
+  authenticateToken,
   upload.fields([
     { name: "foto_carnet", maxCount: 1 },
     { name: "foto_cedula", maxCount: 1 },

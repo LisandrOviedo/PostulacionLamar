@@ -10,17 +10,23 @@ const {
   deleteCurriculo,
 } = require("../handlers/curriculos_handlers");
 
+const { authenticateToken } = require("../auth/index");
+
 const curriculos = Router();
 
-curriculos.get("/detalle/:curriculo_id", getCurriculo);
-curriculos.get("/detalleEmpleado/:empleado_id", getCurriculoEmpleado);
+curriculos.get("/detalle/:curriculo_id", authenticateToken, getCurriculo);
+curriculos.get(
+  "/detalleEmpleado/:empleado_id",
+  authenticateToken,
+  getCurriculoEmpleado
+);
 
-curriculos.post("/detalle", getCurriculoPDF);
-curriculos.post("/detalleAnexos", getCurriculoPDFAnexos);
-curriculos.post("/allCurriculos", getCurriculos);
-curriculos.post("/", postCurriculo);
+curriculos.post("/detalle", authenticateToken, getCurriculoPDF);
+curriculos.post("/detalleAnexos", authenticateToken, getCurriculoPDFAnexos);
+curriculos.post("/allCurriculos", authenticateToken, getCurriculos);
+curriculos.post("/", authenticateToken, postCurriculo);
 
-curriculos.put("/modificar", putCurriculo);
-curriculos.put("/inactivar", deleteCurriculo);
+curriculos.put("/modificar", authenticateToken, putCurriculo);
+curriculos.put("/inactivar", authenticateToken, deleteCurriculo);
 
 module.exports = curriculos;

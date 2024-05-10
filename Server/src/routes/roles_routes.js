@@ -7,14 +7,16 @@ const {
   deleteRol,
 } = require("../handlers/roles_handlers");
 
+const { authenticateToken } = require("../auth/index");
+
 const roles = Router();
 
-roles.get("/", getRoles);
-roles.get("/detalle/:rol_id", getRol);
+roles.get("/", authenticateToken, getRoles);
+roles.get("/detalle/:rol_id", authenticateToken, getRol);
 
-roles.post("/", postRol);
+roles.post("/", authenticateToken, postRol);
 
-roles.put("/modificar", putRol);
-roles.put("/inactivar", deleteRol);
+roles.put("/modificar", authenticateToken, putRol);
+roles.put("/inactivar", authenticateToken, deleteRol);
 
 module.exports = roles;

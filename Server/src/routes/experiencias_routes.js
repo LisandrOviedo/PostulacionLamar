@@ -8,18 +8,25 @@ const {
   deleteExperienciasCurriculo,
 } = require("../handlers/experiencias_handlers");
 
+const { authenticateToken } = require("../auth/index");
+
 const experiencias = Router();
 
-experiencias.get("/", getExperiencias);
-experiencias.get("/detalle/:cargo_titulo_id", getExperiencia);
+experiencias.get("/", authenticateToken, getExperiencias);
+experiencias.get(
+  "/detalle/:cargo_titulo_id",
+  authenticateToken,
+  getExperiencia
+);
 
-experiencias.post("/", postExperiencia);
+experiencias.post("/", authenticateToken, postExperiencia);
 
-experiencias.put("/modificar", putExperiencia);
-experiencias.put("/inactivar", deleteExperiencia);
+experiencias.put("/modificar", authenticateToken, putExperiencia);
+experiencias.put("/inactivar", authenticateToken, deleteExperiencia);
 
 experiencias.delete(
   "/eliminarExperiencias/:curriculo_id",
+  authenticateToken,
   deleteExperienciasCurriculo
 );
 
