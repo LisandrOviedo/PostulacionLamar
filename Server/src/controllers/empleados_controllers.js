@@ -137,15 +137,9 @@ const login = async (cedula, clave) => {
       throw new Error("Datos incorrectos");
     }
 
+    const rolCifrado = await bcrypt.hash(empleado.Role.nombre, 10);
+
     if (clave == "1234") {
-      // const token = jwt.sign(
-      //   { userId: usuario.usuario_id, username: usuario.cedula },
-      //   SECRET_KEY,
-      //   { expiresIn: "8hr" }
-      // );
-
-      // return token;
-
       return {
         empleado_id: empleado.empleado_id,
         changePassword: true,
@@ -153,13 +147,18 @@ const login = async (cedula, clave) => {
       };
     }
 
-    // const token = jwt.sign(
-    //   { userId: usuario.usuario_id, username: usuario.cedula },
-    //   SECRET_KEY,
-    //   { expiresIn: "8hr" }
-    // );
+    const token = jwt.sign(
+      {
+        empleado_id: empleado.empleado_id,
+        rol: rolCifrado,
+      },
+      SECRET_KEY,
+      { expiresIn: "1min" }
+    );
 
-    return await traerEmpleado(empleado.empleado_id);
+    const infoEmpleado = await traerEmpleado(empleado.empleado_id);
+
+    return { token, infoEmpleado };
   } catch (error) {
     throw new Error("Error al loguear: " + error.message);
   }
