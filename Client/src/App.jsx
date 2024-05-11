@@ -1,6 +1,7 @@
 import "./App.css";
 
 import { Routes, Route, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import {
   AccesoEmpleado,
@@ -31,15 +32,15 @@ import { Suspense } from "react";
 
 function App() {
   const { pathname } = useLocation();
+  const userState = useSelector((state) => state.empleados.empleado);
 
   return (
     <div>
       <Suspense fallback={<>Cargando</>}>
         {pathname.toLowerCase() !== "/" &&
           pathname.toLowerCase() !== "/admin/acceso" &&
-          pathname.toLocaleLowerCase() !== "/actualizarclavetemporal" && (
-            <BarraNavegacion />
-          )}
+          pathname.toLocaleLowerCase() !== "/actualizarclavetemporal" &&
+          userState.empleado_id && <BarraNavegacion />}
         <Routes>
           <Route path="*" element={<PaginaNoEncontrada />} />
           <Route path="/" element={<AccesoEmpleado />} />
