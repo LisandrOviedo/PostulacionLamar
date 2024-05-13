@@ -11,6 +11,8 @@ import Swal from "sweetalert2";
 export function DatosPersonales() {
   const dispatch = useDispatch();
 
+  const token = useSelector((state) => state.empleados.token);
+
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
@@ -71,7 +73,7 @@ export function DatosPersonales() {
       formData.append("foto_perfil", foto_perfil_file);
 
       try {
-        dispatch(putFotoEmpleado(formData));
+        dispatch(putFotoEmpleado(token, formData));
       } catch (error) {
         return error;
       }

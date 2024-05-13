@@ -23,6 +23,8 @@ export function CrearCurriculo() {
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
+  const token = useSelector((state) => state.empleados.token);
+
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const areas_interes_activas = useSelector(
@@ -52,7 +54,7 @@ export function CrearCurriculo() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllAreasInteresActivas());
+    dispatch(getAllAreasInteresActivas(token));
 
     document.title = "Grupo Lamar - Registrar Perfil Profesional";
 
@@ -340,10 +342,12 @@ export function CrearCurriculo() {
     }
 
     try {
-      dispatch(postCurriculo(datosCurriculo))
+      dispatch(postCurriculo(token, datosCurriculo))
         .then(() => {
           // Acciones a realizar después de que se resuelva la promesa exitosamente
-          dispatch(postCurriculoPDF(empleado.empleado_id, empleado.cedula))
+          dispatch(
+            postCurriculoPDF(token, empleado.empleado_id, empleado.cedula)
+          )
             .then((response) => {
               Swal.fire({
                 text: "¿Deseas observar / descargar tu perfil?",

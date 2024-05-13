@@ -28,6 +28,8 @@ export function Empleados() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const token = useSelector((state) => state.empleados.token);
+
   const empleados = useSelector((state) => state.empleados.empleados);
 
   const paginaActual = useSelector((state) => state.empleados.paginaActual);
@@ -115,11 +117,11 @@ export function Empleados() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllEmpleados(filtros, paginaActual, limitePorPagina));
+    dispatch(getAllEmpleados(token, filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
 
   const handleVerDetalles = (empleado_id) => {
-    dispatch(getEmpleadoDetail(empleado_id))
+    dispatch(getEmpleadoDetail(token, empleado_id))
       .then(() => {
         navigate(`/admin/empleado/${empleado_id}`);
       })
@@ -191,8 +193,10 @@ export function Empleados() {
       cancelButtonText: "No",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await putActivo(empleado_id);
-        dispatch(getAllEmpleados(filtros, paginaActual, limitePorPagina));
+        await putActivo(token, empleado_id);
+        dispatch(
+          getAllEmpleados(token, filtros, paginaActual, limitePorPagina)
+        );
       }
     });
   };
@@ -208,8 +212,10 @@ export function Empleados() {
       cancelButtonText: "No",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await resetPassword(empleado_id);
-        dispatch(getAllEmpleados(filtros, paginaActual, limitePorPagina));
+        await resetPassword(token, empleado_id);
+        dispatch(
+          getAllEmpleados(token, filtros, paginaActual, limitePorPagina)
+        );
       }
     });
   };

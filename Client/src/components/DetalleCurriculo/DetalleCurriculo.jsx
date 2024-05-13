@@ -21,6 +21,8 @@ export function DetalleCurriculo() {
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
+  const token = useSelector((state) => state.empleados.token);
+
   const curriculoEmpleado = useSelector(
     (state) => state.curriculos.curriculoEmpleado
   );
@@ -47,7 +49,7 @@ export function DetalleCurriculo() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllAreasInteresActivas());
+    dispatch(getAllAreasInteresActivas(token));
 
     document.title = "Grupo Lamar - Modificar Perfil Profesional";
 
@@ -353,11 +355,12 @@ export function DetalleCurriculo() {
     }
 
     try {
-      dispatch(putCurriculo(datosCurriculo))
+      dispatch(putCurriculo(token, datosCurriculo))
         .then(() => {
           // Acciones a realizar después de que se resuelva la promesa exitosamente
           dispatch(
             postCurriculoPDF(
+              token,
               curriculoEmpleado.Empleado.empleado_id,
               curriculoEmpleado.Empleado.cedula
             )

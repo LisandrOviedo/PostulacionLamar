@@ -13,6 +13,8 @@ export function InfoCurriculo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const token = useSelector((state) => state.empleados.token);
+
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const curriculoEmpleado = useSelector(
@@ -22,7 +24,7 @@ export function InfoCurriculo() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getCurriculoEmpleado(empleado.empleado_id));
+    dispatch(getCurriculoEmpleado(token, empleado.empleado_id));
 
     document.title = "Grupo Lamar - Registrar Perfil Profesional";
 

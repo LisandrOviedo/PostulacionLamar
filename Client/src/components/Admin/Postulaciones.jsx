@@ -24,6 +24,8 @@ import { DDMMYYYY } from "../../utils/formatearFecha";
 export function Postulaciones() {
   const dispatch = useDispatch();
 
+  const token = useSelector((state) => state.empleados.token);
+
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const curriculos = useSelector((state) => state.curriculos.curriculos);
@@ -108,7 +110,7 @@ export function Postulaciones() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllAreasInteresActivas());
+    dispatch(getAllAreasInteresActivas(token));
 
     document.title = "Grupo Lamar - Postulaciones (Admin)";
 
@@ -120,7 +122,7 @@ export function Postulaciones() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllCurriculos(filtros, paginaActual, limitePorPagina));
+    dispatch(getAllCurriculos(token, filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
 
   const handleVerDetalles = (cedula, nombre) => {
@@ -130,7 +132,7 @@ export function Postulaciones() {
   };
 
   const handleVerDetallesAnexos = (empleado_id, cedula) => {
-    dispatch(getCurriculoPDFAnexos(empleado_id, cedula))
+    dispatch(getCurriculoPDFAnexos(token, empleado_id, cedula))
       .then(() => {
         const URL_GET_PDF_ANEXOS = `${URL_SERVER}/documentos_empleados/documento/${cedula}/Anexos ${cedula}.zip`;
 

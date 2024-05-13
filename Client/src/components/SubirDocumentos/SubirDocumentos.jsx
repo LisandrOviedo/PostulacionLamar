@@ -15,6 +15,8 @@ import Swal from "sweetalert2";
 export function SubirDocumentos() {
   const dispatch = useDispatch();
 
+  const token = useSelector((state) => state.empleados.token);
+
   const empleado = useSelector((state) => state.empleados.empleado);
   const anexos = useSelector((state) => state.empleados.documentos);
 
@@ -37,7 +39,7 @@ export function SubirDocumentos() {
 
     document.title = "Grupo Lamar - Mis Documentos";
 
-    dispatch(getDocumentos(empleado.empleado_id));
+    dispatch(getDocumentos(token, empleado.empleado_id));
 
     return () => {
       document.title = "Grupo Lamar";
@@ -249,7 +251,7 @@ export function SubirDocumentos() {
       }
 
       try {
-        dispatch(postDocumentos(formData));
+        dispatch(postDocumentos(token, formData));
       } catch (error) {
         return error;
       }
