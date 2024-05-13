@@ -44,6 +44,7 @@ const {
   Empleado,
   Empresa,
   Experiencia,
+  Respuesta,
   Roles,
   Titulo_Obtenido,
 } = sequelize.models;
@@ -189,6 +190,22 @@ Documentos_Empleado.belongsTo(Empleado, {
   },
 });
 
+// Empleado N:N Respuesta
+Empleado.belongsToMany(Respuesta, {
+  through: "Respuestas_Empleado",
+  foreignKey: {
+    allowNull: false,
+    name: "empleado_id",
+  },
+});
+Respuesta.belongsToMany(Empleado, {
+  through: "Respuestas_Empleado",
+  foreignKey: {
+    allowNull: false,
+    name: "respuesta_id",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -201,6 +218,7 @@ module.exports = {
   Empleado,
   Empresa,
   Experiencia,
+  Respuesta,
   Roles,
   Titulo_Obtenido,
 };
