@@ -153,7 +153,7 @@ const login = async (cedula, clave) => {
         rol: rolCifrado,
       },
       SECRET_KEY,
-      { expiresIn: "1min" }
+      { expiresIn: "4h" }
     );
 
     const infoEmpleado = await traerEmpleado(empleado.empleado_id);
