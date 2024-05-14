@@ -47,20 +47,16 @@ const upload = multer({ storage: storage });
 
 documentos_empleados.get("/detalle/:empleado_id", authenticateToken, getAnexos);
 
-documentos_empleados.get(
-  "/documento/:cedula/:originalname",
-  authenticateToken,
-  (req, res) => {
-    const { cedula, originalname } = req.params;
+documentos_empleados.get("/documento/:cedula/:originalname", (req, res) => {
+  const { cedula, originalname } = req.params;
 
-    res.sendFile(
-      path.join(
-        __dirname,
-        `../../public/documentosEmpleados/${cedula}/${originalname}`
-      )
-    );
-  }
-);
+  res.sendFile(
+    path.join(
+      __dirname,
+      `../../public/documentosEmpleados/${cedula}/${originalname}`
+    )
+  );
+});
 
 documentos_empleados.post(
   "/",
