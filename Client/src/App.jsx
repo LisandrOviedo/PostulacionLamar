@@ -15,6 +15,7 @@ import {
   Inicio,
   PaginaNoEncontrada,
   SubirDocumentos,
+  TestActitudinal,
   AccesoAdmin,
   Empleados,
   PanelAdmin,
@@ -65,6 +66,7 @@ function App() {
             />
             <Route path="/documentos" element={<SubirDocumentos />} />
             <Route path="/actualizarClave" element={<ActualizarClave />} />
+            <Route path="/testActitudinal" element={<TestActitudinal />} />
           </Route>
 
           {/* Rutas Admin */}

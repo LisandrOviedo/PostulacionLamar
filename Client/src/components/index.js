@@ -9,6 +9,7 @@ import { InfoCurriculo } from "./InfoCurriculo/InfoCurriculo";
 import { Inicio } from "./Inicio/Inicio";
 import { PaginaNoEncontrada } from "./PaginaNoEncontrada/PaginaNoEncontrada";
 import { SubirDocumentos } from "./SubirDocumentos/SubirDocumentos";
+import { TestActitudinal } from "./TestActitudinal/TestActitudinal";
 
 import { AccesoAdmin } from "./Admin/AccesoAdmin";
 import { DetalleEmpleado } from "./Admin/DetalleEmpleado";
@@ -28,6 +29,7 @@ export {
   Inicio,
   PaginaNoEncontrada,
   SubirDocumentos,
+  TestActitudinal,
   AccesoAdmin,
   DetalleEmpleado,
   Empleados,
