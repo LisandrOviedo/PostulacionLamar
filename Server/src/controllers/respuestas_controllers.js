@@ -36,8 +36,6 @@ const traerRespuesta = async (respuesta_id) => {
 
 const crearRespuestas = async () => {
   try {
-    console.log(pruebaKostick[0]);
-
     for (const respuestaObjeto of pruebaKostick) {
       const [resp, created] = await Respuesta.findOrCreate({
         where: {
