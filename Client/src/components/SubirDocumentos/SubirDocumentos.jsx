@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -11,6 +13,8 @@ import {
 } from "../../redux/empleados/empleadoAction";
 
 import Swal from "sweetalert2";
+
+import { alertError } from "../../utils/sweetAlert2";
 
 export function SubirDocumentos() {
   const dispatch = useDispatch();
@@ -270,15 +274,10 @@ export function SubirDocumentos() {
     const URL_GET_DOCUMENTOS = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${filename}`;
 
     try {
+      await axios.get(URL_GET_DOCUMENTOS);
       window.open(URL_GET_DOCUMENTOS, "_blank");
     } catch (error) {
-      Swal.fire({
-        title: "Oops...",
-        text: `${error.response.data.error}`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      alertError(error);
     }
   };
 
