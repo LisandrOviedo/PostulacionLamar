@@ -266,10 +266,20 @@ export function SubirDocumentos() {
     });
   };
 
-  const handleOpenDocument = (filename) => {
+  const handleOpenDocument = async (filename) => {
     const URL_GET_DOCUMENTOS = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${filename}`;
 
-    window.open(URL_GET_DOCUMENTOS, "_blank");
+    try {
+      window.open(URL_GET_DOCUMENTOS, "_blank");
+    } catch (error) {
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
   };
 
   return (
