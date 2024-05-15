@@ -5,22 +5,21 @@ const { pruebaKostick } = require("../utils/pruebaKostick");
 const todasLasRespuestas = async () => {
   try {
     const respuestas = await Respuesta.findAll({
-      order: [["numero_pregunta", "ASC"]],
+      order: [
+        ["numero_pregunta", "ASC"],
+        ["respuesta", "ASC"],
+      ],
     });
 
     if (!respuestas) {
       throw new Error("No existen respuestas");
     }
 
-    let respuestasOrdenadas = {};
+    let respuestasOrdenadas = [];
 
-    respuestas.forEach((respuesta) => {
-      if (!respuestasOrdenadas.hasOwnProperty(respuesta.numero_pregunta)) {
-        respuestasOrdenadas[respuesta.numero_pregunta] = [respuesta];
-      } else {
-        respuestasOrdenadas[respuesta.numero_pregunta].push(respuesta);
-      }
-    });
+    for (let i = 0; i < respuestas.length; i += 2) {
+      respuestasOrdenadas.push([respuestas[i], respuestas[i + 1]]);
+    }
 
     return respuestasOrdenadas;
   } catch (error) {
