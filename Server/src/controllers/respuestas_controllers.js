@@ -4,13 +4,25 @@ const { pruebaKostick } = require("../utils/pruebaKostick");
 
 const todasLasRespuestas = async () => {
   try {
-    const respuestas = await Respuesta.findAll();
+    const respuestas = await Respuesta.findAll({
+      order: [["numero_pregunta", "ASC"]],
+    });
 
     if (!respuestas) {
       throw new Error("No existen respuestas");
     }
 
-    return respuestas;
+    let respuestasOrdenadas = {};
+
+    respuestas.forEach((respuesta) => {
+      if (!respuestasOrdenadas.hasOwnProperty(respuesta.numero_pregunta)) {
+        respuestasOrdenadas[respuesta.numero_pregunta] = [respuesta];
+      } else {
+        respuestasOrdenadas[respuesta.numero_pregunta].push(respuesta);
+      }
+    });
+
+    return respuestasOrdenadas;
   } catch (error) {
     throw new Error("Error al traer todas las respuestas: " + error.message);
   }
