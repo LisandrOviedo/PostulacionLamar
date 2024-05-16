@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { putFotoEmpleado } from "../../redux/empleados/empleadoAction";
 
-import { Button, InputFile, Title } from "../UI";
+import { Button, Hr, InputFile, Title } from "../UI";
 
 import Swal from "sweetalert2";
 
@@ -83,7 +83,7 @@ export function DatosPersonales() {
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
       <Title>Datos Personales</Title>
-      <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
+      <Hr />
       <div className="flex items-center justify-center flex-col-reverse sm:flex-row">
         <div>
           <div className="mt-4 border-t border-gray-100">

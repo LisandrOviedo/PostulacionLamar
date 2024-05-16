@@ -11,7 +11,7 @@ import {
   postCurriculoPDF,
 } from "../../redux/curriculos/curriculoAction";
 
-import { Button, Input, Label, Select, Title } from "../UI";
+import { Button, Hr, Input, Label, Select, Title } from "../UI";
 
 import validations from "../../utils/validacionesCurriculo";
 
@@ -387,8 +387,7 @@ export function CrearCurriculo() {
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white">
       <Title>Crear Perfil Profesional</Title>
-      <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
-
+      <Hr />
       <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
         <div className="flex flex-col place-content-between">
           <Label htmlFor="grado_instruccion">

@@ -6,7 +6,7 @@ import validations from "../../utils/validacionesActualizarClaveTemporal";
 
 import { useSelector } from "react-redux";
 
-import { Button, Input, Title } from "../UI";
+import { Button, Hr, Input, Title } from "../UI";
 
 import { putPasswordTemporal } from "../../redux/empleados/empleadoAction";
 
@@ -78,7 +78,7 @@ export function ActualizarClaveTemporal() {
         ¡Hola, bienvenid@! Haz ingresado con una contraseña temporal, por
         seguridad, para continuar deberás actualizar tu contraseña
       </p>
-      <hr className="w-[50%] h-0.5 my-5 bg-gray-100 border-0" />
+      <Hr />
       <label htmlFor="clave" className="text-center text-base sm:text-lg">
         Ingrese su nueva contraseña (¡No la olvides!):
       </label>

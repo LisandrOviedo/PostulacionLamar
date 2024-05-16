@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { getCurriculoEmpleado } from "../../redux/curriculos/curriculoAction";
 
-import { Button, Title } from "../UI";
+import { Button, Hr, Title } from "../UI";
 
 import Swal from "sweetalert2";
 
@@ -69,7 +69,7 @@ export function InfoCurriculo() {
         profesión y/o experiencia, así como su área de interés laboral, entre
         otros.
       </p>
-      <hr className="w-[50%] h-0.5 my-5 bg-gray-100 border-0" />
+      <Hr />
       <span className="text-base sm:text-lg text-center">
         Observaciones para después del llenado del formulario:
       </span>
