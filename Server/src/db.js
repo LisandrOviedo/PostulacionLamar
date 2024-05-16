@@ -45,6 +45,7 @@ const {
   Empresa,
   Experiencia,
   Respuesta,
+  Respuestas_Empleado,
   Roles,
   Titulo_Obtenido,
 } = sequelize.models;
@@ -219,6 +220,7 @@ module.exports = {
   Empresa,
   Experiencia,
   Respuesta,
+  Respuestas_Empleado,
   Roles,
   Titulo_Obtenido,
 };
