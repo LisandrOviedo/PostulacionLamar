@@ -1,5 +1,3 @@
-import { clsx } from "clsx";
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -7,10 +5,9 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { getPrueba } from "../../redux/pruebaKostick/pruebaAction";
 
-import { Button, Input, Label, Select, Title } from "../UI";
+import { Button, Hr, Label, Title } from "../UI";
 
 import Swal from "sweetalert2";
-import { prueba } from "../../redux/pruebaKostick/pruebaSlice";
 
 export function TestActitudinal() {
   const dispatch = useDispatch();
@@ -26,6 +23,30 @@ export function TestActitudinal() {
 
   const [prueba, setPrueba] = useState({});
 
+  const handleAddRespuesta = (event) => {
+    const pregunta = event.target.name;
+    const respuesta = event.target.value;
+
+    setPrueba({ ...prueba, [pregunta]: respuesta });
+  };
+
+  const handleSendTest = (event) => {
+    event.preventDefault();
+
+    if (Object.keys(prueba).length < 90) {
+      const faltan = 90 - Object.keys(prueba).length;
+
+      Swal.fire({
+        title: "Oops...",
+        text: `Faltan por responder ${faltan} preguntas`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    } else {
+    }
+  };
+
   useEffect(() => {
     window.scroll(0, 0);
 
@@ -40,32 +61,59 @@ export function TestActitudinal() {
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white">
-      <Title>Aplicar Test Actitudinal</Title>
-      <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
+      <Title>Test Actitudinal</Title>
+      <Hr />
+      <br />
+      <p className="text-justify">
+        Para el proceso de captación de talentos, hemos seleccionado el Test de
+        Kostick para valorar sus potencialidades dentro de nuestra organización,
+        por lo que agradecemos leer detenidamente las instrucciones y completar
+        el siguiente test.
+      </p>
+      <br />
+      <p className="text-justify">
+        Se presentan 90 pares de frases, usted debe elegir de cada par aquella
+        que más se asemeje a su forma de ser o de pensar. A veces tendrá la
+        impresión de que ninguna frase se asemeja a su manera de ser, o al
+        contrario, que ambas lo hacen, en cualquier caso, usted debe optar por
+        una de las dos.
+      </p>
+      <br />
+      <p className="text-justify">
+        No existe límite de tiempo, sin embargo no se detenga mucho tiempo en
+        contestar, sea expontáneo y sincero en sus respuestas.
+      </p>
+      <br />
       <div className="grid gap-10 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
         {prueba_kostick.map((respuestas, index) => (
           <div key={index + 1} className="flex flex-col gap-4">
-            <label htmlFor={index + 1} className="font-bold">
+            <span
+              className={`font-bold text-center md:text-left ${
+                prueba.hasOwnProperty(index + 1) ? "text-green-400" : null
+              }`}
+            >
               Pregunta número {index + 1}
-            </label>
+            </span>
             {respuestas.map((respuesta) => (
               <div key={respuesta.respuesta_id} className="flex gap-2">
                 <input
                   type="radio"
-                  value={respuesta.respuesta}
                   id={respuesta.respuesta_id}
                   name={respuesta.numero_pregunta}
+                  value={respuesta.respuesta_id}
+                  onClick={handleAddRespuesta}
                 />
-                <label htmlFor={respuesta.respuesta_id}>
+                <Label htmlFor={respuesta.respuesta_id}>
                   {respuesta.respuesta}
-                </label>
+                </Label>
               </div>
             ))}
           </div>
         ))}
-
         <div className="md:col-span-3 flex justify-center items-center">
-          <Button className="m-0 w-auto">Terminar Test</Button>
+          <Button className="m-0 w-auto" onClick={handleSendTest}>
+            Terminar Test
+          </Button>
         </div>
       </div>
     </div>
