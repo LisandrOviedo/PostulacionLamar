@@ -26,6 +26,47 @@ export const getPrueba = (token) => {
   };
 };
 
+export const getPruebaEmpleado = async (token, empleado_id) => {
+  const URL_GET_PRUEBA_EMPLEADO = `${URL_SERVER}/respuestas_empleados/empleado/${empleado_id}`;
+
+  try {
+    const { data } = await axios(URL_GET_PRUEBA_EMPLEADO, {
+      headers: { authorization: `Bearer ${token}` },
+    });
+
+    return data;
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
+
+export const postPrueba = async (token, empleado_id, prueba) => {
+  const URL_POST_PRUEBA = `${URL_SERVER}/respuestas_empleados`;
+
+  try {
+    await axios.post(
+      URL_POST_PRUEBA,
+      { empleado_id: empleado_id, prueba: prueba },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+
+    return Swal.fire({
+      text: "Prueba enviada exitosamente",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
+
 export const resetPrueba = () => {
   return async (dispatch) => {
     try {
