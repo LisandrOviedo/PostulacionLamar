@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { getPrueba } from "../../redux/pruebaKostick/pruebaAction";
+import {
+  getPrueba,
+  postPrueba,
+  getPruebaEmpleado,
+} from "../../redux/pruebaKostick/pruebaAction";
 
 import { Button, Hr, Label, Title } from "../UI";
 
@@ -44,13 +48,28 @@ export function TestActitudinal() {
         timer: 2000,
       });
     } else {
+      postPrueba(token, empleado.empleado_id, prueba).then(() => {
+        navigate("/inicio");
+      });
     }
   };
 
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getPrueba(token));
+    getPruebaEmpleado(token, empleado.empleado_id).then(async (data) => {
+      if (Object.keys(data).length) {
+        await Swal.fire({
+          text: "Ya has aplicado el Test de Valoración Actitudinal",
+          icon: "info",
+          showConfirmButton: true,
+        });
+
+        navigate("/inicio");
+      } else {
+        dispatch(getPrueba(token));
+      }
+    });
 
     document.title = "Grupo Lamar - Aplicar Test Actitudinal";
 
