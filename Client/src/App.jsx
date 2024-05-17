@@ -17,10 +17,11 @@ import {
   SubirDocumentos,
   TestActitudinal,
   AccesoAdmin,
+  DetalleEmpleado,
   Empleados,
   PanelAdmin,
   Postulaciones,
-  DetalleEmpleado,
+  PruebaKostick,
 } from "./components/";
 
 import {
@@ -86,6 +87,7 @@ function App() {
               path="/admin/actualizarClave"
               element={<ActualizarClave />}
             />
+            <Route path="/admin/pruebasKostick" element={<PruebaKostick />} />
           </Route>
         </Routes>
       </Suspense>
