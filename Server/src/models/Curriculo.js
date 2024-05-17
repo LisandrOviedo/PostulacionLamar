@@ -31,10 +31,6 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
-    cantidad_hijos: {
-      type: DataTypes.INTEGER(2),
-      allowNull: false,
-    },
     habilidades_tecnicas: {
       type: DataTypes.STRING,
       allowNull: false,
