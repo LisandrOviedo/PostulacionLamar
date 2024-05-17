@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useSelector } from "react-redux";
 
-import { Button, Hr, Title } from "../UI";
+import { Button, Hr, Label, Title } from "../UI";
 
 export function DetalleEmpleado() {
   const empleado = useSelector((state) => state.empleados.empleadoDetail);
@@ -30,6 +30,7 @@ export function DetalleEmpleado() {
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
       <Title>Detalles del Empleado</Title>
+      <br />
       <Hr />
       <div className="flex items-center justify-center flex-col-reverse sm:flex-row">
         <div>
@@ -63,10 +64,18 @@ export function DetalleEmpleado() {
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
-                      Correo electrónico
+                      Género
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.correo ? empleado.correo : "No posee"}
+                      {empleado.genero}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Etnia
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.etnia}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -79,10 +88,26 @@ export function DetalleEmpleado() {
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Correo electrónico
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.correo ? empleado.correo : "No posee"}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
                       Dirección
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                       {empleado.direccion}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Cantidad de hijos
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.cantidad_hijos}
                     </dd>
                   </div>
                 </>
@@ -117,9 +142,7 @@ export function DetalleEmpleado() {
             alt="Imgen del perfil"
             className="w-40 h-40 border border-[#002846] bg-gray-400 rounded-full ring-2 ring-[#F0C95C]"
           />
-          <label htmlFor="foto_perfil" className="text-sm">
-            Imagen del perfil
-          </label>
+          <Label htmlFor="foto_perfil">Imagen del perfil</Label>
         </div>
       </div>
       <div className="grid gap-6 md:grid-cols-3 mt-5 mb-5">
