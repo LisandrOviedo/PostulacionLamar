@@ -24,7 +24,7 @@ export function DetalleEmpleado() {
   }, []);
 
   const handleGoBack = () => {
-    navigate("/admin/empleados");
+    navigate(-1);
   };
 
   return (
