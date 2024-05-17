@@ -169,11 +169,24 @@ const crearEmpleado = async (
   cedula,
   nombres,
   apellidos,
+  genero,
+  etnia,
   telefono,
   correo,
-  direccion
+  direccion,
+  cantidad_hijos
 ) => {
-  if (!cedula || !nombres || !apellidos || !telefono || !correo || !direccion) {
+  if (
+    !cedula ||
+    !nombres ||
+    !apellidos ||
+    !genero ||
+    !etnia ||
+    !telefono ||
+    !correo ||
+    !direccion ||
+    !cantidad_hijos
+  ) {
     throw new Error("Datos faltantes");
   }
 
@@ -181,16 +194,19 @@ const crearEmpleado = async (
     const claveCifrada = await bcrypt.hash("1234", 10);
 
     const [empleado, created] = await Empleado.findOrCreate({
-      where: { cedula: cedula, rol_id: rol_id },
+      where: { cedula: cedula },
       defaults: {
         rol_id: rol_id,
         cedula: cedula,
         clave: claveCifrada,
         nombres: nombres,
         apellidos: apellidos,
+        genero: genero,
+        etnia: etnia,
         telefono: telefono,
         correo: correo,
         direccion: direccion,
+        cantidad_hijos: cantidad_hijos,
       },
     });
 
@@ -241,9 +257,12 @@ const modificarEmpleado = async (
   cedula,
   nombres,
   apellidos,
+  genero,
+  etnia,
   telefono,
   correo,
   direccion,
+  cantidad_hijos,
   activo
 ) => {
   if (
@@ -252,9 +271,12 @@ const modificarEmpleado = async (
     !cedula ||
     !nombres ||
     !apellidos ||
+    !genero ||
+    !etnia ||
     !telefono ||
     !correo ||
     !direccion ||
+    !cantidad_hijos ||
     !activo
   ) {
     throw new Error("Datos faltantes");
@@ -269,9 +291,12 @@ const modificarEmpleado = async (
         cedula: cedula,
         nombres: nombres,
         apellidos: apellidos,
+        genero: genero,
+        etnia: etnia,
         telefono: telefono,
         correo: correo,
         direccion: direccion,
+        cantidad_hijos: cantidad_hijos,
         activo: activo,
       },
       {

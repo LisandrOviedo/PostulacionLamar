@@ -52,8 +52,18 @@ const getLogin = async (req, res) => {
 };
 
 const postEmpleado = async (req, res) => {
-  const { rol_id, cedula, nombres, apellidos, telefono, correo, direccion } =
-    req.body;
+  const {
+    rol_id,
+    cedula,
+    nombres,
+    apellidos,
+    genero,
+    etnia,
+    telefono,
+    correo,
+    direccion,
+    cantidad_hijos,
+  } = req.body;
 
   try {
     const response = await crearEmpleado(
@@ -61,9 +71,12 @@ const postEmpleado = async (req, res) => {
       cedula,
       nombres,
       apellidos,
+      genero,
+      etnia,
       telefono,
       correo,
-      direccion
+      direccion,
+      cantidad_hijos
     );
 
     return res.status(201).json(response);
@@ -91,9 +104,12 @@ const putEmpleado = async (req, res) => {
     cedula,
     nombres,
     apellidos,
+    genero,
+    etnia,
     telefono,
     correo,
     direccion,
+    cantidad_hijos,
     activo,
   } = req.body;
 
@@ -104,9 +120,12 @@ const putEmpleado = async (req, res) => {
       cedula,
       nombres,
       apellidos,
+      genero,
+      etnia,
       telefono,
       correo,
       direccion,
+      cantidad_hijos,
       activo
     );
 
