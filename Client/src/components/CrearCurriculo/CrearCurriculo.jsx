@@ -159,7 +159,9 @@ export function CrearCurriculo() {
       setIsLoad({ ...isLoad, areas_interes: true });
     }
 
-    select.selectedIndex = 0;
+    if (select.selectedIndex !== 0) {
+      select.selectedIndex = 0;
+    }
     return;
   };
 
@@ -376,29 +378,29 @@ export function CrearCurriculo() {
     });
   };
 
-  const handleValidateChildrens = () => {
-    const input = document.getElementById("cantidad_hijos");
+  // const handleValidateChildrens = () => {
+  //   const input = document.getElementById("cantidad_hijos");
 
-    if (input.value < 0) {
-      input.value = 0;
-    }
+  //   if (input.value < 0) {
+  //     input.value = 0;
+  //   }
 
-    if (input.value > 15) {
-      input.value = 15;
-    }
+  //   if (input.value > 15) {
+  //     input.value = 15;
+  //   }
 
-    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
-  };
+  //   setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
+  // };
 
-  const handleValidateChildrensEmpty = () => {
-    const input = document.getElementById("cantidad_hijos");
+  // const handleValidateChildrensEmpty = () => {
+  //   const input = document.getElementById("cantidad_hijos");
 
-    if (!input.value) {
-      input.value = 0;
-    }
+  //   if (!input.value) {
+  //     input.value = 0;
+  //   }
 
-    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
-  };
+  //   setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
+  // };
 
   const handleCreateCurriculo = async () => {
     if (
@@ -786,32 +788,33 @@ export function CrearCurriculo() {
         </div>
         <div className="flex flex-col place-content-between">
           <Label htmlFor="idiomas">Conocimiento de idiomas</Label>
+          <Select id="idiomas" name="idiomas" onChange={handleIdiomaSelected}>
+            <option value="Ninguno">Ninguno</option>
+            <option value="Alemán">Alemán</option>
+            <option value="Árabe">Árabe</option>
+            <option value="Bengalí">Bengalí</option>
+            <option value="Chino mandarín">Chino mandarín</option>
+            <option value="Coreano">Coreano</option>
+            <option value="Francés">Francés</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Inglés">Inglés</option>
+            <option value="Italiano">Italiano</option>
+            <option value="Japonés">Japonés</option>
+            <option value="Lahnda">Lahnda</option>
+            <option value="Portugués">Portugués</option>
+            <option value="Ruso">Ruso</option>
+            <option value="Turco">Turco</option>
+            <option value="Vietnamita">Vietnamita</option>
+          </Select>
+        </div>
+        <div
+          className={`flex flex-col place-content-between ${
+            isHiddenIdioma ? "hidden" : null
+          }`}
+        >
+          <Label htmlFor="idiomas">Nivel del idioma</Label>
           <div className="flex gap-2">
             <Select
-              className="w-1/3"
-              id="idiomas"
-              name="idiomas"
-              onChange={handleIdiomaSelected}
-            >
-              <option value="Ninguno">Ninguno</option>
-              <option value="Alemán">Alemán</option>
-              <option value="Árabe">Árabe</option>
-              <option value="Bengalí">Bengalí</option>
-              <option value="Chino mandarín">Chino mandarín</option>
-              <option value="Coreano">Coreano</option>
-              <option value="Francés">Francés</option>
-              <option value="Hindi">Hindi</option>
-              <option value="Inglés">Inglés</option>
-              <option value="Italiano">Italiano</option>
-              <option value="Japonés">Japonés</option>
-              <option value="Lahnda">Lahnda</option>
-              <option value="Portugués">Portugués</option>
-              <option value="Ruso">Ruso</option>
-              <option value="Turco">Turco</option>
-              <option value="Vietnamita">Vietnamita</option>
-            </Select>
-            <Select
-              className={` ${isHiddenIdioma ? "hidden" : "w-1/3"}`}
               id="nivel_idioma"
               name="nivel_idioma"
               onChange={handleTipoExpSelected}
@@ -820,10 +823,7 @@ export function CrearCurriculo() {
               <option value="Intermedio">Intermedio</option>
               <option value="Avanzado">Avanzado</option>
             </Select>
-            <Button
-              onClick={handleAddIdioma}
-              className={clsx(`m-0 w-auto ${isHiddenIdioma ? "hidden" : ""}`)}
-            >
+            <Button onClick={handleAddIdioma} className="m-0 w-auto">
               Agregar
             </Button>
           </div>

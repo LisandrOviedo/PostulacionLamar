@@ -38,10 +38,10 @@ export function DetalleCurriculo() {
     disponibilidad_viajar: curriculoEmpleado.disponibilidad_viajar,
     disponibilidad_cambio_residencia:
       curriculoEmpleado.disponibilidad_cambio_residencia,
-    cantidad_hijos: curriculoEmpleado.cantidad_hijos,
     habilidades_tecnicas: curriculoEmpleado.habilidades_tecnicas,
     areas_interes: curriculoEmpleado.Areas_Interes,
     experiencias: curriculoEmpleado.Experiencia,
+    idiomas: curriculoEmpleado.Idiomas,
   });
 
   const [errors, setErrors] = useState({});
@@ -59,6 +59,7 @@ export function DetalleCurriculo() {
   }, []);
 
   const [isHidden, setIsHidden] = useState(true);
+  const [isHiddenIdioma, setIsHiddenIdioma] = useState(true);
 
   const [isLoad, setIsLoad] = useState({
     areas_interes: true,
@@ -91,6 +92,27 @@ export function DetalleCurriculo() {
 
     if (isHidden) {
       setIsHidden(false);
+      return;
+    }
+  };
+
+  const handleIdiomaSelected = () => {
+    const select = document.getElementById("idiomas");
+    const select2 = document.getElementById("nivel_idioma");
+
+    const name = select.options[select.selectedIndex].text;
+
+    if (select2.selectedIndex !== 0) {
+      select2.selectedIndex = 0;
+    }
+
+    if (name === "Ninguno") {
+      setIsHiddenIdioma(true);
+      return;
+    }
+
+    if (isHidden) {
+      setIsHiddenIdioma(false);
       return;
     }
   };
@@ -138,7 +160,49 @@ export function DetalleCurriculo() {
       setIsLoad({ ...isLoad, areas_interes: true });
     }
 
-    select.selectedIndex = 0;
+    if (select.selectedIndex !== 0) {
+      select.selectedIndex = 0;
+    }
+
+    return;
+  };
+
+  const handleAddIdioma = () => {
+    const select = document.getElementById("idiomas");
+    const select2 = document.getElementById("nivel_idioma");
+
+    const nombreText = select.options[select.selectedIndex].text;
+    const nombre = select.options[select.selectedIndex].value;
+    const nivel = select2.options[select2.selectedIndex].value;
+
+    if (nombreText === "Ninguno") {
+      return;
+    }
+
+    const idiomaValidatorInclude = datosCurriculo.idiomas.some(
+      (idioma) => idioma.nombre === nombre
+    );
+
+    if (idiomaValidatorInclude) {
+      Swal.fire({
+        title: "Oops...",
+        text: "Ya has agregado este idioma",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    setDatosCurriculo({
+      ...datosCurriculo,
+      idiomas: [...datosCurriculo.idiomas, { nombre: nombre, nivel: nivel }],
+    });
+
+    if (select2.selectedIndex !== 0) {
+      select2.selectedIndex = 0;
+    }
+
     return;
   };
 
@@ -292,6 +356,18 @@ export function DetalleCurriculo() {
     });
   };
 
+  const handleDeleteIdioma = (event) => {
+    const rowIndex = event.target.parentNode.parentNode.rowIndex;
+    const updatedIdiomas = datosCurriculo.idiomas.filter(
+      (_, index) => index !== rowIndex - 1
+    );
+
+    setDatosCurriculo({
+      ...datosCurriculo,
+      idiomas: updatedIdiomas,
+    });
+  };
+
   const handleDeleteTituloObtenido = (event) => {
     const rowIndex = event.target.parentNode.parentNode.rowIndex;
     const updatedTitulosObtenidos = datosCurriculo.titulos_obtenidos.filter(
@@ -302,30 +378,6 @@ export function DetalleCurriculo() {
       ...datosCurriculo,
       titulos_obtenidos: updatedTitulosObtenidos,
     });
-  };
-
-  const handleValidateChildrens = () => {
-    const input = document.getElementById("cantidad_hijos");
-
-    if (input.value < 0) {
-      input.value = 0;
-    }
-
-    if (input.value > 15) {
-      input.value = 15;
-    }
-
-    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
-  };
-
-  const handleValidateChildrensEmpty = () => {
-    const input = document.getElementById("cantidad_hijos");
-
-    if (!input.value) {
-      input.value = 0;
-    }
-
-    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
   };
 
   const handleUpdateCurriculo = async () => {
@@ -402,8 +454,10 @@ export function DetalleCurriculo() {
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
-      <Title>Detalles Perfil Profesional</Title>
+      <Title>Detalles del Perfil Profesional</Title>
+      <br />
       <Hr />
+      <br />
       {curriculoEmpleado && curriculoEmpleado?.curriculo_id ? (
         <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
           <div className="flex flex-col place-content-between">
@@ -475,13 +529,12 @@ export function DetalleCurriculo() {
                   >
                     <td className="px-4 py-4">{titulo_obtenido.nombre}</td>
                     <td className="px-4 py-4">
-                      <a
-                        href="#"
-                        className="font-medium text-red-600 dark:text-blue-500"
+                      <span
+                        className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
                         onClick={handleDeleteTituloObtenido}
                       >
                         Borrar
-                      </a>
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -568,13 +621,12 @@ export function DetalleCurriculo() {
                   >
                     <td className="px-4 py-4">{area.nombre}</td>
                     <td className="px-4 py-4">
-                      <a
-                        href="#"
-                        className="font-medium text-red-600 dark:text-blue-500"
+                      <span
+                        className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
                         onClick={handleDeleteArea}
                       >
                         Borrar
-                      </a>
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -667,19 +719,6 @@ export function DetalleCurriculo() {
               </Button>
             </div>
           </div>
-          <div className="flex flex-col place-content-between">
-            <Label htmlFor="cantidad_hijos">Cantidad de hijos</Label>
-            <Input
-              id="cantidad_hijos"
-              type="number"
-              name="cantidad_hijos"
-              min="0"
-              max="15"
-              value={datosCurriculo.cantidad_hijos}
-              onChange={handleValidateChildrens}
-              onBlur={handleValidateChildrensEmpty}
-            />
-          </div>
           <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
               <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
@@ -718,13 +757,90 @@ export function DetalleCurriculo() {
                       {experiencia.empresa_centro_educativo}
                     </td>
                     <td className="px-4 py-4">
-                      <a
-                        href="#"
-                        className="font-medium text-red-600 dark:text-blue-500"
+                      <span
+                        className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
                         onClick={handleDeleteExp}
                       >
                         Borrar
-                      </a>
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex flex-col place-content-between">
+            <Label htmlFor="idiomas">Conocimiento de idiomas</Label>
+            <Select id="idiomas" name="idiomas" onChange={handleIdiomaSelected}>
+              <option value="Ninguno">Ninguno</option>
+              <option value="Alemán">Alemán</option>
+              <option value="Árabe">Árabe</option>
+              <option value="Bengalí">Bengalí</option>
+              <option value="Chino mandarín">Chino mandarín</option>
+              <option value="Coreano">Coreano</option>
+              <option value="Francés">Francés</option>
+              <option value="Hindi">Hindi</option>
+              <option value="Inglés">Inglés</option>
+              <option value="Italiano">Italiano</option>
+              <option value="Japonés">Japonés</option>
+              <option value="Lahnda">Lahnda</option>
+              <option value="Portugués">Portugués</option>
+              <option value="Ruso">Ruso</option>
+              <option value="Turco">Turco</option>
+              <option value="Vietnamita">Vietnamita</option>
+            </Select>
+          </div>
+          <div
+            className={`flex flex-col place-content-between ${
+              isHiddenIdioma ? "hidden" : null
+            }`}
+          >
+            <Label htmlFor="idiomas">Nivel del idioma</Label>
+            <div className="flex gap-2">
+              <Select
+                id="nivel_idioma"
+                name="nivel_idioma"
+                onChange={handleTipoExpSelected}
+              >
+                <option value="Principiante">Principiante</option>
+                <option value="Intermedio">Intermedio</option>
+                <option value="Avanzado">Avanzado</option>
+              </Select>
+              <Button onClick={handleAddIdioma} className="m-0 w-auto">
+                Agregar
+              </Button>
+            </div>
+          </div>
+          <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
+            <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
+              <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
+                <tr className="text-white">
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Idiomas agregados</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Nivel</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Acción</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {datosCurriculo.idiomas.map((idioma, i) => (
+                  <tr
+                    key={i}
+                    className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <td className="px-4 py-4">{idioma.nombre}</td>
+                    <td className="px-4 py-4">{idioma.nivel}</td>
+                    <td className="px-4 py-4">
+                      <span
+                        className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
+                        onClick={handleDeleteIdioma}
+                      >
+                        Borrar
+                      </span>
                     </td>
                   </tr>
                 ))}
