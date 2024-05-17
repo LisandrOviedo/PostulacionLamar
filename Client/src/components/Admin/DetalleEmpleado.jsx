@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useSelector } from "react-redux";
 
@@ -6,6 +7,8 @@ import { Button, Hr, Title } from "../UI";
 
 export function DetalleEmpleado() {
   const empleado = useSelector((state) => state.empleados.empleadoDetail);
+
+  const navigate = useNavigate();
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
   const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${empleado.foto_perfil_nombre}`;
@@ -21,7 +24,7 @@ export function DetalleEmpleado() {
   }, []);
 
   const handleGoBack = () => {
-    Navigate("/admin/empleados");
+    navigate("/admin/empleados");
   };
 
   return (
