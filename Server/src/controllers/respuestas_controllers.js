@@ -59,6 +59,8 @@ const crearRespuestas = async () => {
         },
       });
     }
+
+    return "Respuestas de prueba Kostick cargadas en BD";
   } catch (error) {
     throw new Error("Error al crear las respuestas: " + error.message);
   }
