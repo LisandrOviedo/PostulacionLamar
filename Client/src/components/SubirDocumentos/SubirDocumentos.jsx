@@ -284,6 +284,7 @@ export function SubirDocumentos() {
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white">
       <Title>Mis documentos</Title>
+      <br />
       <Hr />
       <div className="flex flex-col mt-5 mb-5 gap-3">
         <div className="overflow-x-auto sm:mx-auto">

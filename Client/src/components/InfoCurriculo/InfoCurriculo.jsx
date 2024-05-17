@@ -69,7 +69,9 @@ export function InfoCurriculo() {
         profesión y/o experiencia, así como su área de interés laboral, entre
         otros.
       </p>
+      <br />
       <Hr />
+      <br />
       <span className="text-base sm:text-lg text-center">
         Observaciones para después del llenado del formulario:
       </span>

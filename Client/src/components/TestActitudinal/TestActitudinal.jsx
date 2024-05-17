@@ -81,6 +81,7 @@ export function TestActitudinal() {
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white">
       <Title>Test Actitudinal</Title>
+      <br />
       <Hr />
       <br />
       <p className="text-justify">
