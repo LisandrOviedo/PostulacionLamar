@@ -130,6 +130,14 @@ const traerCurriculoPDF = async (empleado_id) => {
           descripcion_campo: curriculo.Empleado.cedula,
         },
         {
+          titulo_campo: "Género: ",
+          descripcion_campo: `${curriculo.Empleado.genero}`,
+        },
+        {
+          titulo_campo: "Etnia: ",
+          descripcion_campo: `${curriculo.Empleado.etnia}`,
+        },
+        {
           titulo_campo: "Número de teléfono: ",
           descripcion_campo: curriculo.Empleado.telefono,
         },
@@ -138,12 +146,12 @@ const traerCurriculoPDF = async (empleado_id) => {
           descripcion_campo: curriculo.Empleado.correo,
         },
         {
-          titulo_campo: "Dirección de vivienda: ",
+          titulo_campo: "Dirección: ",
           descripcion_campo: curriculo.Empleado.direccion,
         },
         {
           titulo_campo: "Cantidad hijos: ",
-          descripcion_campo: curriculo.cantidad_hijos,
+          descripcion_campo: curriculo.Empleado.cantidad_hijos,
         },
         {
           titulo_campo: "Grado de instrucción: ",
@@ -351,7 +359,6 @@ const crearCurriculo = async (
   grado_instruccion,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
-  cantidad_hijos,
   habilidades_tecnicas
 ) => {
   if (!empleado_id || !grado_instruccion) {
@@ -368,7 +375,6 @@ const crearCurriculo = async (
         grado_instruccion: grado_instruccion,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
-        cantidad_hijos: cantidad_hijos,
         habilidades_tecnicas: habilidades_tecnicas,
       },
     });
@@ -388,7 +394,6 @@ const modificarCurriculo = async (
   grado_instruccion,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
-  cantidad_hijos,
   habilidades_tecnicas
 ) => {
   if (!curriculo_id || !grado_instruccion) {
@@ -403,7 +408,6 @@ const modificarCurriculo = async (
         grado_instruccion: grado_instruccion,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
-        cantidad_hijos: cantidad_hijos,
         habilidades_tecnicas: habilidades_tecnicas,
         estado: "Pendiente por revisar",
       },

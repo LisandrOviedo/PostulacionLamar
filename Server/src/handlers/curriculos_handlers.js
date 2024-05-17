@@ -227,7 +227,6 @@ const postCurriculo = async (req, res) => {
     grado_instruccion,
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
-    cantidad_hijos,
     habilidades_tecnicas,
   } = req.body;
 
@@ -237,7 +236,6 @@ const postCurriculo = async (req, res) => {
       grado_instruccion,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
-      cantidad_hijos,
       habilidades_tecnicas
     );
 
