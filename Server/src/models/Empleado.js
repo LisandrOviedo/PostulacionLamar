@@ -29,6 +29,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
+    fecha_nacimiento: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
     genero: {
       type: DataTypes.ENUM("Masculino", "Femenino"),
       allowNull: false,

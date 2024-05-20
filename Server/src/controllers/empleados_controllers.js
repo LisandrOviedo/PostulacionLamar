@@ -169,6 +169,7 @@ const crearEmpleado = async (
   cedula,
   nombres,
   apellidos,
+  fecha_nacimiento,
   genero,
   etnia,
   telefono,
@@ -180,6 +181,7 @@ const crearEmpleado = async (
     !cedula ||
     !nombres ||
     !apellidos ||
+    !fecha_nacimiento ||
     !genero ||
     !etnia ||
     !telefono ||
@@ -201,6 +203,7 @@ const crearEmpleado = async (
         clave: claveCifrada,
         nombres: nombres,
         apellidos: apellidos,
+        fecha_nacimiento: fecha_nacimiento,
         genero: genero,
         etnia: etnia,
         telefono: telefono,
@@ -257,6 +260,7 @@ const modificarEmpleado = async (
   cedula,
   nombres,
   apellidos,
+  fecha_nacimiento,
   genero,
   etnia,
   telefono,
@@ -271,6 +275,7 @@ const modificarEmpleado = async (
     !cedula ||
     !nombres ||
     !apellidos ||
+    !fecha_nacimiento ||
     !genero ||
     !etnia ||
     !telefono ||
@@ -291,6 +296,7 @@ const modificarEmpleado = async (
         cedula: cedula,
         nombres: nombres,
         apellidos: apellidos,
+        fecha_nacimiento: fecha_nacimiento,
         genero: genero,
         etnia: etnia,
         telefono: telefono,
