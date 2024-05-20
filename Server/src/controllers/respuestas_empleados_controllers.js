@@ -1,6 +1,13 @@
-const { Respuestas_Empleado } = require("../db");
+const { Empleado, Respuesta, Respuestas_Empleado } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
+const { traerCurriculoEmpleado } = require("./curriculos_controllers");
+
+const XlsxPopulate = require("xlsx-populate");
+const path = require("path");
+const fs = require("fs");
+
+const { calcularEdad } = require("../utils/formatearFecha");
 
 const todasLasRespuestasEmpleados = async () => {
   try {
@@ -23,18 +30,88 @@ const traerRespuestasEmpleado = async (empleado_id) => {
     throw new Error("Datos faltantes");
   }
 
-  await traerEmpleado(empleado_id);
-
   try {
-    const respuestas_empleado = await Respuestas_Empleado.findAll({
+    const empleado = await traerEmpleado(empleado_id);
+    const curriculo = await traerCurriculoEmpleado(empleado_id);
+
+    const respuestas_empleado = await Empleado.findAll({
+      attributes: [],
+      include: [
+        {
+          model: Respuesta,
+          attributes: ["numero_pregunta", "respuesta", "createdAt"],
+          through: {
+            attributes: [],
+          },
+        },
+      ],
       where: { empleado_id: empleado_id, activo: true },
+      order: [[Respuesta, "numero_pregunta", "ASC"]],
     });
 
     if (!respuestas_empleado) {
       throw new Error("No existen respuestas del empleado");
     }
 
-    return respuestas_empleado;
+    const excelPath = path.join(__dirname, "../../src/utils/");
+    const destPath = path.join(
+      __dirname,
+      `../../public/documentosEmpleados/${empleado.cedula}`
+    );
+
+    fs.copyFileSync(
+      `${excelPath}/TestKostick.xlsx`,
+      `${destPath}/TestKostick.xlsx`
+    );
+
+    const workbook = await XlsxPopulate.fromFileAsync(
+      `${destPath}/TestKostick.xlsx`
+    );
+
+    const edad = calcularEdad(empleado.fecha_nacimiento);
+
+    workbook
+      .sheet(0)
+      .cell("B4")
+      .value(respuestas_empleado[0].Respuesta[89].createdAt);
+
+    // Nombre completo
+    workbook
+      .sheet(0)
+      .cell("B5")
+      .value(`${empleado.nombres} ${empleado.apellidos}`);
+
+    // Cedula
+    workbook.sheet(0).cell("B6").value(empleado.cedula);
+
+    // Sexo
+    workbook.sheet(0).cell("B7").value(empleado.genero);
+
+    // Edad
+    workbook.sheet(0).cell("B8").value(edad);
+
+    // Grado Instruccion
+    if (curriculo) {
+      workbook.sheet(0).cell("B9").value(curriculo.grado_instruccion);
+    } else {
+      workbook.sheet(0).cell("B9").value("");
+    }
+
+    // Respuestas
+    let B = 12;
+
+    for (let i = 0; i < respuestas_empleado[0].Respuesta.length; i++) {
+      workbook
+        .sheet(0)
+        .cell(`B${B}`)
+        .value(respuestas_empleado[0].Respuesta[i].respuesta);
+
+      B++;
+    }
+
+    workbook.toFileAsync(`${destPath}/TestKostick.xlsx`);
+
+    return respuestas_empleado[0].Respuesta;
   } catch (error) {
     throw new Error(
       "Error al traer las respuestas del empleado: " + error.message
