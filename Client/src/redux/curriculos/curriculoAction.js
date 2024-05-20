@@ -202,6 +202,10 @@ export const postCurriculo = (token, datosCurriculo) => {
         );
       }
 
+      if (datosCurriculo.idiomas) {
+        await postIdiomas(token, data.curriculo_id, datosCurriculo.idiomas);
+      }
+
       return Swal.fire({
         text: "¡Perfil profesional guardado exitosamente!",
         icon: "success",
@@ -279,6 +283,27 @@ const postExperiencias = async (token, curriculo_id, experiencias) => {
   }
 };
 
+const postIdiomas = async (token, curriculo_id, idiomas) => {
+  const URL_ADD_IDIOMAS = `${URL_SERVER}/idiomas/agregarIdioma`;
+
+  try {
+    await axios.post(
+      `${URL_ADD_IDIOMAS}`,
+      {
+        curriculo_id,
+        idiomas,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
+
 // FIN POST CURRICULO
 
 export const resetCurriculos = () => {
@@ -324,6 +349,10 @@ export const putCurriculo = (token, datosCurriculo) => {
           data.curriculo_id,
           datosCurriculo.experiencias
         );
+      }
+
+      if (datosCurriculo.idiomas) {
+        await putIdiomas(token, data.curriculo_id, datosCurriculo.idiomas);
       }
 
       return Swal.fire({
@@ -406,6 +435,32 @@ const putExperiencias = async (token, curriculo_id, experiencias) => {
       {
         curriculo_id,
         experiencias,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
+
+const putIdiomas = async (token, curriculo_id, idiomas) => {
+  const URL_ADD_IDIOMAS = `${URL_SERVER}/idiomas/agregarArea`;
+  const URL_DELETE_IDIOMAS = `${URL_SERVER}/idiomas/eliminarIdiomas/${curriculo_id}`;
+
+  try {
+    await axios.delete(URL_DELETE_IDIOMAS, {
+      headers: { authorization: `Bearer ${token}` },
+    });
+
+    await axios.post(
+      `${URL_ADD_IDIOMAS}`,
+      {
+        curriculo_id,
+        idiomas,
       },
       {
         headers: { authorization: `Bearer ${token}` },
