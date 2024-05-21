@@ -141,6 +141,7 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
         defaults: {
           curriculo_id: curriculo_id,
           idioma_id: idioma.idioma_id,
+          nivel: idioma.nivel || idioma.Idiomas_Curriculo.nivel,
         },
       });
 

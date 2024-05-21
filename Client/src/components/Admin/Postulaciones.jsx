@@ -11,6 +11,7 @@ import {
 } from "../../redux/curriculos/curriculoAction";
 
 import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
+import { getAllIdiomasActivos } from "../../redux/idiomas/idiomasAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
@@ -42,11 +43,14 @@ export function Postulaciones() {
     (state) => state.areas_interes.areas_interes_activas
   );
 
+  const idiomas_activos = useSelector((state) => state.idiomas.idiomas_activos);
+
   const [filters, setFilters] = useState({
     cedula: filtros.cedula || "",
     apellidos: filtros.apellidos || "",
     area_interes_id: filtros.area_interes_id || "",
     estado: filtros.estado || "",
+    idioma_id: filtros.idioma_id || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
   });
@@ -111,6 +115,8 @@ export function Postulaciones() {
     window.scroll(0, 0);
 
     dispatch(getAllAreasInteresActivas(token));
+
+    dispatch(getAllIdiomasActivos(token));
 
     document.title = "Grupo Lamar - Postulaciones (Admin)";
 
@@ -247,6 +253,31 @@ export function Postulaciones() {
                         value={area.area_interes_id}
                       >
                         {area.nombre}
+                      </option>
+                    )
+                )
+              : null}
+          </Select>
+        </div>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="idioma_id">Filtrar por idiomas</Label>
+          <Select
+            id="idioma_id"
+            name="idioma_id"
+            onChange={handleChangeFilters}
+            value={filters.idioma_id}
+          >
+            <option value="">Todos</option>
+            {idiomas_activos?.length
+              ? idiomas_activos?.map(
+                  (idioma, i) =>
+                    idioma.activo && (
+                      <option
+                        key={i}
+                        name={idioma.nombre}
+                        value={idioma.idioma_id}
+                      >
+                        {idioma.nombre}
                       </option>
                     )
                 )

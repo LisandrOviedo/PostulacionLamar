@@ -448,7 +448,7 @@ const putExperiencias = async (token, curriculo_id, experiencias) => {
 };
 
 const putIdiomas = async (token, curriculo_id, idiomas) => {
-  const URL_ADD_IDIOMAS = `${URL_SERVER}/idiomas/agregarArea`;
+  const URL_ADD_IDIOMAS = `${URL_SERVER}/idiomas/agregarIdioma`;
   const URL_DELETE_IDIOMAS = `${URL_SERVER}/idiomas/eliminarIdiomas/${curriculo_id}`;
 
   try {

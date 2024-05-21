@@ -11,6 +11,7 @@ const initialState = {
     apellidos: "",
     area_interes_id: "",
     estado: "",
+    idioma_id: "",
     orden_campo: "",
     orden_por: "",
   },
@@ -47,6 +48,7 @@ export const curriculoSlice = createSlice({
         apellidos: "",
         area_interes_id: "",
         estado: "",
+        idioma_id: "",
       };
     },
     resetState: () => {
