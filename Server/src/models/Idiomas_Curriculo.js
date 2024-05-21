@@ -18,7 +18,7 @@ module.exports = (sequelize) => {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    nivel_idioma: {
+    nivel: {
       type: DataTypes.ENUM("Principiante", "Intermedio", "Avanzado"),
       defaultValue: "Principiante",
     },
