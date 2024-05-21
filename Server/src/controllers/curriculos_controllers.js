@@ -7,6 +7,7 @@ const {
   Areas_Interes,
   Experiencia,
   Documentos_Empleado,
+  Idioma,
 } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
@@ -65,6 +66,16 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
             attributes: {
               exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
             },
+          },
+          {
+            model: Idioma,
+            attributes: {
+              exclude: ["activo", "createdAt", "updatedAt"],
+            },
+            through: {
+              attributes: ["nivel"],
+            },
+            where: filtros.idioma_id ? { idioma_id: filtros.idioma_id } : {},
           },
         ],
         where: filtros.estado ? { estado: filtros.estado } : {},
@@ -126,16 +137,20 @@ const traerCurriculoPDF = async (empleado_id) => {
           descripcion_campo: `${curriculo.Empleado.nombres} ${curriculo.Empleado.apellidos}`,
         },
         {
+          titulo_campo: "Fecha de nacimiento: ",
+          descripcion_campo: curriculo.Empleado.fecha_nacimiento,
+        },
+        {
           titulo_campo: "Número de cédula o identidad: ",
           descripcion_campo: curriculo.Empleado.cedula,
         },
         {
           titulo_campo: "Género: ",
-          descripcion_campo: `${curriculo.Empleado.genero}`,
+          descripcion_campo: curriculo.Empleado.genero,
         },
         {
           titulo_campo: "Etnia: ",
-          descripcion_campo: `${curriculo.Empleado.etnia}`,
+          descripcion_campo: curriculo.Empleado.etnia,
         },
         {
           titulo_campo: "Número de teléfono: ",
@@ -160,17 +175,18 @@ const traerCurriculoPDF = async (empleado_id) => {
       ],
     });
 
-    let areas = "";
-
-    curriculo.Areas_Interes.forEach((area, index) => {
-      areas = index === 0 ? area.nombre : areas + `, ${area.nombre}`;
-    });
-
     content.push({
-      titulo: "Áreas de Interés",
+      titulo: "Disponibilidad",
       contenido: [
         {
-          descripcion_campo: areas,
+          titulo_campo: "¿Puede viajar? ",
+          descripcion_campo: curriculo.disponibilidad_viajar ? "Si" : "No",
+        },
+        {
+          titulo_campo: "¿Puede cambiar de residencia? ",
+          descripcion_campo: curriculo.disponibilidad_cambio_residencia
+            ? "Si"
+            : "No",
         },
       ],
     });
@@ -212,6 +228,25 @@ const traerCurriculoPDF = async (empleado_id) => {
       ],
     });
 
+    let idiomas = [];
+
+    curriculo.Idiomas.forEach((idioma) => {
+      idiomas.push({
+        nombre: idioma.nombre,
+        nivel: idioma.Idiomas_Curriculo.nivel,
+      });
+    });
+
+    content.push({
+      titulo: "Idiomas",
+      contenido: [
+        {
+          titulo_campo: "Idiomas",
+          descripcion_campo: idiomas,
+        },
+      ],
+    });
+
     content.push({
       titulo: "Habilidades Técnicas",
       contenido: [
@@ -221,18 +256,17 @@ const traerCurriculoPDF = async (empleado_id) => {
       ],
     });
 
+    let areas = "";
+
+    curriculo.Areas_Interes.forEach((area, index) => {
+      areas = index === 0 ? area.nombre : areas + `, ${area.nombre}`;
+    });
+
     content.push({
-      titulo: "Disponibilidad",
+      titulo: "Áreas de Interés",
       contenido: [
         {
-          titulo_campo: "¿Puede viajar? ",
-          descripcion_campo: curriculo.disponibilidad_viajar ? "Si" : "No",
-        },
-        {
-          titulo_campo: "¿Puede cambiar de residencia? ",
-          descripcion_campo: curriculo.disponibilidad_cambio_residencia
-            ? "Si"
-            : "No",
+          descripcion_campo: areas,
         },
       ],
     });
@@ -341,6 +375,13 @@ const traerCurriculoEmpleado = async (empleado_id) => {
           model: Experiencia,
           attributes: {
             exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Idioma,
+          attributes: ["idioma_id", "nombre"],
+          through: {
+            attributes: ["nivel"],
           },
         },
       ],

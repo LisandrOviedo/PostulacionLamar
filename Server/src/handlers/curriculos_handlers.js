@@ -126,6 +126,27 @@ const getCurriculoPDF = async (req, res) => {
               });
             })();
           }
+        } else if (campo.titulo_campo === "Idiomas") {
+          if (!campo.descripcion_campo.length) {
+            doc.fontSize(11).font("Helvetica").text("No posee", { indent: 20 });
+          } else {
+            (async function createTable() {
+              const table = {
+                headers: ["Idioma", "Nivel"],
+                rows: [],
+              };
+              for (const idioma of campo.descripcion_campo) {
+                const row = [idioma.nombre, idioma.nivel];
+                table.rows.push(row);
+              }
+              await doc.table(table, {
+                prepareHeader: () => doc.fontSize(11).font("Helvetica-Bold"),
+                prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+                  doc.fontSize(10).font("Helvetica");
+                },
+              });
+            })();
+          }
         } else {
           if (campo.titulo_campo) {
             doc.fontSize(11).font("Helvetica-Bold").text(campo.titulo_campo, {
