@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
+import { getAllIdiomasActivos } from "../../redux/idiomas/idiomasAction";
 import {
   putCurriculo,
   postCurriculoPDF,
@@ -31,6 +32,8 @@ export function DetalleCurriculo() {
     (state) => state.areas_interes.areas_interes_activas
   );
 
+  const idiomas_activos = useSelector((state) => state.idiomas.idiomas_activos);
+
   const [datosCurriculo, setDatosCurriculo] = useState({
     curriculo_id: curriculoEmpleado.curriculo_id,
     grado_instruccion: curriculoEmpleado.grado_instruccion,
@@ -50,6 +53,8 @@ export function DetalleCurriculo() {
     window.scroll(0, 0);
 
     dispatch(getAllAreasInteresActivas(token));
+
+    dispatch(getAllIdiomasActivos(token));
 
     document.title = "Grupo Lamar - Modificar Perfil Profesional";
 
@@ -171,11 +176,11 @@ export function DetalleCurriculo() {
     const select = document.getElementById("idiomas");
     const select2 = document.getElementById("nivel_idioma");
 
-    const nombreText = select.options[select.selectedIndex].text;
-    const nombre = select.options[select.selectedIndex].value;
+    const nombre = select.options[select.selectedIndex].text;
+    const id = select.options[select.selectedIndex].value;
     const nivel = select2.options[select2.selectedIndex].value;
 
-    if (nombreText === "Ninguno") {
+    if (nombre === "Ninguno") {
       return;
     }
 
@@ -196,10 +201,14 @@ export function DetalleCurriculo() {
 
     setDatosCurriculo({
       ...datosCurriculo,
-      idiomas: [...datosCurriculo.idiomas, { nombre: nombre, nivel: nivel }],
+      idiomas: [
+        ...datosCurriculo.idiomas,
+        { idioma_id: id, nombre: nombre, nivel: nivel },
+      ],
     });
 
-    if (select2.selectedIndex !== 0) {
+    if (select.selectedIndex !== 0 || select2.selectedIndex !== 0) {
+      select.selectedIndex = 0;
       select2.selectedIndex = 0;
     }
 
@@ -773,21 +782,20 @@ export function DetalleCurriculo() {
             <Label htmlFor="idiomas">Conocimiento de idiomas</Label>
             <Select id="idiomas" name="idiomas" onChange={handleIdiomaSelected}>
               <option value="Ninguno">Ninguno</option>
-              <option value="Alemán">Alemán</option>
-              <option value="Árabe">Árabe</option>
-              <option value="Bengalí">Bengalí</option>
-              <option value="Chino mandarín">Chino mandarín</option>
-              <option value="Coreano">Coreano</option>
-              <option value="Francés">Francés</option>
-              <option value="Hindi">Hindi</option>
-              <option value="Inglés">Inglés</option>
-              <option value="Italiano">Italiano</option>
-              <option value="Japonés">Japonés</option>
-              <option value="Lahnda">Lahnda</option>
-              <option value="Portugués">Portugués</option>
-              <option value="Ruso">Ruso</option>
-              <option value="Turco">Turco</option>
-              <option value="Vietnamita">Vietnamita</option>
+              {idiomas_activos?.length
+                ? idiomas_activos?.map(
+                    (idioma, i) =>
+                      idioma.activo && (
+                        <option
+                          key={i}
+                          name={idioma.nombre}
+                          value={idioma.idioma_id}
+                        >
+                          {idioma.nombre}
+                        </option>
+                      )
+                  )
+                : null}
             </Select>
           </div>
           <div
@@ -833,7 +841,9 @@ export function DetalleCurriculo() {
                     className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
                     <td className="px-4 py-4">{idioma.nombre}</td>
-                    <td className="px-4 py-4">{idioma.nivel}</td>
+                    <td className="px-4 py-4">
+                      {idioma.nivel || idioma.Idiomas_Curriculo.nivel}
+                    </td>
                     <td className="px-4 py-4">
                       <span
                         className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"

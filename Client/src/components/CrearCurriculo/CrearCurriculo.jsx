@@ -205,7 +205,8 @@ export function CrearCurriculo() {
       ],
     });
 
-    if (select2.selectedIndex !== 0) {
+    if (select.selectedIndex !== 0 || select2.selectedIndex !== 0) {
+      select.selectedIndex = 0;
       select2.selectedIndex = 0;
     }
 
