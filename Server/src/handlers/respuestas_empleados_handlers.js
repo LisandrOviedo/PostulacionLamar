@@ -7,8 +7,14 @@ const {
 } = require("../controllers/respuestas_empleados_controllers");
 
 const getRespuestasEmpleados = async (req, res) => {
+  const { filtros, paginaActual, limitePorPagina } = req.body;
+
   try {
-    const response = await todasLasRespuestasEmpleados();
+    const response = await todasLasRespuestasEmpleados(
+      filtros,
+      parseInt(paginaActual),
+      parseInt(limitePorPagina)
+    );
 
     return res.json(response);
   } catch (error) {

@@ -1,3 +1,5 @@
+const { Op } = require("sequelize");
+
 const { Empleado, Respuesta, Respuestas_Empleado } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
@@ -9,15 +11,59 @@ const fs = require("fs");
 
 const { calcularEdad } = require("../utils/formatearFecha");
 
-const todasLasRespuestasEmpleados = async () => {
+const todasLasRespuestasEmpleados = async (
+  filtros,
+  paginaActual,
+  limitePorPagina
+) => {
+  if (!paginaActual || !limitePorPagina) {
+    throw new Error("Datos faltantes");
+  }
+
   try {
-    const respuestas_empleados = await Respuestas_Empleado.findAll();
+    const { count: totalRegistros, rows: dataPruebas } = await Empleado.findAll(
+      {
+        attributes: [
+          "empleado_id",
+          "nombres",
+          "apellidos",
+          "cedula",
+          "telefono",
+          "correo",
+          "activo",
+        ],
+        include: [
+          {
+            model: Respuesta,
+            attributes: [],
+            required: true,
+          },
+        ],
+        where: filtros.apellidos
+          ? { apellidos: filtros.apellidos }
+          : filtros.cedula
+          ? { cedula: filtros.cedula }
+          : {},
+        distinct: true,
+        order: [
+          filtros.orden_campo === "apellidos"
+            ? ["apellidos", filtros.orden_por]
+            : null,
+        ].filter(Boolean),
+      }
+    );
 
-    if (!respuestas_empleados) {
-      throw new Error("No existen respuestas de empleados");
-    }
+    // if (!dataPruebas) {
+    //   throw new Error("No existen respuestas de empleados");
+    // }
 
-    return respuestas_empleados;
+    const indexEnd = paginaActual * limitePorPagina;
+    const indexStart = indexEnd - limitePorPagina;
+
+    const pruebas = dataPruebas.slice(indexStart, indexEnd);
+    const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
+
+    return { cantidadPaginas, totalRegistros, pruebas };
   } catch (error) {
     throw new Error(
       "Error al traer todas las respuestas de empleados: " + error.message

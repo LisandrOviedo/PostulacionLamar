@@ -11,13 +11,17 @@ const { authenticateToken } = require("../auth/index");
 
 const respuestas_empleados = Router();
 
-respuestas_empleados.get("/", authenticateToken, getRespuestasEmpleados);
 respuestas_empleados.get(
   "/empleado/:empleado_id",
   authenticateToken,
   getRespuestasEmpleado
 );
 
+respuestas_empleados.post(
+  "/allRespuestasEmpleados",
+  authenticateToken,
+  getRespuestasEmpleados
+);
 respuestas_empleados.post("/", authenticateToken, postRespuestasEmpleado);
 
 respuestas_empleados.put(

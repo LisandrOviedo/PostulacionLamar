@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
-  getAllCurriculos,
+  getAllEmpleadosPrueba,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
   deleteFiltros,
-} from "../../redux/curriculos/curriculoAction";
+} from "../../redux/pruebaKostick/pruebaAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
@@ -16,27 +16,28 @@ import {
   infoPaginador,
 } from "../../utils/paginacion";
 
-import { DDMMYYYY } from "../../utils/formatearFecha";
-
 export function PruebaKostick() {
   const dispatch = useDispatch();
 
   const token = useSelector((state) => state.empleados.token);
 
-  const curriculos = useSelector((state) => state.curriculos.curriculos);
-
-  const paginaActual = useSelector((state) => state.curriculos.paginaActual);
-
-  const limitePorPagina = useSelector(
-    (state) => state.curriculos.limitePorPagina
+  const pruebas_kostick = useSelector(
+    (state) => state.prueba_kostick.empleados_pruebas
   );
 
-  const filtros = useSelector((state) => state.curriculos.filtros);
+  const paginaActual = useSelector(
+    (state) => state.prueba_kostick.paginaActual
+  );
+
+  const limitePorPagina = useSelector(
+    (state) => state.prueba_kostick.limitePorPagina
+  );
+
+  const filtros = useSelector((state) => state.prueba_kostick.filtros);
 
   const [filters, setFilters] = useState({
     cedula: filtros.cedula || "",
     apellidos: filtros.apellidos || "",
-    area_interes_id: filtros.area_interes_id || "",
     estado: filtros.estado || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
@@ -111,10 +112,10 @@ export function PruebaKostick() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllCurriculos(token, filtros, paginaActual, limitePorPagina));
+    dispatch(
+      getAllEmpleadosPrueba(token, filtros, paginaActual, limitePorPagina)
+    );
   }, [filtros, paginaActual, limitePorPagina]);
-
-  const handleVerDetalles = (cedula, nombre) => {};
 
   const changeOrder = (e) => {
     const { name } = e.target;
@@ -163,7 +164,7 @@ export function PruebaKostick() {
   };
 
   const paginaSiguiente = () => {
-    if (paginaActual < curriculos.cantidadPaginas) {
+    if (paginaActual < pruebas_kostick.cantidadPaginas) {
       dispatch(postPaginaActual(paginaActual + 1));
     }
   };
@@ -201,31 +202,6 @@ export function PruebaKostick() {
             }
           />
         </div>
-        {/* <div className="flex flex-col place-content-between">
-          <Label htmlFor="area_interes_id">Filtrar por área de interés</Label>
-          <Select
-            id="area_interes_id"
-            name="area_interes_id"
-            onChange={handleChangeFilters}
-            value={filters.area_interes_id}
-          >
-            <option value="">Todos</option>
-            {areas_interes_activas?.length
-              ? areas_interes_activas?.map(
-                  (area, i) =>
-                    area.activo && (
-                      <option
-                        key={i}
-                        name={area.nombre}
-                        value={area.area_interes_id}
-                      >
-                        {area.nombre}
-                      </option>
-                    )
-                )
-              : null}
-          </Select>
-        </div> */}
         <div className="flex flex-col place-content-between">
           <Label htmlFor="estado">Filtrar por estado</Label>
           <Select
@@ -311,63 +287,6 @@ export function PruebaKostick() {
                   <div className="flex items-center">Correo</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Áreas de Interés</div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    <a
-                      href="#tabla"
-                      id="grado_instruccion"
-                      name="grado_instruccion"
-                      onClick={changeOrder}
-                      className="text-black hover:text-black flex items-center"
-                    >
-                      Grado Instrucción
-                      <img
-                        name="grado_instruccion"
-                        src={
-                          filters.orden_campo === "grado_instruccion" &&
-                          filters.orden_por === "ASC"
-                            ? "/SortAZ.svg"
-                            : filters.orden_campo === "grado_instruccion" &&
-                              filters.orden_por === "DESC"
-                            ? "/SortZA.svg"
-                            : "/Sort.svg"
-                        }
-                        alt="Icon Sort"
-                        className="w-5 h-5 ms-1.5 cursor-pointer"
-                      />
-                    </a>
-                  </div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    <a
-                      href="#tabla"
-                      id="updatedAt"
-                      name="updatedAt"
-                      onClick={changeOrder}
-                      className="text-black hover:text-black flex items-center"
-                    >
-                      Últ. Modif.
-                      <img
-                        name="updatedAt"
-                        src={
-                          filters.orden_campo === "updatedAt" &&
-                          filters.orden_por === "ASC"
-                            ? "/SortAZ.svg"
-                            : filters.orden_campo === "updatedAt" &&
-                              filters.orden_por === "DESC"
-                            ? "/SortZA.svg"
-                            : "/Sort.svg"
-                        }
-                        alt="Icon Sort"
-                        className="w-5 h-5 ms-1.5 cursor-pointer"
-                      />
-                    </a>
-                  </div>
-                </th>
-                <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Estado</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -376,65 +295,36 @@ export function PruebaKostick() {
               </tr>
             </thead>
             <tbody>
-              {curriculos === "No existen curriculos" ||
-              !curriculos.curriculos?.length ? (
+              {pruebas_kostick === "No existen respuestas de empleados" ||
+              !pruebas_kostick.pruebas_kostick?.length ? (
                 <tr>
                   <td colSpan="9" className="text-center p-2">
                     <p>¡No existen registros!</p>
                   </td>
                 </tr>
               ) : (
-                curriculos.curriculos?.map((curriculo, i) => (
+                pruebas_kostick.pruebas_kostick?.map((prueba_kostick, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
                     <td className="px-4 py-4">
-                      {curriculo.Empleado.apellidos}{" "}
-                      {curriculo.Empleado.nombres}
+                      {prueba_kostick.apellidos} {prueba_kostick.nombres}
                     </td>
-                    <td className="px-4 py-4">{curriculo.Empleado.cedula}</td>
-                    <td className="px-4 py-4">{curriculo.Empleado.telefono}</td>
+                    <td className="px-4 py-4">{prueba_kostick.cedula}</td>
+                    <td className="px-4 py-4">{prueba_kostick.telefono}</td>
                     <td className="px-4 py-4">
-                      {curriculo.Empleado.correo || "No posee"}
+                      {prueba_kostick.correo || "No posee"}
                     </td>
-                    <td className="px-4 py-4">
-                      {curriculo.Areas_Interes.map(
-                        (area, index) =>
-                          `${area.nombre}${
-                            index !== curriculo.Areas_Interes.length - 1
-                              ? ", "
-                              : ""
-                          }`
-                      )}
-                    </td>
-                    <td className="px-4 py-4">{curriculo.grado_instruccion}</td>
-                    <td className="px-4 py-4">
-                      {DDMMYYYY(curriculo.updatedAt)}
-                    </td>
-                    <td className="px-4 py-4">{curriculo.estado}</td>
+                    <td className="px-4 py-4">{prueba_kostick.activo}</td>
                     <td className="px-4 py-4 flex gap-2 items-center">
                       <Button
                         className="m-0 w-auto"
-                        onClick={() =>
-                          handleVerDetalles(
-                            curriculo.Empleado.cedula,
-                            curriculo.Empleado.Documentos_Empleados[0].nombre
-                          )
-                        }
+                        // onClick={() =>
+                        //   handleVerDetalles(prueba_kostick.empleado_id)
+                        // }
                       >
-                        PDF
-                      </Button>
-                      <Button
-                        className="m-0 w-auto"
-                        onClick={() =>
-                          handleVerDetallesAnexos(
-                            curriculo.Empleado.empleado_id,
-                            curriculo.Empleado.cedula
-                          )
-                        }
-                      >
-                        Anexos
+                        Ver resultados
                       </Button>
                     </td>
                   </tr>
@@ -447,7 +337,7 @@ export function PruebaKostick() {
           {infoPaginador(
             paginaActual,
             limitePorPagina,
-            curriculos.totalRegistros
+            pruebas_kostick.totalRegistros
           )}
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
@@ -466,7 +356,7 @@ export function PruebaKostick() {
             </li>
             {calcularPaginasARenderizar(
               paginaActual,
-              curriculos.cantidadPaginas
+              pruebas_kostick.cantidadPaginas
             ).map((page) => (
               <li key={page}>
                 <a
@@ -488,7 +378,7 @@ export function PruebaKostick() {
                 onClick={paginaSiguiente}
                 className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
                 ${
-                  paginaActual >= curriculos.cantidadPaginas
+                  paginaActual >= pruebas_kostick.cantidadPaginas
                     ? "cursor-default"
                     : "cursor-pointer hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}
