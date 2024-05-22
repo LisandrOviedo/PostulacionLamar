@@ -212,6 +212,10 @@ const getCurriculoPDFAnexos = async (req, res) => {
       zip.file(nombreArchivo, fileData);
     });
 
+    const pruebaData = fs.readFileSync(`${carpetaDestino}TestKostick.xlsx`);
+    const nombrePrueba = "TestKostick.xlsx";
+    zip.file(nombrePrueba, pruebaData);
+
     // Generar el archivo ZIP
     const content = await zip.generateAsync({ type: "nodebuffer" });
 
