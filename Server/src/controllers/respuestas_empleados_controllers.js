@@ -21,8 +21,8 @@ const todasLasRespuestasEmpleados = async (
   }
 
   try {
-    const { count: totalRegistros, rows: dataPruebas } = await Empleado.findAll(
-      {
+    const { count: totalRegistros, rows: dataPruebas } =
+      await Empleado.findAndCountAll({
         attributes: [
           "empleado_id",
           "nombres",
@@ -39,23 +39,31 @@ const todasLasRespuestasEmpleados = async (
             required: true,
           },
         ],
-        where: filtros.apellidos
-          ? { apellidos: filtros.apellidos }
-          : filtros.cedula
-          ? { cedula: filtros.cedula }
-          : {},
+        where: {
+          [Op.and]: [
+            filtros.cedula
+              ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
+              : filtros.apellidos
+              ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
+              : {},
+            filtros.activo === "1" || filtros.activo === "0"
+              ? { activo: filtros.activo }
+              : {},
+          ],
+        },
         distinct: true,
         order: [
           filtros.orden_campo === "apellidos"
             ? ["apellidos", filtros.orden_por]
+            : filtros.orden_campo === "activo"
+            ? ["activo", filtros.orden_por]
             : null,
         ].filter(Boolean),
-      }
-    );
+      });
 
-    // if (!dataPruebas) {
-    //   throw new Error("No existen respuestas de empleados");
-    // }
+    if (!dataPruebas) {
+      throw new Error("No existen respuestas de empleados");
+    }
 
     const indexEnd = paginaActual * limitePorPagina;
     const indexStart = indexEnd - limitePorPagina;
