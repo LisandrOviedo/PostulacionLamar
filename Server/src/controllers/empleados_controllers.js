@@ -26,7 +26,9 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
               : filtros.apellidos
               ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
               : {},
-            filtros.activo ? { activo: filtros.activo } : {},
+            filtros.activo === "1" || filtros.activo === "0"
+              ? { activo: filtros.activo }
+              : {},
           ],
         },
         distinct: true,
