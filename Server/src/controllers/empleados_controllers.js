@@ -43,7 +43,7 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
         ].filter(Boolean),
       });
 
-    if (!dataEmpleados) {
+    if (!dataEmpleados.length) {
       throw new Error("No existen empleados");
     }
 

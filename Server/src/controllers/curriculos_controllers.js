@@ -91,7 +91,7 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
         ].filter(Boolean),
       });
 
-    if (!dataCurriculos) {
+    if (!dataCurriculos.length) {
       throw new Error("No existen curriculos");
     }
 

@@ -11,7 +11,7 @@ const todasLasRespuestas = async () => {
       ],
     });
 
-    if (!respuestas) {
+    if (!respuestas.length) {
       throw new Error("No existen respuestas");
     }
 

@@ -6,7 +6,7 @@ const todosLosTitulosObtenidos = async () => {
   try {
     const titulos_obtenidos = await Titulo_Obtenido.findAll();
 
-    if (!titulos_obtenidos) {
+    if (!titulos_obtenidos.length) {
       throw new Error("No existen títulos obtenidos");
     }
 

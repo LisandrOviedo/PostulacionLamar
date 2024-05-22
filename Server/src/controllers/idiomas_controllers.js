@@ -6,7 +6,7 @@ const todosLosIdiomas = async () => {
   try {
     const idiomas = await Idioma.findAll();
 
-    if (!idiomas) {
+    if (!idiomas.length) {
       throw new Error("No existen idiomas");
     }
 
@@ -22,7 +22,7 @@ const todosLosIdiomasActivos = async () => {
       where: { activo: true },
     });
 
-    if (!idiomas) {
+    if (!idiomas.length) {
       throw new Error("No existen idiomas");
     }
 

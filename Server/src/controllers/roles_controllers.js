@@ -4,7 +4,7 @@ const todosLosRoles = async () => {
   try {
     const roles = await Roles.findAll();
 
-    if (!roles) {
+    if (!roles.length) {
       throw new Error("No existen roles");
     }
 
