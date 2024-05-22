@@ -61,7 +61,7 @@ const todasLasRespuestasEmpleados = async (
         ].filter(Boolean),
       });
 
-    if (!dataPruebas) {
+    if (!dataPruebas.length) {
       throw new Error("No existen respuestas de empleados");
     }
 
@@ -85,8 +85,55 @@ const traerRespuestasEmpleado = async (empleado_id) => {
   }
 
   try {
+    await traerEmpleado(empleado_id);
+
+    const respuestas_empleado = await Empleado.findAll({
+      attributes: [],
+      include: [
+        {
+          model: Respuesta,
+          attributes: ["numero_pregunta", "respuesta", "createdAt"],
+          through: {
+            attributes: [],
+          },
+          required: true,
+        },
+      ],
+      where: { empleado_id: empleado_id, activo: true },
+      order: [[Respuesta, "numero_pregunta", "ASC"]],
+    });
+
+    return respuestas_empleado;
+  } catch (error) {
+    throw new Error(
+      "Error al traer las respuestas del empleado: " + error.message
+    );
+  }
+};
+
+const crearRespuestasEmpleado = async (empleado_id, prueba) => {
+  if (!empleado_id || !prueba) {
+    throw new Error("Datos faltantes");
+  }
+
+  try {
     const empleado = await traerEmpleado(empleado_id);
+
     const curriculo = await traerCurriculoEmpleado(empleado_id);
+
+    for (const respuesta in prueba) {
+      const [respuesta_empleado, created] =
+        await Respuestas_Empleado.findOrCreate({
+          where: {
+            empleado_id: empleado_id,
+            respuesta_id: prueba[respuesta],
+          },
+          defaults: {
+            empleado_id: empleado_id,
+            respuesta_id: prueba[respuesta],
+          },
+        });
+    }
 
     const respuestas_empleado = await Empleado.findAll({
       attributes: [],
@@ -102,10 +149,6 @@ const traerRespuestasEmpleado = async (empleado_id) => {
       where: { empleado_id: empleado_id, activo: true },
       order: [[Respuesta, "numero_pregunta", "ASC"]],
     });
-
-    if (!respuestas_empleado) {
-      throw new Error("No existen respuestas del empleado");
-    }
 
     const excelPath = path.join(__dirname, "../../src/utils/");
     const destPath = path.join(
@@ -163,56 +206,9 @@ const traerRespuestasEmpleado = async (empleado_id) => {
       B++;
     }
 
-    workbook.toFileAsync(`${destPath}/TestKostick.xlsx`);
-
-    return respuestas_empleado[0].Respuesta;
-  } catch (error) {
-    throw new Error(
-      "Error al traer las respuestas del empleado: " + error.message
-    );
-  }
-};
-
-const crearRespuestasEmpleado = async (empleado_id, prueba) => {
-  if (!empleado_id || !prueba) {
-    throw new Error("Datos faltantes");
-  }
-
-  let fallidos = "";
-
-  try {
-    for (const respuesta in prueba) {
-      const [respuesta_empleado, created] =
-        await Respuestas_Empleado.findOrCreate({
-          where: {
-            empleado_id: empleado_id,
-            respuesta_id: prueba[respuesta],
-          },
-          defaults: {
-            empleado_id: empleado_id,
-            respuesta_id: prueba[respuesta],
-          },
-        });
-
-      if (!created) {
-        if (fallidos === "") {
-          fallidos = respuesta;
-          return;
-        }
-
-        if (fallidos !== "") {
-          fallidos = fallidos + ` ${respuesta}`;
-          return;
-        }
-      }
-    }
-
-    if (fallidos !== "") {
-      throw new Error(
-        "Estas respuestas no se pudieron guardar porque ya existen: ",
-        fallidos
-      );
-    }
+    workbook.toFileAsync(`${destPath}/TestKostick.xlsx`, {
+      password: `${empleado.cedula}`,
+    });
   } catch (error) {
     throw new Error("Error al crear el respuestas_empleado: " + error.message);
   }
