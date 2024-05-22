@@ -19,6 +19,8 @@ import {
 export function PruebaKostick() {
   const dispatch = useDispatch();
 
+  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
+
   const token = useSelector((state) => state.empleados.token);
 
   const pruebas_kostick = useSelector(
@@ -38,7 +40,7 @@ export function PruebaKostick() {
   const [filters, setFilters] = useState({
     cedula: filtros.cedula || "",
     apellidos: filtros.apellidos || "",
-    estado: filtros.estado || "",
+    activo: filtros.activo || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
   });
@@ -169,6 +171,12 @@ export function PruebaKostick() {
     }
   };
 
+  const handleVerResultados = (cedula) => {
+    const URL_GET_RESULTADOS = `${URL_SERVER}/documentos_empleados/documento/${cedula}/TestKostick.xlsx`;
+
+    window.open(URL_GET_RESULTADOS, "_blank");
+  };
+
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -203,16 +211,16 @@ export function PruebaKostick() {
           />
         </div>
         <div className="flex flex-col place-content-between">
-          <Label htmlFor="estado">Filtrar por estado</Label>
+          <Label htmlFor="activo">Filtrar por activo / inactivo</Label>
           <Select
-            id="estado"
-            name="estado"
+            id="activo"
+            name="activo"
             onChange={handleChangeFilters}
-            value={filters.estado}
+            value={filters.activo}
           >
             <option value="">Todos</option>
-            <option value="Pendiente por revisar">Pendiente por revisar</option>
-            <option value="Revisado">Revisado</option>
+            <option value="1">Activos</option>
+            <option value="0">Inactivos</option>
           </Select>
         </div>
         <div className="flex flex-col place-content-between">
@@ -287,7 +295,31 @@ export function PruebaKostick() {
                   <div className="flex items-center">Correo</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Estado</div>
+                  <div className="flex items-center">
+                    <a
+                      href="#tabla"
+                      id="activo"
+                      name="activo"
+                      onClick={changeOrder}
+                      className="text-black hover:text-black flex items-center"
+                    >
+                      Estado
+                      <img
+                        name="activo"
+                        src={
+                          filters.orden_campo === "activo" &&
+                          filters.orden_por === "ASC"
+                            ? "/SortAZ.svg"
+                            : filters.orden_campo === "activo" &&
+                              filters.orden_por === "DESC"
+                            ? "/SortZA.svg"
+                            : "/Sort.svg"
+                        }
+                        alt="Icon Sort"
+                        className="w-5 h-5 ms-1.5 cursor-pointer"
+                      />
+                    </a>
+                  </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
@@ -296,14 +328,14 @@ export function PruebaKostick() {
             </thead>
             <tbody>
               {pruebas_kostick === "No existen respuestas de empleados" ||
-              !pruebas_kostick.pruebas_kostick?.length ? (
+              !pruebas_kostick.pruebas?.length ? (
                 <tr>
                   <td colSpan="9" className="text-center p-2">
                     <p>¡No existen registros!</p>
                   </td>
                 </tr>
               ) : (
-                pruebas_kostick.pruebas_kostick?.map((prueba_kostick, i) => (
+                pruebas_kostick.pruebas?.map((prueba_kostick, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
@@ -316,13 +348,15 @@ export function PruebaKostick() {
                     <td className="px-4 py-4">
                       {prueba_kostick.correo || "No posee"}
                     </td>
-                    <td className="px-4 py-4">{prueba_kostick.activo}</td>
+                    <td className="px-4 py-4">
+                      {prueba_kostick.activo ? "Activo" : "Inactivo"}
+                    </td>
                     <td className="px-4 py-4 flex gap-2 items-center">
                       <Button
                         className="m-0 w-auto"
-                        // onClick={() =>
-                        //   handleVerDetalles(prueba_kostick.empleado_id)
-                        // }
+                        onClick={() =>
+                          handleVerResultados(prueba_kostick.cedula)
+                        }
                       >
                         Ver resultados
                       </Button>
