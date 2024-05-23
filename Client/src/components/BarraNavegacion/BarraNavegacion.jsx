@@ -12,6 +12,8 @@ export function BarraNavegacion() {
   const [isOpenBurger, setIsOpenBurger] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  const token = useSelector((state) => state.empleados.token);
+
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const toggleMenu = (index) => {
@@ -226,7 +228,7 @@ export function BarraNavegacion() {
                       </li>
                       <li>
                         <Link
-                          to="/inicio"
+                          to="/testActitudinal"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -324,6 +326,20 @@ export function BarraNavegacion() {
                     >
                       <div className="flex items-center justify-between p-2">
                         <div className="mx-auto">Postulaciones</div>
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/admin/pruebasKostick"
+                      className="block text-white hover:text-[#F0C95C]"
+                      onClick={() => {
+                        toggleMenuBurger();
+                        toggleMenu({});
+                      }}
+                    >
+                      <div className="flex items-center justify-between p-2">
+                        <div className="mx-auto">Pruebas Kostick</div>
                       </div>
                     </Link>
                   </li>

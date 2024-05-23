@@ -26,7 +26,9 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
               : filtros.apellidos
               ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
               : {},
-            filtros.activo ? { activo: filtros.activo } : {},
+            filtros.activo === "1" || filtros.activo === "0"
+              ? { activo: filtros.activo }
+              : {},
           ],
         },
         distinct: true,
@@ -41,7 +43,7 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
         ].filter(Boolean),
       });
 
-    if (!dataEmpleados) {
+    if (!dataEmpleados.length) {
       throw new Error("No existen empleados");
     }
 
@@ -70,30 +72,8 @@ const traerEmpleado = async (empleado_id) => {
       include: [
         {
           model: Roles,
-          attributes: ["rol_id", "nombre"],
+          attributes: ["nombre", "descripcion"],
         },
-      ],
-    });
-
-    if (!empleado) {
-      throw new Error("No existe ese empleado");
-    }
-
-    return empleado;
-  } catch (error) {
-    throw new Error("Error al traer el empleado: " + error.message);
-  }
-};
-
-const traerCargoActual = async (empleado_id) => {
-  if (!empleado_id) {
-    throw new Error("Datos faltantes");
-  }
-
-  try {
-    const cargoActual = await Empleado.findByPk(empleado_id, {
-      attributes: [],
-      include: [
         {
           model: Cargo,
           through: {
@@ -114,11 +94,11 @@ const traerCargoActual = async (empleado_id) => {
       ],
     });
 
-    if (!cargoActual) {
-      throw new Error("No existe cargo actual para ese empleado");
+    if (!empleado) {
+      throw new Error("No existe ese empleado");
     }
 
-    return cargoActual;
+    return empleado;
   } catch (error) {
     throw new Error("Error al traer el empleado: " + error.message);
   }
@@ -159,15 +139,9 @@ const login = async (cedula, clave) => {
       throw new Error("Datos incorrectos");
     }
 
+    const rolCifrado = await bcrypt.hash(empleado.Role.nombre, 10);
+
     if (clave == "1234") {
-      // const token = jwt.sign(
-      //   { userId: usuario.usuario_id, username: usuario.cedula },
-      //   SECRET_KEY,
-      //   { expiresIn: "8hr" }
-      // );
-
-      // return token;
-
       return {
         empleado_id: empleado.empleado_id,
         changePassword: true,
@@ -175,13 +149,18 @@ const login = async (cedula, clave) => {
       };
     }
 
-    // const token = jwt.sign(
-    //   { userId: usuario.usuario_id, username: usuario.cedula },
-    //   SECRET_KEY,
-    //   { expiresIn: "8hr" }
-    // );
+    const token = jwt.sign(
+      {
+        empleado_id: empleado.empleado_id,
+        rol: rolCifrado,
+      },
+      SECRET_KEY,
+      { expiresIn: "4h" }
+    );
 
-    return empleado;
+    const infoEmpleado = await traerEmpleado(empleado.empleado_id);
+
+    return { token, infoEmpleado };
   } catch (error) {
     throw new Error("Error al loguear: " + error.message);
   }
@@ -192,11 +171,26 @@ const crearEmpleado = async (
   cedula,
   nombres,
   apellidos,
+  fecha_nacimiento,
+  genero,
+  etnia,
   telefono,
   correo,
-  direccion
+  direccion,
+  cantidad_hijos
 ) => {
-  if (!cedula || !nombres || !apellidos || !telefono || !correo || !direccion) {
+  if (
+    !cedula ||
+    !nombres ||
+    !apellidos ||
+    !fecha_nacimiento ||
+    !genero ||
+    !etnia ||
+    !telefono ||
+    !correo ||
+    !direccion ||
+    !cantidad_hijos
+  ) {
     throw new Error("Datos faltantes");
   }
 
@@ -204,16 +198,20 @@ const crearEmpleado = async (
     const claveCifrada = await bcrypt.hash("1234", 10);
 
     const [empleado, created] = await Empleado.findOrCreate({
-      where: { cedula: cedula, rol_id: rol_id },
+      where: { cedula: cedula },
       defaults: {
         rol_id: rol_id,
         cedula: cedula,
         clave: claveCifrada,
         nombres: nombres,
         apellidos: apellidos,
+        fecha_nacimiento: fecha_nacimiento,
+        genero: genero,
+        etnia: etnia,
         telefono: telefono,
         correo: correo,
         direccion: direccion,
+        cantidad_hijos: cantidad_hijos,
       },
     });
 
@@ -264,9 +262,13 @@ const modificarEmpleado = async (
   cedula,
   nombres,
   apellidos,
+  fecha_nacimiento,
+  genero,
+  etnia,
   telefono,
   correo,
   direccion,
+  cantidad_hijos,
   activo
 ) => {
   if (
@@ -275,9 +277,13 @@ const modificarEmpleado = async (
     !cedula ||
     !nombres ||
     !apellidos ||
+    !fecha_nacimiento ||
+    !genero ||
+    !etnia ||
     !telefono ||
     !correo ||
     !direccion ||
+    !cantidad_hijos ||
     !activo
   ) {
     throw new Error("Datos faltantes");
@@ -292,9 +298,13 @@ const modificarEmpleado = async (
         cedula: cedula,
         nombres: nombres,
         apellidos: apellidos,
+        fecha_nacimiento: fecha_nacimiento,
+        genero: genero,
+        etnia: etnia,
         telefono: telefono,
         correo: correo,
         direccion: direccion,
+        cantidad_hijos: cantidad_hijos,
         activo: activo,
       },
       {
@@ -440,7 +450,6 @@ const inactivarEmpleado = async (empleado_id) => {
 module.exports = {
   todosLosEmpleados,
   traerEmpleado,
-  traerCargoActual,
   login,
   crearEmpleado,
   actualizarClaveTemporalEmpleado,

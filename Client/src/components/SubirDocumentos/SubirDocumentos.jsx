@@ -1,9 +1,11 @@
+import axios from "axios";
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { Button, Title, InputFile } from "../UI";
+import { Button, Hr, Title, InputFile } from "../UI";
 
 import {
   postDocumentos,
@@ -12,8 +14,12 @@ import {
 
 import Swal from "sweetalert2";
 
+import { alertError } from "../../utils/sweetAlert2";
+
 export function SubirDocumentos() {
   const dispatch = useDispatch();
+
+  const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
   const anexos = useSelector((state) => state.empleados.documentos);
@@ -37,7 +43,7 @@ export function SubirDocumentos() {
 
     document.title = "Grupo Lamar - Mis Documentos";
 
-    dispatch(getDocumentos(empleado.empleado_id));
+    dispatch(getDocumentos(token, empleado.empleado_id));
 
     return () => {
       document.title = "Grupo Lamar";
@@ -249,7 +255,7 @@ export function SubirDocumentos() {
       }
 
       try {
-        dispatch(postDocumentos(formData));
+        dispatch(postDocumentos(token, formData));
       } catch (error) {
         return error;
       }
@@ -264,17 +270,22 @@ export function SubirDocumentos() {
     });
   };
 
-  const handleOpenDocument = (filename) => {
+  const handleOpenDocument = async (filename) => {
     const URL_GET_DOCUMENTOS = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${filename}`;
 
-    window.open(URL_GET_DOCUMENTOS, "_blank");
+    try {
+      await axios.get(URL_GET_DOCUMENTOS);
+      window.open(URL_GET_DOCUMENTOS, "_blank");
+    } catch (error) {
+      alertError(error);
+    }
   };
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white">
       <Title>Mis documentos</Title>
-      <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
-
+      <br />
+      <Hr />
       <div className="flex flex-col mt-5 mb-5 gap-3">
         <div className="overflow-x-auto sm:mx-auto">
           <table className="w-auto text-sm text-left rtl:text-right dark:text-gray-400">

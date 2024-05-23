@@ -29,6 +29,31 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
+    fecha_nacimiento: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    genero: {
+      type: DataTypes.ENUM("Masculino", "Femenino"),
+      allowNull: false,
+    },
+    etnia: {
+      type: DataTypes.ENUM(
+        "Ninguno",
+        "Piaroas",
+        "Waraos",
+        "Yukpas",
+        "Yanomamis",
+        "Baris",
+        "Pemon",
+        "Wayuus",
+        "Makiritares",
+        "Panares",
+        "Pumes",
+        "Kariñas"
+      ),
+      defaultValue: "Ninguno",
+    },
     telefono: {
       type: DataTypes.STRING(15),
       allowNull: false,
@@ -39,6 +64,10 @@ module.exports = (sequelize) => {
     },
     direccion: {
       type: DataTypes.STRING(150),
+      allowNull: false,
+    },
+    cantidad_hijos: {
+      type: DataTypes.INTEGER(2),
       allowNull: false,
     },
     foto_perfil_nombre: {

@@ -1,7 +1,6 @@
 const {
   traerAnexos,
   crearAnexos,
-  modificarAnexos,
 } = require("../controllers/documentos_empleados_controllers");
 
 const getAnexos = async (req, res) => {

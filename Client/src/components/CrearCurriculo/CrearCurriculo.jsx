@@ -6,12 +6,13 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
+import { getAllIdiomasActivos } from "../../redux/idiomas/idiomasAction";
 import {
   postCurriculo,
   postCurriculoPDF,
 } from "../../redux/curriculos/curriculoAction";
 
-import { Button, Input, Label, Select, Title } from "../UI";
+import { Button, Hr, Input, Label, Select, Title } from "../UI";
 
 import validations from "../../utils/validacionesCurriculo";
 
@@ -23,11 +24,15 @@ export function CrearCurriculo() {
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
+  const token = useSelector((state) => state.empleados.token);
+
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const areas_interes_activas = useSelector(
     (state) => state.areas_interes.areas_interes_activas
   );
+
+  const idiomas_activos = useSelector((state) => state.idiomas.idiomas_activos);
 
   const [datosCurriculo, setDatosCurriculo] = useState({
     empleado_id: empleado.empleado_id,
@@ -35,15 +40,16 @@ export function CrearCurriculo() {
     titulos_obtenidos: [],
     disponibilidad_viajar: true,
     disponibilidad_cambio_residencia: false,
-    cantidad_hijos: "0",
     habilidades_tecnicas: "",
     areas_interes: [],
     experiencias: [],
+    idiomas: [],
   });
 
   const [errors, setErrors] = useState({});
 
   const [isHidden, setIsHidden] = useState(true);
+  const [isHiddenIdioma, setIsHiddenIdioma] = useState(true);
 
   const [isLoad, setIsLoad] = useState({
     areas_interes: false,
@@ -52,7 +58,9 @@ export function CrearCurriculo() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllAreasInteresActivas());
+    dispatch(getAllAreasInteresActivas(token));
+
+    dispatch(getAllIdiomasActivos(token));
 
     document.title = "Grupo Lamar - Registrar Perfil Profesional";
 
@@ -88,6 +96,27 @@ export function CrearCurriculo() {
 
     if (isHidden) {
       setIsHidden(false);
+      return;
+    }
+  };
+
+  const handleIdiomaSelected = () => {
+    const select = document.getElementById("idiomas");
+    const select2 = document.getElementById("nivel_idioma");
+
+    const name = select.options[select.selectedIndex].text;
+
+    if (select2.selectedIndex !== 0) {
+      select2.selectedIndex = 0;
+    }
+
+    if (name === "Ninguno") {
+      setIsHiddenIdioma(true);
+      return;
+    }
+
+    if (isHidden) {
+      setIsHiddenIdioma(false);
       return;
     }
   };
@@ -135,7 +164,52 @@ export function CrearCurriculo() {
       setIsLoad({ ...isLoad, areas_interes: true });
     }
 
-    select.selectedIndex = 0;
+    if (select.selectedIndex !== 0) {
+      select.selectedIndex = 0;
+    }
+    return;
+  };
+
+  const handleAddIdioma = () => {
+    const select = document.getElementById("idiomas");
+    const select2 = document.getElementById("nivel_idioma");
+
+    const nombre = select.options[select.selectedIndex].text;
+    const id = select.options[select.selectedIndex].value;
+    const nivel = select2.options[select2.selectedIndex].value;
+
+    if (nombre === "Ninguno") {
+      return;
+    }
+
+    const idiomaValidatorInclude = datosCurriculo.idiomas.some(
+      (idioma) => idioma.nombre === nombre
+    );
+
+    if (idiomaValidatorInclude) {
+      Swal.fire({
+        title: "Oops...",
+        text: "Ya has agregado este idioma",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    setDatosCurriculo({
+      ...datosCurriculo,
+      idiomas: [
+        ...datosCurriculo.idiomas,
+        { idioma_id: id, nombre: nombre, nivel: nivel },
+      ],
+    });
+
+    if (select.selectedIndex !== 0 || select2.selectedIndex !== 0) {
+      select.selectedIndex = 0;
+      select2.selectedIndex = 0;
+    }
+
     return;
   };
 
@@ -289,6 +363,18 @@ export function CrearCurriculo() {
     });
   };
 
+  const handleDeleteIdioma = (event) => {
+    const rowIndex = event.target.parentNode.parentNode.rowIndex;
+    const updatedIdiomas = datosCurriculo.idiomas.filter(
+      (_, index) => index !== rowIndex - 1
+    );
+
+    setDatosCurriculo({
+      ...datosCurriculo,
+      idiomas: updatedIdiomas,
+    });
+  };
+
   const handleDeleteTituloObtenido = (event) => {
     const rowIndex = event.target.parentNode.parentNode.rowIndex;
     const updatedTitulosObtenidos = datosCurriculo.titulos_obtenidos.filter(
@@ -301,29 +387,29 @@ export function CrearCurriculo() {
     });
   };
 
-  const handleValidateChildrens = () => {
-    const input = document.getElementById("cantidad_hijos");
+  // const handleValidateChildrens = () => {
+  //   const input = document.getElementById("cantidad_hijos");
 
-    if (input.value < 0) {
-      input.value = 0;
-    }
+  //   if (input.value < 0) {
+  //     input.value = 0;
+  //   }
 
-    if (input.value > 15) {
-      input.value = 15;
-    }
+  //   if (input.value > 15) {
+  //     input.value = 15;
+  //   }
 
-    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
-  };
+  //   setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
+  // };
 
-  const handleValidateChildrensEmpty = () => {
-    const input = document.getElementById("cantidad_hijos");
+  // const handleValidateChildrensEmpty = () => {
+  //   const input = document.getElementById("cantidad_hijos");
 
-    if (!input.value) {
-      input.value = 0;
-    }
+  //   if (!input.value) {
+  //     input.value = 0;
+  //   }
 
-    setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
-  };
+  //   setDatosCurriculo({ ...datosCurriculo, cantidad_hijos: input.value });
+  // };
 
   const handleCreateCurriculo = async () => {
     if (
@@ -340,10 +426,12 @@ export function CrearCurriculo() {
     }
 
     try {
-      dispatch(postCurriculo(datosCurriculo))
+      dispatch(postCurriculo(token, datosCurriculo))
         .then(() => {
           // Acciones a realizar después de que se resuelva la promesa exitosamente
-          dispatch(postCurriculoPDF(empleado.empleado_id, empleado.cedula))
+          dispatch(
+            postCurriculoPDF(token, empleado.empleado_id, empleado.cedula)
+          )
             .then((response) => {
               Swal.fire({
                 text: "¿Deseas observar / descargar tu perfil?",
@@ -363,14 +451,14 @@ export function CrearCurriculo() {
               navigate("/inicio");
             })
             .catch((error) => {
-              console.error("Error en postCurriculoPDF:", error);
+              return error;
             });
         })
         .catch((error) => {
-          console.error("Error en postCurriculo:", error);
+          return error;
         });
     } catch (error) {
-      console.error("Error general:", error);
+      return error;
     }
   };
 
@@ -383,8 +471,9 @@ export function CrearCurriculo() {
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white">
       <Title>Crear Perfil Profesional</Title>
-      <hr className="w-[80%] h-0.5 my-5 bg-gray-300 border-0 m-auto" />
-
+      <br />
+      <Hr />
+      <br />
       <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
         <div className="flex flex-col place-content-between">
           <Label htmlFor="grado_instruccion">
@@ -455,13 +544,12 @@ export function CrearCurriculo() {
                 >
                   <td className="px-4 py-4">{titulo_obtenido.nombre}</td>
                   <td className="px-4 py-4">
-                    <a
-                      href="#"
-                      className="font-medium text-red-600 dark:text-blue-500"
+                    <span
+                      className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
                       onClick={handleDeleteTituloObtenido}
                     >
                       Borrar
-                    </a>
+                    </span>
                   </td>
                 </tr>
               ))}
@@ -548,13 +636,12 @@ export function CrearCurriculo() {
                 >
                   <td className="px-4 py-4">{area.nombre}</td>
                   <td className="px-4 py-4">
-                    <a
-                      href="#"
-                      className="font-medium text-red-600 dark:text-blue-500"
+                    <span
+                      className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
                       onClick={handleDeleteArea}
                     >
                       Borrar
-                    </a>
+                    </span>
                   </td>
                 </tr>
               ))}
@@ -645,7 +732,7 @@ export function CrearCurriculo() {
             </Button>
           </div>
         </div>
-        <div className="flex flex-col place-content-between">
+        {/* <div className="flex flex-col place-content-between">
           <Label htmlFor="cantidad_hijos">Cantidad de hijos</Label>
           <Input
             id="cantidad_hijos"
@@ -657,7 +744,7 @@ export function CrearCurriculo() {
             onChange={handleValidateChildrens}
             onBlur={handleValidateChildrensEmpty}
           />
-        </div>
+        </div> */}
         <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
           <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
             <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
@@ -696,13 +783,89 @@ export function CrearCurriculo() {
                     {experiencia.empresa_centro_educativo}
                   </td>
                   <td className="px-4 py-4">
-                    <a
-                      href="#"
-                      className="font-medium text-red-600 dark:text-blue-500"
+                    <span
+                      className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
                       onClick={handleDeleteExp}
                     >
                       Borrar
-                    </a>
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="idiomas">Conocimiento de idiomas</Label>
+          <Select id="idiomas" name="idiomas" onChange={handleIdiomaSelected}>
+            <option value="Ninguno">Ninguno</option>
+            {idiomas_activos?.length
+              ? idiomas_activos?.map(
+                  (idioma, i) =>
+                    idioma.activo && (
+                      <option
+                        key={i}
+                        name={idioma.nombre}
+                        value={idioma.idioma_id}
+                      >
+                        {idioma.nombre}
+                      </option>
+                    )
+                )
+              : null}
+          </Select>
+        </div>
+        <div
+          className={`flex flex-col place-content-between ${
+            isHiddenIdioma ? "hidden" : null
+          }`}
+        >
+          <Label htmlFor="idiomas">Nivel del idioma</Label>
+          <div className="flex gap-2">
+            <Select
+              id="nivel_idioma"
+              name="nivel_idioma"
+              onChange={handleTipoExpSelected}
+            >
+              <option value="Principiante">Principiante</option>
+              <option value="Intermedio">Intermedio</option>
+              <option value="Avanzado">Avanzado</option>
+            </Select>
+            <Button onClick={handleAddIdioma} className="m-0 w-auto">
+              Agregar
+            </Button>
+          </div>
+        </div>
+        <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
+          <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
+            <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
+              <tr className="text-white">
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Idiomas agregados</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Nivel</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Acción</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {datosCurriculo.idiomas.map((idioma, i) => (
+                <tr
+                  key={i}
+                  className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
+                >
+                  <td className="px-4 py-4">{idioma.nombre}</td>
+                  <td className="px-4 py-4">{idioma.nivel}</td>
+                  <td className="px-4 py-4">
+                    <span
+                      className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
+                      onClick={handleDeleteIdioma}
+                    >
+                      Borrar
+                    </span>
                   </td>
                 </tr>
               ))}

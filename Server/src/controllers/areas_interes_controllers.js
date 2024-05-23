@@ -6,7 +6,7 @@ const todosLosAreaInteres = async () => {
   try {
     const areas_interes = await Areas_Interes.findAll();
 
-    if (!areas_interes) {
+    if (!areas_interes.length) {
       throw new Error("No existen áreas de interés");
     }
 
@@ -24,7 +24,7 @@ const todosLosAreaInteresActivas = async () => {
       where: { activo: true },
     });
 
-    if (!areas_interes) {
+    if (!areas_interes.length) {
       throw new Error("No existen áreas de interés");
     }
 

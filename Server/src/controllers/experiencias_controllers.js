@@ -6,7 +6,7 @@ const todasLasExperiencias = async () => {
   try {
     const experiencias = await Experiencia.findAll();
 
-    if (!experiencias) {
+    if (!experiencias.length) {
       throw new Error("No existen experiencias");
     }
 

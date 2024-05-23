@@ -10,6 +10,8 @@ import { Button, Input, Title } from "../UI";
 import { putPassword } from "../../redux/empleados/empleadoAction";
 
 export function ActualizarClave() {
+  const token = useSelector((state) => state.empleados.token);
+
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const [data, setData] = useState({
@@ -28,7 +30,7 @@ export function ActualizarClave() {
     };
 
     try {
-      await putPassword(body);
+      await putPassword(token, body);
 
       window.location.reload();
     } catch (error) {
