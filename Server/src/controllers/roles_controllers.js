@@ -1,4 +1,4 @@
-const { Roles } = require("../db");
+const { conn, Roles } = require("../db");
 
 const todosLosRoles = async () => {
   try {
@@ -37,14 +37,21 @@ const crearRol = async (nombre, descripcion) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const [rol, created] = await Roles.findOrCreate({
       where: { nombre: nombre },
       defaults: {
         nombre: nombre,
         descripcion: descripcion,
       },
+      transaction: t,
     });
+
+    await t.commit();
 
     if (created) {
       return rol;
@@ -52,6 +59,8 @@ const crearRol = async (nombre, descripcion) => {
 
     throw new Error("Ya existe un rol con ese nombre");
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al crear el rol: " + error.message);
   }
 };
@@ -61,7 +70,11 @@ const modificarRol = async (rol_id, nombre, descripcion, activo) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerRol(rol_id);
 
     await Roles.update(
@@ -75,11 +88,16 @@ const modificarRol = async (rol_id, nombre, descripcion, activo) => {
         where: {
           rol_id: rol_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerRol(rol_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al modificar el rol: " + error.message);
   }
 };
@@ -88,19 +106,27 @@ const inactivarRol = async (rol_id) => {
   if (!rol_id) {
     throw new Error("Datos faltantes");
   }
+  let t;
 
   try {
+    t = await conn.transaction();
+
     const rol = await traerRol(rol_id);
 
     await Roles.update(
       { activo: !rol.activo },
       {
         where: { rol_id: rol_id },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerRol(rol_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al inactivar el rol: " + error.message);
   }
 };

@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 
 const {
+  conn,
   Curriculo,
   Empleado,
   Titulo_Obtenido,
@@ -301,7 +302,12 @@ const cambiarEstadoRevisado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error("Datos faltantes");
   }
+
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerEmpleado(empleado_id);
 
     const curriculo = await Curriculo.findOne({
@@ -319,9 +325,12 @@ const cambiarEstadoRevisado = async (empleado_id) => {
           where: {
             empleado_id: empleado_id,
           },
-        }
+        },
+        { transaction: t }
       );
     }
+
+    await t.commit();
 
     return await Curriculo.findOne({
       where: {
@@ -329,6 +338,8 @@ const cambiarEstadoRevisado = async (empleado_id) => {
       },
     });
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al modificar el curriculo: " + error.message);
   }
 };
@@ -406,7 +417,11 @@ const crearCurriculo = async (
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerEmpleado(empleado_id);
 
     const [curriculo, created] = await Curriculo.findOrCreate({
@@ -418,7 +433,10 @@ const crearCurriculo = async (
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
         habilidades_tecnicas: habilidades_tecnicas,
       },
+      transaction: t,
     });
+
+    await t.commit();
 
     if (created) {
       return curriculo;
@@ -426,6 +444,8 @@ const crearCurriculo = async (
 
     throw new Error("Ya existe un curriculo para ese empleado");
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al crear el curriculo: " + error.message);
   }
 };
@@ -441,7 +461,11 @@ const modificarCurriculo = async (
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerCurriculo(curriculo_id);
 
     await Curriculo.update(
@@ -456,11 +480,16 @@ const modificarCurriculo = async (
         where: {
           curriculo_id: curriculo_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerCurriculo(curriculo_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al modificar el curriculo: " + error.message);
   }
 };
@@ -470,18 +499,27 @@ const inactivarCurriculo = async (curriculo_id) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const curriculo = await traerCurriculo(curriculo_id);
 
     await Curriculo.update(
       { activo: !curriculo.activo },
       {
         where: { curriculo_id: curriculo_id },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerCurriculo(curriculo_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al inactivar el curriculo: " + error.message);
   }
 };

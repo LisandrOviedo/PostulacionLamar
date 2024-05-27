@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const { Empleado, Documentos_Empleado } = require("../db");
+const { conn, Documentos_Empleado } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
 
@@ -34,7 +34,11 @@ const crearAnexos = async (empleado_id, anexos) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerEmpleado(empleado_id);
 
     for (const key in anexos) {
@@ -63,17 +67,25 @@ const crearAnexos = async (empleado_id, anexos) => {
             empleado_id: empleado_id,
             tipo: elemento.fieldname,
           },
+          transaction: t,
         });
 
-        await Documentos_Empleado.create({
-          empleado_id: empleado_id,
-          tipo: elemento.fieldname,
-          nombre: elemento.filename,
-          ruta: elemento.path,
-        });
+        await Documentos_Empleado.create(
+          {
+            empleado_id: empleado_id,
+            tipo: elemento.fieldname,
+            nombre: elemento.filename,
+            ruta: elemento.path,
+          },
+          { transaction: t }
+        );
       }
     }
+
+    await t.commit();
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al crear los anexos: " + error.message);
   }
 };
@@ -83,7 +95,11 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const pdf_actual = await Documentos_Empleado.findOne({
       where: {
         empleado_id: empleado_id,
@@ -91,8 +107,7 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
       },
     });
 
-    if (pdf_actual === null) {
-    } else {
+    if (pdf_actual !== null) {
       const rutaArchivo = pdf_actual.ruta;
 
       fs.unlink(rutaArchivo, (error) => {
@@ -107,71 +122,24 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
         empleado_id: empleado_id,
         tipo: "perfil_pdf",
       },
+      transaction: t,
     });
 
-    await Documentos_Empleado.create({
-      empleado_id: empleado_id,
-      tipo: "perfil_pdf",
-      nombre: filename,
-      ruta: pdf_path,
-    });
-  } catch (error) {
-    throw new Error("Error al crear el anexo: " + error.message);
-  }
-};
-
-const modificarAnexos = async (empleado_id) => {
-  if (!empleado_id) {
-    throw new Error("Datos faltantes");
-  }
-
-  try {
-    await traerEmpleado(empleado_id);
-
-    const curriculo = await Curriculo.findOne({
-      where: {
+    await Documentos_Empleado.create(
+      {
         empleado_id: empleado_id,
-        activo: true,
+        tipo: "perfil_pdf",
+        nombre: filename,
+        ruta: pdf_path,
       },
-      attributes: {
-        exclude: ["empleado_id"],
-      },
-      include: [
-        {
-          model: Empleado,
-          attributes: {
-            exclude: ["createdAt", "updatedAt"],
-          },
-        },
-        {
-          model: Areas_Interes,
-          attributes: {
-            exclude: ["activo", "createdAt", "updatedAt"],
-          },
-          through: {
-            attributes: ["area_interes_curriculo_id"],
-          },
-        },
-        {
-          model: Titulo_Obtenido,
-          attributes: {
-            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
-          },
-        },
-        {
-          model: Experiencia,
-          attributes: {
-            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
-          },
-        },
-      ],
-    });
+      { transaction: t }
+    );
 
-    if (curriculo) {
-      return curriculo;
-    }
+    await t.commit();
   } catch (error) {
-    throw new Error("Error al modificar los anexos: " + error.message);
+    await t.rollback();
+
+    throw new Error("Error al crear el anexo: " + error.message);
   }
 };
 
@@ -179,5 +147,4 @@ module.exports = {
   traerAnexos,
   crearAnexos,
   crearCurriculoPDF,
-  modificarAnexos,
 };

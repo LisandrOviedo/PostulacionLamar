@@ -1,4 +1,4 @@
-const { Experiencia } = require("../db");
+const { conn, Experiencia } = require("../db");
 
 const { traerCurriculo } = require("./curriculos_controllers");
 
@@ -39,7 +39,11 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerCurriculo(curriculo_id);
 
     let fallidos = "";
@@ -59,6 +63,7 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
           duracion: exp.duracion,
           empresa_centro_educativo: exp.empresa_centro_educativo,
         },
+        transaction: t,
       });
 
       if (!created) {
@@ -74,6 +79,8 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
       }
     });
 
+    await t.commit();
+
     if (fallidos !== "") {
       throw new Error(
         "Estos cargos laborales / títulos de curso no se pudieron guardar porque ya existen: ",
@@ -81,6 +88,8 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
       );
     }
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al crear las experiencias: " + error.message);
   }
 };
@@ -106,7 +115,11 @@ const modificarExperiencia = async (
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerExperiencia(experiencia_id);
 
     await Experiencia.update(
@@ -122,11 +135,16 @@ const modificarExperiencia = async (
         where: {
           experiencia_id: experiencia_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerExperiencia(experiencia_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al modificar la experiencia: " + error.message);
   }
 };
@@ -136,18 +154,27 @@ const inactivarExperiencia = async (experiencia_id) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const experiencia = await traerExperiencia(experiencia_id);
 
     await Experiencia.update(
       { activo: !experiencia.activo },
       {
         where: { experiencia_id: experiencia_id },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerExperiencia(experiencia_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al inactivar la experiencia: " + error.message);
   }
 };
@@ -157,15 +184,24 @@ const eliminarExperienciasCurriculo = async (curriculo_id) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerCurriculo(curriculo_id);
 
     await Experiencia.destroy({
       where: {
         curriculo_id: curriculo_id,
       },
+      transaction: t,
     });
+
+    await t.commit();
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al eliminar las experiencias: " + error.message);
   }
 };

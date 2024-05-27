@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
 
-const { Empleado, Respuesta, Respuestas_Empleado } = require("../db");
+const { conn, Empleado, Respuesta, Respuestas_Empleado } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
 const { traerCurriculoEmpleado } = require("./curriculos_controllers");
@@ -9,7 +9,7 @@ const XlsxPopulate = require("xlsx-populate");
 const path = require("path");
 const fs = require("fs");
 
-const { calcularEdad } = require("../utils/formatearFecha");
+const { calcularEdad, DDMMYYYYHHMM } = require("../utils/formatearFecha");
 
 const todasLasRespuestasEmpleados = async (
   filtros,
@@ -116,7 +116,11 @@ const crearRespuestasEmpleado = async (empleado_id, prueba) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const empleado = await traerEmpleado(empleado_id);
 
     const curriculo = await traerCurriculoEmpleado(empleado_id);
@@ -132,8 +136,11 @@ const crearRespuestasEmpleado = async (empleado_id, prueba) => {
             empleado_id: empleado_id,
             respuesta_id: prueba[respuesta],
           },
+          transaction: t,
         });
     }
+
+    await t.commit();
 
     const respuestas_empleado = await Empleado.findAll({
       attributes: [],
@@ -206,69 +213,13 @@ const crearRespuestasEmpleado = async (empleado_id, prueba) => {
       B++;
     }
 
-    workbook.toFileAsync(`${destPath}/TestKostick.xlsx`, {
-      password: `${empleado.cedula}`,
+    workbook.toFileAsync(`${destPath}/${DDMMYYYYHHMM()} - TestKostick.xlsx`, {
+      password: `LAMAR${empleado.cedula}`,
     });
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al crear el respuestas_empleado: " + error.message);
-  }
-};
-
-const modificarRespuestasEmpleado = async (
-  rol_id,
-  nombre,
-  descripcion,
-  activo
-) => {
-  if (!rol_id || !nombre || !descripcion || !activo) {
-    throw new Error("Datos faltantes");
-  }
-
-  try {
-    await traerRol(rol_id);
-
-    await Respuestas_Empleado.update(
-      {
-        rol_id: rol_id,
-        nombre: nombre,
-        descripcion: descripcion,
-        activo: activo,
-      },
-      {
-        where: {
-          rol_id: rol_id,
-        },
-      }
-    );
-
-    return await traerRol(rol_id);
-  } catch (error) {
-    throw new Error(
-      "Error al modificar el respuestas_empleado: " + error.message
-    );
-  }
-};
-
-const inactivarRespuestasEmpleado = async (rol_id) => {
-  if (!rol_id) {
-    throw new Error("Datos faltantes");
-  }
-
-  try {
-    const respuestas_empleado = await traerRol(rol_id);
-
-    await Respuestas_Empleado.update(
-      { activo: !respuestas_empleado.activo },
-      {
-        where: { rol_id: rol_id },
-      }
-    );
-
-    return await traerRol(rol_id);
-  } catch (error) {
-    throw new Error(
-      "Error al inactivar el respuestas_empleado: " + error.message
-    );
   }
 };
 
@@ -276,6 +227,4 @@ module.exports = {
   todasLasRespuestasEmpleados,
   traerRespuestasEmpleado,
   crearRespuestasEmpleado,
-  modificarRespuestasEmpleado,
-  inactivarRespuestasEmpleado,
 };

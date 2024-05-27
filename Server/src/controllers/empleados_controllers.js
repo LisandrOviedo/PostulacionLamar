@@ -2,7 +2,14 @@ const { Op } = require("sequelize");
 
 const fs = require("fs");
 
-const { Empleado, Roles, Cargo, Cargo_Empleado, Empresa } = require("../db");
+const {
+  conn,
+  Empleado,
+  Roles,
+  Cargo,
+  Cargo_Empleado,
+  Empresa,
+} = require("../db");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -194,33 +201,44 @@ const crearEmpleado = async (
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const claveCifrada = await bcrypt.hash("1234", 10);
 
-    const [empleado, created] = await Empleado.findOrCreate({
-      where: { cedula: cedula },
-      defaults: {
-        rol_id: rol_id,
-        cedula: cedula,
-        clave: claveCifrada,
-        nombres: nombres,
-        apellidos: apellidos,
-        fecha_nacimiento: fecha_nacimiento,
-        genero: genero,
-        etnia: etnia,
-        telefono: telefono,
-        correo: correo,
-        direccion: direccion,
-        cantidad_hijos: cantidad_hijos,
+    const [empleado, created] = await Empleado.findOrCreate(
+      {
+        where: { cedula: cedula },
+        defaults: {
+          rol_id: rol_id,
+          cedula: cedula,
+          clave: claveCifrada,
+          nombres: nombres,
+          apellidos: apellidos,
+          fecha_nacimiento: fecha_nacimiento,
+          genero: genero,
+          etnia: etnia,
+          telefono: telefono,
+          correo: correo,
+          direccion: direccion,
+          cantidad_hijos: cantidad_hijos,
+        },
       },
-    });
+      { transaction: t }
+    );
+
+    await t.commit();
 
     if (created) {
       return empleado;
     }
 
-    throw new Error("Ya existe un empleado con esa cédula de identidad y rol");
+    throw new Error("Ya existe un empleado con esa cédula de identidad");
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al crear el empleado: " + error.message);
   }
 };
@@ -234,7 +252,11 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
     throw new Error("Debes ingresar una contraseña diferente a 1234");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerEmpleado(empleado_id);
 
     const claveCifrada = await bcrypt.hash(clave, 10);
@@ -247,11 +269,16 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
         where: {
           empleado_id: empleado_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
@@ -289,7 +316,11 @@ const modificarEmpleado = async (
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerEmpleado(empleado_id);
 
     await Empleado.update(
@@ -311,11 +342,16 @@ const modificarEmpleado = async (
         where: {
           empleado_id: empleado_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
@@ -325,7 +361,11 @@ const modificarFotoEmpleado = async (empleado_id, filename, path) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const empleado = await traerEmpleado(empleado_id);
 
     const rutaArchivo = empleado.foto_perfil_ruta;
@@ -347,11 +387,16 @@ const modificarFotoEmpleado = async (empleado_id, filename, path) => {
         where: {
           empleado_id: empleado_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
@@ -369,7 +414,11 @@ const actualizarClaveEmpleado = async (
     throw new Error("Debes ingresar una contraseña diferente a 1234");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const empleado = await Empleado.findByPk(empleado_id, {
       attributes: ["clave"],
     });
@@ -390,11 +439,16 @@ const actualizarClaveEmpleado = async (
         where: {
           empleado_id: empleado_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
@@ -404,7 +458,11 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerEmpleado(empleado_id);
 
     const claveCifrada = await bcrypt.hash("1234", 10);
@@ -417,11 +475,16 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
         where: {
           empleado_id: empleado_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
@@ -431,18 +494,27 @@ const inactivarEmpleado = async (empleado_id) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const empleado = await traerEmpleado(empleado_id);
 
     await Empleado.update(
       { activo: !empleado.activo },
       {
         where: { empleado_id: empleado_id },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al inactivar el empleado: " + error.message);
   }
 };

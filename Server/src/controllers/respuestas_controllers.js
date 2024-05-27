@@ -1,4 +1,4 @@
-const { Respuesta } = require("../db");
+const { conn, Respuesta } = require("../db");
 
 const { pruebaKostick } = require("../utils/pruebaKostick");
 
@@ -46,7 +46,11 @@ const traerRespuesta = async (respuesta_id) => {
 };
 
 const crearRespuestas = async () => {
+  let t;
+
   try {
+    t = await conn.transaction();
+
     for (const respuestaObjeto of pruebaKostick) {
       const [resp, created] = await Respuesta.findOrCreate({
         where: {
@@ -57,11 +61,14 @@ const crearRespuestas = async () => {
           numero_pregunta: respuestaObjeto.pregunta,
           respuesta: respuestaObjeto.respuesta,
         },
+        transaction: t,
       });
     }
 
-    return "Respuestas de prueba Kostick cargadas en BD";
+    await t.commit();
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al crear las respuestas: " + error.message);
   }
 };
@@ -76,7 +83,11 @@ const modificarRespuesta = async (
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerRespuesta(respuesta_id);
 
     await Respuesta.update(
@@ -89,11 +100,16 @@ const modificarRespuesta = async (
         where: {
           respuesta_id: respuesta_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerRespuesta(respuesta_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al modificar la respuesta: " + error.message);
   }
 };
@@ -103,18 +119,27 @@ const inactivarRespuesta = async (respuesta_id) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const respuesta = await traerRespuesta(respuesta_id);
 
     await Respuesta.update(
       { activo: !respuesta.activo },
       {
         where: { respuesta_id: respuesta_id },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerRespuesta(respuesta_id);
   } catch (error) {
+    await t.rollback();
+
     throw new Error("Error al inactivar la respuesta: " + error.message);
   }
 };
