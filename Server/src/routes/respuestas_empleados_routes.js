@@ -3,8 +3,6 @@ const {
   getRespuestasEmpleados,
   getRespuestasEmpleado,
   postRespuestasEmpleado,
-  putRespuestasEmpleado,
-  deleteRespuestasEmpleado,
 } = require("../handlers/respuestas_empleados_handlers");
 
 const { authenticateToken } = require("../auth/index");
@@ -23,16 +21,5 @@ respuestas_empleados.post(
   getRespuestasEmpleados
 );
 respuestas_empleados.post("/", authenticateToken, postRespuestasEmpleado);
-
-respuestas_empleados.put(
-  "/modificar",
-  authenticateToken,
-  putRespuestasEmpleado
-);
-respuestas_empleados.put(
-  "/inactivar",
-  authenticateToken,
-  deleteRespuestasEmpleado
-);
 
 module.exports = respuestas_empleados;
