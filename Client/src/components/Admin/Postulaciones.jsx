@@ -10,7 +10,7 @@ import {
   deleteFiltros,
 } from "../../redux/curriculos/curriculoAction";
 
-import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
+import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresAction";
 import { getAllIdiomasActivos } from "../../redux/idiomas/idiomasAction";
 
 import { Button, Input, Label, Select, Title } from "../UI";

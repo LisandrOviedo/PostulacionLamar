@@ -2,7 +2,7 @@ import axios from "axios";
 
 import Swal from "sweetalert2";
 
-import { allAreasInteresActivas } from "./areainteresSlice";
+import { allAreasInteresActivas } from "./areasInteresSlice";
 
 import { alertError } from "../../utils/sweetAlert2";
 

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
+import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresAction";
 import { getAllIdiomasActivos } from "../../redux/idiomas/idiomasAction";
 import {
   postCurriculo,
