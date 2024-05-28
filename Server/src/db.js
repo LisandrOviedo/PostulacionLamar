@@ -46,8 +46,9 @@ const {
   Experiencia,
   Idioma,
   Idiomas_Curriculo,
-  Respuesta,
-  Respuestas_Empleado,
+  Preguntas_Kostick,
+  Pruebas_Empleado,
+  Respuestas_Kostick,
   Roles,
   Titulo_Obtenido,
 } = sequelize.models;
@@ -193,19 +194,37 @@ Documentos_Empleado.belongsTo(Empleado, {
   },
 });
 
-// Empleado N:N Respuesta
-Empleado.belongsToMany(Respuesta, {
-  through: "Respuestas_Empleado",
+// Empleado 1:N Pruebas_Empleado
+Empleado.hasMany(Pruebas_Empleado, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
   },
 });
-Respuesta.belongsToMany(Empleado, {
-  through: "Respuestas_Empleado",
+Pruebas_Empleado.belongsTo(Empleado, {
   foreignKey: {
     allowNull: false,
-    name: "respuesta_id",
+    name: "empleado_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+
+// Pruebas_Empleado N:N Preguntas_Kostick
+Pruebas_Empleado.belongsToMany(Preguntas_Kostick, {
+  through: "Respuestas_Kostick",
+  foreignKey: {
+    allowNull: false,
+    name: "prueba_id",
+  },
+});
+Preguntas_Kostick.belongsToMany(Pruebas_Empleado, {
+  through: "Respuestas_Kostick",
+  foreignKey: {
+    allowNull: false,
+    name: "pregunta_kostick_id",
   },
 });
 
@@ -239,8 +258,9 @@ module.exports = {
   Experiencia,
   Idioma,
   Idiomas_Curriculo,
-  Respuesta,
-  Respuestas_Empleado,
+  Preguntas_Kostick,
+  Pruebas_Empleado,
+  Respuestas_Kostick,
   Roles,
   Titulo_Obtenido,
 };
