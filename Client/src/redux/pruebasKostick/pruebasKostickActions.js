@@ -14,6 +14,8 @@ import {
   resetState,
 } from "./pruebasKostickSlices";
 
+import { postPruebaEmpleado } from "../pruebasEmpleado/pruebasEmpleadoActions";
+
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
 export const getPrueba = (token) => {
@@ -58,9 +60,19 @@ export const postPrueba = async (token, empleado_id, prueba) => {
   const URL_POST_PRUEBA = `${URL_SERVER}/respuestas_kostick`;
 
   try {
+    const crearPruebaEmpleado = await postPruebaEmpleado(
+      token,
+      empleado_id,
+      "Kostick"
+    );
+
     await axios.post(
       URL_POST_PRUEBA,
-      { empleado_id: empleado_id, prueba: prueba },
+      {
+        empleado_id: empleado_id,
+        prueba_id: crearPruebaEmpleado.prueba_id,
+        prueba: prueba,
+      },
       {
         headers: { authorization: `Bearer ${token}` },
       }

@@ -7,11 +7,16 @@ import {
   getPrueba,
   postPrueba,
   getPruebaEmpleado,
-} from "../../redux/pruebaKostick/pruebaAction";
+} from "../../redux/pruebasKostick/pruebasKostickActions";
 
 import { Button, Hr, Label, Title } from "../UI";
 
 import Swal from "sweetalert2";
+
+import {
+  pruebaMenorATresMeses,
+  cuandoPuedesAplicar,
+} from "../../utils/pruebaKostick";
 
 export function TestActitudinal() {
   const dispatch = useDispatch();
@@ -57,19 +62,22 @@ export function TestActitudinal() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    getPruebaEmpleado(token, empleado.empleado_id).then(async (data) => {
-      if (Object.keys(data).length) {
-        await Swal.fire({
-          text: "Ya has aplicado el Test de Valoración Actitudinal",
-          icon: "info",
-          showConfirmButton: true,
-        });
-
-        navigate("/inicio");
-      } else {
-        dispatch(getPrueba(token));
+    getPruebaEmpleado(token, empleado.empleado_id, "Kostick").then(
+      async (data) => {
+        if (data.length && pruebaMenorATresMeses(data[0].createdAt)) {
+          await Swal.fire({
+            text: `Ya has aplicado el Test de Valoración Actitudinal, puedes volver a aplicar el día ${cuandoPuedesAplicar(
+              data[0].createdAt
+            )}`,
+            icon: "info",
+            showConfirmButton: true,
+          });
+          navigate("/inicio");
+        } else {
+          dispatch(getPrueba(token));
+        }
       }
-    });
+    );
 
     document.title = "Grupo Lamar - Aplicar Test Actitudinal";
 
@@ -115,15 +123,15 @@ export function TestActitudinal() {
               Pregunta número {index + 1}
             </span>
             {respuestas.map((respuesta) => (
-              <div key={respuesta.respuesta_id} className="flex gap-2">
+              <div key={respuesta.pregunta_kostick_id} className="flex gap-2">
                 <input
                   type="radio"
-                  id={respuesta.respuesta_id}
+                  id={respuesta.pregunta_kostick_id}
                   name={respuesta.numero_pregunta}
-                  value={respuesta.respuesta_id}
+                  value={respuesta.pregunta_kostick_id}
                   onClick={handleAddRespuesta}
                 />
-                <Label htmlFor={respuesta.respuesta_id}>
+                <Label htmlFor={respuesta.pregunta_kostick_id}>
                   {respuesta.respuesta}
                 </Label>
               </div>

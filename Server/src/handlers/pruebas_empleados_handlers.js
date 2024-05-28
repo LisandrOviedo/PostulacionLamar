@@ -1,11 +1,12 @@
 const {
   todasLasPruebas,
+  traerPruebasEmpleados,
   traerPrueba,
   crearPrueba,
 } = require("../controllers/pruebas_empleados_controllers");
 
 const getPruebas = async (req, res) => {
-  const { filtros, paginaActual, limitePorPagina } = req.params;
+  const { filtros, paginaActual, limitePorPagina } = req.body;
 
   try {
     const response = await todasLasPruebas(
@@ -13,6 +14,18 @@ const getPruebas = async (req, res) => {
       parseInt(paginaActual),
       parseInt(limitePorPagina)
     );
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const getPruebasEmpleado = async (req, res) => {
+  const { empleado_id, prueba } = req.body;
+
+  try {
+    const response = await traerPruebasEmpleados(empleado_id, prueba);
 
     return res.json(response);
   } catch (error) {
@@ -46,6 +59,7 @@ const postPrueba = async (req, res) => {
 
 module.exports = {
   getPruebas,
+  getPruebasEmpleado,
   getPrueba,
   postPrueba,
 };
