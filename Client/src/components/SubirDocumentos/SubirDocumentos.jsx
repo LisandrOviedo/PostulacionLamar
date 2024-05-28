@@ -10,7 +10,7 @@ import { Button, Hr, Title, InputFile } from "../UI";
 import {
   postDocumentos,
   getDocumentos,
-} from "../../redux/empleados/empleadoAction";
+} from "../../redux/empleados/empleadosActions";
 
 import Swal from "sweetalert2";
 

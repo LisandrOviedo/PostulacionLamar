@@ -11,7 +11,7 @@ import {
   deleteFiltros,
   putActivo,
   resetPassword,
-} from "../../redux/empleados/empleadoAction";
+} from "../../redux/empleados/empleadosActions";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 

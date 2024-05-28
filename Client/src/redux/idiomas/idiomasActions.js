@@ -2,7 +2,7 @@ import axios from "axios";
 
 import Swal from "sweetalert2";
 
-import { allIdiomasActivos } from "./idiomasSlice";
+import { allIdiomasActivos } from "./idiomasSlices";
 
 import { alertError } from "../../utils/sweetAlert2";
 

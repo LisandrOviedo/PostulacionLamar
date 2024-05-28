@@ -7,8 +7,11 @@ import validations from "../../utils/validacionesAcceso";
 
 import { Button, Input, Label, Title } from "../UI";
 
-import { getLogin, resetEmpleados } from "../../redux/empleados/empleadoAction";
-import { resetCurriculos } from "../../redux/curriculos/curriculoAction";
+import {
+  getLogin,
+  resetEmpleados,
+} from "../../redux/empleados/empleadosActions";
+import { resetCurriculos } from "../../redux/curriculos/curriculosActions";
 
 import Swal from "sweetalert2";
 

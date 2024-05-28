@@ -5,12 +5,12 @@ import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresAction";
-import { getAllIdiomasActivos } from "../../redux/idiomas/idiomasAction";
+import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresActions";
+import { getAllIdiomasActivos } from "../../redux/idiomas/idiomasActions";
 import {
   postCurriculo,
   postCurriculoPDF,
-} from "../../redux/curriculos/curriculoAction";
+} from "../../redux/curriculos/curriculosActions";
 
 import { Button, Hr, Input, Label, Select, Title } from "../UI";
 

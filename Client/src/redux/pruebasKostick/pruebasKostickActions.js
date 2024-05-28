@@ -12,12 +12,12 @@ import {
   filtros,
   resetFilters,
   resetState,
-} from "./pruebaSlice";
+} from "./pruebasKostickSlices";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
 export const getPrueba = (token) => {
-  const URL_PRUEBA = `${URL_SERVER}/respuestas`;
+  const URL_PRUEBA = `${URL_SERVER}/preguntas_kostick`;
 
   return async (dispatch) => {
     try {
@@ -34,13 +34,17 @@ export const getPrueba = (token) => {
   };
 };
 
-export const getPruebaEmpleado = async (token, empleado_id) => {
-  const URL_GET_PRUEBA_EMPLEADO = `${URL_SERVER}/respuestas_empleados/empleado/${empleado_id}`;
+export const getPruebaEmpleado = async (token, empleado_id, prueba) => {
+  const URL_GET_PRUEBA_EMPLEADO = `${URL_SERVER}/pruebas_empleados/pruebasEmpleados`;
 
   try {
-    const { data } = await axios(URL_GET_PRUEBA_EMPLEADO, {
-      headers: { authorization: `Bearer ${token}` },
-    });
+    const { data } = await axios.post(
+      URL_GET_PRUEBA_EMPLEADO,
+      { empleado_id: empleado_id, prueba: prueba },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
 
     return data;
   } catch (error) {
@@ -51,7 +55,7 @@ export const getPruebaEmpleado = async (token, empleado_id) => {
 };
 
 export const postPrueba = async (token, empleado_id, prueba) => {
-  const URL_POST_PRUEBA = `${URL_SERVER}/respuestas_empleados`;
+  const URL_POST_PRUEBA = `${URL_SERVER}/respuestas_kostick`;
 
   try {
     await axios.post(

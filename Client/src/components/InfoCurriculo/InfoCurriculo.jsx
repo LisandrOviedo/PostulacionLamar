@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { getCurriculoEmpleado } from "../../redux/curriculos/curriculoAction";
+import { getCurriculoEmpleado } from "../../redux/curriculos/curriculosActions";
 
 import { Button, Hr, Title } from "../UI";
 

@@ -2,11 +2,11 @@ import { persistReducer, persistStore } from "redux-persist";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 
-import areas_interes from "./areasinteres/areainteresSlice";
-import curriculos from "./curriculos/curriculoSlice";
-import empleados from "./empleados/empleadoSlice";
-import idiomas from "./idiomas/idiomasSlice";
-import prueba_kostick from "./pruebaKostick/pruebaSlice";
+import areas_interes from "./areasInteres/areasInteresSlices";
+import curriculos from "./curriculos/curriculosSlices";
+import empleados from "./empleados/empleadosSlices";
+import idiomas from "./idiomas/idiomasSlices";
+import prueba_kostick from "./pruebasKostick/pruebasKostickSlices";
 
 // Configuración de Redux Persist
 const persistConfig = {

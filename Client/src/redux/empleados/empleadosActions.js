@@ -15,7 +15,7 @@ import {
   filtros,
   resetFilters,
   resetState,
-} from "./empleadoSlice";
+} from "./empleadosSlices";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 

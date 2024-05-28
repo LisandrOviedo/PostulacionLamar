@@ -6,7 +6,6 @@ import { alertError } from "../../utils/sweetAlert2";
 
 import {
   allCurriculos,
-  curriculoDetail,
   createCurriculo,
   curriculoEmpleado,
   paginaActual,
@@ -14,7 +13,7 @@ import {
   filtros,
   resetFilters,
   resetState,
-} from "./curriculoSlice";
+} from "./curriculosSlices";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 

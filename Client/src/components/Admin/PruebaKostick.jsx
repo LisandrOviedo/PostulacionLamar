@@ -7,7 +7,7 @@ import {
   postLimitePorPagina,
   postFiltros,
   deleteFiltros,
-} from "../../redux/pruebaKostick/pruebaAction";
+} from "../../redux/pruebasKostick/pruebasKostickActions";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
