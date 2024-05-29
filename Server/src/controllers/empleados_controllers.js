@@ -52,10 +52,6 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
         ].filter(Boolean),
       });
 
-    if (!dataEmpleados.length) {
-      throw new Error("No existen empleados");
-    }
-
     const indexEnd = paginaActual * limitePorPagina;
     const indexStart = indexEnd - limitePorPagina;
 

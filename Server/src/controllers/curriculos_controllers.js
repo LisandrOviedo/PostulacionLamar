@@ -92,10 +92,6 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
         ].filter(Boolean),
       });
 
-    if (!dataCurriculos.length) {
-      throw new Error("No existen curriculos");
-    }
-
     const indexEnd = paginaActual * limitePorPagina;
     const indexStart = indexEnd - limitePorPagina;
 
