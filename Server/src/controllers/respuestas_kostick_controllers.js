@@ -1,13 +1,17 @@
-const { conn, Preguntas_Kostick, Respuestas_Kostick } = require("../db");
+const {
+  conn,
+  Preguntas_Kostick,
+  Respuestas_Kostick,
+  Pruebas_Empleado,
+} = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
 const { traerCurriculoEmpleado } = require("./curriculos_controllers");
 
 const XlsxPopulate = require("xlsx-populate");
 const path = require("path");
-// const fs = require("fs");
 
-const { calcularEdad, DDMMYYYYHHMM } = require("../utils/formatearFecha");
+const { calcularEdad, DDMMYYYY } = require("../utils/formatearFecha");
 
 const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
   if (!empleado_id || !prueba_id || !prueba) {
@@ -40,8 +44,8 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
 
     await t.commit();
 
-    const respuestas_kostick = await Respuestas_Kostick.findAll({
-      attributes: [],
+    const respuestas_kostick = await Pruebas_Empleado.findOne({
+      attributes: ["createdAt"],
       include: [
         {
           model: Preguntas_Kostick,
@@ -61,21 +65,13 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
       `../../public/documentosEmpleados/${empleado.cedula}`
     );
 
-    // fs.copyFileSync(
-    //   `${excelPath}/TestKostick.xlsx`,
-    //   `${destPath}/TestKostick.xlsx`
-    // );
-
     const workbook = await XlsxPopulate.fromFileAsync(
       `${excelPath}/TestKostick.xlsx`
     );
 
     const edad = calcularEdad(empleado.fecha_nacimiento);
 
-    workbook
-      .sheet(0)
-      .cell("B4")
-      .value(respuestas_kostick[0].Respuesta[89].createdAt);
+    workbook.sheet(0).cell("B4").value(respuestas_kostick.createdAt);
 
     // Nombre completo
     workbook
@@ -102,20 +98,27 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
     // Preguntas_Kostick
     let B = 12;
 
-    for (let i = 0; i < respuestas_kostick[0].Respuesta.length; i++) {
+    for (let i = 0; i < respuestas_kostick.Preguntas_Kosticks.length; i++) {
       workbook
         .sheet(0)
         .cell(`B${B}`)
-        .value(respuestas_kostick[0].Respuesta[i].respuesta);
+        .value(respuestas_kostick.Preguntas_Kosticks[i].respuesta);
 
       B++;
     }
 
-    workbook.toFileAsync(`${destPath}/${DDMMYYYYHHMM()} - TestKostick.xlsx`, {
-      password: `LAMAR${empleado.cedula}`,
-    });
+    workbook.toFileAsync(
+      `${destPath}/${DDMMYYYY(
+        respuestas_kostick.createdAt
+      )} - TestKostick.xlsx`,
+      {
+        password: `LAMAR${empleado.cedula}`,
+      }
+    );
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error(
       "Error al crear las respuestas de la prueba kostick: " + error.message
