@@ -197,9 +197,7 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
 
     await traerCurriculo(curriculo_id);
 
-    let fallidos = "";
-
-    areas_interes.forEach(async (area) => {
+    for (const area of areas_interes) {
       const [area_interes, created] = await Area_Interes_Curriculo.findOrCreate(
         {
           where: {
@@ -213,28 +211,9 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
           transaction: t,
         }
       );
-
-      if (!created) {
-        if (fallidos === "") {
-          fallidos = area.nombre;
-          return;
-        }
-
-        if (fallidos !== "") {
-          fallidos = fallidos + ` ${area.nombre}`;
-          return;
-        }
-      }
-    });
+    }
 
     await t.commit();
-
-    if (fallidos !== "") {
-      throw new Error(
-        "Estas áreas de interés no se pudieron guardar porque ya existen: ",
-        fallidos
-      );
-    }
   } catch (error) {
     if (!t.finished) {
       await t.rollback();

@@ -195,9 +195,7 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
 
     await traerCurriculo(curriculo_id);
 
-    let fallidos = "";
-
-    idiomas.forEach(async (idioma) => {
+    for (const idioma of idiomas) {
       const [crearIdioma, created] = await Idiomas_Curriculo.findOrCreate({
         where: {
           curriculo_id: curriculo_id,
@@ -210,28 +208,9 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
         },
         transaction: t,
       });
-
-      if (!created) {
-        if (fallidos === "") {
-          fallidos = idioma.nombre;
-          return;
-        }
-
-        if (fallidos !== "") {
-          fallidos = fallidos + ` ${idioma.nombre}`;
-          return;
-        }
-      }
-    });
+    }
 
     await t.commit();
-
-    if (fallidos !== "") {
-      throw new Error(
-        "Estos idiomas no se pudieron guardar porque ya existen: ",
-        fallidos
-      );
-    }
   } catch (error) {
     if (!t.finished) {
       await t.rollback();

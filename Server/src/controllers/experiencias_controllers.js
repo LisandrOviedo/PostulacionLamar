@@ -42,13 +42,11 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     await traerCurriculo(curriculo_id);
 
-    let fallidos = "";
+    t = await conn.transaction();
 
-    experiencias.forEach(async (exp) => {
+    for (const exp of experiencias) {
       const [experiencia, created] = await Experiencia.findOrCreate({
         where: {
           curriculo_id: curriculo_id,
@@ -65,28 +63,9 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
         },
         transaction: t,
       });
-
-      if (!created) {
-        if (fallidos === "") {
-          fallidos = exp.cargo_titulo;
-          return;
-        }
-
-        if (fallidos !== "") {
-          fallidos = fallidos + ` ${exp.cargo_titulo}`;
-          return;
-        }
-      }
-    });
+    }
 
     await t.commit();
-
-    if (fallidos !== "") {
-      throw new Error(
-        "Estos cargos laborales / títulos de curso no se pudieron guardar porque ya existen: ",
-        fallidos
-      );
-    }
   } catch (error) {
     if (!t.finished) {
       await t.rollback();

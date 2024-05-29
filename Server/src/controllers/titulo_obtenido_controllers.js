@@ -48,9 +48,7 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
 
     await traerCurriculo(curriculo_id);
 
-    let fallidos = "";
-
-    titulos_obtenidos.forEach(async (titulo) => {
+    for (const titulo of titulos_obtenidos) {
       const [titulo_obtenido, created] = await Titulo_Obtenido.findOrCreate({
         where: {
           curriculo_id: curriculo_id,
@@ -62,28 +60,9 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
         },
         transaction: t,
       });
-
-      if (!created) {
-        if (fallidos === "") {
-          fallidos = titulo.nombre;
-          return;
-        }
-
-        if (fallidos !== "") {
-          fallidos = fallidos + ` ${titulo.nombre}`;
-          return;
-        }
-      }
-    });
+    }
 
     await t.commit();
-
-    if (fallidos !== "") {
-      throw new Error(
-        "Estos títulos obtenidos no se pudieron guardar porque ya existen: ",
-        fallidos
-      );
-    }
   } catch (error) {
     if (!t.finished) {
       await t.rollback();
