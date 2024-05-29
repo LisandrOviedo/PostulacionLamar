@@ -1,4 +1,6 @@
-const { conn, Pruebas_Empleado } = require("../db");
+const { Op } = require("sequelize");
+
+const { conn, Pruebas_Empleado, Empleado } = require("../db");
 
 const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
   if (!paginaActual || !limitePorPagina) {
@@ -6,13 +8,46 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
   }
 
   try {
-    const pruebas = await Pruebas_Empleado.findAll();
+    const { count: totalRegistros, rows: dataPruebasEmpleados } =
+      await Pruebas_Empleado.findAndCountAll({
+        attributes: ["prueba_id", "prueba", "createdAt"],
+        include: [
+          {
+            model: Empleado,
+            attributes: [
+              "empleado_id",
+              "cedula",
+              "nombres",
+              "apellidos",
+              "telefono",
+              "correo",
+            ],
+            where: filtros.cedula
+              ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
+              : filtros.apellidos
+              ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
+              : {},
+          },
+        ],
+        where: filtros.prueba ? { prueba: filtros.prueba } : {},
+        order: [
+          filtros.orden_campo === "apellidos"
+            ? [Empleado, "apellidos", filtros.orden_por]
+            : filtros.orden_campo === "prueba"
+            ? ["prueba", filtros.orden_por]
+            : filtros.orden_campo === "createdAt"
+            ? ["createdAt", filtros.orden_por]
+            : null,
+        ].filter(Boolean),
+      });
 
-    if (!pruebas.length) {
-      throw new Error("No existen pruebas");
-    }
+    const indexEnd = paginaActual * limitePorPagina;
+    const indexStart = indexEnd - limitePorPagina;
 
-    return pruebas;
+    const pruebas_empleados = dataPruebasEmpleados.slice(indexStart, indexEnd);
+    const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
+
+    return { cantidadPaginas, totalRegistros, pruebas_empleados };
   } catch (error) {
     throw new Error("Error al traer todas las pruebas: " + error.message);
   }
