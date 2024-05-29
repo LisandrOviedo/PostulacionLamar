@@ -8,6 +8,7 @@ const initialState = {
   filtros: {
     cedula: "",
     apellidos: "",
+    prueba: "",
     orden_campo: "",
     orden_por: "",
   },
@@ -36,6 +37,7 @@ export const pruebasEmpleadosSlice = createSlice({
       state.filtros = {
         cedula: "",
         apellidos: "",
+        prueba: "",
         orden_campo: "",
         orden_por: "",
       };
