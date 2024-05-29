@@ -51,7 +51,9 @@ const crearPreguntasKostick = async () => {
 
     await t.commit();
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al crear las preguntas kostick: " + error.message);
   }

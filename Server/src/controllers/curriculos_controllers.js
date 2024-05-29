@@ -338,7 +338,9 @@ const cambiarEstadoRevisado = async (empleado_id) => {
       },
     });
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al modificar el curriculo: " + error.message);
   }
@@ -444,7 +446,9 @@ const crearCurriculo = async (
 
     throw new Error("Ya existe un curriculo para ese empleado");
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al crear el curriculo: " + error.message);
   }
@@ -488,7 +492,9 @@ const modificarCurriculo = async (
 
     return await traerCurriculo(curriculo_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al modificar el curriculo: " + error.message);
   }
@@ -518,7 +524,9 @@ const inactivarCurriculo = async (curriculo_id) => {
 
     return await traerCurriculo(curriculo_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al inactivar el curriculo: " + error.message);
   }

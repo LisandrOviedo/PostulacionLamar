@@ -84,7 +84,9 @@ const crearAnexos = async (empleado_id, anexos) => {
 
     await t.commit();
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al crear los anexos: " + error.message);
   }
@@ -137,7 +139,9 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
 
     await t.commit();
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al crear el anexo: " + error.message);
   }

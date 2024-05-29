@@ -237,7 +237,9 @@ const crearEmpleado = async (
 
     throw new Error("Ya existe un empleado con esa cédula de identidad");
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al crear el empleado: " + error.message);
   }
@@ -277,7 +279,9 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al modificar el empleado: " + error.message);
   }
@@ -350,7 +354,9 @@ const modificarEmpleado = async (
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al modificar el empleado: " + error.message);
   }
@@ -395,7 +401,9 @@ const modificarFotoEmpleado = async (empleado_id, filename, path) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al modificar el empleado: " + error.message);
   }
@@ -447,7 +455,9 @@ const actualizarClaveEmpleado = async (
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al modificar el empleado: " + error.message);
   }
@@ -483,7 +493,9 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al modificar el empleado: " + error.message);
   }
@@ -513,7 +525,9 @@ const inactivarEmpleado = async (empleado_id) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al inactivar el empleado: " + error.message);
   }

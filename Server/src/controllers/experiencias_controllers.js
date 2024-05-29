@@ -88,7 +88,9 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
       );
     }
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al crear las experiencias: " + error.message);
   }
@@ -143,7 +145,9 @@ const modificarExperiencia = async (
 
     return await traerExperiencia(experiencia_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al modificar la experiencia: " + error.message);
   }
@@ -173,7 +177,9 @@ const inactivarExperiencia = async (experiencia_id) => {
 
     return await traerExperiencia(experiencia_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al inactivar la experiencia: " + error.message);
   }
@@ -200,7 +206,9 @@ const eliminarExperienciasCurriculo = async (curriculo_id) => {
 
     await t.commit();
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al eliminar las experiencias: " + error.message);
   }

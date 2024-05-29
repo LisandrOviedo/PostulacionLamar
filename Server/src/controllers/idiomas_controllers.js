@@ -78,7 +78,9 @@ const crearIdioma = async (nombre) => {
 
     throw new Error("Ya existe un idioma con ese nombre");
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al crear el idioma: " + error.message);
   }
@@ -113,7 +115,9 @@ const modificarIdioma = async (idioma_id, nombre, activo) => {
 
     return await traerIdioma(idioma_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al modificar el idioma: " + error.message);
   }
@@ -143,7 +147,9 @@ const inactivarIdioma = async (idioma_id) => {
 
     return await traerIdioma(idioma_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al inactivar el idioma: " + error.message);
   }
@@ -199,7 +205,9 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
       );
     }
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error(
       "Error al agregar el idioma al curriculo: " + error.message
@@ -228,7 +236,9 @@ const eliminarIdiomasCurriculo = async (curriculo_id) => {
 
     await t.commit();
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al eliminar los idiomas: " + error.message);
   }

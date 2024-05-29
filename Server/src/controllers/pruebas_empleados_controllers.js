@@ -80,7 +80,9 @@ const crearPrueba = async (empleado_id, prueba) => {
 
     return crearPrueba;
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al crear la prueba: " + error.message);
   }

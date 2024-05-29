@@ -59,7 +59,9 @@ const crearRol = async (nombre, descripcion) => {
 
     throw new Error("Ya existe un rol con ese nombre");
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al crear el rol: " + error.message);
   }
@@ -96,7 +98,9 @@ const modificarRol = async (rol_id, nombre, descripcion, activo) => {
 
     return await traerRol(rol_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al modificar el rol: " + error.message);
   }
@@ -125,7 +129,9 @@ const inactivarRol = async (rol_id) => {
 
     return await traerRol(rol_id);
   } catch (error) {
-    await t.rollback();
+    if (!t.finished) {
+      await t.rollback();
+    }
 
     throw new Error("Error al inactivar el rol: " + error.message);
   }
