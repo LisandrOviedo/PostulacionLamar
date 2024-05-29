@@ -1,5 +1,7 @@
 const { conn, Roles } = require("../db");
 
+const { roles } = require("../utils/roles");
+
 const todosLosRoles = async () => {
   try {
     const roles = await Roles.findAll();
@@ -29,6 +31,33 @@ const traerRol = async (rol_id) => {
     return rol;
   } catch (error) {
     throw new Error("Error al traer el rol: " + error.message);
+  }
+};
+
+const cargarRoles = async () => {
+  let t;
+
+  try {
+    t = await conn.transaction();
+
+    for (const rol of roles) {
+      const [crearRol, created] = await Roles.findOrCreate({
+        where: { nombre: rol.nombre },
+        defaults: {
+          nombre: rol.nombre,
+          descripcion: rol.descripcion,
+        },
+        transaction: t,
+      });
+    }
+
+    await t.commit();
+  } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error("Error al crear los roles: " + error.message);
   }
 };
 
@@ -140,6 +169,7 @@ const inactivarRol = async (rol_id) => {
 module.exports = {
   todosLosRoles,
   traerRol,
+  cargarRoles,
   crearRol,
   modificarRol,
   inactivarRol,

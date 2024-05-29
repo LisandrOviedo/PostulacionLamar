@@ -29,7 +29,7 @@ const todasLasPreguntasKostick = async () => {
   }
 };
 
-const crearPreguntasKostick = async () => {
+const cargarPreguntasKostick = async () => {
   let t;
 
   try {
@@ -61,5 +61,5 @@ const crearPreguntasKostick = async () => {
 
 module.exports = {
   todasLasPreguntasKostick,
-  crearPreguntasKostick,
+  cargarPreguntasKostick,
 };

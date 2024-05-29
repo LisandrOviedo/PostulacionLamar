@@ -2,6 +2,8 @@ const { conn, Areas_Interes, Area_Interes_Curriculo } = require("../db");
 
 const { traerCurriculo } = require("./curriculos_controllers");
 
+const { areasInteres } = require("../utils/areasInteres");
+
 const todosLosAreaInteres = async () => {
   try {
     const areas_interes = await Areas_Interes.findAll();
@@ -51,6 +53,32 @@ const traerAreaInteres = async (area_interes_id) => {
     return area_interes;
   } catch (error) {
     throw new Error("Error al traer el área de interés: " + error.message);
+  }
+};
+
+const cargarAreaInteres = async () => {
+  let t;
+
+  try {
+    t = await conn.transaction();
+
+    for (const area of areasInteres) {
+      const [area_interes, created] = await Areas_Interes.findOrCreate({
+        where: { nombre: area },
+        defaults: {
+          nombre: area,
+        },
+        transaction: t,
+      });
+    }
+
+    await t.commit();
+  } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error("Error al crear las áreas de interés: " + error.message);
   }
 };
 
@@ -251,6 +279,7 @@ module.exports = {
   todosLosAreaInteres,
   todosLosAreaInteresActivas,
   traerAreaInteres,
+  cargarAreaInteres,
   crearAreaInteres,
   modificarAreaInteres,
   inactivarAreaInteres,

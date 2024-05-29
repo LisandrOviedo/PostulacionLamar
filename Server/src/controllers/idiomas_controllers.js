@@ -2,6 +2,8 @@ const { conn, Idioma, Idiomas_Curriculo } = require("../db");
 
 const { traerCurriculo } = require("./curriculos_controllers");
 
+const { idiomas } = require("../utils/idiomas");
+
 const todosLosIdiomas = async () => {
   try {
     const idiomas = await Idioma.findAll();
@@ -47,6 +49,32 @@ const traerIdioma = async (idioma_id) => {
     return idioma;
   } catch (error) {
     throw new Error("Error al traer el idioma: " + error.message);
+  }
+};
+
+const cargarIdiomas = async () => {
+  let t;
+
+  try {
+    t = await conn.transaction();
+
+    for (const idioma of idiomas) {
+      const [crearIdioma, created] = await Idioma.findOrCreate({
+        where: { nombre: idioma },
+        defaults: {
+          nombre: idioma,
+        },
+        transaction: t,
+      });
+    }
+
+    await t.commit();
+  } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error("Error al crear los idiomas: " + error.message);
   }
 };
 
@@ -248,6 +276,7 @@ module.exports = {
   todosLosIdiomas,
   traerIdioma,
   todosLosIdiomasActivos,
+  cargarIdiomas,
   crearIdioma,
   modificarIdioma,
   inactivarIdioma,

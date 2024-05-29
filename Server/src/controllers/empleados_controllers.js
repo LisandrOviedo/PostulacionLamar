@@ -11,6 +11,8 @@ const {
   Empresa,
 } = require("../db");
 
+const { empleados } = require("../utils/empleados");
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = process.env;
@@ -170,6 +172,52 @@ const login = async (cedula, clave) => {
     return { token, infoEmpleado };
   } catch (error) {
     throw new Error("Error al loguear: " + error.message);
+  }
+};
+
+const cargarEmpleados = async () => {
+  let t;
+
+  try {
+    t = await conn.transaction();
+
+    const rol = await Roles.findOne({
+      where: {
+        nombre: "admin",
+      },
+    });
+
+    for (const empleado of empleados) {
+      if (empleado.cedula === "26388249") {
+        const [crearEmpleado, created] = await Empleado.findOrCreate({
+          where: { cedula: empleado.cedula },
+          defaults: {
+            rol_id: rol.rol_id,
+            cedula: empleado.cedula,
+            clave:
+              "$2b$10$fujp2v6MvAnBug/TqMxEk.bUD98wOcS8QGFidOzFKBo9acsmJZqMq",
+            nombres: empleado.nombres,
+            apellidos: empleado.apellidos,
+            fecha_nacimiento: empleado.fecha_nacimiento,
+            genero: empleado.genero,
+            etnia: empleado.etnia,
+            telefono: empleado.telefono,
+            correo: empleado.correo,
+            direccion: empleado.direccion,
+            cantidad_hijos: empleado.cantidad_hijos,
+          },
+          transaction: t,
+        });
+      }
+    }
+
+    await t.commit();
+  } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error("Error al crear los empleados: " + error.message);
   }
 };
 
@@ -537,6 +585,7 @@ module.exports = {
   todosLosEmpleados,
   traerEmpleado,
   login,
+  cargarEmpleados,
   crearEmpleado,
   actualizarClaveTemporalEmpleado,
   modificarEmpleado,
