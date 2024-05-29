@@ -13,6 +13,8 @@ const path = require("path");
 
 const { calcularEdad, DDMMYYYY } = require("../utils/formatearFecha");
 
+const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
+
 const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
   if (!empleado_id || !prueba_id || !prueba) {
     throw new Error("Datos faltantes");
@@ -60,10 +62,13 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
     });
 
     const excelPath = path.join(__dirname, "../../src/utils/");
+
     const destPath = path.join(
       __dirname,
       `../../public/documentosEmpleados/${empleado.cedula}`
     );
+
+    crearCarpetaSiNoExiste(destPath);
 
     const workbook = await XlsxPopulate.fromFileAsync(
       `${excelPath}/TestKostick.xlsx`

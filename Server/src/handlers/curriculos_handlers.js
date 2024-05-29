@@ -16,6 +16,8 @@ const {
 
 const { DDMMYYYYHHMM } = require("../utils/formatearFecha");
 
+const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
+
 const path = require("path");
 const PDFDocument = require("pdfkit-table");
 const fs = require("fs");
@@ -61,6 +63,13 @@ const getCurriculoPDF = async (req, res) => {
 
     // Genera el contenido del PDF
     const content = await traerCurriculoPDF(empleado_id);
+
+    const dest_path = path.join(
+      __dirname,
+      `../../public/documentosEmpleados/${cedula}`
+    );
+
+    crearCarpetaSiNoExiste(dest_path);
 
     const pdf_path = path.join(
       __dirname,
@@ -205,6 +214,8 @@ const getCurriculoPDFAnexos = async (req, res) => {
       __dirname,
       `../../public/documentosEmpleados/${cedula}/`
     );
+
+    crearCarpetaSiNoExiste(carpetaDestino);
 
     anexos.forEach((anexo) => {
       const fileData = fs.readFileSync(anexo);
