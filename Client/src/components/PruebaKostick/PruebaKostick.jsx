@@ -18,7 +18,7 @@ import {
   cuandoPuedesAplicar,
 } from "../../utils/pruebaKostick";
 
-export function TestActitudinal() {
+export function PruebaKostick() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

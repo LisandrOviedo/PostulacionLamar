@@ -14,14 +14,14 @@ import {
   InfoCurriculo,
   Inicio,
   PaginaNoEncontrada,
+  PruebaKostick,
   SubirDocumentos,
-  TestActitudinal,
   AccesoAdmin,
   DetalleEmpleado,
   Empleados,
   PanelAdmin,
   Postulaciones,
-  PruebaKostick,
+  PruebasKostick,
 } from "./components/";
 
 import {
@@ -67,7 +67,7 @@ function App() {
             />
             <Route path="/documentos" element={<SubirDocumentos />} />
             <Route path="/actualizarClave" element={<ActualizarClave />} />
-            <Route path="/testActitudinal" element={<TestActitudinal />} />
+            <Route path="/pruebaKostick" element={<PruebaKostick />} />
           </Route>
 
           {/* Rutas Admin */}
@@ -87,7 +87,7 @@ function App() {
               path="/admin/actualizarClave"
               element={<ActualizarClave />}
             />
-            <Route path="/admin/pruebasKostick" element={<PruebaKostick />} />
+            <Route path="/admin/pruebasKostick" element={<PruebasKostick />} />
           </Route>
         </Routes>
       </Suspense>

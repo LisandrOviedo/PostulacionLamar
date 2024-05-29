@@ -16,7 +16,7 @@ import {
   infoPaginador,
 } from "../../utils/paginacion";
 
-export function PruebaKostick() {
+export function PruebasKostick() {
   const dispatch = useDispatch();
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;

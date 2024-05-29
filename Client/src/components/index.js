@@ -8,15 +8,15 @@ import { DetalleCurriculo } from "./DetalleCurriculo/DetalleCurriculo";
 import { InfoCurriculo } from "./InfoCurriculo/InfoCurriculo";
 import { Inicio } from "./Inicio/Inicio";
 import { PaginaNoEncontrada } from "./PaginaNoEncontrada/PaginaNoEncontrada";
+import { PruebaKostick } from "./PruebaKostick/PruebaKostick";
 import { SubirDocumentos } from "./SubirDocumentos/SubirDocumentos";
-import { TestActitudinal } from "./TestActitudinal/TestActitudinal";
 
 import { AccesoAdmin } from "./Admin/AccesoAdmin";
 import { DetalleEmpleado } from "./Admin/DetalleEmpleado";
 import { Empleados } from "./Admin/Empleados";
 import { PanelAdmin } from "./Admin/PanelAdmin";
 import { Postulaciones } from "./Admin/Postulaciones";
-import { PruebaKostick } from "./Admin/PruebaKostick";
+import { PruebasKostick } from "./Admin/PruebasKostick";
 
 export {
   AccesoEmpleado,
@@ -29,12 +29,12 @@ export {
   InfoCurriculo,
   Inicio,
   PaginaNoEncontrada,
+  PruebaKostick,
   SubirDocumentos,
-  TestActitudinal,
   AccesoAdmin,
   DetalleEmpleado,
   Empleados,
   PanelAdmin,
   Postulaciones,
-  PruebaKostick,
+  PruebasKostick,
 };

@@ -228,7 +228,7 @@ export function BarraNavegacion() {
                       </li>
                       <li>
                         <Link
-                          to="/testActitudinal"
+                          to="/pruebaKostick"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
