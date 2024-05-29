@@ -185,7 +185,7 @@ export const postCurriculo = (token, datosCurriculo) => {
         datosCurriculo.areas_interes
       );
 
-      if (datosCurriculo.titulos_obtenidos) {
+      if (datosCurriculo.titulos_obtenidos.length) {
         await postTitulosObtenidos(
           token,
           data.curriculo_id,
@@ -193,7 +193,7 @@ export const postCurriculo = (token, datosCurriculo) => {
         );
       }
 
-      if (datosCurriculo.experiencias) {
+      if (datosCurriculo.experiencias.length) {
         await postExperiencias(
           token,
           data.curriculo_id,
@@ -201,7 +201,7 @@ export const postCurriculo = (token, datosCurriculo) => {
         );
       }
 
-      if (datosCurriculo.idiomas) {
+      if (datosCurriculo.idiomas.length) {
         await postIdiomas(token, data.curriculo_id, datosCurriculo.idiomas);
       }
 
@@ -334,7 +334,7 @@ export const putCurriculo = (token, datosCurriculo) => {
         datosCurriculo.areas_interes
       );
 
-      if (datosCurriculo.titulos_obtenidos) {
+      if (datosCurriculo.titulos_obtenidos.length) {
         await putTitulosObtenidos(
           token,
           data.curriculo_id,
@@ -342,7 +342,7 @@ export const putCurriculo = (token, datosCurriculo) => {
         );
       }
 
-      if (datosCurriculo.experiencias) {
+      if (datosCurriculo.experiencias.length) {
         await putExperiencias(
           token,
           data.curriculo_id,
@@ -350,7 +350,7 @@ export const putCurriculo = (token, datosCurriculo) => {
         );
       }
 
-      if (datosCurriculo.idiomas) {
+      if (datosCurriculo.idiomas.length) {
         await putIdiomas(token, data.curriculo_id, datosCurriculo.idiomas);
       }
 
