@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
-  getPrueba,
-  postPrueba,
-  getPruebaEmpleado,
+  getPruebaKostick,
+  getPruebaKostickEmpleado,
+  postPruebaKostick,
 } from "../../redux/pruebasKostick/pruebasKostickActions";
 
 import { Button, Hr, Label, Title } from "../UI";
@@ -27,7 +27,7 @@ export function PruebaKostick() {
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const prueba_kostick = useSelector(
-    (state) => state.prueba_kostick.prueba_kostick
+    (state) => state.pruebas_empleados.prueba_kostick
   );
 
   const [prueba, setPrueba] = useState({});
@@ -53,7 +53,7 @@ export function PruebaKostick() {
         timer: 2000,
       });
     } else {
-      postPrueba(token, empleado.empleado_id, prueba).then(() => {
+      postPruebaKostick(token, empleado.empleado_id, prueba).then(() => {
         navigate("/inicio");
       });
     }
@@ -62,7 +62,7 @@ export function PruebaKostick() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    getPruebaEmpleado(token, empleado.empleado_id, "Kostick").then(
+    getPruebaKostickEmpleado(token, empleado.empleado_id, "Kostick").then(
       async (data) => {
         if (data.length && pruebaMenorATresMeses(data[0].createdAt)) {
           await Swal.fire({
@@ -74,7 +74,7 @@ export function PruebaKostick() {
           });
           navigate("/inicio");
         } else {
-          dispatch(getPrueba(token));
+          dispatch(getPruebaKostick(token));
         }
       }
     );

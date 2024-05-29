@@ -21,7 +21,7 @@ import {
   Empleados,
   PanelAdmin,
   Postulaciones,
-  PruebasKostick,
+  PruebasEmpleados,
 } from "./components/";
 
 import {
@@ -87,7 +87,10 @@ function App() {
               path="/admin/actualizarClave"
               element={<ActualizarClave />}
             />
-            <Route path="/admin/pruebasKostick" element={<PruebasKostick />} />
+            <Route
+              path="/admin/pruebasEmpleados"
+              element={<PruebasEmpleados />}
+            />
           </Route>
         </Routes>
       </Suspense>

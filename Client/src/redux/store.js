@@ -6,13 +6,13 @@ import areas_interes from "./areasInteres/areasInteresSlices";
 import curriculos from "./curriculos/curriculosSlices";
 import empleados from "./empleados/empleadosSlices";
 import idiomas from "./idiomas/idiomasSlices";
-import prueba_kostick from "./pruebasKostick/pruebasKostickSlices";
+import pruebas_empleados from "./pruebasEmpleados/pruebasEmpleadosSlices";
 
 // Configuración de Redux Persist
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["curriculos", "empleados", "prueba_kostick"],
+  whitelist: ["curriculos", "empleados", "pruebas_empleados"],
 };
 
 // Combinar el userReducer con Redux Persist
@@ -21,7 +21,7 @@ const rootReducer = combineReducers({
   curriculos: curriculos,
   empleados: empleados,
   idiomas: idiomas,
-  prueba_kostick: prueba_kostick,
+  pruebas_empleados: pruebas_empleados,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

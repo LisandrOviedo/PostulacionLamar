@@ -331,7 +331,7 @@ export function BarraNavegacion() {
                   </li>
                   <li>
                     <Link
-                      to="/admin/pruebasKostick"
+                      to="/admin/pruebasEmpleados"
                       className="block text-white hover:text-[#F0C95C]"
                       onClick={() => {
                         toggleMenuBurger();
@@ -339,7 +339,7 @@ export function BarraNavegacion() {
                       }}
                     >
                       <div className="flex items-center justify-between p-2">
-                        <div className="mx-auto">Pruebas Kostick</div>
+                        <div className="mx-auto">Pruebas de Empleados</div>
                       </div>
                     </Link>
                   </li>

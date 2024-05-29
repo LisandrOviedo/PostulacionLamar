@@ -16,7 +16,7 @@ import { DetalleEmpleado } from "./Admin/DetalleEmpleado";
 import { Empleados } from "./Admin/Empleados";
 import { PanelAdmin } from "./Admin/PanelAdmin";
 import { Postulaciones } from "./Admin/Postulaciones";
-import { PruebasKostick } from "./Admin/PruebasKostick";
+import { PruebasEmpleados } from "./Admin/PruebasEmpleados";
 
 export {
   AccesoEmpleado,
@@ -36,5 +36,5 @@ export {
   Empleados,
   PanelAdmin,
   Postulaciones,
-  PruebasKostick,
+  PruebasEmpleados,
 };
