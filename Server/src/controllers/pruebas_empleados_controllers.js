@@ -10,7 +10,7 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
   try {
     const { count: totalRegistros, rows: dataPruebasEmpleados } =
       await Pruebas_Empleado.findAndCountAll({
-        attributes: ["prueba_id", "prueba", "createdAt"],
+        attributes: ["prueba_id", "prueba", "nombre", "createdAt"],
         include: [
           {
             model: Empleado,
