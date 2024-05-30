@@ -20,10 +20,11 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
     throw new Error("Datos faltantes");
   }
 
-  let t;
+  let t, t2;
 
   try {
     t = await conn.transaction();
+    t2 = await conn.transaction();
 
     const empleado = await traerEmpleado(empleado_id);
 
@@ -61,7 +62,7 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
       order: [[Preguntas_Kostick, "numero_pregunta", "ASC"]],
     });
 
-    const excelPath = path.join(__dirname, "../../src/utils/");
+    const excelPath = path.join(__dirname, "../../src/utils/Kostick.xlsx");
 
     const destPath = path.join(
       __dirname,
@@ -70,9 +71,7 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
 
     crearCarpetaSiNoExiste(destPath);
 
-    const workbook = await XlsxPopulate.fromFileAsync(
-      `${excelPath}/TestKostick.xlsx`
-    );
+    const workbook = await XlsxPopulate.fromFileAsync(excelPath);
 
     const edad = calcularEdad(empleado.fecha_nacimiento);
 
@@ -113,15 +112,27 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
     }
 
     workbook.toFileAsync(
-      `${destPath}/${DDMMYYYY(
-        respuestas_kostick.createdAt
-      )} - TestKostick.xlsx`,
+      `${destPath}/${DDMMYYYY(respuestas_kostick.createdAt)} - Kostick.xlsx`
+    );
+
+    await Pruebas_Empleado.update(
       {
-        password: `LAMAR${empleado.cedula}`,
+        nombre: `${DDMMYYYY(respuestas_kostick.createdAt)} - Kostick.xlsx`,
+        ruta: `${destPath}/${DDMMYYYY(
+          respuestas_kostick.createdAt
+        )} - Kostick.xlsx`,
+      },
+      {
+        where: {
+          prueba_id: prueba_id,
+        },
+        transaction: t2,
       }
     );
+
+    await t2.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (!t.finished || !t2.finished) {
       await t.rollback();
     }
 
