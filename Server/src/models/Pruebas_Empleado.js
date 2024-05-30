@@ -17,6 +17,14 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM("Kostick"),
       allowNull: false,
     },
+    nombre: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    ruta: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     activo: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
