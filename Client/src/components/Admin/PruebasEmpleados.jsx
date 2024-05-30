@@ -173,8 +173,8 @@ export function PruebasEmpleados() {
     }
   };
 
-  const handleVerResultados = (cedula) => {
-    const URL_GET_RESULTADOS = `${URL_SERVER}/documentos_empleados/documento/${cedula}/TestKostick.xlsx`;
+  const handleVerResultados = (cedula, prueba_nombre) => {
+    const URL_GET_RESULTADOS = `${URL_SERVER}/documentos_empleados/documento/${cedula}/${prueba_nombre}`;
 
     window.open(URL_GET_RESULTADOS, "_blank");
   };
@@ -381,7 +381,12 @@ export function PruebasEmpleados() {
                     <td className="px-4 py-4 flex gap-2 items-center">
                       <Button
                         className="m-0 w-auto"
-                        onClick={() => handleVerResultados(prueba.prueba_id)}
+                        onClick={() =>
+                          handleVerResultados(
+                            prueba.Empleado.cedula,
+                            prueba.nombre
+                          )
+                        }
                       >
                         Ver resultados
                       </Button>
