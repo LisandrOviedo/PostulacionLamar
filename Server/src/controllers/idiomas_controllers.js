@@ -6,7 +6,9 @@ const { idiomas } = require("../utils/idiomas");
 
 const todosLosIdiomas = async () => {
   try {
-    const idiomas = await Idioma.findAll();
+    const idiomas = await Idioma.findAll({
+      order: [["nombre", "ASC"]],
+    });
 
     if (!idiomas.length) {
       throw new Error("No existen idiomas");
@@ -22,6 +24,7 @@ const todosLosIdiomasActivos = async () => {
   try {
     const idiomas = await Idioma.findAll({
       where: { activo: true },
+      order: [["nombre", "ASC"]],
     });
 
     if (!idiomas.length) {
