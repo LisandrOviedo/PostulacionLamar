@@ -50,6 +50,7 @@ const {
   Pruebas_Empleado,
   Respuestas_Kostick,
   Roles,
+  Sesiones,
   Titulo_Obtenido,
 } = sequelize.models;
 
@@ -244,6 +245,24 @@ Idioma.belongsToMany(Curriculo, {
   },
 });
 
+// Empleado 1:1 Curriculo
+Empleado.hasOne(Sesiones, {
+  foreignKey: {
+    allowNull: false,
+    name: "empleado_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+Sesiones.belongsTo(Empleado, {
+  foreignKey: {
+    allowNull: false,
+    name: "empleado_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -262,5 +281,6 @@ module.exports = {
   Pruebas_Empleado,
   Respuestas_Kostick,
   Roles,
+  Sesiones,
   Titulo_Obtenido,
 };

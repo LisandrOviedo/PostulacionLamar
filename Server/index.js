@@ -20,11 +20,16 @@ const {
   cargarEmpleados,
 } = require("./src/controllers/empleados_controllers.js");
 
+const { cerrarSesiones } = require("./src/controllers/sesiones_controllers.js");
+
 conn
   .sync({ alter: true })
   .then(() => {
     server.listen(PORT, () => {
       console.log(`Server listening on port ${PORT}`);
+
+      // Cerrar sesiones en la BD
+      cerrarSesiones();
 
       // Registrar preguntas del test kostick en la BD
       cargarPreguntasKostick();

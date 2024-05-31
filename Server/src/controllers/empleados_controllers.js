@@ -13,6 +13,8 @@ const {
 
 const { empleados } = require("../utils/empleados");
 
+const { crearSesion } = require("./sesiones_controllers");
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = process.env;
@@ -164,6 +166,8 @@ const login = async (cedula, clave) => {
     );
 
     const infoEmpleado = await traerEmpleado(empleado.empleado_id);
+
+    await crearSesion(empleado.empleado_id, token);
 
     return { token, infoEmpleado };
   } catch (error) {
