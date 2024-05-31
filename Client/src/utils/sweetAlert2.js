@@ -1,16 +1,19 @@
 import Swal from "sweetalert2";
 
-export const alertError = async (error) => {
+export const alertError = (error) => {
   if (error.response.status === 403) {
-    await Swal.fire({
+    Swal.fire({
       title: "Oops...",
-      text: "Debes iniciar sesión nuevamente",
+      text: "Tu sesión ha expirado o has ingresado desde otro dispositivo",
       icon: "error",
-      showConfirmButton: false,
-      timer: 2000,
+      showConfirmButton: true,
+      confirmButtonText: "Aceptar",
+      allowOutsideClick: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = "/";
+      }
     });
-
-    window.location.href = "/";
   } else if (error.response.status === 404) {
     Swal.fire({
       title: "Oops...",
