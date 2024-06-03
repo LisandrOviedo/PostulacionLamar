@@ -13,7 +13,7 @@ const {
 
 const { empleados } = require("../utils/empleados");
 
-const { crearSesion } = require("./sesiones_controllers");
+const { crearSesion, traerSesion } = require("./sesiones_controllers");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -154,6 +154,19 @@ const login = async (cedula, clave) => {
         changePassword: true,
         rol: empleado.Role.nombre,
       };
+    }
+
+    const sesion = await traerSesion(empleado.empleado_id);
+
+    if (sesion && sesion.activo === true) {
+      const diferencia_fechas =
+        new Date() - new Date(sesion.updatedAt).getTime();
+
+      if (diferencia_fechas < 300000) {
+        throw new Error(
+          "Posees una sesión activa, debes cerrar la sesión anterior o volver a ingresar dentro de 5 minutos"
+        );
+      }
     }
 
     const token = jwt.sign(
