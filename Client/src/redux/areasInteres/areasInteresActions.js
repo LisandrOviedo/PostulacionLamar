@@ -2,7 +2,7 @@ import axios from "axios";
 
 import Swal from "sweetalert2";
 
-import { allAreasInteresActivas } from "./areasInteresSlices";
+import { allAreasInteresActivas, resetState } from "./areasInteresSlices";
 
 import { alertError } from "../../utils/sweetAlert2";
 
@@ -18,6 +18,18 @@ export const getAllAreasInteresActivas = (token) => {
       });
 
       return dispatch(allAreasInteresActivas(data));
+    } catch (error) {
+      alertError(error);
+
+      throw new Error();
+    }
+  };
+};
+
+export const resetAreasInteres = () => {
+  return async (dispatch) => {
+    try {
+      return dispatch(resetState());
     } catch (error) {
       alertError(error);
 

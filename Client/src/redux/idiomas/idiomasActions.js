@@ -2,7 +2,7 @@ import axios from "axios";
 
 import Swal from "sweetalert2";
 
-import { allIdiomasActivos } from "./idiomasSlices";
+import { allIdiomasActivos, resetState } from "./idiomasSlices";
 
 import { alertError } from "../../utils/sweetAlert2";
 
@@ -18,6 +18,18 @@ export const getAllIdiomasActivos = (token) => {
       });
 
       return dispatch(allIdiomasActivos(data));
+    } catch (error) {
+      alertError(error);
+
+      throw new Error();
+    }
+  };
+};
+
+export const resetIdiomas = () => {
+  return async (dispatch) => {
+    try {
+      return dispatch(resetState());
     } catch (error) {
       alertError(error);
 

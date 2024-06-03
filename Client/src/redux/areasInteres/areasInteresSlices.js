@@ -11,8 +11,11 @@ export const areaInteresSlice = createSlice({
     allAreasInteresActivas: (state, action) => {
       state.areas_interes_activas = action.payload;
     },
+    resetState: () => {
+      return initialState;
+    },
   },
 });
 
-export const { allAreasInteresActivas } = areaInteresSlice.actions;
+export const { allAreasInteresActivas, resetState } = areaInteresSlice.actions;
 export default areaInteresSlice.reducer;

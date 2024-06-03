@@ -7,11 +7,14 @@ import validations from "../../utils/validacionesAcceso";
 
 import { Button, Input, Label, Title } from "../UI";
 
+import { resetAreasInteres } from "../../redux/areasInteres/areasInteresActions";
+import { resetCurriculos } from "../../redux/curriculos/curriculosActions";
 import {
   getLogin,
   resetEmpleados,
 } from "../../redux/empleados/empleadosActions";
-import { resetCurriculos } from "../../redux/curriculos/curriculosActions";
+import { resetIdiomas } from "../../redux/idiomas/idiomasActions";
+import { resetPruebas } from "../../redux/pruebasEmpleados/pruebasEmpleadosActions";
 
 import Swal from "sweetalert2";
 
@@ -59,8 +62,11 @@ export function AccesoAdmin() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(resetEmpleados());
+    dispatch(resetAreasInteres());
     dispatch(resetCurriculos());
+    dispatch(resetEmpleados());
+    dispatch(resetIdiomas());
+    dispatch(resetPruebas());
 
     document.title = "Grupo Lamar - Login (Admin)";
 
