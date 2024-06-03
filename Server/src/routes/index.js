@@ -10,6 +10,7 @@ const preguntas_kostick = require("./preguntas_kostick_routes");
 const pruebas_empleados = require("./pruebas_empleados_routes");
 const respuestas_kostick = require("./respuestas_kostick_routes");
 const roles = require("./roles_routes");
+const sesiones = require("./sesiones_routes");
 const titulos_obtenidos = require("./titulos_obtenidos_routes");
 
 const router = Router();
@@ -24,6 +25,7 @@ router.use("/tthh/preguntas_kostick", preguntas_kostick);
 router.use("/tthh/pruebas_empleados", pruebas_empleados);
 router.use("/tthh/respuestas_kostick", respuestas_kostick);
 router.use("/tthh/roles", roles);
+router.use("/tthh/sesiones", sesiones);
 router.use("/tthh/titulosobtenidos", titulos_obtenidos);
 
 module.exports = router;

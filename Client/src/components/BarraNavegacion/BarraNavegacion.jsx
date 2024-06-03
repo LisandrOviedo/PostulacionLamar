@@ -2,6 +2,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 
+import { deleteSesion } from "../../redux/sesiones/sesionesActions";
+
 import { Logo } from "../UI";
 
 import Swal from "sweetalert2";
@@ -44,8 +46,10 @@ export function BarraNavegacion() {
       cancelButtonColor: "#d33",
       confirmButtonText: "Si",
       cancelButtonText: "No",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
+        await deleteSesion(token, empleado.empleado_id);
+
         if (rol === "empleado") {
           navigate("/");
           return;

@@ -30,6 +30,35 @@ const cerrarSesiones = async () => {
   }
 };
 
+const cerrarSesion = async (empleado_id) => {
+  let t;
+
+  try {
+    t = await conn.transaction();
+
+    await Sesiones.update(
+      {
+        activo: false,
+      },
+      {
+        where: {
+          empleado_id: empleado_id,
+          activo: true,
+        },
+        transaction: t,
+      }
+    );
+
+    await t.commit();
+  } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error("Error al cerrar la sesión del empleado: " + error.message);
+  }
+};
+
 const traerSesion = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error("Datos faltantes");
@@ -105,6 +134,7 @@ const crearSesion = async (empleado_id, token) => {
 
 module.exports = {
   cerrarSesiones,
+  cerrarSesion,
   traerSesion,
   crearSesion,
 };
