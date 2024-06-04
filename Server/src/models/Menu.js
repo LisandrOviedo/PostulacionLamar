@@ -1,0 +1,42 @@
+const { DataTypes, UUIDV4 } = require("sequelize");
+
+module.exports = (sequelize) => {
+  sequelize.define("Menu", {
+    menu_id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      allowNull: false,
+      defaultValue: UUIDV4,
+    },
+    padre_id: {
+      // Campo relacionado
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    titulo: {
+      // Campo relacionado
+      type: DataTypes.STRING(50),
+      allowNull: false,
+    },
+    ruta: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      unique: true,
+    },
+    orden: {
+      type: DataTypes.INTEGER(2),
+      allowNull: false,
+      validate: {
+        isInt: {
+          args: true,
+          msg: 'El campo "orden" debe ser un número entero',
+        },
+      },
+    },
+    activo: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false,
+    },
+  });
+};
