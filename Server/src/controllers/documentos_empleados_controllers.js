@@ -19,10 +19,6 @@ const traerAnexos = async (empleado_id) => {
       where: { empleado_id: empleado_id },
     });
 
-    if (!anexos.length) {
-      throw new Error("No existen anexos de ese empleado");
-    }
-
     return anexos;
   } catch (error) {
     throw new Error("Error al traer todos los anexos: " + error.message);
