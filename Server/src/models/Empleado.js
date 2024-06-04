@@ -18,10 +18,6 @@ module.exports = (sequelize) => {
       allowNull: false,
       unique: true,
       validate: {
-        isNumeric: {
-          args: true,
-          msg: 'El campo "cedula" debe contener solo números',
-        },
         isInt: {
           args: true,
           msg: 'El campo "cedula" debe ser un número entero',
@@ -54,22 +50,10 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM("Masculino", "Femenino"),
       allowNull: false,
     },
-    etnia: {
-      type: DataTypes.ENUM(
-        "Ninguno",
-        "Piaroas",
-        "Waraos",
-        "Yukpas",
-        "Yanomamis",
-        "Baris",
-        "Pemon",
-        "Wayuus",
-        "Makiritares",
-        "Panares",
-        "Pumes",
-        "Kariñas"
-      ),
-      defaultValue: "Ninguno",
+    etnia_id: {
+      // Campo relacionado
+      type: DataTypes.UUID,
+      allowNull: true,
     },
     telefono: {
       type: DataTypes.STRING(15),
@@ -94,10 +78,6 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER(2),
       allowNull: false,
       validate: {
-        isNumeric: {
-          args: true,
-          msg: 'El campo "cantidad_hijos" debe contener solo números',
-        },
         isInt: {
           args: true,
           msg: 'El campo "cantidad_hijos" debe ser un número entero',

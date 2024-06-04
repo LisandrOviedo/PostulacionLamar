@@ -213,9 +213,9 @@ const cargarEmpleados = async () => {
             apellidos: empleado.apellidos,
             fecha_nacimiento: empleado.fecha_nacimiento,
             genero: empleado.genero,
-            etnia: empleado.etnia,
+            etnia_id: empleado.etnia_id || null,
             telefono: empleado.telefono,
-            correo: empleado.correo,
+            correo: empleado.correo || null,
             direccion: empleado.direccion,
             cantidad_hijos: empleado.cantidad_hijos,
           },
@@ -241,7 +241,7 @@ const crearEmpleado = async (
   apellidos,
   fecha_nacimiento,
   genero,
-  etnia,
+  etnia_id,
   telefono,
   correo,
   direccion,
@@ -253,9 +253,7 @@ const crearEmpleado = async (
     !apellidos ||
     !fecha_nacimiento ||
     !genero ||
-    !etnia ||
     !telefono ||
-    !correo ||
     !direccion ||
     !cantidad_hijos
   ) {
@@ -280,9 +278,9 @@ const crearEmpleado = async (
           apellidos: apellidos,
           fecha_nacimiento: fecha_nacimiento,
           genero: genero,
-          etnia: etnia,
+          etnia_id: etnia_id || null,
           telefono: telefono,
-          correo: correo,
+          correo: correo || null,
           direccion: direccion,
           cantidad_hijos: cantidad_hijos,
         },
@@ -356,7 +354,7 @@ const modificarEmpleado = async (
   apellidos,
   fecha_nacimiento,
   genero,
-  etnia,
+  etnia_id,
   telefono,
   correo,
   direccion,
@@ -371,9 +369,7 @@ const modificarEmpleado = async (
     !apellidos ||
     !fecha_nacimiento ||
     !genero ||
-    !etnia ||
     !telefono ||
-    !correo ||
     !direccion ||
     !cantidad_hijos ||
     !activo
@@ -396,9 +392,9 @@ const modificarEmpleado = async (
         apellidos: apellidos,
         fecha_nacimiento: fecha_nacimiento,
         genero: genero,
-        etnia: etnia,
+        etnia_id: etnia_id || null,
         telefono: telefono,
-        correo: correo,
+        correo: correo || null,
         direccion: direccion,
         cantidad_hijos: cantidad_hijos,
         activo: activo,

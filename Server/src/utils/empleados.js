@@ -5,7 +5,6 @@ const empleados = [
     apellidos: "Oviedo Gutierrez",
     fecha_nacimiento: "1998-11-24",
     genero: "Masculino",
-    etnia: "Ninguno",
     telefono: "+584126448435",
     correo: "lisandroviedo@hotmail.com",
     direccion: "Venezuela, Zulia, Maracaibo",

@@ -22,6 +22,8 @@ const {
 
 const { cerrarSesiones } = require("./src/controllers/sesiones_controllers.js");
 
+const { cargarEtnias } = require("./src/controllers/etnias_controllers.js");
+
 conn
   .sync({ alter: true })
   .then(() => {
@@ -42,6 +44,9 @@ conn
 
       // Registrar roles principales en la BD
       cargarRoles();
+
+      // Registrar etnias principales en la BD
+      cargarEtnias();
 
       // Registrar roles principales en la BD
       cargarEmpleados();

@@ -43,6 +43,7 @@ const {
   Documentos_Empleado,
   Empleado,
   Empresa,
+  Etnia,
   Experiencia,
   Idioma,
   Idiomas_Curriculo,
@@ -263,6 +264,24 @@ Empleado.hasOne(Sesiones, {
   },
 });
 
+// Etnia 1:M Empleado
+Etnia.hasMany(Empleado, {
+  foreignKey: {
+    allowNull: false,
+    name: "etnia_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+Empleado.belongsTo(Etnia, {
+  foreignKey: {
+    allowNull: false,
+    name: "etnia_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -274,6 +293,7 @@ module.exports = {
   Documentos_Empleado,
   Empleado,
   Empresa,
+  Etnia,
   Experiencia,
   Idioma,
   Idiomas_Curriculo,
