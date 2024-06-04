@@ -16,6 +16,7 @@ module.exports = (sequelize) => {
     cedula: {
       type: DataTypes.INTEGER(10),
       allowNull: false,
+      unique: true,
     },
     clave: {
       type: DataTypes.STRING,
@@ -61,6 +62,7 @@ module.exports = (sequelize) => {
     correo: {
       type: DataTypes.STRING(150),
       allowNull: true,
+      unique: true,
     },
     direccion: {
       type: DataTypes.STRING(150),
@@ -77,6 +79,7 @@ module.exports = (sequelize) => {
     foto_perfil_ruta: {
       type: DataTypes.STRING,
       defaultValue: null,
+      unique: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,

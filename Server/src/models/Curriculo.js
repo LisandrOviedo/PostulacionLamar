@@ -12,6 +12,7 @@ module.exports = (sequelize) => {
       // Campo relacionado
       type: DataTypes.UUID,
       allowNull: false,
+      unique: true,
     },
     grado_instruccion: {
       type: DataTypes.ENUM(

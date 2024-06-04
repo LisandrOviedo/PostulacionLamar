@@ -11,10 +11,12 @@ module.exports = (sequelize) => {
     codigo_empresa: {
       type: DataTypes.STRING(3),
       allowNull: false,
+      unique: true,
     },
     nombre: {
       type: DataTypes.STRING(80),
       allowNull: false,
+      unique: true,
     },
     direccion: {
       type: DataTypes.STRING(80),
@@ -23,6 +25,7 @@ module.exports = (sequelize) => {
     rif: {
       type: DataTypes.STRING(12),
       allowNull: false,
+      unique: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,

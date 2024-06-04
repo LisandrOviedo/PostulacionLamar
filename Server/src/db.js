@@ -56,7 +56,7 @@ const {
 
 // RELACIONES DE MODELOS (TABLAS)
 // Roles 1:1 Empleado
-Roles.hasOne(Empleado, {
+Empleado.belongsTo(Roles, {
   foreignKey: {
     allowNull: false,
     name: "rol_id",
@@ -64,7 +64,7 @@ Roles.hasOne(Empleado, {
     onUpdate: "RESTRICT",
   },
 });
-Empleado.belongsTo(Roles, {
+Roles.hasOne(Empleado, {
   foreignKey: {
     allowNull: false,
     name: "rol_id",
@@ -74,14 +74,6 @@ Empleado.belongsTo(Roles, {
 });
 
 // Empleado 1:1 Curriculo
-Empleado.hasOne(Curriculo, {
-  foreignKey: {
-    allowNull: false,
-    name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  },
-});
 Curriculo.belongsTo(Empleado, {
   foreignKey: {
     allowNull: false,
@@ -90,8 +82,16 @@ Curriculo.belongsTo(Empleado, {
     onUpdate: "RESTRICT",
   },
 });
+Empleado.hasOne(Curriculo, {
+  foreignKey: {
+    allowNull: false,
+    name: "empleado_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
 
-// Areas_Interes N:N Curriculo
+// Areas_Interes M:M Curriculo
 Areas_Interes.belongsToMany(Curriculo, {
   through: "Area_Interes_Curriculo",
   foreignKey: {
@@ -107,7 +107,7 @@ Curriculo.belongsToMany(Areas_Interes, {
   },
 });
 
-// Empleado N:N Cargo
+// Empleado M:M Cargo
 Empleado.belongsToMany(Cargo, {
   through: "Cargo_Empleado",
   foreignKey: {
@@ -123,7 +123,7 @@ Cargo.belongsToMany(Empleado, {
   },
 });
 
-// Empresa 1:N Cargo
+// Empresa 1:M Cargo
 Empresa.hasMany(Cargo, {
   foreignKey: {
     allowNull: false,
@@ -141,7 +141,7 @@ Cargo.belongsTo(Empresa, {
   },
 });
 
-// Curriculo 1:N Titulo_Obtenido
+// Curriculo 1:M Titulo_Obtenido
 Curriculo.hasMany(Titulo_Obtenido, {
   foreignKey: {
     allowNull: false,
@@ -159,7 +159,7 @@ Titulo_Obtenido.belongsTo(Curriculo, {
   },
 });
 
-// Curriculo 1:N Experiencia
+// Curriculo 1:M Experiencia
 Curriculo.hasMany(Experiencia, {
   foreignKey: {
     allowNull: false,
@@ -177,7 +177,7 @@ Experiencia.belongsTo(Curriculo, {
   },
 });
 
-// Empleado 1:N Documentos_Empleado
+// Empleado 1:M Documentos_Empleado
 Empleado.hasMany(Documentos_Empleado, {
   foreignKey: {
     allowNull: false,
@@ -195,7 +195,7 @@ Documentos_Empleado.belongsTo(Empleado, {
   },
 });
 
-// Empleado 1:N Pruebas_Empleado
+// Empleado 1:M Pruebas_Empleado
 Empleado.hasMany(Pruebas_Empleado, {
   foreignKey: {
     allowNull: false,
@@ -213,7 +213,7 @@ Pruebas_Empleado.belongsTo(Empleado, {
   },
 });
 
-// Pruebas_Empleado N:N Preguntas_Kostick
+// Pruebas_Empleado M:M Preguntas_Kostick
 Pruebas_Empleado.belongsToMany(Preguntas_Kostick, {
   through: "Respuestas_Kostick",
   foreignKey: {
@@ -229,7 +229,7 @@ Preguntas_Kostick.belongsToMany(Pruebas_Empleado, {
   },
 });
 
-// Empleado N:N Respuesta
+// Empleado M:M Respuesta
 Curriculo.belongsToMany(Idioma, {
   through: "Idiomas_Curriculo",
   foreignKey: {
@@ -246,7 +246,7 @@ Idioma.belongsToMany(Curriculo, {
 });
 
 // Empleado 1:1 Curriculo
-Empleado.hasOne(Sesiones, {
+Sesiones.belongsTo(Empleado, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",
@@ -254,7 +254,7 @@ Empleado.hasOne(Sesiones, {
     onUpdate: "RESTRICT",
   },
 });
-Sesiones.belongsTo(Empleado, {
+Empleado.hasOne(Sesiones, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",

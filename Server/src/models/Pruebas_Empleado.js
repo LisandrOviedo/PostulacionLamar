@@ -24,6 +24,7 @@ module.exports = (sequelize) => {
     ruta: {
       type: DataTypes.STRING,
       allowNull: true,
+      unique: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,
