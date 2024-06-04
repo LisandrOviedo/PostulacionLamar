@@ -31,8 +31,18 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     salario: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.DECIMAL(11, 2),
       allowNull: false,
+      validate: {
+        isNumeric: {
+          args: true,
+          msg: 'El campo "salario" debe ser un número',
+        },
+        isDecimal: {
+          args: true,
+          msg: 'El campo "salario" debe ser un número decimal',
+        },
+      },
     },
     activo: {
       type: DataTypes.BOOLEAN,

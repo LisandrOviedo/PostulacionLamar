@@ -17,6 +17,16 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER(10),
       allowNull: false,
       unique: true,
+      validate: {
+        isNumeric: {
+          args: true,
+          msg: 'El campo "cedula" debe contener solo números',
+        },
+        isInt: {
+          args: true,
+          msg: 'El campo "cedula" debe ser un número entero',
+        },
+      },
     },
     clave: {
       type: DataTypes.STRING,
@@ -33,6 +43,12 @@ module.exports = (sequelize) => {
     fecha_nacimiento: {
       type: DataTypes.DATEONLY,
       allowNull: false,
+      validate: {
+        isDate: {
+          args: true,
+          msg: 'El campo "fecha_nacimiento" debe ser una fecha válida',
+        },
+      },
     },
     genero: {
       type: DataTypes.ENUM("Masculino", "Femenino"),
@@ -63,6 +79,12 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(150),
       allowNull: true,
       unique: true,
+      validate: {
+        isEmail: {
+          args: true,
+          msg: 'El campo "correo" no es una dirección de correo válida',
+        },
+      },
     },
     direccion: {
       type: DataTypes.STRING(150),
@@ -71,6 +93,16 @@ module.exports = (sequelize) => {
     cantidad_hijos: {
       type: DataTypes.INTEGER(2),
       allowNull: false,
+      validate: {
+        isNumeric: {
+          args: true,
+          msg: 'El campo "cantidad_hijos" debe contener solo números',
+        },
+        isInt: {
+          args: true,
+          msg: 'El campo "cantidad_hijos" debe ser un número entero',
+        },
+      },
     },
     foto_perfil_nombre: {
       type: DataTypes.STRING,
