@@ -26,12 +26,6 @@ module.exports = (sequelize) => {
     orden: {
       type: DataTypes.INTEGER(2),
       allowNull: false,
-      validate: {
-        isInt: {
-          args: true,
-          msg: 'El campo "orden" debe ser un número entero',
-        },
-      },
     },
     activo: {
       type: DataTypes.BOOLEAN,

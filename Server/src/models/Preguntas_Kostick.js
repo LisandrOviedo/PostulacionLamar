@@ -11,12 +11,6 @@ module.exports = (sequelize) => {
     numero_pregunta: {
       type: DataTypes.INTEGER(2),
       allowNull: false,
-      validate: {
-        isInt: {
-          args: true,
-          msg: 'El campo "numero_pregunta" debe ser un número entero',
-        },
-      },
     },
     respuesta: {
       type: DataTypes.STRING,

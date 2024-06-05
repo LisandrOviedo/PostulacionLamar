@@ -33,12 +33,6 @@ module.exports = (sequelize) => {
     salario: {
       type: DataTypes.DECIMAL(11, 2),
       allowNull: false,
-      validate: {
-        isDecimal: {
-          args: true,
-          msg: 'El campo "salario" debe ser un número decimal',
-        },
-      },
     },
     activo: {
       type: DataTypes.BOOLEAN,
