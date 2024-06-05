@@ -129,7 +129,7 @@ export function DetalleCurriculo() {
         text: "Solo puedes agregar máximo 3 áreas de interés",
         icon: "error",
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3000,
       });
       return;
     }
@@ -148,7 +148,7 @@ export function DetalleCurriculo() {
         text: "Ya has agregado esta área de interés",
         icon: "error",
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3000,
       });
       return;
     }
@@ -194,7 +194,7 @@ export function DetalleCurriculo() {
         text: "Ya has agregado este idioma",
         icon: "error",
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3000,
       });
       return;
     }
@@ -242,7 +242,7 @@ export function DetalleCurriculo() {
         text: "Debes ingresar el nombre del título obtenido",
         icon: "error",
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3000,
       });
       return;
     }
@@ -265,7 +265,7 @@ export function DetalleCurriculo() {
         text: "Ya has agregado un título obtenido con ese nombre",
         icon: "error",
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3000,
       });
       return;
     }
@@ -299,7 +299,7 @@ export function DetalleCurriculo() {
         text: "Debes escribir el nombre del cargo o título y el nombre de la empresa o centro educativo",
         icon: "error",
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3000,
       });
       return;
     }
@@ -329,7 +329,7 @@ export function DetalleCurriculo() {
         text: "Ya has agregado una experiencia con ese cargo / título en esa empresa / centro educativo",
         icon: "error",
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3000,
       });
       return;
     }
@@ -399,7 +399,7 @@ export function DetalleCurriculo() {
         text: "Datos faltantes",
         icon: "error",
         showConfirmButton: false,
-        timer: 1500,
+        timer: 3000,
       });
       return;
     }
@@ -410,7 +410,7 @@ export function DetalleCurriculo() {
         text: "Verifique los errores en los campos e inténtelo de nuevo",
         icon: "error",
         showConfirmButton: false,
-        timer: 1500,
+        timer: 3000,
       });
       return;
     }

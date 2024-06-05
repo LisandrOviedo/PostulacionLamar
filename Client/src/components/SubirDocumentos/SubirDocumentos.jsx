@@ -71,7 +71,7 @@ export function SubirDocumentos() {
         text: "¡Solo se permiten archivos PDF!",
         icon: "error",
         showConfirmButton: false,
-        timer: 2500,
+        timer: 3000,
       });
       return;
     }
@@ -104,7 +104,7 @@ export function SubirDocumentos() {
         text: "¡Solo se permiten archivos PDF / DOC / DOCX!",
         icon: "error",
         showConfirmButton: false,
-        timer: 2500,
+        timer: 3000,
       });
       return;
     }
@@ -133,7 +133,7 @@ export function SubirDocumentos() {
         text: "¡Solo se permiten archivos JPG / JPEG / PNG!",
         icon: "error",
         showConfirmButton: false,
-        timer: 2500,
+        timer: 3000,
       });
       return;
     }
@@ -167,7 +167,7 @@ export function SubirDocumentos() {
         text: "¡Solo se permiten archivos JPG / JPEG / PNG / PDF!",
         icon: "error",
         showConfirmButton: false,
-        timer: 2500,
+        timer: 3000,
       });
       return;
     }
@@ -266,7 +266,7 @@ export function SubirDocumentos() {
       text: "¡Debes cargar al menos 1 archivo!",
       icon: "error",
       showConfirmButton: false,
-      timer: 2500,
+      timer: 3000,
     });
   };
 

@@ -20,7 +20,7 @@ export const alertError = (error) => {
       text: "Error 404 - No encontrado",
       icon: "error",
       showConfirmButton: false,
-      timer: 2000,
+      timer: 3000,
     });
   } else {
     Swal.fire({
@@ -28,7 +28,7 @@ export const alertError = (error) => {
       text: `${error.response.data.error}`,
       icon: "error",
       showConfirmButton: false,
-      timer: 2000,
+      timer: 3000,
     });
   }
 };

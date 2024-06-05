@@ -50,7 +50,7 @@ export function PruebaKostick() {
         text: `Faltan por responder ${faltan} preguntas`,
         icon: "error",
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3000,
       });
     } else {
       postPruebaKostick(token, empleado.empleado_id, prueba).then(() => {
