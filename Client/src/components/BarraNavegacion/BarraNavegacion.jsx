@@ -1,8 +1,16 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { deleteSesion } from "../../redux/sesiones/sesionesActions";
+
+import { resetAreasInteres } from "../../redux/areasInteres/areasInteresActions";
+import { resetCurriculos } from "../../redux/curriculos/curriculosActions";
+import {
+  resetEmpleados,
+} from "../../redux/empleados/empleadosActions";
+import { resetIdiomas } from "../../redux/idiomas/idiomasActions";
+import { resetPruebas } from "../../redux/pruebasEmpleados/pruebasEmpleadosActions";
 
 import { Logo } from "../UI";
 
@@ -10,6 +18,7 @@ import Swal from "sweetalert2";
 
 export function BarraNavegacion() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState({});
   const [isOpenBurger, setIsOpenBurger] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -49,6 +58,12 @@ export function BarraNavegacion() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await deleteSesion(token, empleado.empleado_id);
+
+        dispatch(resetAreasInteres());
+        dispatch(resetCurriculos());
+        dispatch(resetEmpleados());
+        dispatch(resetIdiomas());
+        dispatch(resetPruebas());
 
         if (rol === "empleado") {
           navigate("/");
