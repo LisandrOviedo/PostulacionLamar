@@ -13,10 +13,6 @@ module.exports = (sequelize) => {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    codigo_empresa: {
-      type: DataTypes.STRING(3),
-      allowNull: false,
-    },
     tipo_nomina: {
       type: DataTypes.STRING(12),
       allowNull: false,
@@ -24,13 +20,16 @@ module.exports = (sequelize) => {
     codigo_cargo: {
       type: DataTypes.STRING(12),
       allowNull: false,
-      unique: true,
     },
     descripcion: {
       type: DataTypes.STRING(80),
       allowNull: false,
     },
-    salario: {
+    salario_min: {
+      type: DataTypes.DECIMAL(11, 2),
+      allowNull: false,
+    },
+    salario_max: {
       type: DataTypes.DECIMAL(11, 2),
       allowNull: false,
     },
