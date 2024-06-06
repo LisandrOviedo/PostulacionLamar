@@ -44,11 +44,11 @@ export function InfoCurriculo() {
       });
 
       return navigate(
-        `/curriculo/curriculoDetalle/${curriculoEmpleado.curriculo_id}`
+        `/perfilProfesional/detalle/${curriculoEmpleado.curriculo_id}`
       );
     }
 
-    navigate("/curriculo/registro");
+    navigate("/perfilProfesional/registro");
 
     return Swal.fire({
       title: "Creación del perfil profesional",

@@ -6,9 +6,7 @@ import { deleteSesion } from "../../redux/sesiones/sesionesActions";
 
 import { resetAreasInteres } from "../../redux/areasInteres/areasInteresActions";
 import { resetCurriculos } from "../../redux/curriculos/curriculosActions";
-import {
-  resetEmpleados,
-} from "../../redux/empleados/empleadosActions";
+import { resetEmpleados } from "../../redux/empleados/empleadosActions";
 import { resetIdiomas } from "../../redux/idiomas/idiomasActions";
 import { resetPruebas } from "../../redux/pruebasEmpleados/pruebasEmpleadosActions";
 
@@ -192,7 +190,7 @@ export function BarraNavegacion() {
                     >
                       <li>
                         <Link
-                          to="/datosPersonales"
+                          to="/miPerfil/datosPersonales"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -201,7 +199,7 @@ export function BarraNavegacion() {
                       </li>
                       <li>
                         <Link
-                          to="/actualizarClave"
+                          to="/miPerfil/actualizarClave"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -229,7 +227,7 @@ export function BarraNavegacion() {
                     >
                       <li>
                         <Link
-                          to="/curriculo/info"
+                          to="/perfilProfesional/info"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -238,7 +236,7 @@ export function BarraNavegacion() {
                       </li>
                       <li>
                         <Link
-                          to="/documentos"
+                          to="/perfilProfesional/misDocumentos"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -247,7 +245,7 @@ export function BarraNavegacion() {
                       </li>
                       <li>
                         <Link
-                          to="/pruebaKostick"
+                          to="/perfilProfesional/pruebaKostick"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -302,7 +300,7 @@ export function BarraNavegacion() {
                     >
                       <li>
                         <Link
-                          to="/admin/datosPersonales"
+                          to="/admin/miPerfil/datosPersonales"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -311,7 +309,7 @@ export function BarraNavegacion() {
                       </li>
                       <li>
                         <Link
-                          to="/admin/actualizarClave"
+                          to="/admin/miPerfil/actualizarClave"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >

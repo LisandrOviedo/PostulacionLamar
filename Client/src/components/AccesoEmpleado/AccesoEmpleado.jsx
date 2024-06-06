@@ -73,7 +73,7 @@ export function AccesoEmpleado() {
     }
 
     if (empleado?.changePassword) {
-      return navigate("/actualizarClaveTemporal");
+      return navigate("/miPerfil/actualizarClaveTemporal");
     } else if (
       (empleado.activo && empleado.Role?.nombre === "empleado") ||
       empleado.Role?.nombre === "admin"
