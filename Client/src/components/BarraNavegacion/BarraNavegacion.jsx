@@ -1,6 +1,14 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import { deleteSesion } from "../../redux/sesiones/sesionesActions";
+
+import { resetAreasInteres } from "../../redux/areasInteres/areasInteresActions";
+import { resetCurriculos } from "../../redux/curriculos/curriculosActions";
+import { resetEmpleados } from "../../redux/empleados/empleadosActions";
+import { resetIdiomas } from "../../redux/idiomas/idiomasActions";
+import { resetPruebas } from "../../redux/pruebasEmpleados/pruebasEmpleadosActions";
 
 import { Logo } from "../UI";
 
@@ -8,6 +16,7 @@ import Swal from "sweetalert2";
 
 export function BarraNavegacion() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState({});
   const [isOpenBurger, setIsOpenBurger] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -44,8 +53,16 @@ export function BarraNavegacion() {
       cancelButtonColor: "#d33",
       confirmButtonText: "Si",
       cancelButtonText: "No",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
+        await deleteSesion(token, empleado.empleado_id);
+
+        dispatch(resetAreasInteres());
+        dispatch(resetCurriculos());
+        dispatch(resetEmpleados());
+        dispatch(resetIdiomas());
+        dispatch(resetPruebas());
+
         if (rol === "empleado") {
           navigate("/");
           return;
@@ -173,7 +190,7 @@ export function BarraNavegacion() {
                     >
                       <li>
                         <Link
-                          to="/datosPersonales"
+                          to="/miPerfil/datosPersonales"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -182,7 +199,7 @@ export function BarraNavegacion() {
                       </li>
                       <li>
                         <Link
-                          to="/actualizarClave"
+                          to="/miPerfil/actualizarClave"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -210,7 +227,7 @@ export function BarraNavegacion() {
                     >
                       <li>
                         <Link
-                          to="/curriculo/info"
+                          to="/perfilProfesional/info"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -219,7 +236,7 @@ export function BarraNavegacion() {
                       </li>
                       <li>
                         <Link
-                          to="/documentos"
+                          to="/perfilProfesional/misDocumentos"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -228,7 +245,7 @@ export function BarraNavegacion() {
                       </li>
                       <li>
                         <Link
-                          to="/testActitudinal"
+                          to="/perfilProfesional/pruebaKostick"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -283,7 +300,7 @@ export function BarraNavegacion() {
                     >
                       <li>
                         <Link
-                          to="/admin/datosPersonales"
+                          to="/admin/miPerfil/datosPersonales"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -292,7 +309,7 @@ export function BarraNavegacion() {
                       </li>
                       <li>
                         <Link
-                          to="/admin/actualizarClave"
+                          to="/admin/miPerfil/actualizarClave"
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
@@ -331,7 +348,7 @@ export function BarraNavegacion() {
                   </li>
                   <li>
                     <Link
-                      to="/admin/pruebasKostick"
+                      to="/admin/pruebasEmpleados"
                       className="block text-white hover:text-[#F0C95C]"
                       onClick={() => {
                         toggleMenuBurger();
@@ -339,7 +356,7 @@ export function BarraNavegacion() {
                       }}
                     >
                       <div className="flex items-center justify-between p-2">
-                        <div className="mx-auto">Pruebas Kostick</div>
+                        <div className="mx-auto">Pruebas de Empleados</div>
                       </div>
                     </Link>
                   </li>

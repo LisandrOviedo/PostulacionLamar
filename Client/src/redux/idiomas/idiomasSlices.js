@@ -11,8 +11,11 @@ export const idiomasSlice = createSlice({
     allIdiomasActivos: (state, action) => {
       state.idiomas_activos = action.payload;
     },
+    resetState: () => {
+      return initialState;
+    },
   },
 });
 
-export const { allIdiomasActivos } = idiomasSlice.actions;
+export const { allIdiomasActivos, resetState } = idiomasSlice.actions;
 export default idiomasSlice.reducer;

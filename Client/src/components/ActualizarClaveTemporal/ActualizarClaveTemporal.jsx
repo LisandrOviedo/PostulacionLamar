@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 import { Button, Hr, Input, Label, Title } from "../UI";
 
-import { putPasswordTemporal } from "../../redux/empleados/empleadoAction";
+import { putPasswordTemporal } from "../../redux/empleados/empleadosActions";
 
 export function ActualizarClaveTemporal() {
   const navigate = useNavigate();

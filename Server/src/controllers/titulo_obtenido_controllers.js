@@ -1,4 +1,4 @@
-const { Titulo_Obtenido } = require("../db");
+const { conn, Titulo_Obtenido } = require("../db");
 
 const { traerCurriculo } = require("./curriculos_controllers");
 
@@ -41,12 +41,14 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerCurriculo(curriculo_id);
 
-    let fallidos = "";
-
-    titulos_obtenidos.forEach(async (titulo) => {
+    for (const titulo of titulos_obtenidos) {
       const [titulo_obtenido, created] = await Titulo_Obtenido.findOrCreate({
         where: {
           curriculo_id: curriculo_id,
@@ -56,28 +58,16 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
           curriculo_id: curriculo_id,
           nombre: titulo.nombre,
         },
+        transaction: t,
       });
-
-      if (!created) {
-        if (fallidos === "") {
-          fallidos = titulo.nombre;
-          return;
-        }
-
-        if (fallidos !== "") {
-          fallidos = fallidos + ` ${titulo.nombre}`;
-          return;
-        }
-      }
-    });
-
-    if (fallidos !== "") {
-      throw new Error(
-        "Estos títulos obtenidos no se pudieron guardar porque ya existen: ",
-        fallidos
-      );
     }
+
+    await t.commit();
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al crear los títulos obtenidos: " + error.message);
   }
 };
@@ -91,7 +81,11 @@ const modificarTitulosObtenidos = async (
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerTituloObtenido(titulo_obtenido_id);
 
     await Titulo_Obtenido.update(
@@ -103,11 +97,18 @@ const modificarTitulosObtenidos = async (
         where: {
           titulo_obtenido_id: titulo_obtenido_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerTituloObtenido(titulo_obtenido_id);
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al modificar el título obtenido: " + error.message);
   }
 };
@@ -117,18 +118,29 @@ const inactivarTituloObtenido = async (titulo_obtenido_id) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const titulo_obtenido = await traerTituloObtenido(titulo_obtenido_id);
 
     await Titulo_Obtenido.update(
       { activo: !titulo_obtenido.activo },
       {
         where: { titulo_obtenido_id: titulo_obtenido_id },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerTituloObtenido(titulo_obtenido_id);
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al inactivar el título obtenido: " + error.message);
   }
 };
@@ -138,15 +150,26 @@ const eliminarTitulosCurriculo = async (curriculo_id) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerCurriculo(curriculo_id);
 
     await Titulo_Obtenido.destroy({
       where: {
         curriculo_id: curriculo_id,
       },
+      transaction: t,
     });
+
+    await t.commit();
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error(
       "Error al eliminar los títulos obtenidos: " + error.message
     );

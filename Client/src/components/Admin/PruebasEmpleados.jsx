@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
-  getAllEmpleadosPrueba,
+  getAllPruebasEmpleados,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
   deleteFiltros,
-} from "../../redux/pruebaKostick/pruebaAction";
+} from "../../redux/pruebasEmpleados/pruebasEmpleadosActions";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
@@ -16,31 +16,33 @@ import {
   infoPaginador,
 } from "../../utils/paginacion";
 
-export function PruebaKostick() {
+import { DDMMYYYY } from "../../utils/formatearFecha";
+
+export function PruebasEmpleados() {
   const dispatch = useDispatch();
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const token = useSelector((state) => state.empleados.token);
 
-  const pruebas_kostick = useSelector(
-    (state) => state.prueba_kostick.empleados_pruebas
+  const pruebas_empleados = useSelector(
+    (state) => state.pruebas_empleados.pruebas_empleados
   );
 
   const paginaActual = useSelector(
-    (state) => state.prueba_kostick.paginaActual
+    (state) => state.pruebas_empleados.paginaActual
   );
 
   const limitePorPagina = useSelector(
-    (state) => state.prueba_kostick.limitePorPagina
+    (state) => state.pruebas_empleados.limitePorPagina
   );
 
-  const filtros = useSelector((state) => state.prueba_kostick.filtros);
+  const filtros = useSelector((state) => state.pruebas_empleados.filtros);
 
   const [filters, setFilters] = useState({
     cedula: filtros.cedula || "",
     apellidos: filtros.apellidos || "",
-    activo: filtros.activo || "",
+    prueba: filtros.prueba || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
   });
@@ -104,7 +106,7 @@ export function PruebaKostick() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    document.title = "Grupo Lamar - Pruebas Kostick (Admin)";
+    document.title = "Grupo Lamar - Pruebas Empleados (Admin)";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -115,7 +117,7 @@ export function PruebaKostick() {
     window.scroll(0, 0);
 
     dispatch(
-      getAllEmpleadosPrueba(token, filtros, paginaActual, limitePorPagina)
+      getAllPruebasEmpleados(token, filtros, paginaActual, limitePorPagina)
     );
   }, [filtros, paginaActual, limitePorPagina]);
 
@@ -166,13 +168,13 @@ export function PruebaKostick() {
   };
 
   const paginaSiguiente = () => {
-    if (paginaActual < pruebas_kostick.cantidadPaginas) {
+    if (paginaActual < pruebas_empleados.cantidadPaginas) {
       dispatch(postPaginaActual(paginaActual + 1));
     }
   };
 
-  const handleVerResultados = (cedula) => {
-    const URL_GET_RESULTADOS = `${URL_SERVER}/documentos_empleados/documento/${cedula}/TestKostick.xlsx`;
+  const handleVerResultados = (cedula, prueba_nombre) => {
+    const URL_GET_RESULTADOS = `${URL_SERVER}/documentos_empleados/documento/${cedula}/${prueba_nombre}`;
 
     window.open(URL_GET_RESULTADOS, "_blank");
   };
@@ -180,7 +182,7 @@ export function PruebaKostick() {
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <Title>Pruebas Kostick</Title>
+        <Title>Pruebas de Empleados</Title>
       </div>
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
         <div className="flex flex-col place-content-between">
@@ -211,16 +213,15 @@ export function PruebaKostick() {
           />
         </div>
         <div className="flex flex-col place-content-between">
-          <Label htmlFor="activo">Filtrar por activo / inactivo</Label>
+          <Label htmlFor="prueba">Filtrar por prueba</Label>
           <Select
-            id="activo"
-            name="activo"
+            id="prueba"
+            name="prueba"
             onChange={handleChangeFilters}
-            value={filters.activo}
+            value={filters.prueba}
           >
             <option value="">Todos</option>
-            <option value="1">Activos</option>
-            <option value="0">Inactivos</option>
+            <option value="Kostick">Kostick</option>
           </Select>
         </div>
         <div className="flex flex-col place-content-between">
@@ -298,19 +299,46 @@ export function PruebaKostick() {
                   <div className="flex items-center">
                     <a
                       href="#tabla"
-                      id="activo"
-                      name="activo"
+                      id="prueba"
+                      name="prueba"
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Estado
+                      Prueba
                       <img
-                        name="activo"
+                        name="prueba"
                         src={
-                          filters.orden_campo === "activo" &&
+                          filters.orden_campo === "prueba" &&
                           filters.orden_por === "ASC"
                             ? "/SortAZ.svg"
-                            : filters.orden_campo === "activo" &&
+                            : filters.orden_campo === "prueba" &&
+                              filters.orden_por === "DESC"
+                            ? "/SortZA.svg"
+                            : "/Sort.svg"
+                        }
+                        alt="Icon Sort"
+                        className="w-5 h-5 ms-1.5 cursor-pointer"
+                      />
+                    </a>
+                  </div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">
+                    <a
+                      href="#tabla"
+                      id="createdAt"
+                      name="createdAt"
+                      onClick={changeOrder}
+                      className="text-black hover:text-black flex items-center"
+                    >
+                      Fecha Aplicación
+                      <img
+                        name="createdAt"
+                        src={
+                          filters.orden_campo === "createdAt" &&
+                          filters.orden_por === "ASC"
+                            ? "/SortAZ.svg"
+                            : filters.orden_campo === "createdAt" &&
                               filters.orden_por === "DESC"
                             ? "/SortZA.svg"
                             : "/Sort.svg"
@@ -327,35 +355,37 @@ export function PruebaKostick() {
               </tr>
             </thead>
             <tbody>
-              {pruebas_kostick === "No existen respuestas de empleados" ||
-              !pruebas_kostick.pruebas?.length ? (
+              {pruebas_empleados === "No existen respuestas de empleados" ||
+              !pruebas_empleados.pruebas_empleados?.length ? (
                 <tr>
                   <td colSpan="9" className="text-center p-2">
                     <p>¡No existen registros!</p>
                   </td>
                 </tr>
               ) : (
-                pruebas_kostick.pruebas?.map((prueba_kostick, i) => (
+                pruebas_empleados.pruebas_empleados?.map((prueba, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
                     <td className="px-4 py-4">
-                      {prueba_kostick.apellidos} {prueba_kostick.nombres}
+                      {prueba.Empleado.apellidos} {prueba.Empleado.nombres}
                     </td>
-                    <td className="px-4 py-4">{prueba_kostick.cedula}</td>
-                    <td className="px-4 py-4">{prueba_kostick.telefono}</td>
+                    <td className="px-4 py-4">{prueba.Empleado.cedula}</td>
+                    <td className="px-4 py-4">{prueba.Empleado.telefono}</td>
                     <td className="px-4 py-4">
-                      {prueba_kostick.correo || "No posee"}
+                      {prueba.Empleado.correo || "No posee"}
                     </td>
-                    <td className="px-4 py-4">
-                      {prueba_kostick.activo ? "Activo" : "Inactivo"}
-                    </td>
+                    <td className="px-4 py-4">{prueba.prueba}</td>
+                    <td className="px-4 py-4">{DDMMYYYY(prueba.createdAt)}</td>
                     <td className="px-4 py-4 flex gap-2 items-center">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
-                          handleVerResultados(prueba_kostick.cedula)
+                          handleVerResultados(
+                            prueba.Empleado.cedula,
+                            prueba.nombre
+                          )
                         }
                       >
                         Ver resultados
@@ -371,7 +401,7 @@ export function PruebaKostick() {
           {infoPaginador(
             paginaActual,
             limitePorPagina,
-            pruebas_kostick.totalRegistros
+            pruebas_empleados.totalRegistros
           )}
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
@@ -390,7 +420,7 @@ export function PruebaKostick() {
             </li>
             {calcularPaginasARenderizar(
               paginaActual,
-              pruebas_kostick.cantidadPaginas
+              pruebas_empleados.cantidadPaginas
             ).map((page) => (
               <li key={page}>
                 <a
@@ -412,7 +442,7 @@ export function PruebaKostick() {
                 onClick={paginaSiguiente}
                 className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
                 ${
-                  paginaActual >= pruebas_kostick.cantidadPaginas
+                  paginaActual >= pruebas_empleados.cantidadPaginas
                     ? "cursor-default"
                     : "cursor-pointer hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}

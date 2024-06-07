@@ -43,18 +43,22 @@ const {
   Documentos_Empleado,
   Empleado,
   Empresa,
+  Etnia,
   Experiencia,
   Idioma,
+  Menu,
   Idiomas_Curriculo,
-  Respuesta,
-  Respuestas_Empleado,
+  Preguntas_Kostick,
+  Pruebas_Empleado,
+  Respuestas_Kostick,
   Roles,
+  Sesiones,
   Titulo_Obtenido,
 } = sequelize.models;
 
 // RELACIONES DE MODELOS (TABLAS)
 // Roles 1:1 Empleado
-Roles.hasOne(Empleado, {
+Empleado.belongsTo(Roles, {
   foreignKey: {
     allowNull: false,
     name: "rol_id",
@@ -62,7 +66,7 @@ Roles.hasOne(Empleado, {
     onUpdate: "RESTRICT",
   },
 });
-Empleado.belongsTo(Roles, {
+Roles.hasOne(Empleado, {
   foreignKey: {
     allowNull: false,
     name: "rol_id",
@@ -72,14 +76,6 @@ Empleado.belongsTo(Roles, {
 });
 
 // Empleado 1:1 Curriculo
-Empleado.hasOne(Curriculo, {
-  foreignKey: {
-    allowNull: false,
-    name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  },
-});
 Curriculo.belongsTo(Empleado, {
   foreignKey: {
     allowNull: false,
@@ -88,8 +84,16 @@ Curriculo.belongsTo(Empleado, {
     onUpdate: "RESTRICT",
   },
 });
+Empleado.hasOne(Curriculo, {
+  foreignKey: {
+    allowNull: false,
+    name: "empleado_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
 
-// Areas_Interes N:N Curriculo
+// Areas_Interes M:M Curriculo
 Areas_Interes.belongsToMany(Curriculo, {
   through: "Area_Interes_Curriculo",
   foreignKey: {
@@ -105,7 +109,7 @@ Curriculo.belongsToMany(Areas_Interes, {
   },
 });
 
-// Empleado N:N Cargo
+// Empleado M:M Cargo
 Empleado.belongsToMany(Cargo, {
   through: "Cargo_Empleado",
   foreignKey: {
@@ -121,7 +125,7 @@ Cargo.belongsToMany(Empleado, {
   },
 });
 
-// Empresa 1:N Cargo
+// Empresa 1:M Cargo
 Empresa.hasMany(Cargo, {
   foreignKey: {
     allowNull: false,
@@ -139,7 +143,7 @@ Cargo.belongsTo(Empresa, {
   },
 });
 
-// Curriculo 1:N Titulo_Obtenido
+// Curriculo 1:M Titulo_Obtenido
 Curriculo.hasMany(Titulo_Obtenido, {
   foreignKey: {
     allowNull: false,
@@ -157,7 +161,7 @@ Titulo_Obtenido.belongsTo(Curriculo, {
   },
 });
 
-// Curriculo 1:N Experiencia
+// Curriculo 1:M Experiencia
 Curriculo.hasMany(Experiencia, {
   foreignKey: {
     allowNull: false,
@@ -175,7 +179,7 @@ Experiencia.belongsTo(Curriculo, {
   },
 });
 
-// Empleado 1:N Documentos_Empleado
+// Empleado 1:M Documentos_Empleado
 Empleado.hasMany(Documentos_Empleado, {
   foreignKey: {
     allowNull: false,
@@ -193,23 +197,41 @@ Documentos_Empleado.belongsTo(Empleado, {
   },
 });
 
-// Empleado N:N Respuesta
-Empleado.belongsToMany(Respuesta, {
-  through: "Respuestas_Empleado",
+// Empleado 1:M Pruebas_Empleado
+Empleado.hasMany(Pruebas_Empleado, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
   },
 });
-Respuesta.belongsToMany(Empleado, {
-  through: "Respuestas_Empleado",
+Pruebas_Empleado.belongsTo(Empleado, {
   foreignKey: {
     allowNull: false,
-    name: "respuesta_id",
+    name: "empleado_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
   },
 });
 
-// Empleado N:N Respuesta
+// Pruebas_Empleado M:M Preguntas_Kostick
+Pruebas_Empleado.belongsToMany(Preguntas_Kostick, {
+  through: "Respuestas_Kostick",
+  foreignKey: {
+    allowNull: false,
+    name: "prueba_id",
+  },
+});
+Preguntas_Kostick.belongsToMany(Pruebas_Empleado, {
+  through: "Respuestas_Kostick",
+  foreignKey: {
+    allowNull: false,
+    name: "pregunta_kostick_id",
+  },
+});
+
+// Empleado M:M Respuesta
 Curriculo.belongsToMany(Idioma, {
   through: "Idiomas_Curriculo",
   foreignKey: {
@@ -225,6 +247,42 @@ Idioma.belongsToMany(Curriculo, {
   },
 });
 
+// Empleado 1:1 Curriculo
+Sesiones.belongsTo(Empleado, {
+  foreignKey: {
+    allowNull: false,
+    name: "empleado_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+Empleado.hasOne(Sesiones, {
+  foreignKey: {
+    allowNull: false,
+    name: "empleado_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+
+// Etnia 1:M Empleado
+Etnia.hasMany(Empleado, {
+  foreignKey: {
+    allowNull: false,
+    name: "etnia_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+Empleado.belongsTo(Etnia, {
+  foreignKey: {
+    allowNull: false,
+    name: "etnia_id",
+    onDelete: "RESTRICT",
+    onUpdate: "RESTRICT",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -236,11 +294,15 @@ module.exports = {
   Documentos_Empleado,
   Empleado,
   Empresa,
+  Etnia,
   Experiencia,
   Idioma,
+  Menu,
   Idiomas_Curriculo,
-  Respuesta,
-  Respuestas_Empleado,
+  Preguntas_Kostick,
+  Pruebas_Empleado,
+  Respuestas_Kostick,
   Roles,
+  Sesiones,
   Titulo_Obtenido,
 };

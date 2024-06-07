@@ -2,7 +2,18 @@ const { Op } = require("sequelize");
 
 const fs = require("fs");
 
-const { Empleado, Roles, Cargo, Cargo_Empleado, Empresa } = require("../db");
+const {
+  conn,
+  Empleado,
+  Roles,
+  Cargo,
+  Cargo_Empleado,
+  Empresa,
+} = require("../db");
+
+const { empleados } = require("../utils/empleados");
+
+const { crearSesion, traerSesion } = require("./sesiones_controllers");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -42,10 +53,6 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
             : null,
         ].filter(Boolean),
       });
-
-    if (!dataEmpleados.length) {
-      throw new Error("No existen empleados");
-    }
 
     const indexEnd = paginaActual * limitePorPagina;
     const indexStart = indexEnd - limitePorPagina;
@@ -149,6 +156,19 @@ const login = async (cedula, clave) => {
       };
     }
 
+    const sesion = await traerSesion(empleado.empleado_id);
+
+    if (sesion && sesion.activo === true) {
+      const diferencia_fechas =
+        new Date() - new Date(sesion.updatedAt).getTime();
+
+      if (diferencia_fechas < 300000) {
+        throw new Error(
+          "Posees una sesión activa, debes cerrar la sesión anterior o volver a ingresar dentro de 5 minutos"
+        );
+      }
+    }
+
     const token = jwt.sign(
       {
         empleado_id: empleado.empleado_id,
@@ -160,9 +180,57 @@ const login = async (cedula, clave) => {
 
     const infoEmpleado = await traerEmpleado(empleado.empleado_id);
 
+    await crearSesion(empleado.empleado_id, token);
+
     return { token, infoEmpleado };
   } catch (error) {
     throw new Error("Error al loguear: " + error.message);
+  }
+};
+
+const cargarEmpleados = async () => {
+  let t;
+
+  try {
+    t = await conn.transaction();
+
+    const rol = await Roles.findOne({
+      where: {
+        nombre: "admin",
+      },
+    });
+
+    for (const empleado of empleados) {
+      if (empleado.cedula === "26388249") {
+        const [crearEmpleado, created] = await Empleado.findOrCreate({
+          where: { cedula: empleado.cedula },
+          defaults: {
+            rol_id: rol.rol_id,
+            cedula: empleado.cedula,
+            clave:
+              "$2b$10$fujp2v6MvAnBug/TqMxEk.bUD98wOcS8QGFidOzFKBo9acsmJZqMq",
+            nombres: empleado.nombres,
+            apellidos: empleado.apellidos,
+            fecha_nacimiento: empleado.fecha_nacimiento,
+            genero: empleado.genero,
+            etnia_id: empleado.etnia_id || null,
+            telefono: empleado.telefono,
+            correo: empleado.correo || null,
+            direccion: empleado.direccion,
+            cantidad_hijos: empleado.cantidad_hijos,
+          },
+          transaction: t,
+        });
+      }
+    }
+
+    await t.commit();
+  } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error("Error al crear los empleados: " + error.message);
   }
 };
 
@@ -173,7 +241,7 @@ const crearEmpleado = async (
   apellidos,
   fecha_nacimiento,
   genero,
-  etnia,
+  etnia_id,
   telefono,
   correo,
   direccion,
@@ -185,42 +253,53 @@ const crearEmpleado = async (
     !apellidos ||
     !fecha_nacimiento ||
     !genero ||
-    !etnia ||
     !telefono ||
-    !correo ||
     !direccion ||
     !cantidad_hijos
   ) {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const claveCifrada = await bcrypt.hash("1234", 10);
 
-    const [empleado, created] = await Empleado.findOrCreate({
-      where: { cedula: cedula },
-      defaults: {
-        rol_id: rol_id,
-        cedula: cedula,
-        clave: claveCifrada,
-        nombres: nombres,
-        apellidos: apellidos,
-        fecha_nacimiento: fecha_nacimiento,
-        genero: genero,
-        etnia: etnia,
-        telefono: telefono,
-        correo: correo,
-        direccion: direccion,
-        cantidad_hijos: cantidad_hijos,
+    const [empleado, created] = await Empleado.findOrCreate(
+      {
+        where: { cedula: cedula },
+        defaults: {
+          rol_id: rol_id,
+          cedula: cedula,
+          clave: claveCifrada,
+          nombres: nombres,
+          apellidos: apellidos,
+          fecha_nacimiento: fecha_nacimiento,
+          genero: genero,
+          etnia_id: etnia_id || null,
+          telefono: telefono,
+          correo: correo || null,
+          direccion: direccion,
+          cantidad_hijos: cantidad_hijos,
+        },
       },
-    });
+      { transaction: t }
+    );
+
+    await t.commit();
 
     if (created) {
       return empleado;
     }
 
-    throw new Error("Ya existe un empleado con esa cédula de identidad y rol");
+    throw new Error("Ya existe un empleado con esa cédula de identidad");
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al crear el empleado: " + error.message);
   }
 };
@@ -234,7 +313,11 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
     throw new Error("Debes ingresar una contraseña diferente a 1234");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerEmpleado(empleado_id);
 
     const claveCifrada = await bcrypt.hash(clave, 10);
@@ -247,11 +330,18 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
         where: {
           empleado_id: empleado_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
@@ -264,7 +354,7 @@ const modificarEmpleado = async (
   apellidos,
   fecha_nacimiento,
   genero,
-  etnia,
+  etnia_id,
   telefono,
   correo,
   direccion,
@@ -279,9 +369,7 @@ const modificarEmpleado = async (
     !apellidos ||
     !fecha_nacimiento ||
     !genero ||
-    !etnia ||
     !telefono ||
-    !correo ||
     !direccion ||
     !cantidad_hijos ||
     !activo
@@ -289,7 +377,11 @@ const modificarEmpleado = async (
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerEmpleado(empleado_id);
 
     await Empleado.update(
@@ -300,9 +392,9 @@ const modificarEmpleado = async (
         apellidos: apellidos,
         fecha_nacimiento: fecha_nacimiento,
         genero: genero,
-        etnia: etnia,
+        etnia_id: etnia_id || null,
         telefono: telefono,
-        correo: correo,
+        correo: correo || null,
         direccion: direccion,
         cantidad_hijos: cantidad_hijos,
         activo: activo,
@@ -311,11 +403,18 @@ const modificarEmpleado = async (
         where: {
           empleado_id: empleado_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
@@ -325,7 +424,11 @@ const modificarFotoEmpleado = async (empleado_id, filename, path) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const empleado = await traerEmpleado(empleado_id);
 
     const rutaArchivo = empleado.foto_perfil_ruta;
@@ -347,11 +450,18 @@ const modificarFotoEmpleado = async (empleado_id, filename, path) => {
         where: {
           empleado_id: empleado_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
@@ -369,7 +479,11 @@ const actualizarClaveEmpleado = async (
     throw new Error("Debes ingresar una contraseña diferente a 1234");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const empleado = await Empleado.findByPk(empleado_id, {
       attributes: ["clave"],
     });
@@ -390,11 +504,18 @@ const actualizarClaveEmpleado = async (
         where: {
           empleado_id: empleado_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
@@ -404,7 +525,11 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerEmpleado(empleado_id);
 
     const claveCifrada = await bcrypt.hash("1234", 10);
@@ -417,11 +542,18 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
         where: {
           empleado_id: empleado_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al modificar el empleado: " + error.message);
   }
 };
@@ -431,18 +563,29 @@ const inactivarEmpleado = async (empleado_id) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const empleado = await traerEmpleado(empleado_id);
 
     await Empleado.update(
       { activo: !empleado.activo },
       {
         where: { empleado_id: empleado_id },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al inactivar el empleado: " + error.message);
   }
 };
@@ -451,6 +594,7 @@ module.exports = {
   todosLosEmpleados,
   traerEmpleado,
   login,
+  cargarEmpleados,
   crearEmpleado,
   actualizarClaveTemporalEmpleado,
   modificarEmpleado,

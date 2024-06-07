@@ -1,4 +1,6 @@
-const { Roles } = require("../db");
+const { conn, Roles } = require("../db");
+
+const { roles } = require("../utils/roles");
 
 const todosLosRoles = async () => {
   try {
@@ -32,19 +34,53 @@ const traerRol = async (rol_id) => {
   }
 };
 
+const cargarRoles = async () => {
+  let t;
+
+  try {
+    t = await conn.transaction();
+
+    for (const rol of roles) {
+      const [crearRol, created] = await Roles.findOrCreate({
+        where: { nombre: rol.nombre },
+        defaults: {
+          nombre: rol.nombre,
+          descripcion: rol.descripcion,
+        },
+        transaction: t,
+      });
+    }
+
+    await t.commit();
+  } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error("Error al crear los roles: " + error.message);
+  }
+};
+
 const crearRol = async (nombre, descripcion) => {
   if (!nombre || !descripcion) {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const [rol, created] = await Roles.findOrCreate({
       where: { nombre: nombre },
       defaults: {
         nombre: nombre,
         descripcion: descripcion,
       },
+      transaction: t,
     });
+
+    await t.commit();
 
     if (created) {
       return rol;
@@ -52,6 +88,10 @@ const crearRol = async (nombre, descripcion) => {
 
     throw new Error("Ya existe un rol con ese nombre");
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al crear el rol: " + error.message);
   }
 };
@@ -61,7 +101,11 @@ const modificarRol = async (rol_id, nombre, descripcion, activo) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerRol(rol_id);
 
     await Roles.update(
@@ -75,11 +119,18 @@ const modificarRol = async (rol_id, nombre, descripcion, activo) => {
         where: {
           rol_id: rol_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerRol(rol_id);
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al modificar el rol: " + error.message);
   }
 };
@@ -88,19 +139,29 @@ const inactivarRol = async (rol_id) => {
   if (!rol_id) {
     throw new Error("Datos faltantes");
   }
+  let t;
 
   try {
+    t = await conn.transaction();
+
     const rol = await traerRol(rol_id);
 
     await Roles.update(
       { activo: !rol.activo },
       {
         where: { rol_id: rol_id },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerRol(rol_id);
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al inactivar el rol: " + error.message);
   }
 };
@@ -108,6 +169,7 @@ const inactivarRol = async (rol_id) => {
 module.exports = {
   todosLosRoles,
   traerRol,
+  cargarRoles,
   crearRol,
   modificarRol,
   inactivarRol,

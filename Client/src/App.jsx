@@ -14,14 +14,14 @@ import {
   InfoCurriculo,
   Inicio,
   PaginaNoEncontrada,
+  PruebaKostick,
   SubirDocumentos,
-  TestActitudinal,
   AccesoAdmin,
   DetalleEmpleado,
   Empleados,
   PanelAdmin,
   Postulaciones,
-  PruebaKostick,
+  PruebasEmpleados,
 } from "./components/";
 
 import {
@@ -41,7 +41,8 @@ function App() {
       <Suspense fallback={<>Cargando</>}>
         {pathname.toLowerCase() !== "/" &&
           pathname.toLowerCase() !== "/admin/acceso" &&
-          pathname.toLocaleLowerCase() !== "/actualizarclavetemporal" &&
+          pathname.toLocaleLowerCase() !==
+            "/miPerfil/actualizarclavetemporal" &&
           userState.empleado_id && <BarraNavegacion />}
         <Routes>
           <Route path="*" element={<PaginaNoEncontrada />} />
@@ -50,7 +51,7 @@ function App() {
 
           <Route element={<ProteccionActualizarClave />}>
             <Route
-              path="/actualizarClaveTemporal"
+              path="/miPerfil/actualizarClaveTemporal"
               element={<ActualizarClaveTemporal />}
             />
           </Route>
@@ -58,24 +59,43 @@ function App() {
           {/* Rutas Empleado */}
           <Route element={<ProteccionEmpleado />}>
             <Route path="/inicio" element={<Inicio />} />
-            <Route path="/datosPersonales" element={<DatosPersonales />} />
-            <Route path="/curriculo/info" element={<InfoCurriculo />} />
-            <Route path="/curriculo/registro" element={<CrearCurriculo />} />
             <Route
-              path="/curriculo/curriculoDetalle/:curriculo_id"
+              path="/miPerfil/datosPersonales"
+              element={<DatosPersonales />}
+            />
+            <Route
+              path="/miPerfil/actualizarClave"
+              element={<ActualizarClave />}
+            />
+            <Route path="/perfilProfesional/info" element={<InfoCurriculo />} />
+            <Route
+              path="/perfilProfesional/registro"
+              element={<CrearCurriculo />}
+            />
+            <Route
+              path="/perfilProfesional/detalle/:curriculo_id"
               element={<DetalleCurriculo />}
             />
-            <Route path="/documentos" element={<SubirDocumentos />} />
-            <Route path="/actualizarClave" element={<ActualizarClave />} />
-            <Route path="/testActitudinal" element={<TestActitudinal />} />
+            <Route
+              path="/perfilProfesional/misDocumentos"
+              element={<SubirDocumentos />}
+            />
+            <Route
+              path="/perfilProfesional/pruebaKostick"
+              element={<PruebaKostick />}
+            />
           </Route>
 
           {/* Rutas Admin */}
           <Route element={<ProteccionAdmin />}>
             <Route path="/admin/panel" element={<PanelAdmin />} />
             <Route
-              path="/admin/datosPersonales"
+              path="/admin/miPerfil/datosPersonales"
               element={<DatosPersonales />}
+            />
+            <Route
+              path="/admin/miPerfil/actualizarClave"
+              element={<ActualizarClave />}
             />
             <Route path="/admin/postulaciones" element={<Postulaciones />} />
             <Route path="/admin/empleados" element={<Empleados />} />
@@ -84,10 +104,9 @@ function App() {
               element={<DetalleEmpleado />}
             />
             <Route
-              path="/admin/actualizarClave"
-              element={<ActualizarClave />}
+              path="/admin/pruebasEmpleados"
+              element={<PruebasEmpleados />}
             />
-            <Route path="/admin/pruebasKostick" element={<PruebaKostick />} />
           </Route>
         </Routes>
       </Suspense>

@@ -8,10 +8,10 @@ import {
   postLimitePorPagina,
   postFiltros,
   deleteFiltros,
-} from "../../redux/curriculos/curriculoAction";
+} from "../../redux/curriculos/curriculosActions";
 
-import { getAllAreasInteresActivas } from "../../redux/areasinteres/areainteresAction";
-import { getAllIdiomasActivos } from "../../redux/idiomas/idiomasAction";
+import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresActions";
+import { getAllIdiomasActivos } from "../../redux/idiomas/idiomasActions";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 

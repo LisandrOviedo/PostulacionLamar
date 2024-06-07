@@ -16,6 +16,8 @@ const {
 
 const { DDMMYYYYHHMM } = require("../utils/formatearFecha");
 
+const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
+
 const path = require("path");
 const PDFDocument = require("pdfkit-table");
 const fs = require("fs");
@@ -61,6 +63,13 @@ const getCurriculoPDF = async (req, res) => {
 
     // Genera el contenido del PDF
     const content = await traerCurriculoPDF(empleado_id);
+
+    const dest_path = path.join(
+      __dirname,
+      `../../public/documentosEmpleados/${cedula}`
+    );
+
+    crearCarpetaSiNoExiste(dest_path);
 
     const pdf_path = path.join(
       __dirname,
@@ -206,15 +215,13 @@ const getCurriculoPDFAnexos = async (req, res) => {
       `../../public/documentosEmpleados/${cedula}/`
     );
 
+    crearCarpetaSiNoExiste(carpetaDestino);
+
     anexos.forEach((anexo) => {
       const fileData = fs.readFileSync(anexo);
       const nombreArchivo = path.basename(anexo);
       zip.file(nombreArchivo, fileData);
     });
-
-    const pruebaData = fs.readFileSync(`${carpetaDestino}TestKostick.xlsx`);
-    const nombrePrueba = "TestKostick.xlsx";
-    zip.file(nombrePrueba, pruebaData);
 
     // Generar el archivo ZIP
     const content = await zip.generateAsync({ type: "nodebuffer" });
@@ -224,7 +231,6 @@ const getCurriculoPDFAnexos = async (req, res) => {
 
     // Guardar el archivo ZIP en la carpeta específica
     fs.writeFileSync(rutaArchivoZip, content);
-    console.log("Archivo ZIP guardado exitosamente en la carpeta específica.");
 
     await cambiarEstadoRevisado(empleado_id);
 

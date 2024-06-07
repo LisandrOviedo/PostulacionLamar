@@ -75,7 +75,7 @@ export function DetalleEmpleado() {
                       Etnia
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.etnia}
+                      {empleado.etnia || "No posee"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -91,7 +91,7 @@ export function DetalleEmpleado() {
                       Correo electrónico
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.correo ? empleado.correo : "No posee"}
+                      {empleado.correo || "No posee"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">

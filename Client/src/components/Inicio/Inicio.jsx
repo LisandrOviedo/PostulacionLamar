@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Title } from "../UI";
 
-import { resetCurriculos } from "../../redux/curriculos/curriculoAction";
+import { resetCurriculos } from "../../redux/curriculos/curriculosActions";
 
 export function Inicio() {
   const dispatch = useDispatch();

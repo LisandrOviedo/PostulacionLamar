@@ -7,8 +7,7 @@ import validations from "../../utils/validacionesAcceso";
 
 import { Button, Input, Label, Title } from "../UI";
 
-import { getLogin, resetEmpleados } from "../../redux/empleados/empleadoAction";
-import { resetCurriculos } from "../../redux/curriculos/curriculoAction";
+import { getLogin } from "../../redux/empleados/empleadosActions";
 
 import Swal from "sweetalert2";
 
@@ -56,8 +55,9 @@ export function AccesoAdmin() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(resetEmpleados());
-    dispatch(resetCurriculos());
+    if (empleado.activo && empleado.Role.nombre === "admin") {
+      return navigate("/admin/panel");
+    }
 
     document.title = "Grupo Lamar - Login (Admin)";
 
@@ -73,7 +73,7 @@ export function AccesoAdmin() {
     }
 
     if (empleado?.changePassword) {
-      return navigate("/actualizarClaveTemporal");
+      return navigate("/miPerfil/actualizarClaveTemporal");
     } else if (empleado.activo && empleado.Role?.nombre === "empleado") {
       Swal.fire({
         text: "Datos incorrectos",

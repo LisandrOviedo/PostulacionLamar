@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { getCurriculoEmpleado } from "../../redux/curriculos/curriculoAction";
+import { getCurriculoEmpleado } from "../../redux/curriculos/curriculosActions";
 
 import { Button, Hr, Title } from "../UI";
 
@@ -44,11 +44,11 @@ export function InfoCurriculo() {
       });
 
       return navigate(
-        `/curriculo/curriculoDetalle/${curriculoEmpleado.curriculo_id}`
+        `/perfilProfesional/detalle/${curriculoEmpleado.curriculo_id}`
       );
     }
 
-    navigate("/curriculo/registro");
+    navigate("/perfilProfesional/registro");
 
     return Swal.fire({
       title: "Creación del perfil profesional",

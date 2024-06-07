@@ -1,10 +1,14 @@
-const { Idioma, Idiomas_Curriculo } = require("../db");
+const { conn, Idioma, Idiomas_Curriculo } = require("../db");
 
 const { traerCurriculo } = require("./curriculos_controllers");
 
+const { idiomas } = require("../utils/idiomas");
+
 const todosLosIdiomas = async () => {
   try {
-    const idiomas = await Idioma.findAll();
+    const idiomas = await Idioma.findAll({
+      order: [["nombre", "ASC"]],
+    });
 
     if (!idiomas.length) {
       throw new Error("No existen idiomas");
@@ -20,6 +24,7 @@ const todosLosIdiomasActivos = async () => {
   try {
     const idiomas = await Idioma.findAll({
       where: { activo: true },
+      order: [["nombre", "ASC"]],
     });
 
     if (!idiomas.length) {
@@ -50,12 +55,42 @@ const traerIdioma = async (idioma_id) => {
   }
 };
 
+const cargarIdiomas = async () => {
+  let t;
+
+  try {
+    t = await conn.transaction();
+
+    for (const idioma of idiomas) {
+      const [crearIdioma, created] = await Idioma.findOrCreate({
+        where: { nombre: idioma },
+        defaults: {
+          nombre: idioma,
+        },
+        transaction: t,
+      });
+    }
+
+    await t.commit();
+  } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error("Error al crear los idiomas: " + error.message);
+  }
+};
+
 const crearIdioma = async (nombre) => {
   if (!nombre) {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const [idioma, created] = await Idioma.findOrCreate({
       where: {
         nombre: nombre,
@@ -63,7 +98,10 @@ const crearIdioma = async (nombre) => {
       defaults: {
         nombre: nombre,
       },
+      transaction: t,
     });
+
+    await t.commit();
 
     if (created) {
       return area_interes;
@@ -71,6 +109,10 @@ const crearIdioma = async (nombre) => {
 
     throw new Error("Ya existe un idioma con ese nombre");
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al crear el idioma: " + error.message);
   }
 };
@@ -80,7 +122,11 @@ const modificarIdioma = async (idioma_id, nombre, activo) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerIdioma(idioma_id);
 
     await Idioma.update(
@@ -92,11 +138,18 @@ const modificarIdioma = async (idioma_id, nombre, activo) => {
         where: {
           idioma_id: idioma_id,
         },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerIdioma(idioma_id);
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al modificar el idioma: " + error.message);
   }
 };
@@ -106,18 +159,29 @@ const inactivarIdioma = async (idioma_id) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     const idioma = await traerIdioma(idioma_id);
 
     await Idioma.update(
       { activo: !idioma.activo },
       {
         where: { idioma_id: idioma_id },
-      }
+      },
+      { transaction: t }
     );
+
+    await t.commit();
 
     return await traerIdioma(idioma_id);
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al inactivar el idioma: " + error.message);
   }
 };
@@ -127,12 +191,14 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerCurriculo(curriculo_id);
 
-    let fallidos = "";
-
-    idiomas.forEach(async (idioma) => {
+    for (const idioma of idiomas) {
       const [crearIdioma, created] = await Idiomas_Curriculo.findOrCreate({
         where: {
           curriculo_id: curriculo_id,
@@ -143,28 +209,16 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
           idioma_id: idioma.idioma_id,
           nivel: idioma.nivel || idioma.Idiomas_Curriculo.nivel,
         },
+        transaction: t,
       });
-
-      if (!created) {
-        if (fallidos === "") {
-          fallidos = idioma.nombre;
-          return;
-        }
-
-        if (fallidos !== "") {
-          fallidos = fallidos + ` ${idioma.nombre}`;
-          return;
-        }
-      }
-    });
-
-    if (fallidos !== "") {
-      throw new Error(
-        "Estos idiomas no se pudieron guardar porque ya existen: ",
-        fallidos
-      );
     }
+
+    await t.commit();
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error(
       "Error al agregar el idioma al curriculo: " + error.message
     );
@@ -176,15 +230,26 @@ const eliminarIdiomasCurriculo = async (curriculo_id) => {
     throw new Error("Datos faltantes");
   }
 
+  let t;
+
   try {
+    t = await conn.transaction();
+
     await traerCurriculo(curriculo_id);
 
     await Idiomas_Curriculo.destroy({
       where: {
         curriculo_id: curriculo_id,
       },
+      transaction: t,
     });
+
+    await t.commit();
   } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
     throw new Error("Error al eliminar los idiomas: " + error.message);
   }
 };
@@ -193,6 +258,7 @@ module.exports = {
   todosLosIdiomas,
   traerIdioma,
   todosLosIdiomasActivos,
+  cargarIdiomas,
   crearIdioma,
   modificarIdioma,
   inactivarIdioma,

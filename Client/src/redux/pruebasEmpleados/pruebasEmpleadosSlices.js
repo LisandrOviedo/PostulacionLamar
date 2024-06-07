@@ -2,27 +2,27 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   prueba_kostick: [],
-  empleados_pruebas: [],
+  pruebas_empleados: [],
   paginaActual: 1,
   limitePorPagina: 2,
   filtros: {
     cedula: "",
     apellidos: "",
-    activo: "",
+    prueba: "",
     orden_campo: "",
     orden_por: "",
   },
 };
 
-export const pruebaSlice = createSlice({
-  name: "prueba_kostick",
+export const pruebasEmpleadosSlice = createSlice({
+  name: "pruebas_empleados",
   initialState,
   reducers: {
-    prueba: (state, action) => {
+    prueba_kostick: (state, action) => {
       state.prueba_kostick = action.payload;
     },
-    empleados_prueba: (state, action) => {
-      state.empleados_pruebas = action.payload;
+    pruebas_empleados: (state, action) => {
+      state.pruebas_empleados = action.payload;
     },
     paginaActual: (state, action) => {
       state.paginaActual = action.payload;
@@ -37,7 +37,7 @@ export const pruebaSlice = createSlice({
       state.filtros = {
         cedula: "",
         apellidos: "",
-        activo: "",
+        prueba: "",
         orden_campo: "",
         orden_por: "",
       };
@@ -49,12 +49,12 @@ export const pruebaSlice = createSlice({
 });
 
 export const {
-  prueba,
-  empleados_prueba,
+  prueba_kostick,
+  pruebas_empleados,
   paginaActual,
   limitePorPagina,
   filtros,
   resetFilters,
   resetState,
-} = pruebaSlice.actions;
-export default pruebaSlice.reducer;
+} = pruebasEmpleadosSlice.actions;
+export default pruebasEmpleadosSlice.reducer;

@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 
 import { Button, Input, Title } from "../UI";
 
-import { putPassword } from "../../redux/empleados/empleadoAction";
+import { putPassword } from "../../redux/empleados/empleadosActions";
 
 export function ActualizarClave() {
   const token = useSelector((state) => state.empleados.token);
