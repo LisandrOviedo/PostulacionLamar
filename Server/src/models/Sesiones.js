@@ -14,12 +14,10 @@ module.exports = (sequelize) => {
         // Campo relacionado
         type: DataTypes.UUID,
         allowNull: false,
-        unique: true,
       },
       token: {
         type: DataTypes.TEXT,
         allowNull: false,
-        unique: true,
       },
       activo: {
         type: DataTypes.BOOLEAN,

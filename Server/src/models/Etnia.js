@@ -13,7 +13,6 @@ module.exports = (sequelize) => {
       nombre: {
         type: DataTypes.STRING(70),
         allowNull: false,
-        unique: true,
       },
       activo: {
         type: DataTypes.BOOLEAN,
