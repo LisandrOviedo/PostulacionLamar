@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useSelector } from "react-redux";
 
-import { Button, Hr, Label, Title } from "../UI";
+import { Button, Hr, Title } from "../UI";
 
 import { calcularEdad } from "../../utils/formatearFecha";
 
@@ -150,12 +150,11 @@ export function DetalleEmpleado() {
         </div>
         <div className="flex flex-col items-center gap-2 mb-2">
           <img
-            id="foto_perfil"
             src={empleado.foto_perfil_nombre ? FOTO_PERFIL : "/Person.svg"}
             alt="Imgen del perfil"
             className="w-40 h-40 border border-[#002846] bg-gray-400 rounded-full ring-2 ring-[#F0C95C]"
           />
-          <Label htmlFor="foto_perfil">Imagen del perfil</Label>
+          <span className="text-sm">Imagen del perfil</span>
         </div>
       </div>
       <div className="grid gap-6 md:grid-cols-3 mt-5 mb-5">
