@@ -338,7 +338,7 @@ export function SubirDocumentos() {
                   </>
                 )}
                 <td className="px-4 py-4">
-                  <Link to="/curriculo/info">
+                  <Link to="/perfilProfesional/info">
                     <Button className="m-0 w-auto">Cargar / Actualizar</Button>
                   </Link>
                 </td>
