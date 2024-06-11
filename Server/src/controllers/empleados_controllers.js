@@ -204,13 +204,10 @@ const cargarEmpleados = async () => {
 
     const { data } = await axios(API_EMPLEADOS);
 
-    console.log(
-      "hizo la consulta de empleados ",
-      new Date().toISOString().slice(0, 10)
-    );
+    console.log("hizo la consulta de empleados");
 
     for (const empleadoReal of data) {
-      const empleado = await Empleado.findOne({
+      let empleado = await Empleado.findOne({
         where: {
           cedula: empleadoReal.cedula,
         },
@@ -226,12 +223,7 @@ const cargarEmpleados = async () => {
             nombres: empleadoReal.nombres.trim().toUpperCase(),
             apellidos: empleadoReal.apellidos.trim().toUpperCase(),
             fecha_nacimiento: `${YYYYMMDD(empleadoReal.fecha_nacimiento)}`,
-            genero: null,
-            etnia_id: null,
-            telefono: null,
-            correo: null,
             direccion: empleadoReal.direccion.trim().toUpperCase() || null,
-            cantidad_hijos: 0,
           },
           { transaction: t }
         );
@@ -240,11 +232,7 @@ const cargarEmpleados = async () => {
       }
     }
 
-    console.log(
-      "terminó de registrar los empleados ",
-      new Date().toISOString().slice(0, 10)
-    );
-
+    console.log("terminó de registrar los empleados", new Date());
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();

@@ -7,7 +7,6 @@ module.exports = (sequelize) => {
       empresa_id: {
         type: DataTypes.UUID,
         primaryKey: true,
-        allowNull: false,
         defaultValue: UUIDV4,
       },
       codigo_empresa: {
@@ -29,7 +28,6 @@ module.exports = (sequelize) => {
       activo: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
-        allowNull: false,
       },
     },
     {

@@ -7,7 +7,6 @@ module.exports = (sequelize) => {
       documento_empleado_id: {
         type: DataTypes.UUID,
         primaryKey: true,
-        allowNull: false,
         defaultValue: UUIDV4,
       },
       empleado_id: {
@@ -41,7 +40,6 @@ module.exports = (sequelize) => {
       activo: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
-        allowNull: false,
       },
     },
     {

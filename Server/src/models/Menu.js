@@ -7,7 +7,6 @@ module.exports = (sequelize) => {
       menu_id: {
         type: DataTypes.UUID,
         primaryKey: true,
-        allowNull: false,
         defaultValue: UUIDV4,
       },
       padre_id: {
@@ -31,7 +30,6 @@ module.exports = (sequelize) => {
       activo: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
-        allowNull: false,
       },
     },
     {

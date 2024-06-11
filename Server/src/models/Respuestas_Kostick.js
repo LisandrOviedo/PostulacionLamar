@@ -5,7 +5,6 @@ module.exports = (sequelize) => {
     respuesta_kostick_id: {
       type: DataTypes.UUID,
       primaryKey: true,
-      allowNull: false,
       defaultValue: UUIDV4,
     },
     prueba_id: {
@@ -21,7 +20,6 @@ module.exports = (sequelize) => {
     activo: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
-      allowNull: false,
     },
   });
 };

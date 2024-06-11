@@ -5,7 +5,6 @@ module.exports = (sequelize) => {
     experiencia_id: {
       type: DataTypes.UUID,
       primaryKey: true,
-      allowNull: false,
       defaultValue: UUIDV4,
     },
     curriculo_id: {
@@ -37,7 +36,6 @@ module.exports = (sequelize) => {
     activo: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
-      allowNull: false,
     },
   });
 };
