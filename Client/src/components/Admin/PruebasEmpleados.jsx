@@ -100,7 +100,9 @@ export function PruebasEmpleados() {
   };
 
   const handleFind = () => {
-    dispatch(postFiltros(filters));
+    dispatch(postPaginaActual(1)).then(() => {
+      dispatch(postFiltros(filters));
+    });
   };
 
   useEffect(() => {
@@ -372,9 +374,11 @@ export function PruebasEmpleados() {
                       {prueba.Empleado.apellidos} {prueba.Empleado.nombres}
                     </td>
                     <td className="px-4 py-4">{prueba.Empleado.cedula}</td>
-                    <td className="px-4 py-4">{prueba.Empleado.telefono}</td>
                     <td className="px-4 py-4">
-                      {prueba.Empleado.correo || "No posee"}
+                      {prueba.Empleado.telefono || "Sin registrar"}
+                    </td>
+                    <td className="px-4 py-4">
+                      {prueba.Empleado.correo || "Sin registrar"}
                     </td>
                     <td className="px-4 py-4">{prueba.prueba}</td>
                     <td className="px-4 py-4">{DDMMYYYY(prueba.createdAt)}</td>

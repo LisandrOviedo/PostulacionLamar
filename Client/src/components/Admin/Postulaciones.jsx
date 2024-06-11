@@ -108,7 +108,9 @@ export function Postulaciones() {
   };
 
   const handleFind = () => {
-    dispatch(postFiltros(filters));
+    dispatch(postPaginaActual(1)).then(() => {
+      dispatch(postFiltros(filters));
+    });
   };
 
   useEffect(() => {
@@ -452,9 +454,11 @@ export function Postulaciones() {
                       {curriculo.Empleado.nombres}
                     </td>
                     <td className="px-4 py-4">{curriculo.Empleado.cedula}</td>
-                    <td className="px-4 py-4">{curriculo.Empleado.telefono}</td>
                     <td className="px-4 py-4">
-                      {curriculo.Empleado.correo || "No posee"}
+                      {curriculo.Empleado.telefono || "Sin registrar"}
+                    </td>
+                    <td className="px-4 py-4">
+                      {curriculo.Empleado.correo || "Sin registrar"}
                     </td>
                     <td className="px-4 py-4">
                       {curriculo.Areas_Interes.map(

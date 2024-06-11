@@ -101,7 +101,9 @@ export function Empleados() {
   };
 
   const handleFind = () => {
-    dispatch(postFiltros(filters));
+    dispatch(postPaginaActual(1)).then(() => {
+      dispatch(postFiltros(filters));
+    });
   };
 
   useEffect(() => {
@@ -415,9 +417,11 @@ export function Empleados() {
                       {empleado.apellidos} {empleado.nombres}
                     </td>
                     <td className="px-4 py-4">{empleado.cedula}</td>
-                    <td className="px-4 py-4">{empleado.telefono}</td>
                     <td className="px-4 py-4">
-                      {empleado.correo || "No posee"}
+                      {empleado.telefono || "Sin registrar"}
+                    </td>
+                    <td className="px-4 py-4">
+                      {empleado.correo || "Sin registrar"}
                     </td>
                     <td className="px-4 py-4">
                       {empleado.activo ? "Activo" : "Inactivo"}
