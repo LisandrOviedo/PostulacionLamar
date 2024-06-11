@@ -105,7 +105,10 @@ const getCurriculoPDF = async (req, res) => {
       for (const campo of seccion.contenido) {
         if (campo.titulo_campo === "Experiencias") {
           if (!campo.descripcion_campo.length) {
-            doc.fontSize(11).font("Helvetica").text("No posee", { indent: 20 });
+            doc
+              .fontSize(11)
+              .font("Helvetica")
+              .text("No tiene experencia previa", { indent: 20 });
           } else {
             (async function createTable() {
               const table = {
@@ -137,7 +140,10 @@ const getCurriculoPDF = async (req, res) => {
           }
         } else if (campo.titulo_campo === "Idiomas") {
           if (!campo.descripcion_campo.length) {
-            doc.fontSize(11).font("Helvetica").text("No posee", { indent: 20 });
+            doc
+              .fontSize(11)
+              .font("Helvetica")
+              .text("No tiene conocimientos", { indent: 20 });
           } else {
             (async function createTable() {
               const table = {
@@ -167,7 +173,7 @@ const getCurriculoPDF = async (req, res) => {
               doc
                 .fontSize(11)
                 .font("Helvetica")
-                .text("No posee", { indent: 20 });
+                .text("Sin registrar / No posee", { indent: 20 });
             } else {
               doc.fontSize(11).font("Helvetica").text(campo.descripcion_campo);
             }
@@ -176,7 +182,7 @@ const getCurriculoPDF = async (req, res) => {
               doc
                 .fontSize(11)
                 .font("Helvetica")
-                .text("No posee", { indent: 20 });
+                .text("Sin registrar / No posee", { indent: 20 });
             } else {
               doc
                 .fontSize(11)
