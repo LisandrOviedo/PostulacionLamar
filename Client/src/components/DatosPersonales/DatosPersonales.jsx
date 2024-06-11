@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Button, Hr, Label, Title } from "../UI";
 
+import { calcularEdad } from "../../utils/formatearFecha";
+
 import Swal from "sweetalert2";
 
 export function DatosPersonales() {
@@ -65,6 +67,9 @@ export function DatosPersonales() {
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                     {empleado.fecha_nacimiento}
+                    {" ("}
+                    {calcularEdad(empleado.fecha_nacimiento)}
+                    {" años)"}
                   </dd>
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -80,7 +85,7 @@ export function DatosPersonales() {
                     Género
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    {empleado.genero}
+                    {empleado.genero || "Sin registrar"}
                   </dd>
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -96,7 +101,7 @@ export function DatosPersonales() {
                     Número de contacto
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    {empleado.telefono}
+                    {empleado.telefono || "Sin registrar / No posee"}
                   </dd>
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -104,7 +109,7 @@ export function DatosPersonales() {
                     Correo electrónico
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    {empleado.correo || "No posee"}
+                    {empleado.correo || "Sin registrar / No posee"}
                   </dd>
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -112,7 +117,7 @@ export function DatosPersonales() {
                     Dirección
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    {empleado.direccion}
+                    {empleado.direccion || "Sin registrar"}
                   </dd>
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">

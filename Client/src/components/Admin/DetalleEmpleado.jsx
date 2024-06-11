@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 
 import { Button, Hr, Label, Title } from "../UI";
 
+import { calcularEdad } from "../../utils/formatearFecha";
+
 export function DetalleEmpleado() {
   const empleado = useSelector((state) => state.empleados.empleadoDetail);
 
@@ -56,6 +58,17 @@ export function DetalleEmpleado() {
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Fecha nacimiento
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.fecha_nacimiento}
+                      {" ("}
+                      {calcularEdad(empleado.fecha_nacimiento)}
+                      {" años)"}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
                       Número de cédula
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
@@ -67,7 +80,7 @@ export function DetalleEmpleado() {
                       Género
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.genero}
+                      {empleado.genero || "Sin registrar"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -75,7 +88,7 @@ export function DetalleEmpleado() {
                       Etnia
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.etnia || "No posee"}
+                      {empleado.etnia || "Ninguna"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -83,7 +96,7 @@ export function DetalleEmpleado() {
                       Número de contacto
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.telefono}
+                      {empleado.telefono || "Sin registrar / No posee"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -91,7 +104,7 @@ export function DetalleEmpleado() {
                       Correo electrónico
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.correo || "No posee"}
+                      {empleado.correo || "Sin registrar / No posee"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -99,7 +112,7 @@ export function DetalleEmpleado() {
                       Dirección
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.direccion}
+                      {empleado.direccion || "Sin registrar"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
