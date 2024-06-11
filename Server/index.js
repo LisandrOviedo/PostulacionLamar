@@ -48,8 +48,8 @@ conn
       // Registrar etnias principales en la BD
       cargarEtnias();
 
-      // Registrar roles principales en la BD
-      cargarEmpleados();
+      // Registrar empleados en la BD
+      // cargarEmpleados();
     });
   })
   .catch((error) => console.error(error));

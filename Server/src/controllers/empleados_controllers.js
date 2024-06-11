@@ -1,5 +1,7 @@
 const { Op } = require("sequelize");
 
+const axios = require("axios");
+
 const fs = require("fs");
 
 const {
@@ -11,7 +13,9 @@ const {
   Empresa,
 } = require("../db");
 
-const { empleados } = require("../utils/empleados");
+const { API_EMPLEADOS } = process.env;
+
+const { YYYYMMDD } = require("../utils/formatearFecha");
 
 const { crearSesion, traerSesion } = require("./sesiones_controllers");
 
@@ -192,41 +196,57 @@ const cargarEmpleados = async () => {
   let t;
 
   try {
-    t = await conn.transaction();
-
-    const rol = await Roles.findOne({
+    const rolEmpleado = await Roles.findOne({
       where: {
-        nombre: "admin",
+        nombre: "empleado",
       },
     });
 
-    for (const empleado of empleados) {
-      if (empleado.cedula === "26388249") {
-        const [crearEmpleado, created] = await Empleado.findOrCreate({
-          where: { cedula: empleado.cedula },
-          defaults: {
-            rol_id: rol.rol_id,
-            cedula: empleado.cedula,
-            clave:
-              "$2b$10$fujp2v6MvAnBug/TqMxEk.bUD98wOcS8QGFidOzFKBo9acsmJZqMq",
-            nombres: empleado.nombres,
-            apellidos: empleado.apellidos,
-            fecha_nacimiento: empleado.fecha_nacimiento,
-            genero: empleado.genero,
-            etnia_id: empleado.etnia_id || null,
-            telefono: empleado.telefono,
-            correo: empleado.correo || null,
-            direccion: empleado.direccion,
-            cantidad_hijos: empleado.cantidad_hijos,
+    const { data } = await axios(API_EMPLEADOS);
+
+    console.log(
+      "hizo la consulta de empleados ",
+      new Date().toISOString().slice(0, 10)
+    );
+
+    for (const empleadoReal of data) {
+      const empleado = await Empleado.findOne({
+        where: {
+          cedula: empleadoReal.cedula,
+        },
+      });
+
+      if (!empleado) {
+        t = await conn.transaction();
+
+        await Empleado.create(
+          {
+            rol_id: rolEmpleado.rol_id,
+            cedula: empleadoReal.cedula,
+            nombres: empleadoReal.nombres.trim().toUpperCase(),
+            apellidos: empleadoReal.apellidos.trim().toUpperCase(),
+            fecha_nacimiento: `${YYYYMMDD(empleadoReal.fecha_nacimiento)}`,
+            genero: null,
+            etnia_id: null,
+            telefono: null,
+            correo: null,
+            direccion: empleadoReal.direccion.trim().toUpperCase() || null,
+            cantidad_hijos: 0,
           },
-          transaction: t,
-        });
+          { transaction: t }
+        );
+
+        await t.commit();
       }
     }
 
-    await t.commit();
+    console.log(
+      "terminó de registrar los empleados ",
+      new Date().toISOString().slice(0, 10)
+    );
+
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
