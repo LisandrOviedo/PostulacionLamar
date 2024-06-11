@@ -42,7 +42,7 @@ function App() {
         {pathname.toLowerCase() !== "/" &&
           pathname.toLowerCase() !== "/admin/acceso" &&
           pathname.toLocaleLowerCase() !==
-            "/miPerfil/actualizarclavetemporal" &&
+            "/miperfil/actualizarclavetemporal" &&
           userState.empleado_id && <BarraNavegacion />}
         <Routes>
           <Route path="*" element={<PaginaNoEncontrada />} />
