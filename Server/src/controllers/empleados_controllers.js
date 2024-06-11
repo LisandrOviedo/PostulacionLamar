@@ -220,10 +220,20 @@ const cargarEmpleados = async () => {
           {
             rol_id: rolEmpleado.rol_id,
             cedula: empleadoReal.cedula,
-            nombres: empleadoReal.nombres.trim().toUpperCase(),
-            apellidos: empleadoReal.apellidos.trim().toUpperCase(),
+            nombres: empleadoReal.nombres
+              .replace(/\s{2,}/g, " ")
+              .trim()
+              .toUpperCase(),
+            apellidos: empleadoReal.apellidos
+              .replace(/\s{2,}/g, " ")
+              .trim()
+              .toUpperCase(),
             fecha_nacimiento: `${YYYYMMDD(empleadoReal.fecha_nacimiento)}`,
-            direccion: empleadoReal.direccion.trim().toUpperCase() || null,
+            direccion:
+              empleadoReal.direccion
+                .replace(/\s{2,}/g, " ")
+                .trim()
+                .toUpperCase() || null,
           },
           { transaction: t }
         );
