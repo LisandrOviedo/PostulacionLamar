@@ -13,6 +13,7 @@ const {
 
 const { traerEmpleado } = require("./empleados_controllers");
 const { traerAnexos } = require("./documentos_empleados_controllers");
+const { calcularEdad } = require("../utils/formatearFecha");
 
 const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
   if (!paginaActual || !limitePorPagina) {
@@ -135,7 +136,9 @@ const traerCurriculoPDF = async (empleado_id) => {
         },
         {
           titulo_campo: "Fecha de nacimiento: ",
-          descripcion_campo: curriculo.Empleado.fecha_nacimiento,
+          descripcion_campo: `${
+            curriculo.Empleado.fecha_nacimiento
+          } (${calcularEdad(curriculo.Empleado.fecha_nacimiento)} años)`,
         },
         {
           titulo_campo: "Número de cédula o identidad: ",
