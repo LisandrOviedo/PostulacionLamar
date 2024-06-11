@@ -42,6 +42,11 @@ module.exports = (sequelize) => {
       type: DataTypes.UUID,
       allowNull: true,
     },
+    codigo_telefono: {
+      // Campo relacionado
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
     telefono: {
       type: DataTypes.STRING(15),
       allowNull: true,
