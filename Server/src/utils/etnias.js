@@ -41,7 +41,6 @@ const etnias = [
   "Timoto-Cuica",
   "Uruak",
   "Uwottuja",
-  "Waiwai-Wapishana-Akawaio-Patamona-Taurepang-Ingariko-Wai Wai",
   "Wakuenai",
   "Warao",
   "Wayuu",

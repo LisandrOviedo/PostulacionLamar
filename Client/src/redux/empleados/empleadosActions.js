@@ -163,7 +163,7 @@ export const getDocumentos = (token, empleado_id) => {
 
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(URL_GET_DOCUMENTOS, {
+      const { data } = await axios(URL_GET_DOCUMENTOS, {
         headers: { authorization: `Bearer ${token}` },
       });
 

@@ -149,7 +149,7 @@ export const getCurriculoEmpleado = (token, empleado_id) => {
 
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(URL_CURRICULO_DETAIL, {
+      const { data } = await axios(URL_CURRICULO_DETAIL, {
         headers: { authorization: `Bearer ${token}` },
       });
 

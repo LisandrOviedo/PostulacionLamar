@@ -5,6 +5,7 @@ import storage from "redux-persist/lib/storage";
 import areas_interes from "./areasInteres/areasInteresSlices";
 import curriculos from "./curriculos/curriculosSlices";
 import empleados from "./empleados/empleadosSlices";
+import etnias from "./etnias/etniasSlices";
 import idiomas from "./idiomas/idiomasSlices";
 import pruebas_empleados from "./pruebasEmpleados/pruebasEmpleadosSlices";
 
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   areas_interes: areas_interes,
   curriculos: curriculos,
   empleados: empleados,
+  etnias: etnias,
   idiomas: idiomas,
   pruebas_empleados: pruebas_empleados,
 });

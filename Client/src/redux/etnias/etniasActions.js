@@ -2,22 +2,22 @@ import axios from "axios";
 
 import Swal from "sweetalert2";
 
-import { allAreasInteresActivas, resetState } from "./areasInteresSlices";
+import { allEtniasActivas, resetState } from "./etniasSlices";
 
 import { alertError } from "../../utils/sweetAlert2";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-export const getAllAreasInteresActivas = (token) => {
-  const URL_ALL_AREAS_ACTIVAS = `${URL_SERVER}/areasinteres/activas`;
+export const getAllEtniasActivas = (token) => {
+  const URL_ALL_ETNIAS_ACTIVAS = `${URL_SERVER}/etnias/activas`;
 
   return async (dispatch) => {
     try {
-      const { data } = await axios(URL_ALL_AREAS_ACTIVAS, {
+      const { data } = await axios(URL_ALL_ETNIAS_ACTIVAS, {
         headers: { authorization: `Bearer ${token}` },
       });
 
-      return dispatch(allAreasInteresActivas(data));
+      return dispatch(allEtniasActivas(data));
     } catch (error) {
       alertError(error);
 
@@ -26,7 +26,7 @@ export const getAllAreasInteresActivas = (token) => {
   };
 };
 
-export const resetAreasInteres = () => {
+export const resetEtnias = () => {
   return async (dispatch) => {
     try {
       return dispatch(resetState());
