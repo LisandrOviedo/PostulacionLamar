@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { getAllEtniasActivas } from "../../redux/etnias/etniasActions";
+import { putEmpleado } from "../../redux/empleados/empleadosActions";
 
 import { Button, Hr, Input, Select, Title } from "../UI";
 
 import { calcularEdad } from "../../utils/formatearFecha";
+import validations from "../../utils/validacionesDatosPersonales";
 
 import Swal from "sweetalert2";
 
@@ -27,11 +29,12 @@ export function DatosPersonales() {
   );
 
   const [datosPersonales, setDatosPersonales] = useState({
+    empleado_id: empleado.empleado_id,
     genero: empleado.genero || "Sin registrar",
     etnia_id: empleado.etnia_id || "Ninguno",
-    telefono: empleado.telefono || "Sin registrar / No Posee",
-    correo: empleado.correo || "Sin registrar / No Posee",
-    direccion: empleado.direccion || "Sin registrar",
+    telefono: empleado.telefono || "",
+    correo: empleado.correo || "",
+    direccion: empleado.direccion || "",
     cantidad_hijos: empleado.cantidad_hijos,
   });
 
@@ -45,7 +48,7 @@ export function DatosPersonales() {
     return () => {
       document.title = "Grupo Lamar";
     };
-  }, []);
+  }, [empleado]);
 
   const handleInputChangeDatos = (event) => {
     const { name, value } = event.target;
@@ -53,7 +56,33 @@ export function DatosPersonales() {
     setDatosPersonales({ ...datosPersonales, [name]: value });
   };
 
-  const handleSaveChanges = () => {};
+  const handleValidateChildrens = () => {
+    const input = document.getElementById("cantidad_hijos");
+
+    if (input.value < 0) {
+      input.value = input.value.slice(1);
+    }
+
+    if (input.value > 15) {
+      input.value = 15;
+    }
+
+    setDatosPersonales({ ...datosPersonales, cantidad_hijos: input.value });
+  };
+
+  const handleValidateChildrensEmpty = () => {
+    const input = document.getElementById("cantidad_hijos");
+
+    if (!input.value || input.value == "-0") {
+      input.value = 0;
+    }
+
+    setDatosPersonales({ ...datosPersonales, cantidad_hijos: input.value });
+  };
+
+  const handleSaveChanges = () => {
+    dispatch(putEmpleado(token, datosPersonales));
+  };
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white static">
@@ -66,7 +95,7 @@ export function DatosPersonales() {
           <dl className="divide-y divide-gray-100">
             {empleado && (
               <>
-                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                   <dt className="text-sm font-bold leading-6 text-gray-900">
                     Tipo de usuario
                   </dt>
@@ -74,7 +103,7 @@ export function DatosPersonales() {
                     {empleado.Role.descripcion}
                   </dd>
                 </div>
-                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                   <dt className="text-sm font-bold leading-6 text-gray-900">
                     Nombre completo
                   </dt>
@@ -82,7 +111,7 @@ export function DatosPersonales() {
                     {empleado.nombres} {empleado.apellidos}
                   </dd>
                 </div>
-                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                   <dt className="text-sm font-bold leading-6 text-gray-900">
                     Fecha nacimiento
                   </dt>
@@ -93,7 +122,7 @@ export function DatosPersonales() {
                     {" años)"}
                   </dd>
                 </div>
-                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                   <dt className="text-sm font-bold leading-6 text-gray-900">
                     Número de cédula
                   </dt>
@@ -119,7 +148,7 @@ export function DatosPersonales() {
                     </Select>
                   </dd>
                 </div>
-                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                   <dt className="text-sm font-bold leading-6 text-gray-900">
                     Etnia
                   </dt>
@@ -149,36 +178,73 @@ export function DatosPersonales() {
                     </Select>
                   </dd>
                 </div>
-                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                   <dt className="text-sm font-bold leading-6 text-gray-900">
                     Número de contacto
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    {datosPersonales.telefono}
+                    <Input
+                      className="w-auto"
+                      id="telefono"
+                      type="text"
+                      name="telefono"
+                      value={datosPersonales.telefono}
+                      onChange={handleInputChangeDatos}
+                      placeholder="+58412XXXXXXX"
+                      maxLength="20"
+                    />
                   </dd>
                 </div>
-                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                   <dt className="text-sm font-bold leading-6 text-gray-900">
                     Correo electrónico
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    {datosPersonales.correo}
+                    <Input
+                      className="w-auto"
+                      id="correo"
+                      type="text"
+                      name="correo"
+                      value={datosPersonales.correo}
+                      onChange={handleInputChangeDatos}
+                      placeholder="ejemplo@ejemplo.com"
+                      maxLength="150"
+                    />
                   </dd>
                 </div>
-                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                   <dt className="text-sm font-bold leading-6 text-gray-900">
                     Dirección
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    {datosPersonales.direccion}
+                    <Input
+                      className="w-auto"
+                      id="direccion"
+                      type="text"
+                      name="direccion"
+                      value={datosPersonales.direccion}
+                      onChange={handleInputChangeDatos}
+                      placeholder="Sector, avenida, barrio"
+                      maxLength="150"
+                    />
                   </dd>
                 </div>
-                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                   <dt className="text-sm font-bold leading-6 text-gray-900">
                     Cantidad de hijos
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    {datosPersonales.cantidad_hijos}
+                    <Input
+                      className="w-auto"
+                      id="cantidad_hijos"
+                      type="number"
+                      name="cantidad_hijos"
+                      value={datosPersonales.cantidad_hijos}
+                      onChange={handleValidateChildrens}
+                      min="0"
+                      max="15"
+                      onBlur={handleValidateChildrensEmpty}
+                    />
                   </dd>
                 </div>
               </>
