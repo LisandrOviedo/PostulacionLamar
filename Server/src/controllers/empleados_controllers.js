@@ -16,6 +16,12 @@ const {
 const { API_EMPLEADOS } = process.env;
 
 const { YYYYMMDD } = require("../utils/formatearFecha");
+const {
+  textoCapitalizado,
+  ordenarNombresAPI,
+  ordenarDireccionesAPI,
+} = require("../utils/formatearTexto");
+const { empleados } = require("../utils/empleados");
 
 const { crearSesion, traerSesion } = require("./sesiones_controllers");
 
@@ -196,6 +202,29 @@ const cargarEmpleados = async () => {
   let t;
 
   try {
+    // const rolAdmin = await Roles.findOne({
+    //   where: {
+    //     nombre: "admin",
+    //   },
+    // });
+
+    // for (const empleado of empleados) {
+    //   t = await conn.transaction();
+
+    //   const [crearEmpleado, created] = await Empleado.findOrCreate({
+    //     where: { cedula: empleado.cedula },
+    //     defaults: {
+    //       rol_id: rolAdmin.rol_id,
+    //       nombres: ordenarTextoAPI(empleado.nombres),
+    //       apellidos: ordenarTextoAPI(empleado.apellidos),
+    //       fecha_nacimiento: empleado.fecha_nacimiento,
+    //     },
+    //     transaction: t,
+    //   });
+
+    //   await t.commit();
+    // }
+
     const rolEmpleado = await Roles.findOne({
       where: {
         nombre: "empleado",
@@ -204,7 +233,7 @@ const cargarEmpleados = async () => {
 
     const { data } = await axios(API_EMPLEADOS);
 
-    console.log("hizo la consulta de empleados");
+    console.log("hizo la consulta de empleados", new Date());
 
     for (const empleadoReal of data) {
       let empleado = await Empleado.findOne({
@@ -220,20 +249,10 @@ const cargarEmpleados = async () => {
           {
             rol_id: rolEmpleado.rol_id,
             cedula: empleadoReal.cedula,
-            nombres: empleadoReal.nombres
-              .replace(/\s{2,}/g, " ")
-              .trim()
-              .toUpperCase(),
-            apellidos: empleadoReal.apellidos
-              .replace(/\s{2,}/g, " ")
-              .trim()
-              .toUpperCase(),
+            nombres: ordenarNombresAPI(empleadoReal.nombres),
+            apellidos: ordenarNombresAPI(empleadoReal.apellidos),
             fecha_nacimiento: `${YYYYMMDD(empleadoReal.fecha_nacimiento)}`,
-            direccion:
-              empleadoReal.direccion
-                .replace(/\s{2,}/g, " ")
-                .trim()
-                .toUpperCase() || null,
+            direccion: ordenarDireccionesAPI(empleadoReal.direccion) || null,
           },
           { transaction: t }
         );
@@ -364,35 +383,66 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
   }
 };
 
-const modificarEmpleado = async (
-  empleado_id,
-  rol_id,
-  cedula,
-  nombres,
-  apellidos,
-  fecha_nacimiento,
-  genero,
-  etnia_id,
-  telefono,
-  correo,
-  direccion,
-  cantidad_hijos,
-  activo
-) => {
-  if (
-    !empleado_id ||
-    !rol_id ||
-    !cedula ||
-    !nombres ||
-    !apellidos ||
-    !fecha_nacimiento ||
-    !genero ||
-    !telefono ||
-    !direccion ||
-    !cantidad_hijos ||
-    !activo
-  ) {
+const modificarEmpleado = async (datosPersonales) => {
+  if (!datosPersonales.empleado_id) {
     throw new Error("Datos faltantes");
+  }
+
+  const camposActualizar = {};
+
+  if (datosPersonales.rol_id !== undefined) {
+    camposActualizar.rol_id = datosPersonales.rol_id;
+  }
+
+  if (datosPersonales.cedula !== undefined) {
+    camposActualizar.cedula = datosPersonales.cedula;
+  }
+
+  if (datosPersonales.nombres !== undefined) {
+    camposActualizar.nombres = datosPersonales.nombres;
+  }
+
+  if (datosPersonales.apellidos !== undefined) {
+    camposActualizar.apellidos = datosPersonales.apellidos;
+  }
+
+  if (datosPersonales.fecha_nacimiento !== undefined) {
+    camposActualizar.fecha_nacimiento = datosPersonales.fecha_nacimiento;
+  }
+
+  if (
+    datosPersonales.genero !== undefined &&
+    datosPersonales.genero !== "Sin registrar"
+  ) {
+    camposActualizar.genero = datosPersonales.genero;
+  }
+
+  if (datosPersonales.genero === "Sin registrar") {
+    camposActualizar.genero = null;
+  }
+
+  if (datosPersonales.etnia_id !== undefined) {
+    camposActualizar.etnia_id = datosPersonales.etnia_id;
+  }
+
+  if (datosPersonales.telefono !== undefined) {
+    camposActualizar.telefono = datosPersonales.telefono;
+  }
+
+  if (datosPersonales.correo !== undefined) {
+    camposActualizar.correo = datosPersonales.correo;
+  }
+
+  if (datosPersonales.direccion !== undefined) {
+    camposActualizar.direccion = datosPersonales.direccion;
+  }
+
+  if (datosPersonales.cantidad_hijos !== undefined) {
+    camposActualizar.cantidad_hijos = datosPersonales.cantidad_hijos;
+  }
+
+  if (datosPersonales.activo !== undefined) {
+    camposActualizar.activo = datosPersonales.activo;
   }
 
   let t;
@@ -400,26 +450,13 @@ const modificarEmpleado = async (
   try {
     t = await conn.transaction();
 
-    await traerEmpleado(empleado_id);
+    await traerEmpleado(datosPersonales.empleado_id);
 
     await Empleado.update(
-      {
-        rol_id: rol_id,
-        cedula: cedula,
-        nombres: nombres,
-        apellidos: apellidos,
-        fecha_nacimiento: fecha_nacimiento,
-        genero: genero,
-        etnia_id: etnia_id || null,
-        telefono: telefono,
-        correo: correo || null,
-        direccion: direccion,
-        cantidad_hijos: cantidad_hijos,
-        activo: activo,
-      },
+      camposActualizar,
       {
         where: {
-          empleado_id: empleado_id,
+          empleado_id: datosPersonales.empleado_id,
         },
       },
       { transaction: t }
@@ -427,7 +464,7 @@ const modificarEmpleado = async (
 
     await t.commit();
 
-    return await traerEmpleado(empleado_id);
+    return await traerEmpleado(datosPersonales.empleado_id);
   } catch (error) {
     if (!t.finished) {
       await t.rollback();

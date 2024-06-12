@@ -306,3 +306,33 @@ export const deleteFiltros = () => {
     }
   };
 };
+
+export const putEmpleado = (token, datosPersonales) => {
+  const URL_PUT_EMPLEADO = `${URL_SERVER}/empleados/modificar`;
+
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.put(
+        URL_PUT_EMPLEADO,
+        { datosPersonales },
+        {
+          headers: { authorization: `Bearer ${token}` },
+        }
+      );
+
+      dispatch(empleadoLogin(data));
+
+      return Swal.fire({
+        text: `Sus datos han sido actualizados exitosamente`,
+        icon: "success",
+        showConfirmButton: false,
+        timer: 3000,
+        width: "20em",
+      });
+    } catch (error) {
+      alertError(error);
+
+      throw new Error();
+    }
+  };
+};

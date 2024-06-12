@@ -100,38 +100,10 @@ const putClaveTemporalEmpleado = async (req, res) => {
 };
 
 const putEmpleado = async (req, res) => {
-  const {
-    empleado_id,
-    rol_id,
-    cedula,
-    nombres,
-    apellidos,
-    fecha_nacimiento,
-    genero,
-    etnia_id,
-    telefono,
-    correo,
-    direccion,
-    cantidad_hijos,
-    activo,
-  } = req.body;
+  const { datosPersonales } = req.body;
 
   try {
-    const response = await modificarEmpleado(
-      empleado_id,
-      rol_id,
-      cedula,
-      nombres,
-      apellidos,
-      fecha_nacimiento,
-      genero,
-      etnia_id,
-      telefono,
-      correo,
-      direccion,
-      cantidad_hijos,
-      activo
-    );
+    const response = await modificarEmpleado(datosPersonales);
 
     return res.json(response);
   } catch (error) {
