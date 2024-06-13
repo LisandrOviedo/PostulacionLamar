@@ -1,3 +1,5 @@
+import { clsx } from "clsx";
+
 import { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -38,6 +40,8 @@ export function DatosPersonales() {
     cantidad_hijos: empleado.cantidad_hijos,
   });
 
+  const [errors, setErrors] = useState({});
+
   useEffect(() => {
     window.scroll(0, 0);
 
@@ -54,6 +58,7 @@ export function DatosPersonales() {
     const { name, value } = event.target;
 
     setDatosPersonales({ ...datosPersonales, [name]: value });
+    setErrors(validations({ ...datosPersonales, [name]: value }));
   };
 
   const handleValidateChildrens = () => {
@@ -193,6 +198,11 @@ export function DatosPersonales() {
                       placeholder="+58412XXXXXXX"
                       maxLength="20"
                     />
+                    {errors.telefono && (
+                      <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                        {errors.telefono}
+                      </p>
+                    )}
                   </dd>
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -210,6 +220,11 @@ export function DatosPersonales() {
                       placeholder="ejemplo@ejemplo.com"
                       maxLength="150"
                     />
+                    {errors.correo && (
+                      <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                        {errors.correo}
+                      </p>
+                    )}
                   </dd>
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -227,6 +242,11 @@ export function DatosPersonales() {
                       placeholder="Sector, avenida, barrio"
                       maxLength="150"
                     />
+                    {errors.direccion && (
+                      <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                        {errors.direccion}
+                      </p>
+                    )}
                   </dd>
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -283,7 +303,12 @@ export function DatosPersonales() {
       </div>
       <div className="grid gap-6 md:grid-cols-3 mt-5 mb-5">
         <div className="md:col-span-3 flex justify-center items-center">
-          <Button className="m-0 w-auto" onClick={handleSaveChanges}>
+          <Button
+            disabled={Object.keys(errors).length}
+            className={clsx("m-0 w-auto ", {
+              "opacity-50": Object.keys(errors).length,
+            })}
+          >
             Guardar Cambios
           </Button>
         </div>
