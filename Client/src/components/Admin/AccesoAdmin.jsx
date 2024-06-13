@@ -109,7 +109,7 @@ export function AccesoAdmin() {
             target="_blank"
             className="hover:opacity-70"
           >
-            <img src="/LogoAzul.png" alt="Logo Grupo Lamar" className="w-32" />
+            <img src="./LogoAzul.png" alt="Logo Grupo Lamar" className="w-32" />
           </Link>
         </div>
         <div>

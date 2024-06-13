@@ -150,7 +150,7 @@ export function DetalleEmpleado() {
         </div>
         <div className="flex flex-col items-center gap-2 mb-2">
           <img
-            src={empleado.foto_perfil_nombre ? FOTO_PERFIL : "/Person.svg"}
+            src={empleado.foto_perfil_nombre ? FOTO_PERFIL : "./Person.svg"}
             alt="Imgen del perfil"
             className="w-40 h-40 border border-[#002846] bg-gray-400 rounded-full ring-2 ring-[#F0C95C]"
           />

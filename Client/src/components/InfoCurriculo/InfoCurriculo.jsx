@@ -83,7 +83,7 @@ export function InfoCurriculo() {
         </li>
         <li>
           Anexar resumen curricular en formato PDF{" "}
-          <img className="w-[1.2rem] inline" src="/PDF.svg" alt="PDF Icon" />{" "}
+          <img className="w-[1.2rem] inline" src="./PDF.svg" alt="PDF Icon" />{" "}
           Además, anexar también el resto de documentos requeridos en el menú
           Perfil Profesional / Anexar documentos.
         </li>

@@ -112,7 +112,7 @@ export function BarraNavegacion() {
           />
           <img
             onClick={toggleMenuBurger}
-            src="/Menu.svg"
+            src="./Menu.svg"
             alt="Menu"
             className="w-6 cursor-pointer sm:hover:opacity-80"
           />
@@ -127,7 +127,7 @@ export function BarraNavegacion() {
             />
           ) : (
             <img
-              src="/Person.svg"
+              src="./Person.svg"
               alt="Icono de Perfil"
               className="inline-block h-6 w-6 sm:h-8 sm:w-8 rounded-full ring-2 ring-[#F0C95C]"
             />
@@ -149,7 +149,7 @@ export function BarraNavegacion() {
             onMouseLeave={toggleHover}
           >
             <img
-              src={isHovered ? "/CloseYellow.svg" : "/Close.svg"}
+              src={isHovered ? "./CloseYellow.svg" : "./Close.svg"}
               alt="Cerrar Menú"
               className="h-7 m-2 mx-auto"
             />

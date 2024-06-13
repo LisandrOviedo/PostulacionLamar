@@ -349,11 +349,11 @@ export function Postulaciones() {
                         src={
                           filters.orden_campo === "apellidos" &&
                           filters.orden_por === "ASC"
-                            ? "/SortAZ.svg"
+                            ? "./SortAZ.svg"
                             : filters.orden_campo === "apellidos" &&
                               filters.orden_por === "DESC"
-                            ? "/SortZA.svg"
-                            : "/Sort.svg"
+                            ? "./SortZA.svg"
+                            : "./Sort.svg"
                         }
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
@@ -388,11 +388,11 @@ export function Postulaciones() {
                         src={
                           filters.orden_campo === "grado_instruccion" &&
                           filters.orden_por === "ASC"
-                            ? "/SortAZ.svg"
+                            ? "./SortAZ.svg"
                             : filters.orden_campo === "grado_instruccion" &&
                               filters.orden_por === "DESC"
-                            ? "/SortZA.svg"
-                            : "/Sort.svg"
+                            ? "./SortZA.svg"
+                            : "./Sort.svg"
                         }
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
@@ -415,11 +415,11 @@ export function Postulaciones() {
                         src={
                           filters.orden_campo === "updatedAt" &&
                           filters.orden_por === "ASC"
-                            ? "/SortAZ.svg"
+                            ? "./SortAZ.svg"
                             : filters.orden_campo === "updatedAt" &&
                               filters.orden_por === "DESC"
-                            ? "/SortZA.svg"
-                            : "/Sort.svg"
+                            ? "./SortZA.svg"
+                            : "./Sort.svg"
                         }
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"

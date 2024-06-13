@@ -276,11 +276,11 @@ export function PruebasEmpleados() {
                         src={
                           filters.orden_campo === "apellidos" &&
                           filters.orden_por === "ASC"
-                            ? "/SortAZ.svg"
+                            ? "./SortAZ.svg"
                             : filters.orden_campo === "apellidos" &&
                               filters.orden_por === "DESC"
-                            ? "/SortZA.svg"
-                            : "/Sort.svg"
+                            ? "./SortZA.svg"
+                            : "./Sort.svg"
                         }
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
@@ -312,11 +312,11 @@ export function PruebasEmpleados() {
                         src={
                           filters.orden_campo === "prueba" &&
                           filters.orden_por === "ASC"
-                            ? "/SortAZ.svg"
+                            ? "./SortAZ.svg"
                             : filters.orden_campo === "prueba" &&
                               filters.orden_por === "DESC"
-                            ? "/SortZA.svg"
-                            : "/Sort.svg"
+                            ? "./SortZA.svg"
+                            : "./Sort.svg"
                         }
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
@@ -339,11 +339,11 @@ export function PruebasEmpleados() {
                         src={
                           filters.orden_campo === "createdAt" &&
                           filters.orden_por === "ASC"
-                            ? "/SortAZ.svg"
+                            ? "./SortAZ.svg"
                             : filters.orden_campo === "createdAt" &&
                               filters.orden_por === "DESC"
-                            ? "/SortZA.svg"
-                            : "/Sort.svg"
+                            ? "./SortZA.svg"
+                            : "./Sort.svg"
                         }
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"

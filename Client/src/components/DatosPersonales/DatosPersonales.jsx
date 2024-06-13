@@ -27,7 +27,7 @@ export function DatosPersonales() {
   const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${empleado.foto_perfil_nombre}`;
 
   const [imagen, setImagen] = useState(
-    empleado.foto_perfil_nombre ? FOTO_PERFIL : "/Person.svg"
+    empleado.foto_perfil_nombre ? FOTO_PERFIL : "./Person.svg"
   );
 
   const [datosPersonales, setDatosPersonales] = useState({
