@@ -455,10 +455,11 @@ export function Postulaciones() {
                     </td>
                     <td className="px-4 py-4">{curriculo.Empleado.cedula}</td>
                     <td className="px-4 py-4">
-                      {curriculo.Empleado.telefono || "Sin registrar"}
+                      {curriculo.Empleado.telefono ||
+                        "Sin registrar / No posee"}
                     </td>
                     <td className="px-4 py-4">
-                      {curriculo.Empleado.correo || "Sin registrar"}
+                      {curriculo.Empleado.correo || "Sin registrar / No posee"}
                     </td>
                     <td className="px-4 py-4">
                       {curriculo.Areas_Interes.map(

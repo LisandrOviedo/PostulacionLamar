@@ -418,10 +418,10 @@ export function Empleados() {
                     </td>
                     <td className="px-4 py-4">{empleado.cedula}</td>
                     <td className="px-4 py-4">
-                      {empleado.telefono || "Sin registrar"}
+                      {empleado.telefono || "Sin registrar / No posee"}
                     </td>
                     <td className="px-4 py-4">
-                      {empleado.correo || "Sin registrar"}
+                      {empleado.correo || "Sin registrar / No posee"}
                     </td>
                     <td className="px-4 py-4">
                       {empleado.activo ? "Activo" : "Inactivo"}
