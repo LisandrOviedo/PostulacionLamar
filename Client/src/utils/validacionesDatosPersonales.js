@@ -1,11 +1,13 @@
 const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const regexTelefono = /^\+\d+$/;
+const regexTelefono = /^\+[1-9]\d*$/;
 
 export default function validations(inputs) {
   const errors = {};
 
   if (inputs.telefono && !regexTelefono.test(inputs.telefono)) {
     errors.telefono = "Teléfono inválido (Ejemplo: +58412XXXXXXX)";
+  } else if (inputs.telefono && inputs.telefono.length < 11) {
+    errors.telefono = "El teléfono debe contener al menos 11 caracteres";
   } else if (inputs.telefono && inputs.telefono.length > 20) {
     errors.telefono = "El teléfono debe contener máximo 20 caracteres";
   }
