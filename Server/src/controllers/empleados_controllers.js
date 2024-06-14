@@ -390,58 +390,53 @@ const modificarEmpleado = async (datosPersonales) => {
 
   const camposActualizar = {};
 
-  if (datosPersonales.rol_id !== undefined) {
+  if (datosPersonales.rol_id) {
     camposActualizar.rol_id = datosPersonales.rol_id;
   }
 
-  if (datosPersonales.cedula !== undefined) {
+  if (datosPersonales.cedula) {
     camposActualizar.cedula = datosPersonales.cedula;
   }
 
-  if (datosPersonales.nombres !== undefined) {
+  if (datosPersonales.nombres) {
     camposActualizar.nombres = datosPersonales.nombres;
   }
 
-  if (datosPersonales.apellidos !== undefined) {
+  if (datosPersonales.apellidos) {
     camposActualizar.apellidos = datosPersonales.apellidos;
   }
 
-  if (datosPersonales.fecha_nacimiento !== undefined) {
+  if (datosPersonales.fecha_nacimiento) {
     camposActualizar.fecha_nacimiento = datosPersonales.fecha_nacimiento;
   }
 
-  if (
-    datosPersonales.genero !== undefined &&
-    datosPersonales.genero !== "Sin registrar"
-  ) {
+  if (datosPersonales.genero && datosPersonales.genero !== "Sin registrar") {
     camposActualizar.genero = datosPersonales.genero;
   }
 
-  if (datosPersonales.genero === "Sin registrar") {
-    camposActualizar.genero = null;
-  }
-
-  if (datosPersonales.etnia_id !== undefined) {
+  if (datosPersonales.etnia_id === "Ninguna") {
+    camposActualizar.etnia_id = null;
+  } else {
     camposActualizar.etnia_id = datosPersonales.etnia_id;
   }
 
-  if (datosPersonales.telefono !== undefined) {
+  if (datosPersonales.telefono) {
     camposActualizar.telefono = datosPersonales.telefono;
   }
 
-  if (datosPersonales.correo !== undefined) {
+  if (datosPersonales.correo) {
     camposActualizar.correo = datosPersonales.correo;
   }
 
-  if (datosPersonales.direccion !== undefined) {
+  if (datosPersonales.direccion) {
     camposActualizar.direccion = datosPersonales.direccion;
   }
 
-  if (datosPersonales.cantidad_hijos !== undefined) {
+  if (datosPersonales.cantidad_hijos) {
     camposActualizar.cantidad_hijos = datosPersonales.cantidad_hijos;
   }
 
-  if (datosPersonales.activo !== undefined) {
+  if (datosPersonales.activo) {
     camposActualizar.activo = datosPersonales.activo;
   }
 
