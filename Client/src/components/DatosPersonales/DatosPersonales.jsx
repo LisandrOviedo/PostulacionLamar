@@ -33,7 +33,7 @@ export function DatosPersonales() {
   const [datosPersonales, setDatosPersonales] = useState({
     empleado_id: empleado.empleado_id,
     genero: empleado.genero || "Sin registrar",
-    etnia_id: empleado.etnia_id || "Ninguno",
+    etnia_id: empleado.etnia_id || "Ninguna",
     telefono: empleado.telefono || "",
     correo: empleado.correo || "",
     direccion: empleado.direccion || "",
@@ -308,6 +308,7 @@ export function DatosPersonales() {
             className={clsx("m-0 w-auto ", {
               "opacity-50": Object.keys(errors).length,
             })}
+            onClick={handleSaveChanges}
           >
             Guardar Cambios
           </Button>
