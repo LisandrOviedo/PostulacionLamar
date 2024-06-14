@@ -148,8 +148,8 @@ export const postDocumentos = async (token, formData) => {
       icon: "success",
     });
 
-    window.location.reload();
     window.scroll(0, 0);
+    window.location.reload();
     return;
   } catch (error) {
     alertError(error);
@@ -322,13 +322,16 @@ export const putEmpleado = (token, datosPersonales) => {
 
       dispatch(empleadoLogin(data));
 
-      return Swal.fire({
+      await Swal.fire({
         text: `Sus datos han sido actualizados exitosamente`,
         icon: "success",
         showConfirmButton: false,
         timer: 3000,
         width: "20em",
       });
+
+      window.location.reload();
+      return;
     } catch (error) {
       alertError(error);
 
