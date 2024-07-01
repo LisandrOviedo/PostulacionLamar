@@ -1,5 +1,7 @@
 const fs = require("fs");
 
+const { fechaHoraActual } = require("./formatearFecha");
+
 const pruebaKostick = [
   { pregunta: 1, respuesta: "a. Soy trabajador tenaz" },
   { pregunta: 1, respuesta: "b. No soy voluble" },
@@ -496,7 +498,10 @@ const crearCarpetaSiNoExiste = (folderPath) => {
     try {
       fs.mkdirSync(folderPath, { recursive: true });
     } catch (err) {
-      console.error(`Error al crear la carpeta "${folderPath}":`, err);
+      console.error(
+        `[${fechaHoraActual}] - Error al crear la carpeta "${folderPath}":`,
+        err
+      );
     }
   }
 };
