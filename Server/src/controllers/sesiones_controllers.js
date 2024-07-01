@@ -27,7 +27,7 @@ const cerrarSesiones = async () => {
     }
 
     throw new Error(
-      `${fechaHoraActual} - Error al cerrar todas las sesiones de los empleados:`,
+      `${fechaHoraActual()} - Error al cerrar todas las sesiones de los empleados:`,
       error.message
     );
   }
@@ -59,7 +59,7 @@ const cerrarSesion = async (empleado_id) => {
     }
 
     throw new Error(
-      `${fechaHoraActual} - Error al cerrar la sesión del empleado:`,
+      `${fechaHoraActual()} - Error al cerrar la sesión del empleado:`,
       error.message
     );
   }
@@ -67,7 +67,7 @@ const cerrarSesion = async (empleado_id) => {
 
 const traerSesion = async (empleado_id) => {
   if (!empleado_id) {
-    throw new Error(`${fechaHoraActual} - Datos faltantes`);
+    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
   }
 
   try {
@@ -81,10 +81,10 @@ const traerSesion = async (empleado_id) => {
       return sesion;
     }
 
-    throw new Error(`${fechaHoraActual} - El empleado no posee una sesión`);
+    throw new Error(`${fechaHoraActual()} - El empleado no posee una sesión`);
   } catch (error) {
     throw new Error(
-      `${fechaHoraActual} - Error al traer la sesión del empleado:`,
+      `${fechaHoraActual()} - Error al traer la sesión del empleado:`,
       error.message
     );
   }
@@ -92,7 +92,7 @@ const traerSesion = async (empleado_id) => {
 
 const crearSesion = async (empleado_id, token) => {
   if (!empleado_id || !token) {
-    throw new Error(`${fechaHoraActual} - Datos faltantes`);
+    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
   }
 
   let t;
@@ -138,7 +138,7 @@ const crearSesion = async (empleado_id, token) => {
     }
 
     throw new Error(
-      `${fechaHoraActual} - Error al crear la sesión del empleado:`,
+      `${fechaHoraActual()} - Error al crear la sesión del empleado:`,
       error.message
     );
   }

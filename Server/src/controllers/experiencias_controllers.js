@@ -9,13 +9,13 @@ const todasLasExperiencias = async () => {
     const experiencias = await Experiencia.findAll();
 
     if (!experiencias.length) {
-      throw new Error(`${fechaHoraActual} - No existen experiencias`);
+      throw new Error(`${fechaHoraActual()} - No existen experiencias`);
     }
 
     return experiencias;
   } catch (error) {
     throw new Error(
-      `${fechaHoraActual} - Error al traer todas las experiencias:`,
+      `${fechaHoraActual()} - Error al traer todas las experiencias:`,
       error.message
     );
   }
@@ -23,20 +23,20 @@ const todasLasExperiencias = async () => {
 
 const traerExperiencia = async (experiencia_id) => {
   if (!experiencia_id) {
-    throw new Error(`${fechaHoraActual} - Datos faltantes`);
+    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
   }
 
   try {
     const experiencia = await Experiencia.findByPk(experiencia_id);
 
     if (!experiencia) {
-      throw new Error(`${fechaHoraActual} - No existe esa experiencia`);
+      throw new Error(`${fechaHoraActual()} - No existe esa experiencia`);
     }
 
     return experiencia;
   } catch (error) {
     throw new Error(
-      `${fechaHoraActual} - Error al traer la experiencia:`,
+      `${fechaHoraActual()} - Error al traer la experiencia:`,
       error.message
     );
   }
@@ -44,7 +44,7 @@ const traerExperiencia = async (experiencia_id) => {
 
 const crearExperiencia = async (curriculo_id, experiencias) => {
   if (!curriculo_id || !experiencias) {
-    throw new Error(`${fechaHoraActual} - Datos faltantes`);
+    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
   }
 
   let t;
@@ -80,7 +80,7 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
     }
 
     throw new Error(
-      `${fechaHoraActual} - Error al crear las experiencias:`,
+      `${fechaHoraActual()} - Error al crear las experiencias:`,
       error.message
     );
   }
@@ -104,7 +104,7 @@ const modificarExperiencia = async (
     !empresa_centro_educativo ||
     !activo
   ) {
-    throw new Error(`${fechaHoraActual} - Datos faltantes`);
+    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
   }
 
   let t;
@@ -140,7 +140,7 @@ const modificarExperiencia = async (
     }
 
     throw new Error(
-      `${fechaHoraActual} - Error al modificar la experiencia:`,
+      `${fechaHoraActual()} - Error al modificar la experiencia:`,
       error.message
     );
   }
@@ -148,7 +148,7 @@ const modificarExperiencia = async (
 
 const inactivarExperiencia = async (experiencia_id) => {
   if (!experiencia_id) {
-    throw new Error(`${fechaHoraActual} - Datos faltantes`);
+    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
   }
 
   let t;
@@ -175,7 +175,7 @@ const inactivarExperiencia = async (experiencia_id) => {
     }
 
     throw new Error(
-      `${fechaHoraActual} - Error al inactivar la experiencia:`,
+      `${fechaHoraActual()} - Error al inactivar la experiencia:`,
       error.message
     );
   }
@@ -183,7 +183,7 @@ const inactivarExperiencia = async (experiencia_id) => {
 
 const eliminarExperienciasCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
-    throw new Error(`${fechaHoraActual} - Datos faltantes`);
+    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
   }
 
   let t;
@@ -207,7 +207,7 @@ const eliminarExperienciasCurriculo = async (curriculo_id) => {
     }
 
     throw new Error(
-      `${fechaHoraActual} - Error al eliminar las experiencias:`,
+      `${fechaHoraActual()} - Error al eliminar las experiencias:`,
       error.message
     );
   }

@@ -499,7 +499,7 @@ const crearCarpetaSiNoExiste = (folderPath) => {
       fs.mkdirSync(folderPath, { recursive: true });
     } catch (err) {
       console.error(
-        `${fechaHoraActual} - Error al crear la carpeta "${folderPath}":`,
+        `${fechaHoraActual()} - Error al crear la carpeta "${folderPath}":`,
         err
       );
     }

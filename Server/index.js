@@ -30,7 +30,7 @@ conn
   .sync()
   .then(() => {
     server.listen(PORT, () => {
-      console.log(`${fechaHoraActual} - Server listening on port ${PORT}`);
+      console.log(`${fechaHoraActual()} - Server listening on port ${PORT}`);
 
       // Cerrar sesiones en la BD
       cerrarSesiones();
@@ -51,7 +51,7 @@ conn
       cargarEtnias();
 
       // Registrar empleados en la BD
-      // cargarEmpleados();
+      cargarEmpleados();
     });
   })
   .catch((error) => console.error(error));

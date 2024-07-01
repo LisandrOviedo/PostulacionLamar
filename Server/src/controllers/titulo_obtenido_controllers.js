@@ -9,13 +9,13 @@ const todosLosTitulosObtenidos = async () => {
     const titulos_obtenidos = await Titulo_Obtenido.findAll();
 
     if (!titulos_obtenidos.length) {
-      throw new Error(`${fechaHoraActual} - No existen títulos obtenidos`);
+      throw new Error(`${fechaHoraActual()} - No existen títulos obtenidos`);
     }
 
     return titulos_obtenidos;
   } catch (error) {
     throw new Error(
-      `${fechaHoraActual} - Error al traer todos los títulos obtenidos:`,
+      `${fechaHoraActual()} - Error al traer todos los títulos obtenidos:`,
       error.message
     );
   }
@@ -23,20 +23,20 @@ const todosLosTitulosObtenidos = async () => {
 
 const traerTituloObtenido = async (titulo_obtenido_id) => {
   if (!titulo_obtenido_id) {
-    throw new Error(`${fechaHoraActual} - Datos faltantes`);
+    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
   }
 
   try {
     const titulo_obtenido = await Titulo_Obtenido.findByPk(titulo_obtenido_id);
 
     if (!titulo_obtenido) {
-      throw new Error(`${fechaHoraActual} - No existe ese título obtenido`);
+      throw new Error(`${fechaHoraActual()} - No existe ese título obtenido`);
     }
 
     return titulo_obtenido;
   } catch (error) {
     throw new Error(
-      `${fechaHoraActual} - Error al traer el título obtenido:`,
+      `${fechaHoraActual()} - Error al traer el título obtenido:`,
       error.message
     );
   }
@@ -44,7 +44,7 @@ const traerTituloObtenido = async (titulo_obtenido_id) => {
 
 const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
   if (!curriculo_id || !titulos_obtenidos) {
-    throw new Error(`${fechaHoraActual} - Datos faltantes`);
+    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
   }
 
   let t;
@@ -75,7 +75,7 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
     }
 
     throw new Error(
-      `${fechaHoraActual} - Error al crear los títulos obtenidos:`,
+      `${fechaHoraActual()} - Error al crear los títulos obtenidos:`,
       error.message
     );
   }
@@ -87,7 +87,7 @@ const modificarTitulosObtenidos = async (
   activo
 ) => {
   if (!titulo_obtenido_id || !nombre || !activo) {
-    throw new Error(`${fechaHoraActual} - Datos faltantes`);
+    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
   }
 
   let t;
@@ -119,7 +119,7 @@ const modificarTitulosObtenidos = async (
     }
 
     throw new Error(
-      `${fechaHoraActual} - Error al modificar el título obtenido:`,
+      `${fechaHoraActual()} - Error al modificar el título obtenido:`,
       error.message
     );
   }
@@ -127,7 +127,7 @@ const modificarTitulosObtenidos = async (
 
 const inactivarTituloObtenido = async (titulo_obtenido_id) => {
   if (!titulo_obtenido_id) {
-    throw new Error(`${fechaHoraActual} - Datos faltantes`);
+    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
   }
 
   let t;
@@ -154,7 +154,7 @@ const inactivarTituloObtenido = async (titulo_obtenido_id) => {
     }
 
     throw new Error(
-      `${fechaHoraActual} - Error al inactivar el título obtenido:`,
+      `${fechaHoraActual()} - Error al inactivar el título obtenido:`,
       error.message
     );
   }
@@ -162,7 +162,7 @@ const inactivarTituloObtenido = async (titulo_obtenido_id) => {
 
 const eliminarTitulosCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
-    throw new Error(`${fechaHoraActual} - Datos faltantes`);
+    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
   }
 
   let t;
@@ -186,7 +186,7 @@ const eliminarTitulosCurriculo = async (curriculo_id) => {
     }
 
     throw new Error(
-      `${fechaHoraActual} - Error al eliminar los títulos obtenidos:`,
+      `${fechaHoraActual()} - Error al eliminar los títulos obtenidos:`,
       error.message
     );
   }
