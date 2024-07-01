@@ -137,8 +137,7 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
     }
 
     throw new Error(
-      `Error al crear las respuestas de la prueba kostick:`,
-      error.message
+      `Error al crear las respuestas de la prueba kostick: ${error.message}`
     );
   }
 };

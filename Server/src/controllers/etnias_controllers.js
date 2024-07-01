@@ -12,7 +12,7 @@ const todasLasEtnias = async () => {
 
     return etnias;
   } catch (error) {
-    throw new Error(`Error al traer todas las etnias:`, error.message);
+    throw new Error(`Error al traer todas las etnias: ${error.message}`);
   }
 };
 
@@ -28,7 +28,7 @@ const todasLasEtniasActivas = async () => {
 
     return etnias;
   } catch (error) {
-    throw new Error(`Error al traer todas las etnias:`, error.message);
+    throw new Error(`Error al traer todas las etnias: ${error.message}`);
   }
 };
 
@@ -46,7 +46,7 @@ const traerEtnia = async (etnia_id) => {
 
     return etnia;
   } catch (error) {
-    throw new Error(`Error al traer la etnia:`, error.message);
+    throw new Error(`Error al traer la etnia: ${error.message}`);
   }
 };
 
@@ -72,7 +72,7 @@ const cargarEtnias = async () => {
       await t.rollback();
     }
 
-    throw new Error(`Error al crear las etnias:`, error.message);
+    throw new Error(`Error al crear las etnias: ${error.message}`);
   }
 };
 
@@ -106,7 +106,7 @@ const crearEtnia = async (nombre) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al crear la etnia:`, error.message);
+    throw new Error(`Error al crear la etnia: ${error.message}`);
   }
 };
 
@@ -143,7 +143,7 @@ const modificarEtnia = async (etnia_id, nombre, activo) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al modificar la etnia:`, error.message);
+    throw new Error(`Error al modificar la etnia: ${error.message}`);
   }
 };
 
@@ -175,7 +175,7 @@ const inactivarEtnia = async (etnia_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al inactivar la etnia:`, error.message);
+    throw new Error(`Error al inactivar la etnia: ${error.message}`);
   }
 };
 

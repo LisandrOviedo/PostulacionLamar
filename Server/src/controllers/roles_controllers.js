@@ -12,7 +12,7 @@ const todosLosRoles = async () => {
 
     return roles;
   } catch (error) {
-    throw new Error(`Error al traer todos los roles:`, error.message);
+    throw new Error(`Error al traer todos los roles: ${error.message}`);
   }
 };
 
@@ -30,7 +30,7 @@ const traerRol = async (rol_id) => {
 
     return rol;
   } catch (error) {
-    throw new Error(`Error al traer el rol:`, error.message);
+    throw new Error(`Error al traer el rol: ${error.message}`);
   }
 };
 
@@ -57,7 +57,7 @@ const cargarRoles = async () => {
       await t.rollback();
     }
 
-    throw new Error(`Error al crear los roles:`, error.message);
+    throw new Error(`Error al crear los roles: ${error.message}`);
   }
 };
 
@@ -92,7 +92,7 @@ const crearRol = async (nombre, descripcion) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al crear el rol:`, error.message);
+    throw new Error(`Error al crear el rol: ${error.message}`);
   }
 };
 
@@ -131,7 +131,7 @@ const modificarRol = async (rol_id, nombre, descripcion, activo) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al modificar el rol:`, error.message);
+    throw new Error(`Error al modificar el rol: ${error.message}`);
   }
 };
 
@@ -162,7 +162,7 @@ const inactivarRol = async (rol_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al inactivar el rol:`, error.message);
+    throw new Error(`Error al inactivar el rol: ${error.message}`);
   }
 };
 

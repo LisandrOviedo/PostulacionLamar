@@ -16,7 +16,7 @@ const todosLosIdiomas = async () => {
 
     return idiomas;
   } catch (error) {
-    throw new Error(`Error al traer todos los idiomas:`, error.message);
+    throw new Error(`Error al traer todos los idiomas: ${error.message}`);
   }
 };
 
@@ -33,7 +33,7 @@ const todosLosIdiomasActivos = async () => {
 
     return idiomas;
   } catch (error) {
-    throw new Error(`Error al traer todos los idiomas:`, error.message);
+    throw new Error(`Error al traer todos los idiomas: ${error.message}`);
   }
 };
 
@@ -51,7 +51,7 @@ const traerIdioma = async (idioma_id) => {
 
     return idioma;
   } catch (error) {
-    throw new Error(`Error al traer el idioma:`, error.message);
+    throw new Error(`Error al traer el idioma: ${error.message}`);
   }
 };
 
@@ -77,7 +77,7 @@ const cargarIdiomas = async () => {
       await t.rollback();
     }
 
-    throw new Error(`Error al crear los idiomas:`, error.message);
+    throw new Error(`Error al crear los idiomas: ${error.message}`);
   }
 };
 
@@ -113,7 +113,7 @@ const crearIdioma = async (nombre) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al crear el idioma:`, error.message);
+    throw new Error(`Error al crear el idioma: ${error.message}`);
   }
 };
 
@@ -150,7 +150,7 @@ const modificarIdioma = async (idioma_id, nombre, activo) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al modificar el idioma:`, error.message);
+    throw new Error(`Error al modificar el idioma: ${error.message}`);
   }
 };
 
@@ -182,7 +182,7 @@ const inactivarIdioma = async (idioma_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al inactivar el idioma:`, error.message);
+    throw new Error(`Error al inactivar el idioma: ${error.message}`);
   }
 };
 
@@ -219,7 +219,7 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al agregar el idioma al curriculo:`, error.message);
+    throw new Error(`Error al agregar el idioma al curriculo: ${error.message}`);
   }
 };
 
@@ -248,7 +248,7 @@ const eliminarIdiomasCurriculo = async (curriculo_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al eliminar los idiomas:`, error.message);
+    throw new Error(`Error al eliminar los idiomas: ${error.message}`);
   }
 };
 

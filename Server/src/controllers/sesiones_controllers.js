@@ -25,8 +25,7 @@ const cerrarSesiones = async () => {
     }
 
     throw new Error(
-      `Error al cerrar todas las sesiones de los empleados:`,
-      error.message
+      `Error al cerrar todas las sesiones de los empleados: ${error.message}`
     );
   }
 };
@@ -56,7 +55,7 @@ const cerrarSesion = async (empleado_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al cerrar la sesión del empleado:`, error.message);
+    throw new Error(`Error al cerrar la sesión del empleado: ${error.message}`);
   }
 };
 
@@ -78,7 +77,7 @@ const traerSesion = async (empleado_id) => {
 
     throw new Error(`El empleado no posee una sesión`);
   } catch (error) {
-    throw new Error(`Error al traer la sesión del empleado:`, error.message);
+    throw new Error(`Error al traer la sesión del empleado: ${error.message}`);
   }
 };
 
@@ -129,7 +128,7 @@ const crearSesion = async (empleado_id, token) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al crear la sesión del empleado:`, error.message);
+    throw new Error(`Error al crear la sesión del empleado: ${error.message}`);
   }
 };
 

@@ -49,7 +49,7 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
 
     return { cantidadPaginas, totalRegistros, pruebas_empleados };
   } catch (error) {
-    throw new Error(`Error al traer todas las pruebas:`, error.message);
+    throw new Error(`Error al traer todas las pruebas: ${error.message}`);
   }
 };
 
@@ -70,8 +70,7 @@ const traerPruebasEmpleados = async (empleado_id, prueba) => {
     return pruebas;
   } catch (error) {
     throw new Error(
-      `Error al traer todas las pruebas de ese empleado:`,
-      error.message
+      `Error al traer todas las pruebas de ese empleado: ${error.message}`
     );
   }
 };
@@ -90,7 +89,7 @@ const traerPrueba = async (prueba_id) => {
 
     return prueba;
   } catch (error) {
-    throw new Error(`Error al traer la prueba:`, error.message);
+    throw new Error(`Error al traer la prueba: ${error.message}`);
   }
 };
 
@@ -120,7 +119,7 @@ const crearPrueba = async (empleado_id, prueba) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al crear la prueba:`, error.message);
+    throw new Error(`Error al crear la prueba: ${error.message}`);
   }
 };
 

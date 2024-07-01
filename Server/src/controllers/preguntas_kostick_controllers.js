@@ -24,8 +24,7 @@ const todasLasPreguntasKostick = async () => {
     return preguntasOrdenadas;
   } catch (error) {
     throw new Error(
-      `Error al traer todas las preguntas kostick:`,
-      error.message
+      `Error al traer todas las preguntas kostick: ${error.message}`
     );
   }
 };
@@ -56,7 +55,7 @@ const cargarPreguntasKostick = async () => {
       await t.rollback();
     }
 
-    throw new Error(`Error al crear las preguntas kostick:`, error.message);
+    throw new Error(`Error al crear las preguntas kostick: ${error.message}`);
   }
 };
 

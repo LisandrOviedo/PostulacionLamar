@@ -13,8 +13,7 @@ const todosLosTitulosObtenidos = async () => {
     return titulos_obtenidos;
   } catch (error) {
     throw new Error(
-      `Error al traer todos los títulos obtenidos:`,
-      error.message
+      `Error al traer todos los títulos obtenidos: ${error.message}`
     );
   }
 };
@@ -33,7 +32,7 @@ const traerTituloObtenido = async (titulo_obtenido_id) => {
 
     return titulo_obtenido;
   } catch (error) {
-    throw new Error(`Error al traer el título obtenido:`, error.message);
+    throw new Error(`Error al traer el título obtenido: ${error.message}`);
   }
 };
 
@@ -69,7 +68,7 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al crear los títulos obtenidos:`, error.message);
+    throw new Error(`Error al crear los títulos obtenidos: ${error.message}`);
   }
 };
 
@@ -110,7 +109,7 @@ const modificarTitulosObtenidos = async (
       await t.rollback();
     }
 
-    throw new Error(`Error al modificar el título obtenido:`, error.message);
+    throw new Error(`Error al modificar el título obtenido: ${error.message}`);
   }
 };
 
@@ -142,7 +141,7 @@ const inactivarTituloObtenido = async (titulo_obtenido_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al inactivar el título obtenido:`, error.message);
+    throw new Error(`Error al inactivar el título obtenido: ${error.message}`);
   }
 };
 
@@ -171,7 +170,7 @@ const eliminarTitulosCurriculo = async (curriculo_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al eliminar los títulos obtenidos:`, error.message);
+    throw new Error(`Error al eliminar los títulos obtenidos: ${error.message}`);
   }
 };
 

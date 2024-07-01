@@ -101,7 +101,7 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
 
     return { cantidadPaginas, totalRegistros, curriculos };
   } catch (error) {
-    throw new Error(`Error al traer todos los curriculos:`, error.message);
+    throw new Error(`Error al traer todos los curriculos: ${error.message}`);
   }
 };
 
@@ -113,7 +113,7 @@ const traerCurriculo = async (curriculo_id) => {
   try {
     return await Curriculo.findByPk(curriculo_id);
   } catch (error) {
-    throw new Error(`Error al traer el curriculo:`, error.message);
+    throw new Error(`Error al traer el curriculo: ${error.message}`);
   }
 };
 
@@ -273,7 +273,7 @@ const traerCurriculoPDF = async (empleado_id) => {
 
     return content;
   } catch (error) {
-    throw new Error(`Error al traer el curriculo:`, error.message);
+    throw new Error(`Error al traer el curriculo: ${error.message}`);
   }
 };
 
@@ -293,7 +293,7 @@ const traerCurriculoPDFAnexos = async (empleado_id) => {
 
     return anexos;
   } catch (error) {
-    throw new Error(`Error al traer el curriculo:`, error.message);
+    throw new Error(`Error al traer el curriculo: ${error.message}`);
   }
 };
 
@@ -341,7 +341,7 @@ const cambiarEstadoRevisado = async (empleado_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al modificar el curriculo:`, error.message);
+    throw new Error(`Error al modificar el curriculo: ${error.message}`);
   }
 };
 
@@ -403,7 +403,7 @@ const traerCurriculoEmpleado = async (empleado_id) => {
       return curriculo;
     }
   } catch (error) {
-    throw new Error(`Error al traer el curriculo:`, error.message);
+    throw new Error(`Error al traer el curriculo: ${error.message}`);
   }
 };
 
@@ -449,7 +449,7 @@ const crearCurriculo = async (
       await t.rollback();
     }
 
-    throw new Error(`Error al crear el curriculo:`, error.message);
+    throw new Error(`Error al crear el curriculo: ${error.message}`);
   }
 };
 
@@ -495,7 +495,7 @@ const modificarCurriculo = async (
       await t.rollback();
     }
 
-    throw new Error(`Error al modificar el curriculo:`, error.message);
+    throw new Error(`Error al modificar el curriculo: ${error.message}`);
   }
 };
 
@@ -527,7 +527,7 @@ const inactivarCurriculo = async (curriculo_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al inactivar el curriculo:`, error.message);
+    throw new Error(`Error al inactivar el curriculo: ${error.message}`);
   }
 };
 

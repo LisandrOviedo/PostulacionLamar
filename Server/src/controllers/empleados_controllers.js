@@ -73,7 +73,7 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
 
     return { cantidadPaginas, totalRegistros, empleados };
   } catch (error) {
-    throw new Error(`Error al traer todos los empleados:`, error.message);
+    throw new Error(`Error al traer todos los empleados: ${error.message}`);
   }
 };
 
@@ -118,7 +118,7 @@ const traerEmpleado = async (empleado_id) => {
 
     return empleado;
   } catch (error) {
-    throw new Error(`Error al traer el empleado:`, error.message);
+    throw new Error(`Error al traer el empleado: ${error.message}`);
   }
 };
 
@@ -195,7 +195,7 @@ const login = async (cedula, clave) => {
 
     return { token, infoEmpleado };
   } catch (error) {
-    throw new Error(`Error al loguear:`, error.message);
+    throw new Error(`Error al loguear: ${error.message}`);
   }
 };
 
@@ -268,7 +268,7 @@ const cargarEmpleados = async () => {
       await t.rollback();
     }
 
-    throw new Error(`Error al crear los empleados:`, error.message);
+    throw new Error(`Error al crear los empleados: ${error.message}`);
   }
 };
 
@@ -338,7 +338,7 @@ const crearEmpleado = async (
       await t.rollback();
     }
 
-    throw new Error(`Error al crear el empleado:`, error.message);
+    throw new Error(`Error al crear el empleado: ${error.message}`);
   }
 };
 
@@ -380,7 +380,7 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al modificar el empleado:`, error.message);
+    throw new Error(`Error al modificar el empleado: ${error.message}`);
   }
 };
 
@@ -466,7 +466,7 @@ const modificarEmpleado = async (datosPersonales) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al modificar el empleado:`, error.message);
+    throw new Error(`Error al modificar el empleado: ${error.message}`);
   }
 };
 
@@ -516,7 +516,7 @@ const modificarFotoEmpleado = async (empleado_id, filename, path) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al modificar el empleado:`, error.message);
+    throw new Error(`Error al modificar el empleado: ${error.message}`);
   }
 };
 
@@ -570,7 +570,7 @@ const actualizarClaveEmpleado = async (
       await t.rollback();
     }
 
-    throw new Error(`Error al modificar el empleado:`, error.message);
+    throw new Error(`Error al modificar el empleado: ${error.message}`);
   }
 };
 
@@ -608,7 +608,7 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al modificar el empleado:`, error.message);
+    throw new Error(`Error al modificar el empleado: ${error.message}`);
   }
 };
 
@@ -640,7 +640,7 @@ const inactivarEmpleado = async (empleado_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al inactivar el empleado:`, error.message);
+    throw new Error(`Error al inactivar el empleado: ${error.message}`);
   }
 };
 
