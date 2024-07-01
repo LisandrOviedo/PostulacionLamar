@@ -2,9 +2,9 @@ const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
 
-const { DB, USER, PASSWORD, HOST, DIALECT, PORT_DB } = process.env;
+const { DB, USERDB, PASSWORD, HOST, DIALECT, PORT_DB } = process.env;
 
-const sequelize = new Sequelize(DB, USER, PASSWORD, {
+const sequelize = new Sequelize(DB, USERDB, PASSWORD, {
   host: HOST,
   dialect: DIALECT,
   port: PORT_DB,
@@ -63,16 +63,12 @@ Empleado.belongsTo(Roles, {
   foreignKey: {
     allowNull: false,
     name: "rol_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 Roles.hasOne(Empleado, {
   foreignKey: {
     allowNull: false,
     name: "rol_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
@@ -81,16 +77,12 @@ Curriculo.belongsTo(Empleado, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 Empleado.hasOne(Curriculo, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
@@ -131,16 +123,12 @@ Empresa.hasMany(Cargo, {
   foreignKey: {
     allowNull: false,
     name: "empresa_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 Cargo.belongsTo(Empresa, {
   foreignKey: {
     allowNull: false,
     name: "empresa_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
@@ -149,16 +137,12 @@ Curriculo.hasMany(Titulo_Obtenido, {
   foreignKey: {
     allowNull: false,
     name: "curriculo_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 Titulo_Obtenido.belongsTo(Curriculo, {
   foreignKey: {
     allowNull: false,
     name: "curriculo_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
@@ -167,16 +151,12 @@ Curriculo.hasMany(Experiencia, {
   foreignKey: {
     allowNull: false,
     name: "curriculo_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 Experiencia.belongsTo(Curriculo, {
   foreignKey: {
     allowNull: false,
     name: "curriculo_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
@@ -185,16 +165,12 @@ Empleado.hasMany(Documentos_Empleado, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 Documentos_Empleado.belongsTo(Empleado, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
@@ -203,16 +179,12 @@ Empleado.hasMany(Pruebas_Empleado, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 Pruebas_Empleado.belongsTo(Empleado, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
@@ -253,16 +225,12 @@ Sesiones.belongsTo(Empleado, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 Empleado.hasOne(Sesiones, {
   foreignKey: {
     allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
@@ -271,16 +239,12 @@ Etnia.hasMany(Empleado, {
   foreignKey: {
     allowNull: false,
     name: "etnia_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 Empleado.belongsTo(Etnia, {
   foreignKey: {
     allowNull: false,
     name: "etnia_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
