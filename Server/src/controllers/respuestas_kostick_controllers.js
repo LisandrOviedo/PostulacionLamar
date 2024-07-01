@@ -21,7 +21,7 @@ const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
 
 const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
   if (!empleado_id || !prueba_id || !prueba) {
-    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
+    throw new Error(`${fechaHoraActual} - Datos faltantes`);
   }
 
   let t, t2;
@@ -141,7 +141,7 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Error al crear las respuestas de la prueba kostick:`,
+      `${fechaHoraActual} - Error al crear las respuestas de la prueba kostick:`,
       error.message
     );
   }

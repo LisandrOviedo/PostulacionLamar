@@ -11,13 +11,13 @@ const todosLosAreaInteres = async () => {
     const areas_interes = await Areas_Interes.findAll();
 
     if (!areas_interes.length) {
-      throw new Error(`[${fechaHoraActual}] - No existen áreas de interés`);
+      throw new Error(`${fechaHoraActual} - No existen áreas de interés`);
     }
 
     return areas_interes;
   } catch (error) {
     throw new Error(
-      `[${fechaHoraActual}] - Error al traer todas las áreas de interés:`,
+      `${fechaHoraActual} - Error al traer todas las áreas de interés:`,
       error.message
     );
   }
@@ -30,13 +30,13 @@ const todosLosAreaInteresActivas = async () => {
     });
 
     if (!areas_interes.length) {
-      throw new Error(`[${fechaHoraActual}] - No existen áreas de interés`);
+      throw new Error(`${fechaHoraActual} - No existen áreas de interés`);
     }
 
     return areas_interes;
   } catch (error) {
     throw new Error(
-      `[${fechaHoraActual}] - Error al traer todas las áreas de interés:`,
+      `${fechaHoraActual} - Error al traer todas las áreas de interés:`,
       error.message
     );
   }
@@ -44,20 +44,20 @@ const todosLosAreaInteresActivas = async () => {
 
 const traerAreaInteres = async (area_interes_id) => {
   if (!area_interes_id) {
-    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
+    throw new Error(`${fechaHoraActual} - Datos faltantes`);
   }
 
   try {
     const area_interes = await Areas_Interes.findByPk(area_interes_id);
 
     if (!area_interes) {
-      throw new Error(`[${fechaHoraActual}] - No existe esa área de interés`);
+      throw new Error(`${fechaHoraActual} - No existe esa área de interés`);
     }
 
     return area_interes;
   } catch (error) {
     throw new Error(
-      `[${fechaHoraActual}] - Error al traer el área de interés:`,
+      `${fechaHoraActual} - Error al traer el área de interés:`,
       error.message
     );
   }
@@ -86,7 +86,7 @@ const cargarAreaInteres = async () => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Error al crear las áreas de interés:`,
+      `${fechaHoraActual} - Error al crear las áreas de interés:`,
       error.message
     );
   }
@@ -94,7 +94,7 @@ const cargarAreaInteres = async () => {
 
 const crearAreaInteres = async (nombre) => {
   if (!nombre) {
-    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
+    throw new Error(`${fechaHoraActual} - Datos faltantes`);
   }
 
   let t;
@@ -117,7 +117,7 @@ const crearAreaInteres = async (nombre) => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Ya existe un área de interés con ese nombre`
+      `${fechaHoraActual} - Ya existe un área de interés con ese nombre`
     );
   } catch (error) {
     if (!t.finished) {
@@ -125,7 +125,7 @@ const crearAreaInteres = async (nombre) => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Error al crear el área de interés:`,
+      `${fechaHoraActual} - Error al crear el área de interés:`,
       error.message
     );
   }
@@ -133,7 +133,7 @@ const crearAreaInteres = async (nombre) => {
 
 const modificarAreaInteres = async (area_interes_id, nombre, activo) => {
   if (!area_interes_id || !nombre || !activo) {
-    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
+    throw new Error(`${fechaHoraActual} - Datos faltantes`);
   }
 
   let t;
@@ -165,7 +165,7 @@ const modificarAreaInteres = async (area_interes_id, nombre, activo) => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Error al modificar el área de interés:`,
+      `${fechaHoraActual} - Error al modificar el área de interés:`,
       error.message
     );
   }
@@ -173,7 +173,7 @@ const modificarAreaInteres = async (area_interes_id, nombre, activo) => {
 
 const inactivarAreaInteres = async (area_interes_id) => {
   if (!area_interes_id) {
-    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
+    throw new Error(`${fechaHoraActual} - Datos faltantes`);
   }
 
   let t;
@@ -200,7 +200,7 @@ const inactivarAreaInteres = async (area_interes_id) => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Error al inactivar el área de interés:`,
+      `${fechaHoraActual} - Error al inactivar el área de interés:`,
       error.message
     );
   }
@@ -208,7 +208,7 @@ const inactivarAreaInteres = async (area_interes_id) => {
 
 const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
   if (!curriculo_id || !areas_interes) {
-    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
+    throw new Error(`${fechaHoraActual} - Datos faltantes`);
   }
 
   let t;
@@ -241,7 +241,7 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Error al agregar el área de interés al curriculo:`,
+      `${fechaHoraActual} - Error al agregar el área de interés al curriculo:`,
       error.message
     );
   }
@@ -249,7 +249,7 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
 
 const eliminarAreasInteresCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
-    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
+    throw new Error(`${fechaHoraActual} - Datos faltantes`);
   }
 
   let t;
@@ -273,7 +273,7 @@ const eliminarAreasInteresCurriculo = async (curriculo_id) => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Error al eliminar las áreas de interés:`,
+      `${fechaHoraActual} - Error al eliminar las áreas de interés:`,
       error.message
     );
   }

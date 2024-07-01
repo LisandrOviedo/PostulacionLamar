@@ -9,13 +9,13 @@ const todasLasEtnias = async () => {
     const etnias = await Etnia.findAll();
 
     if (!etnias.length) {
-      throw new Error(`[${fechaHoraActual}] - No existen etnias`);
+      throw new Error(`${fechaHoraActual} - No existen etnias`);
     }
 
     return etnias;
   } catch (error) {
     throw new Error(
-      `[${fechaHoraActual}] - Error al traer todas las etnias:`,
+      `${fechaHoraActual} - Error al traer todas las etnias:`,
       error.message
     );
   }
@@ -28,13 +28,13 @@ const todasLasEtniasActivas = async () => {
     });
 
     if (!etnias.length) {
-      throw new Error(`[${fechaHoraActual}] - No existen etnias`);
+      throw new Error(`${fechaHoraActual} - No existen etnias`);
     }
 
     return etnias;
   } catch (error) {
     throw new Error(
-      `[${fechaHoraActual}] - Error al traer todas las etnias:`,
+      `${fechaHoraActual} - Error al traer todas las etnias:`,
       error.message
     );
   }
@@ -42,20 +42,20 @@ const todasLasEtniasActivas = async () => {
 
 const traerEtnia = async (etnia_id) => {
   if (!etnia_id) {
-    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
+    throw new Error(`${fechaHoraActual} - Datos faltantes`);
   }
 
   try {
     const etnia = await Etnia.findByPk(etnia_id);
 
     if (!etnia) {
-      throw new Error(`[${fechaHoraActual}] - No existe esa etnia`);
+      throw new Error(`${fechaHoraActual} - No existe esa etnia`);
     }
 
     return etnia;
   } catch (error) {
     throw new Error(
-      `[${fechaHoraActual}] - Error al traer la etnia:`,
+      `${fechaHoraActual} - Error al traer la etnia:`,
       error.message
     );
   }
@@ -84,7 +84,7 @@ const cargarEtnias = async () => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Error al crear las etnias:`,
+      `${fechaHoraActual} - Error al crear las etnias:`,
       error.message
     );
   }
@@ -92,7 +92,7 @@ const cargarEtnias = async () => {
 
 const crearEtnia = async (nombre) => {
   if (!nombre) {
-    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
+    throw new Error(`${fechaHoraActual} - Datos faltantes`);
   }
 
   let t;
@@ -115,7 +115,7 @@ const crearEtnia = async (nombre) => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Ya existe una etnia con ese nombre`
+      `${fechaHoraActual} - Ya existe una etnia con ese nombre`
     );
   } catch (error) {
     if (!t.finished) {
@@ -123,7 +123,7 @@ const crearEtnia = async (nombre) => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Error al crear la etnia:`,
+      `${fechaHoraActual} - Error al crear la etnia:`,
       error.message
     );
   }
@@ -131,7 +131,7 @@ const crearEtnia = async (nombre) => {
 
 const modificarEtnia = async (etnia_id, nombre, activo) => {
   if (!etnia_id || !nombre || !activo) {
-    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
+    throw new Error(`${fechaHoraActual} - Datos faltantes`);
   }
 
   let t;
@@ -163,7 +163,7 @@ const modificarEtnia = async (etnia_id, nombre, activo) => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Error al modificar la etnia:`,
+      `${fechaHoraActual} - Error al modificar la etnia:`,
       error.message
     );
   }
@@ -171,7 +171,7 @@ const modificarEtnia = async (etnia_id, nombre, activo) => {
 
 const inactivarEtnia = async (etnia_id) => {
   if (!etnia_id) {
-    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
+    throw new Error(`${fechaHoraActual} - Datos faltantes`);
   }
 
   let t;
@@ -198,7 +198,7 @@ const inactivarEtnia = async (etnia_id) => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Error al inactivar la etnia:`,
+      `${fechaHoraActual} - Error al inactivar la etnia:`,
       error.message
     );
   }

@@ -14,7 +14,7 @@ const todasLasPreguntasKostick = async () => {
     });
 
     if (!preguntas_kostick.length) {
-      throw new Error(`[${fechaHoraActual}] - No existen preguntas kostick`);
+      throw new Error(`${fechaHoraActual} - No existen preguntas kostick`);
     }
 
     let preguntasOrdenadas = [];
@@ -26,7 +26,7 @@ const todasLasPreguntasKostick = async () => {
     return preguntasOrdenadas;
   } catch (error) {
     throw new Error(
-      `[${fechaHoraActual}] - Error al traer todas las preguntas kostick:`,
+      `${fechaHoraActual} - Error al traer todas las preguntas kostick:`,
       error.message
     );
   }
@@ -59,7 +59,7 @@ const cargarPreguntasKostick = async () => {
     }
 
     throw new Error(
-      `[${fechaHoraActual}] - Error al crear las preguntas kostick:`,
+      `${fechaHoraActual} - Error al crear las preguntas kostick:`,
       error.message
     );
   }
