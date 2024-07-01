@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const server = require("./src/server.js");
 const { conn } = require("./src/db.js");
-const PORT = process.env.PORT_SERVER || 3001;
+const PORT = process.env.PORT_SERVER || 4055;
 
 const { fechaHoraActual } = require("./src/utils/formatearFecha.js");
 
@@ -29,29 +29,29 @@ const { cargarEtnias } = require("./src/controllers/etnias_controllers.js");
 conn
   .sync()
   .then(() => {
-    server.listen(PORT, () => {
+    server.listen(PORT, async () => {
       console.log(`${fechaHoraActual()} - Server listening on port ${PORT}`);
 
       // Cerrar sesiones en la BD
-      cerrarSesiones();
+      await cerrarSesiones();
 
       // Registrar preguntas del test kostick en la BD
-      cargarPreguntasKostick();
+      await cargarPreguntasKostick();
 
       // Registrar áreas de interés principales en la BD
-      cargarAreaInteres();
+      await cargarAreaInteres();
 
       // Registrar idiomas principales en la BD
-      cargarIdiomas();
+      await cargarIdiomas();
 
       // Registrar roles principales en la BD
-      cargarRoles();
+      await cargarRoles();
 
       // Registrar etnias principales en la BD
-      cargarEtnias();
+      await cargarEtnias();
 
       // Registrar empleados en la BD
-      cargarEmpleados();
+      await cargarEmpleados();
     });
   })
   .catch((error) => console.error(error));

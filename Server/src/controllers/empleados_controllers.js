@@ -242,10 +242,10 @@ const cargarEmpleados = async () => {
 
     console.log(`${fechaHoraActual()} - Hizo la consulta de empleados`);
 
-    for (const empleadoReal of data) {
+    for (const empleadoAPI of data) {
       let empleado = await Empleado.findOne({
         where: {
-          cedula: empleadoReal.cedula,
+          cedula: empleadoAPI.cedula,
         },
       });
 
@@ -255,11 +255,11 @@ const cargarEmpleados = async () => {
         await Empleado.create(
           {
             rol_id: rolEmpleado.rol_id,
-            cedula: empleadoReal.cedula,
-            nombres: ordenarNombresAPI(empleadoReal.nombres),
-            apellidos: ordenarNombresAPI(empleadoReal.apellidos),
-            fecha_nacimiento: `${YYYYMMDD(empleadoReal.fecha_nacimiento)}`,
-            direccion: ordenarDireccionesAPI(empleadoReal.direccion) || null,
+            cedula: empleadoAPI.cedula,
+            nombres: ordenarNombresAPI(empleadoAPI.nombres),
+            apellidos: ordenarNombresAPI(empleadoAPI.apellidos),
+            fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
+            direccion: ordenarDireccionesAPI(empleadoAPI.direccion) || null,
           },
           { transaction: t }
         );
