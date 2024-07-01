@@ -13,11 +13,11 @@ const {
 
 const { traerEmpleado } = require("./empleados_controllers");
 const { traerAnexos } = require("./documentos_empleados_controllers");
-const { calcularEdad, fechaHoraActual } = require("../utils/formatearFecha");
+const { calcularEdad } = require("../utils/formatearFecha");
 
 const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
   if (!paginaActual || !limitePorPagina) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   try {
@@ -101,31 +101,25 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
 
     return { cantidadPaginas, totalRegistros, curriculos };
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer todos los curriculos:`,
-      error.message
-    );
+    throw new Error(`Error al traer todos los curriculos:`, error.message);
   }
 };
 
 const traerCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   try {
     return await Curriculo.findByPk(curriculo_id);
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer el curriculo:`,
-      error.message
-    );
+    throw new Error(`Error al traer el curriculo:`, error.message);
   }
 };
 
 const traerCurriculoPDF = async (empleado_id) => {
   if (!empleado_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   const content = [];
@@ -279,16 +273,13 @@ const traerCurriculoPDF = async (empleado_id) => {
 
     return content;
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer el curriculo:`,
-      error.message
-    );
+    throw new Error(`Error al traer el curriculo:`, error.message);
   }
 };
 
 const traerCurriculoPDFAnexos = async (empleado_id) => {
   if (!empleado_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   const anexos = [];
@@ -302,16 +293,13 @@ const traerCurriculoPDFAnexos = async (empleado_id) => {
 
     return anexos;
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer el curriculo:`,
-      error.message
-    );
+    throw new Error(`Error al traer el curriculo:`, error.message);
   }
 };
 
 const cambiarEstadoRevisado = async (empleado_id) => {
   if (!empleado_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -353,16 +341,13 @@ const cambiarEstadoRevisado = async (empleado_id) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al modificar el curriculo:`,
-      error.message
-    );
+    throw new Error(`Error al modificar el curriculo:`, error.message);
   }
 };
 
 const traerCurriculoEmpleado = async (empleado_id) => {
   if (!empleado_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   try {
@@ -418,10 +403,7 @@ const traerCurriculoEmpleado = async (empleado_id) => {
       return curriculo;
     }
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer el curriculo:`,
-      error.message
-    );
+    throw new Error(`Error al traer el curriculo:`, error.message);
   }
 };
 
@@ -433,7 +415,7 @@ const crearCurriculo = async (
   habilidades_tecnicas
 ) => {
   if (!empleado_id || !grado_instruccion) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -461,18 +443,13 @@ const crearCurriculo = async (
       return curriculo;
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Ya existe un curriculo para ese empleado`
-    );
+    throw new Error(`Ya existe un curriculo para ese empleado`);
   } catch (error) {
     if (!t.finished) {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al crear el curriculo:`,
-      error.message
-    );
+    throw new Error(`Error al crear el curriculo:`, error.message);
   }
 };
 
@@ -484,7 +461,7 @@ const modificarCurriculo = async (
   habilidades_tecnicas
 ) => {
   if (!curriculo_id || !grado_instruccion) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -518,16 +495,13 @@ const modificarCurriculo = async (
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al modificar el curriculo:`,
-      error.message
-    );
+    throw new Error(`Error al modificar el curriculo:`, error.message);
   }
 };
 
 const inactivarCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -553,10 +527,7 @@ const inactivarCurriculo = async (curriculo_id) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al inactivar el curriculo:`,
-      error.message
-    );
+    throw new Error(`Error al inactivar el curriculo:`, error.message);
   }
 };
 

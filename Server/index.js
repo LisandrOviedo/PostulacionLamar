@@ -36,22 +36,22 @@ conn
       await cerrarSesiones();
 
       // Registrar preguntas del test kostick en la BD
-      await cargarPreguntasKostick();
+      // await cargarPreguntasKostick();
 
       // Registrar áreas de interés principales en la BD
-      await cargarAreaInteres();
+      // await cargarAreaInteres();
 
       // Registrar idiomas principales en la BD
-      await cargarIdiomas();
+      // await cargarIdiomas();
 
       // Registrar roles principales en la BD
-      await cargarRoles();
+      // await cargarRoles();
 
       // Registrar etnias principales en la BD
-      await cargarEtnias();
+      // await cargarEtnias();
 
       // Registrar empleados en la BD
-      await cargarEmpleados();
+      // await cargarEmpleados();
     });
   })
   .catch((error) => console.error(error));

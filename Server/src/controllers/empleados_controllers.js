@@ -32,7 +32,7 @@ const { SECRET_KEY } = process.env;
 
 const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
   if (!paginaActual || !limitePorPagina) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   try {
@@ -73,16 +73,13 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
 
     return { cantidadPaginas, totalRegistros, empleados };
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer todos los empleados:`,
-      error.message
-    );
+    throw new Error(`Error al traer todos los empleados:`, error.message);
   }
 };
 
 const traerEmpleado = async (empleado_id) => {
   if (!empleado_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   try {
@@ -116,21 +113,18 @@ const traerEmpleado = async (empleado_id) => {
     });
 
     if (!empleado) {
-      throw new Error(`${fechaHoraActual()} - No existe ese empleado`);
+      throw new Error(`No existe ese empleado`);
     }
 
     return empleado;
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer el empleado:`,
-      error.message
-    );
+    throw new Error(`Error al traer el empleado:`, error.message);
   }
 };
 
 const login = async (cedula, clave) => {
   if (!cedula || !clave) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   try {
@@ -148,19 +142,19 @@ const login = async (cedula, clave) => {
     });
 
     if (!empleado) {
-      throw new Error(`${fechaHoraActual()} - Datos incorrectos`);
+      throw new Error(`Datos incorrectos`);
     }
 
     if (!empleado.activo) {
       throw new Error(
-        `${fechaHoraActual()} - Tienes el acceso restringido, ya que tu usuario se encuentra inactivo`
+        `Tienes el acceso restringido, ya que tu usuario se encuentra inactivo`
       );
     }
 
     const claveCoincide = await bcrypt.compare(clave, empleado.clave);
 
     if (!claveCoincide) {
-      throw new Error(`${fechaHoraActual()} - Datos incorrectos`);
+      throw new Error(`Datos incorrectos`);
     }
 
     const rolCifrado = await bcrypt.hash(empleado.Role.nombre, 10);
@@ -181,7 +175,7 @@ const login = async (cedula, clave) => {
 
       if (diferencia_fechas < 300000) {
         throw new Error(
-          `${fechaHoraActual()} - Posees una sesión activa, debes cerrar la sesión anterior o volver a ingresar dentro de 5 minutos`
+          `Posees una sesión activa, debes cerrar la sesión anterior o volver a ingresar dentro de 5 minutos`
         );
       }
     }
@@ -201,7 +195,7 @@ const login = async (cedula, clave) => {
 
     return { token, infoEmpleado };
   } catch (error) {
-    throw new Error(`${fechaHoraActual()} - Error al loguear:`, error.message);
+    throw new Error(`Error al loguear:`, error.message);
   }
 };
 
@@ -274,10 +268,7 @@ const cargarEmpleados = async () => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al crear los empleados:`,
-      error.message
-    );
+    throw new Error(`Error al crear los empleados:`, error.message);
   }
 };
 
@@ -304,7 +295,7 @@ const crearEmpleado = async (
     !direccion ||
     !cantidad_hijos
   ) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -341,30 +332,23 @@ const crearEmpleado = async (
       return empleado;
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Ya existe un empleado con esa cédula de identidad`
-    );
+    throw new Error(`Ya existe un empleado con esa cédula de identidad`);
   } catch (error) {
     if (!t.finished) {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al crear el empleado:`,
-      error.message
-    );
+    throw new Error(`Error al crear el empleado:`, error.message);
   }
 };
 
 const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
   if (!empleado_id || !clave) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   if (clave == "1234") {
-    throw new Error(
-      `${fechaHoraActual()} - Debes ingresar una contraseña diferente a 1234`
-    );
+    throw new Error(`Debes ingresar una contraseña diferente a 1234`);
   }
 
   let t;
@@ -396,16 +380,13 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al modificar el empleado:`,
-      error.message
-    );
+    throw new Error(`Error al modificar el empleado:`, error.message);
   }
 };
 
 const modificarEmpleado = async (datosPersonales) => {
   if (!datosPersonales.empleado_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   const camposActualizar = {};
@@ -485,16 +466,13 @@ const modificarEmpleado = async (datosPersonales) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al modificar el empleado:`,
-      error.message
-    );
+    throw new Error(`Error al modificar el empleado:`, error.message);
   }
 };
 
 const modificarFotoEmpleado = async (empleado_id, filename, path) => {
   if (!empleado_id || !filename || !path) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -538,10 +516,7 @@ const modificarFotoEmpleado = async (empleado_id, filename, path) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al modificar el empleado:`,
-      error.message
-    );
+    throw new Error(`Error al modificar el empleado:`, error.message);
   }
 };
 
@@ -551,13 +526,11 @@ const actualizarClaveEmpleado = async (
   claveNueva
 ) => {
   if (!empleado_id || !claveAnterior || !claveNueva) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   if (claveNueva == "1234") {
-    throw new Error(
-      `${fechaHoraActual()} - Debes ingresar una contraseña diferente a 1234`
-    );
+    throw new Error(`Debes ingresar una contraseña diferente a 1234`);
   }
 
   let t;
@@ -572,9 +545,7 @@ const actualizarClaveEmpleado = async (
     const compararClaves = await bcrypt.compare(claveAnterior, empleado.clave);
 
     if (!compararClaves) {
-      throw new Error(
-        `${fechaHoraActual()} - Debes ingresar correctamente tu clave actual`
-      );
+      throw new Error(`Debes ingresar correctamente tu clave actual`);
     }
 
     const claveCifradaNueva = await bcrypt.hash(claveNueva, 10);
@@ -599,16 +570,13 @@ const actualizarClaveEmpleado = async (
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al modificar el empleado:`,
-      error.message
-    );
+    throw new Error(`Error al modificar el empleado:`, error.message);
   }
 };
 
 const reiniciarClaveEmpleado = async (empleado_id) => {
   if (!empleado_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -640,16 +608,13 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al modificar el empleado:`,
-      error.message
-    );
+    throw new Error(`Error al modificar el empleado:`, error.message);
   }
 };
 
 const inactivarEmpleado = async (empleado_id) => {
   if (!empleado_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -675,10 +640,7 @@ const inactivarEmpleado = async (empleado_id) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al inactivar el empleado:`,
-      error.message
-    );
+    throw new Error(`Error al inactivar el empleado:`, error.message);
   }
 };
 

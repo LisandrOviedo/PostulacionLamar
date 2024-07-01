@@ -2,8 +2,6 @@ const { conn, Preguntas_Kostick } = require("../db");
 
 const { pruebaKostick } = require("../utils/pruebaKostick");
 
-const { fechaHoraActual } = require("../utils/formatearFecha");
-
 const todasLasPreguntasKostick = async () => {
   try {
     const preguntas_kostick = await Preguntas_Kostick.findAll({
@@ -14,7 +12,7 @@ const todasLasPreguntasKostick = async () => {
     });
 
     if (!preguntas_kostick.length) {
-      throw new Error(`${fechaHoraActual()} - No existen preguntas kostick`);
+      throw new Error(`No existen preguntas kostick`);
     }
 
     let preguntasOrdenadas = [];
@@ -26,7 +24,7 @@ const todasLasPreguntasKostick = async () => {
     return preguntasOrdenadas;
   } catch (error) {
     throw new Error(
-      `${fechaHoraActual()} - Error al traer todas las preguntas kostick:`,
+      `Error al traer todas las preguntas kostick:`,
       error.message
     );
   }
@@ -58,10 +56,7 @@ const cargarPreguntasKostick = async () => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al crear las preguntas kostick:`,
-      error.message
-    );
+    throw new Error(`Error al crear las preguntas kostick:`, error.message);
   }
 };
 

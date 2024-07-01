@@ -2,49 +2,41 @@ const { conn, Experiencia } = require("../db");
 
 const { traerCurriculo } = require("./curriculos_controllers");
 
-const { fechaHoraActual } = require("../utils/formatearFecha");
-
 const todasLasExperiencias = async () => {
   try {
     const experiencias = await Experiencia.findAll();
 
     if (!experiencias.length) {
-      throw new Error(`${fechaHoraActual()} - No existen experiencias`);
+      throw new Error(`No existen experiencias`);
     }
 
     return experiencias;
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer todas las experiencias:`,
-      error.message
-    );
+    throw new Error(`Error al traer todas las experiencias:`, error.message);
   }
 };
 
 const traerExperiencia = async (experiencia_id) => {
   if (!experiencia_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   try {
     const experiencia = await Experiencia.findByPk(experiencia_id);
 
     if (!experiencia) {
-      throw new Error(`${fechaHoraActual()} - No existe esa experiencia`);
+      throw new Error(`No existe esa experiencia`);
     }
 
     return experiencia;
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer la experiencia:`,
-      error.message
-    );
+    throw new Error(`Error al traer la experiencia:`, error.message);
   }
 };
 
 const crearExperiencia = async (curriculo_id, experiencias) => {
   if (!curriculo_id || !experiencias) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -79,10 +71,7 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al crear las experiencias:`,
-      error.message
-    );
+    throw new Error(`Error al crear las experiencias:`, error.message);
   }
 };
 
@@ -104,7 +93,7 @@ const modificarExperiencia = async (
     !empresa_centro_educativo ||
     !activo
   ) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -139,16 +128,13 @@ const modificarExperiencia = async (
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al modificar la experiencia:`,
-      error.message
-    );
+    throw new Error(`Error al modificar la experiencia:`, error.message);
   }
 };
 
 const inactivarExperiencia = async (experiencia_id) => {
   if (!experiencia_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -174,16 +160,13 @@ const inactivarExperiencia = async (experiencia_id) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al inactivar la experiencia:`,
-      error.message
-    );
+    throw new Error(`Error al inactivar la experiencia:`, error.message);
   }
 };
 
 const eliminarExperienciasCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -206,10 +189,7 @@ const eliminarExperienciasCurriculo = async (curriculo_id) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al eliminar las experiencias:`,
-      error.message
-    );
+    throw new Error(`Error al eliminar las experiencias:`, error.message);
   }
 };
 

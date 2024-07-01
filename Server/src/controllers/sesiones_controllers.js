@@ -1,7 +1,5 @@
 const { conn, Sesiones } = require("../db");
 
-const { fechaHoraActual } = require("../utils/formatearFecha");
-
 const cerrarSesiones = async () => {
   let t;
 
@@ -27,7 +25,7 @@ const cerrarSesiones = async () => {
     }
 
     throw new Error(
-      `${fechaHoraActual()} - Error al cerrar todas las sesiones de los empleados:`,
+      `Error al cerrar todas las sesiones de los empleados:`,
       error.message
     );
   }
@@ -58,16 +56,13 @@ const cerrarSesion = async (empleado_id) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al cerrar la sesión del empleado:`,
-      error.message
-    );
+    throw new Error(`Error al cerrar la sesión del empleado:`, error.message);
   }
 };
 
 const traerSesion = async (empleado_id) => {
   if (!empleado_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   try {
@@ -81,18 +76,15 @@ const traerSesion = async (empleado_id) => {
       return sesion;
     }
 
-    throw new Error(`${fechaHoraActual()} - El empleado no posee una sesión`);
+    throw new Error(`El empleado no posee una sesión`);
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer la sesión del empleado:`,
-      error.message
-    );
+    throw new Error(`Error al traer la sesión del empleado:`, error.message);
   }
 };
 
 const crearSesion = async (empleado_id, token) => {
   if (!empleado_id || !token) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -137,10 +129,7 @@ const crearSesion = async (empleado_id, token) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al crear la sesión del empleado:`,
-      error.message
-    );
+    throw new Error(`Error al crear la sesión del empleado:`, error.message);
   }
 };
 

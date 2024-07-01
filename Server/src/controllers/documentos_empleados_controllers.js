@@ -8,7 +8,7 @@ const { fechaHoraActual } = require("../utils/formatearFecha");
 
 const traerAnexos = async (empleado_id) => {
   if (!empleado_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   try {
@@ -23,16 +23,13 @@ const traerAnexos = async (empleado_id) => {
 
     return anexos;
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer todos los anexos:`,
-      error.message
-    );
+    throw new Error(`Error al traer todos los anexos:`, error.message);
   }
 };
 
 const crearAnexos = async (empleado_id, anexos) => {
   if (!empleado_id || !anexos) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -92,16 +89,13 @@ const crearAnexos = async (empleado_id, anexos) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al crear los anexos:`,
-      error.message
-    );
+    throw new Error(`Error al crear los anexos:`, error.message);
   }
 };
 
 const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
   if (!filename || !pdf_path) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -153,10 +147,7 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al crear el anexo:`,
-      error.message
-    );
+    throw new Error(`Error al crear el anexo:`, error.message);
   }
 };
 

@@ -4,8 +4,6 @@ const { traerCurriculo } = require("./curriculos_controllers");
 
 const { idiomas } = require("../utils/idiomas");
 
-const { fechaHoraActual } = require("../utils/formatearFecha");
-
 const todosLosIdiomas = async () => {
   try {
     const idiomas = await Idioma.findAll({
@@ -13,15 +11,12 @@ const todosLosIdiomas = async () => {
     });
 
     if (!idiomas.length) {
-      throw new Error(`${fechaHoraActual()} - No existen idiomas`);
+      throw new Error(`No existen idiomas`);
     }
 
     return idiomas;
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer todos los idiomas:`,
-      error.message
-    );
+    throw new Error(`Error al traer todos los idiomas:`, error.message);
   }
 };
 
@@ -33,36 +28,30 @@ const todosLosIdiomasActivos = async () => {
     });
 
     if (!idiomas.length) {
-      throw new Error(`${fechaHoraActual()} - No existen idiomas`);
+      throw new Error(`No existen idiomas`);
     }
 
     return idiomas;
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer todos los idiomas:`,
-      error.message
-    );
+    throw new Error(`Error al traer todos los idiomas:`, error.message);
   }
 };
 
 const traerIdioma = async (idioma_id) => {
   if (!idioma_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   try {
     const idioma = await Idioma.findByPk(idioma_id);
 
     if (!idioma) {
-      throw new Error(`${fechaHoraActual()} - No existe esa idioma`);
+      throw new Error(`No existe esa idioma`);
     }
 
     return idioma;
   } catch (error) {
-    throw new Error(
-      `${fechaHoraActual()} - Error al traer el idioma:`,
-      error.message
-    );
+    throw new Error(`Error al traer el idioma:`, error.message);
   }
 };
 
@@ -88,16 +77,13 @@ const cargarIdiomas = async () => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al crear los idiomas:`,
-      error.message
-    );
+    throw new Error(`Error al crear los idiomas:`, error.message);
   }
 };
 
 const crearIdioma = async (nombre) => {
   if (!nombre) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -121,24 +107,19 @@ const crearIdioma = async (nombre) => {
       return area_interes;
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Ya existe un idioma con ese nombre`
-    );
+    throw new Error(`Ya existe un idioma con ese nombre`);
   } catch (error) {
     if (!t.finished) {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al crear el idioma:`,
-      error.message
-    );
+    throw new Error(`Error al crear el idioma:`, error.message);
   }
 };
 
 const modificarIdioma = async (idioma_id, nombre, activo) => {
   if (!idioma_id || !nombre || !activo) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -169,16 +150,13 @@ const modificarIdioma = async (idioma_id, nombre, activo) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al modificar el idioma:`,
-      error.message
-    );
+    throw new Error(`Error al modificar el idioma:`, error.message);
   }
 };
 
 const inactivarIdioma = async (idioma_id) => {
   if (!idioma_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -204,16 +182,13 @@ const inactivarIdioma = async (idioma_id) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al inactivar el idioma:`,
-      error.message
-    );
+    throw new Error(`Error al inactivar el idioma:`, error.message);
   }
 };
 
 const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
   if (!curriculo_id || !idiomas) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -244,16 +219,13 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al agregar el idioma al curriculo:`,
-      error.message
-    );
+    throw new Error(`Error al agregar el idioma al curriculo:`, error.message);
   }
 };
 
 const eliminarIdiomasCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
-    throw new Error(`${fechaHoraActual()} - Datos faltantes`);
+    throw new Error(`Datos faltantes`);
   }
 
   let t;
@@ -276,10 +248,7 @@ const eliminarIdiomasCurriculo = async (curriculo_id) => {
       await t.rollback();
     }
 
-    throw new Error(
-      `${fechaHoraActual()} - Error al eliminar los idiomas:`,
-      error.message
-    );
+    throw new Error(`Error al eliminar los idiomas:`, error.message);
   }
 };
 
