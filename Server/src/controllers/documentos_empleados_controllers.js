@@ -4,9 +4,11 @@ const { conn, Documentos_Empleado } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
 
+const { fechaHoraActual } = require("../utils/formatearFecha");
+
 const traerAnexos = async (empleado_id) => {
   if (!empleado_id) {
-    throw new Error("Datos faltantes");
+    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
   }
 
   try {
@@ -21,13 +23,16 @@ const traerAnexos = async (empleado_id) => {
 
     return anexos;
   } catch (error) {
-    throw new Error("Error al traer todos los anexos: " + error.message);
+    throw new Error(
+      `[${fechaHoraActual}] - Error al traer todos los anexos:`,
+      error.message
+    );
   }
 };
 
 const crearAnexos = async (empleado_id, anexos) => {
   if (!empleado_id || !anexos) {
-    throw new Error("Datos faltantes");
+    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
   }
 
   let t;
@@ -53,7 +58,10 @@ const crearAnexos = async (empleado_id, anexos) => {
 
           fs.unlink(rutaArchivo, (error) => {
             if (error) {
-              console.error("Error al borrar el archivo:", error);
+              console.error(
+                `[${fechaHoraActual}] - Error al borrar el archivo:`,
+                error
+              );
             }
           });
         });
@@ -84,13 +92,16 @@ const crearAnexos = async (empleado_id, anexos) => {
       await t.rollback();
     }
 
-    throw new Error("Error al crear los anexos: " + error.message);
+    throw new Error(
+      `[${fechaHoraActual}] - Error al crear los anexos:`,
+      error.message
+    );
   }
 };
 
 const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
   if (!filename || !pdf_path) {
-    throw new Error("Datos faltantes");
+    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
   }
 
   let t;
@@ -110,7 +121,10 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
 
       fs.unlink(rutaArchivo, (error) => {
         if (error) {
-          console.error("Error al borrar el archivo:", error);
+          console.error(
+            `[${fechaHoraActual}] - Error al borrar el archivo:`,
+            error
+          );
         }
       });
     }
@@ -139,7 +153,10 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
       await t.rollback();
     }
 
-    throw new Error("Error al crear el anexo: " + error.message);
+    throw new Error(
+      `[${fechaHoraActual}] - Error al crear el anexo:`,
+      error.message
+    );
   }
 };
 

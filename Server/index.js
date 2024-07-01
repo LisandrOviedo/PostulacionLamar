@@ -4,6 +4,8 @@ const server = require("./src/server.js");
 const { conn } = require("./src/db.js");
 const PORT = process.env.PORT_SERVER || 3001;
 
+const { fechaHoraActual } = require("./src/utils/formatearFecha.js");
+
 const {
   cargarPreguntasKostick,
 } = require("./src/controllers/preguntas_kostick_controllers.js");
@@ -25,10 +27,10 @@ const { cerrarSesiones } = require("./src/controllers/sesiones_controllers.js");
 const { cargarEtnias } = require("./src/controllers/etnias_controllers.js");
 
 conn
-  .sync({ alter: true })
+  .sync()
   .then(() => {
     server.listen(PORT, () => {
-      console.log(`Server listening on port ${PORT}`);
+      console.log(`[${fechaHoraActual}] - Server listening on port ${PORT}`);
 
       // Cerrar sesiones en la BD
       cerrarSesiones();

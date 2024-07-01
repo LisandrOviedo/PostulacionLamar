@@ -1,5 +1,7 @@
 const { conn, Titulo_Obtenido } = require("../db");
 
+const { fechaHoraActual } = require("../utils/formatearFecha");
+
 const { traerCurriculo } = require("./curriculos_controllers");
 
 const todosLosTitulosObtenidos = async () => {
@@ -7,38 +9,42 @@ const todosLosTitulosObtenidos = async () => {
     const titulos_obtenidos = await Titulo_Obtenido.findAll();
 
     if (!titulos_obtenidos.length) {
-      throw new Error("No existen títulos obtenidos");
+      throw new Error(`[${fechaHoraActual}] - No existen títulos obtenidos`);
     }
 
     return titulos_obtenidos;
   } catch (error) {
     throw new Error(
-      "Error al traer todos los títulos obtenidos: " + error.message
+      `[${fechaHoraActual}] - Error al traer todos los títulos obtenidos:`,
+      error.message
     );
   }
 };
 
 const traerTituloObtenido = async (titulo_obtenido_id) => {
   if (!titulo_obtenido_id) {
-    throw new Error("Datos faltantes");
+    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
   }
 
   try {
     const titulo_obtenido = await Titulo_Obtenido.findByPk(titulo_obtenido_id);
 
     if (!titulo_obtenido) {
-      throw new Error("No existe ese título obtenido");
+      throw new Error(`[${fechaHoraActual}] - No existe ese título obtenido`);
     }
 
     return titulo_obtenido;
   } catch (error) {
-    throw new Error("Error al traer el título obtenido: " + error.message);
+    throw new Error(
+      `[${fechaHoraActual}] - Error al traer el título obtenido:`,
+      error.message
+    );
   }
 };
 
 const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
   if (!curriculo_id || !titulos_obtenidos) {
-    throw new Error("Datos faltantes");
+    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
   }
 
   let t;
@@ -68,7 +74,10 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
       await t.rollback();
     }
 
-    throw new Error("Error al crear los títulos obtenidos: " + error.message);
+    throw new Error(
+      `[${fechaHoraActual}] - Error al crear los títulos obtenidos:`,
+      error.message
+    );
   }
 };
 
@@ -78,7 +87,7 @@ const modificarTitulosObtenidos = async (
   activo
 ) => {
   if (!titulo_obtenido_id || !nombre || !activo) {
-    throw new Error("Datos faltantes");
+    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
   }
 
   let t;
@@ -109,13 +118,16 @@ const modificarTitulosObtenidos = async (
       await t.rollback();
     }
 
-    throw new Error("Error al modificar el título obtenido: " + error.message);
+    throw new Error(
+      `[${fechaHoraActual}] - Error al modificar el título obtenido:`,
+      error.message
+    );
   }
 };
 
 const inactivarTituloObtenido = async (titulo_obtenido_id) => {
   if (!titulo_obtenido_id) {
-    throw new Error("Datos faltantes");
+    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
   }
 
   let t;
@@ -141,13 +153,16 @@ const inactivarTituloObtenido = async (titulo_obtenido_id) => {
       await t.rollback();
     }
 
-    throw new Error("Error al inactivar el título obtenido: " + error.message);
+    throw new Error(
+      `[${fechaHoraActual}] - Error al inactivar el título obtenido:`,
+      error.message
+    );
   }
 };
 
 const eliminarTitulosCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
-    throw new Error("Datos faltantes");
+    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
   }
 
   let t;
@@ -171,7 +186,8 @@ const eliminarTitulosCurriculo = async (curriculo_id) => {
     }
 
     throw new Error(
-      "Error al eliminar los títulos obtenidos: " + error.message
+      `[${fechaHoraActual}] - Error al eliminar los títulos obtenidos:`,
+      error.message
     );
   }
 };

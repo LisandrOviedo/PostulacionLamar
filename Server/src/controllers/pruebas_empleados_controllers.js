@@ -2,9 +2,11 @@ const { Op } = require("sequelize");
 
 const { conn, Pruebas_Empleado, Empleado } = require("../db");
 
+const { fechaHoraActual } = require("../utils/formatearFecha");
+
 const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
   if (!paginaActual || !limitePorPagina) {
-    throw new Error("Datos faltantes");
+    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
   }
 
   try {
@@ -49,13 +51,16 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
 
     return { cantidadPaginas, totalRegistros, pruebas_empleados };
   } catch (error) {
-    throw new Error("Error al traer todas las pruebas: " + error.message);
+    throw new Error(
+      `[${fechaHoraActual}] - Error al traer todas las pruebas:`,
+      error.message
+    );
   }
 };
 
 const traerPruebasEmpleados = async (empleado_id, prueba) => {
   if (!empleado_id || !prueba) {
-    throw new Error("Datos faltantes");
+    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
   }
 
   try {
@@ -70,32 +75,36 @@ const traerPruebasEmpleados = async (empleado_id, prueba) => {
     return pruebas;
   } catch (error) {
     throw new Error(
-      "Error al traer todas las pruebas de ese empleado: " + error.message
+      `[${fechaHoraActual}] - Error al traer todas las pruebas de ese empleado:`,
+      error.message
     );
   }
 };
 
 const traerPrueba = async (prueba_id) => {
   if (!prueba_id) {
-    throw new Error("Datos faltantes");
+    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
   }
 
   try {
     const prueba = await Pruebas_Empleado.findByPk(prueba_id);
 
     if (!prueba) {
-      throw new Error("No existe esa prueba");
+      throw new Error(`[${fechaHoraActual}] - No existe esa prueba`);
     }
 
     return prueba;
   } catch (error) {
-    throw new Error("Error al traer la prueba: " + error.message);
+    throw new Error(
+      `[${fechaHoraActual}] - Error al traer la prueba:`,
+      error.message
+    );
   }
 };
 
 const crearPrueba = async (empleado_id, prueba) => {
   if (!empleado_id || !prueba) {
-    throw new Error("Datos faltantes");
+    throw new Error(`[${fechaHoraActual}] - Datos faltantes`);
   }
 
   let t;
@@ -119,7 +128,10 @@ const crearPrueba = async (empleado_id, prueba) => {
       await t.rollback();
     }
 
-    throw new Error("Error al crear la prueba: " + error.message);
+    throw new Error(
+      `[${fechaHoraActual}] - Error al crear la prueba:`,
+      error.message
+    );
   }
 };
 
