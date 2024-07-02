@@ -356,7 +356,21 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
   try {
     t = await conn.transaction();
 
-    await traerEmpleado(empleado_id);
+    const empleado = await Empleado.findOne({
+      where: {
+        empleado_id: empleado_id,
+      },
+    });
+
+    if (empleado) {
+      const claveTemporal = await bcrypt.compare("1234", empleado.clave);
+
+      if (!claveTemporal) {
+        throw new Error(
+          `Ya has actualizado tu clave temporal anteriormente. Para actualizar tu clave actual primero debes iniciar sesión en tu cuenta y luego dirigirte a "Mi Perfil" y luego a "Actualizar contraseña"`
+        );
+      }
+    }
 
     const claveCifrada = await bcrypt.hash(clave, 10);
 
