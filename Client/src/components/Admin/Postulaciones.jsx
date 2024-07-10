@@ -101,13 +101,15 @@ export function Postulaciones() {
     }
   };
 
-  const handleResetFilters = () => {
+  const handleResetFilters = (e) => {
+    e.preventDefault();
     dispatch(deleteFiltros()).then(function () {
       window.location.reload();
     });
   };
 
-  const handleFind = () => {
+  const handleFind = (e) => {
+    e.preventDefault();
     dispatch(postPaginaActual(1)).then(() => {
       dispatch(postFiltros(filters));
     });
@@ -191,13 +193,15 @@ export function Postulaciones() {
     }
   };
 
-  const paginaAnterior = () => {
+  const paginaAnterior = (e) => {
+    e.preventDefault();
     if (paginaActual > 1) {
       dispatch(postPaginaActual(paginaActual - 1));
     }
   };
 
-  const paginaSiguiente = () => {
+  const paginaSiguiente = (e) => {
+    e.preventDefault();
     if (paginaActual < curriculos.cantidadPaginas) {
       dispatch(postPaginaActual(paginaActual + 1));
     }
