@@ -86,7 +86,7 @@ module.exports = (sequelize) => {
     },
     nacimiento_ciudad_id: {
       // Campo relacionado
-      type: DataTypes.STRING(50),
+      type: DataTypes.UUID,
       allowNull: true,
     },
     nacimiento_estado_id: {
