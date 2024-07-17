@@ -7,12 +7,34 @@ module.exports = (sequelize) => {
       primaryKey: true,
       defaultValue: UUIDV4,
     },
-    curriculo_id: {
+    empleado_id: {
       // Campo relacionado
       type: DataTypes.UUID,
       allowNull: false,
     },
-    nombre: {
+    grado_instruccion: {
+      type: DataTypes.ENUM(
+        "Primaria",
+        "Secundaria",
+        "Técnica",
+        "Universitaria",
+        "Postgrado"
+      ),
+      allowNull: false,
+    },
+    fecha_desde: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    fecha_hasta: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    nombre_instituto: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    titulo_obtenido: {
       type: DataTypes.STRING,
       allowNull: false,
     },
