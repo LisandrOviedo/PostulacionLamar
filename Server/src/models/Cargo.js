@@ -24,6 +24,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(80),
       allowNull: false,
     },
+    descripcion_cargo_antiguo: {
+      type: DataTypes.STRING(80),
+      allowNull: false,
+    },
     salario_min: {
       type: DataTypes.DECIMAL(11, 2),
       allowNull: false,
