@@ -7,18 +7,22 @@ module.exports = (sequelize) => {
       primaryKey: true,
       defaultValue: UUIDV4,
     },
-    curriculo_id: {
+    empleado_id: {
       // Campo relacionado
       type: DataTypes.UUID,
       allowNull: false,
     },
     tipo: {
       type: DataTypes.ENUM("Laboral", "Curso"),
-      defaultValue: "Laboral",
+      allowNull: false,
+    },
+    empresa_centro_educativo: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
     },
     cargo_titulo: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     duracion: {
       type: DataTypes.ENUM(
@@ -28,10 +32,6 @@ module.exports = (sequelize) => {
         "5 años o más"
       ),
       defaultValue: "Menos de 1 año",
-    },
-    empresa_centro_educativo: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
     },
     activo: {
       type: DataTypes.BOOLEAN,
