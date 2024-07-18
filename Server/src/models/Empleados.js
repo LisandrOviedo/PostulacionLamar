@@ -1,7 +1,7 @@
 const { DataTypes, UUIDV4 } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define("Empleado", {
+  sequelize.define("Empleados", {
     empleado_id: {
       type: DataTypes.UUID,
       primaryKey: true,
@@ -99,64 +99,12 @@ module.exports = (sequelize) => {
       type: DataTypes.UUID,
       allowNull: true,
     },
-    calle_avenida: {
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    parroquia_id: {
-      // Campo relacionado
-      type: DataTypes.UUID,
-      allowNull: true,
-    },
-    municipio_id: {
-      // Campo relacionado
-      type: DataTypes.UUID,
-      allowNull: true,
-    },
-    tipo_vivienda: {
-      type: DataTypes.ENUM("Casa", "Edificio"),
-      allowNull: true,
-    },
-    numero_casa: {
-      type: DataTypes.STRING(10),
-      allowNull: true,
-    },
-    piso: {
-      type: DataTypes.INTEGER(2),
-      allowNull: true,
-    },
-    apartamento: {
-      type: DataTypes.STRING(20),
-      allowNull: true,
-    },
-    urbanizacion_sector: {
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    estado_id: {
-      // Campo relacionado
-      type: DataTypes.UUID,
-      allowNull: true,
-    },
-    pais_id: {
-      // Campo relacionado
-      type: DataTypes.UUID,
-      allowNull: true,
-    },
-    licencia_conducir: {
-      type: DataTypes.ENUM("Si", "No"),
-      allowNull: true,
-    },
-    licencia_grado: {
+    licencia_conducir_grado: {
       type: DataTypes.INTEGER(1),
       allowNull: true,
     },
-    licencia_vencimiento: {
+    licencia_conducir_vencimiento: {
       type: DataTypes.DATEONLY,
-      allowNull: true,
-    },
-    carta_medica: {
-      type: DataTypes.ENUM("Si", "No"),
       allowNull: true,
     },
     carta_medica_vencimiento: {
@@ -175,11 +123,7 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(10),
       allowNull: true,
     },
-    trabajo_anteriormente: {
-      type: DataTypes.ENUM("Si", "No"),
-      allowNull: true,
-    },
-    trabajo_especifique: {
+    trabajo_anteriormente_especifique: {
       type: DataTypes.STRING(50),
       allowNull: true,
     },
