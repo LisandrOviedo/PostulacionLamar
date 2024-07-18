@@ -2,7 +2,7 @@ const {
   conn,
   Preguntas_Kostick,
   Respuestas_Kostick,
-  Pruebas_Empleado,
+  Pruebas_Empleados,
 } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
@@ -47,7 +47,7 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
 
     await t.commit();
 
-    const respuestas_kostick = await Pruebas_Empleado.findOne({
+    const respuestas_kostick = await Pruebas_Empleados.findOne({
       attributes: ["createdAt"],
       include: [
         {
@@ -115,7 +115,7 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
       `${destPath}/${DDMMYYYY(respuestas_kostick.createdAt)} - Kostick.xlsx`
     );
 
-    await Pruebas_Empleado.update(
+    await Pruebas_Empleados.update(
       {
         nombre: `${DDMMYYYY(respuestas_kostick.createdAt)} - Kostick.xlsx`,
         ruta: `${destPath}/${DDMMYYYY(

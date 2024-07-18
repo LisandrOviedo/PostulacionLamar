@@ -1,10 +1,10 @@
-const { conn, Etnia } = require("../db");
+const { conn, Etnias } = require("../db");
 
 const { etnias } = require("../utils/etnias");
 
 const todasLasEtnias = async () => {
   try {
-    const etnias = await Etnia.findAll();
+    const etnias = await Etnias.findAll();
 
     if (!etnias.length) {
       throw new Error(`No existen etnias`);
@@ -18,7 +18,7 @@ const todasLasEtnias = async () => {
 
 const todasLasEtniasActivas = async () => {
   try {
-    const etnias = await Etnia.findAll({
+    const etnias = await Etnias.findAll({
       where: { activo: true },
     });
 
@@ -38,7 +38,7 @@ const traerEtnia = async (etnia_id) => {
   }
 
   try {
-    const etnia = await Etnia.findByPk(etnia_id);
+    const etnia = await Etnias.findByPk(etnia_id);
 
     if (!etnia) {
       throw new Error(`No existe esa etnia`);
@@ -57,7 +57,7 @@ const cargarEtnias = async () => {
     t = await conn.transaction();
 
     for (const etnia of etnias) {
-      const [crearEtnia, created] = await Etnia.findOrCreate({
+      const [crearEtnia, created] = await Etnias.findOrCreate({
         where: { nombre: etnia },
         defaults: {
           nombre: etnia,
@@ -86,7 +86,7 @@ const crearEtnia = async (nombre) => {
   try {
     t = await conn.transaction();
 
-    const [etnia, created] = await Etnia.findOrCreate({
+    const [etnia, created] = await Etnias.findOrCreate({
       where: { nombre: nombre },
       defaults: {
         nombre: nombre,
@@ -122,7 +122,7 @@ const modificarEtnia = async (etnia_id, nombre, activo) => {
 
     await traerEtnia(etnia_id);
 
-    await Etnia.update(
+    await Etnias.update(
       {
         nombre: nombre,
         activo: activo,
@@ -159,7 +159,7 @@ const inactivarEtnia = async (etnia_id) => {
 
     const etnia = await traerEtnia(etnia_id);
 
-    await Etnia.update(
+    await Etnias.update(
       { activo: !etnia.activo },
       {
         where: { etnia_id: etnia_id },

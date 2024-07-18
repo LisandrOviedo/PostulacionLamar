@@ -261,7 +261,6 @@ const getCurriculoEmpleado = async (req, res) => {
 const postCurriculo = async (req, res) => {
   const {
     empleado_id,
-    grado_instruccion,
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
     habilidades_tecnicas,
@@ -270,7 +269,6 @@ const postCurriculo = async (req, res) => {
   try {
     const response = await crearCurriculo(
       empleado_id,
-      grado_instruccion,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
       habilidades_tecnicas
@@ -285,7 +283,6 @@ const postCurriculo = async (req, res) => {
 const putCurriculo = async (req, res) => {
   const {
     curriculo_id,
-    grado_instruccion,
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
     cantidad_hijos,
@@ -295,7 +292,6 @@ const putCurriculo = async (req, res) => {
   try {
     const response = await modificarCurriculo(
       curriculo_id,
-      grado_instruccion,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
       cantidad_hijos,

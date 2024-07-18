@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const { conn, Documentos_Empleado } = require("../db");
+const { conn, Documentos_Empleados } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
 
@@ -14,7 +14,7 @@ const traerAnexos = async (empleado_id) => {
   try {
     await traerEmpleado(empleado_id);
 
-    const anexos = await Documentos_Empleado.findAll({
+    const anexos = await Documentos_Empleados.findAll({
       attributes: {
         exclude: ["documento_empleado_id", "empleado_id", "activo"],
       },
@@ -43,7 +43,7 @@ const crearAnexos = async (empleado_id, anexos) => {
       const arreglo = anexos[key];
 
       for (const elemento of arreglo) {
-        const documentosActuales = await Documentos_Empleado.findAll({
+        const documentosActuales = await Documentos_Empleados.findAll({
           where: {
             empleado_id: empleado_id,
             tipo: elemento.fieldname,
@@ -63,7 +63,7 @@ const crearAnexos = async (empleado_id, anexos) => {
           });
         });
 
-        await Documentos_Empleado.destroy({
+        await Documentos_Empleados.destroy({
           where: {
             empleado_id: empleado_id,
             tipo: elemento.fieldname,
@@ -71,7 +71,7 @@ const crearAnexos = async (empleado_id, anexos) => {
           transaction: t,
         });
 
-        await Documentos_Empleado.create(
+        await Documentos_Empleados.create(
           {
             empleado_id: empleado_id,
             tipo: elemento.fieldname,
@@ -103,7 +103,7 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
   try {
     t = await conn.transaction();
 
-    const pdf_actual = await Documentos_Empleado.findOne({
+    const pdf_actual = await Documentos_Empleados.findOne({
       where: {
         empleado_id: empleado_id,
         tipo: "perfil_pdf",
@@ -123,7 +123,7 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
       });
     }
 
-    await Documentos_Empleado.destroy({
+    await Documentos_Empleados.destroy({
       where: {
         empleado_id: empleado_id,
         tipo: "perfil_pdf",
@@ -131,7 +131,7 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
       transaction: t,
     });
 
-    await Documentos_Empleado.create(
+    await Documentos_Empleados.create(
       {
         empleado_id: empleado_id,
         tipo: "perfil_pdf",

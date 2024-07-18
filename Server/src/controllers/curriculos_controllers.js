@@ -2,13 +2,13 @@ const { Op } = require("sequelize");
 
 const {
   conn,
-  Curriculo,
-  Empleado,
-  Titulo_Obtenido,
+  Curriculos,
+  Empleados,
+  Titulos_Obtenidos,
   Areas_Interes,
-  Experiencia,
-  Documentos_Empleado,
-  Idioma,
+  Experiencias,
+  Documentos_Empleados,
+  Idiomas,
 } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
@@ -22,19 +22,19 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
 
   try {
     const { count: totalRegistros, rows: dataCurriculos } =
-      await Curriculo.findAndCountAll({
+      await Curriculos.findAndCountAll({
         attributes: {
           exclude: ["empleado_id"],
         },
         include: [
           {
-            model: Empleado,
+            model: Empleados,
             attributes: {
               exclude: ["createdAt", "updatedAt"],
             },
             include: [
               {
-                model: Documentos_Empleado,
+                model: Documentos_Empleados,
                 attributes: ["tipo", "nombre"],
                 where: { tipo: "perfil_pdf" },
               },
@@ -58,19 +58,19 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
               : {},
           },
           {
-            model: Titulo_Obtenido,
+            model: Titulos_Obtenidos,
             attributes: {
               exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
             },
           },
           {
-            model: Experiencia,
+            model: Experiencias,
             attributes: {
               exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
             },
           },
           {
-            model: Idioma,
+            model: Idiomas,
             attributes: {
               exclude: ["activo", "createdAt", "updatedAt"],
             },
@@ -84,7 +84,7 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
         distinct: true,
         order: [
           filtros.orden_campo === "apellidos"
-            ? [Empleado, "apellidos", filtros.orden_por]
+            ? [Empleados, "apellidos", filtros.orden_por]
             : filtros.orden_campo === "grado_instruccion"
             ? ["grado_instruccion", filtros.orden_por]
             : filtros.orden_campo === "updatedAt"
@@ -111,7 +111,7 @@ const traerCurriculo = async (curriculo_id) => {
   }
 
   try {
-    return await Curriculo.findByPk(curriculo_id);
+    return await Curriculos.findByPk(curriculo_id);
   } catch (error) {
     throw new Error(`Error al traer el curriculo: ${error.message}`);
   }
@@ -132,41 +132,41 @@ const traerCurriculoPDF = async (empleado_id) => {
       contenido: [
         {
           titulo_campo: "Nombre completo: ",
-          descripcion_campo: `${curriculo.Empleado.nombres} ${curriculo.Empleado.apellidos}`,
+          descripcion_campo: `${curriculo.Empleados.nombres} ${curriculo.Empleados.apellidos}`,
         },
         {
           titulo_campo: "Fecha de nacimiento: ",
           descripcion_campo: `${
-            curriculo.Empleado.fecha_nacimiento
-          } (${calcularEdad(curriculo.Empleado.fecha_nacimiento)} años)`,
+            curriculo.Empleados.fecha_nacimiento
+          } (${calcularEdad(curriculo.Empleados.fecha_nacimiento)} años)`,
         },
         {
           titulo_campo: "Número de cédula o identidad: ",
-          descripcion_campo: curriculo.Empleado.cedula,
+          descripcion_campo: curriculo.Empleados.cedula,
         },
         {
           titulo_campo: "Género: ",
-          descripcion_campo: curriculo.Empleado.genero,
+          descripcion_campo: curriculo.Empleados.genero,
         },
         {
           titulo_campo: "Etnia: ",
-          descripcion_campo: curriculo.Empleado.etnia,
+          descripcion_campo: curriculo.Empleados.etnia,
         },
         {
           titulo_campo: "Número de teléfono: ",
-          descripcion_campo: curriculo.Empleado.telefono,
+          descripcion_campo: curriculo.Empleados.telefono,
         },
         {
           titulo_campo: "Correo electrónico: ",
-          descripcion_campo: curriculo.Empleado.correo,
+          descripcion_campo: curriculo.Empleados.correo,
         },
         {
           titulo_campo: "Dirección: ",
-          descripcion_campo: curriculo.Empleado.direccion,
+          descripcion_campo: curriculo.Empleados.direccion,
         },
         {
           titulo_campo: "Cantidad hijos: ",
-          descripcion_campo: curriculo.Empleado.cantidad_hijos,
+          descripcion_campo: curriculo.Empleados.cantidad_hijos,
         },
         {
           titulo_campo: "Grado de instrucción: ",
@@ -209,7 +209,7 @@ const traerCurriculoPDF = async (empleado_id) => {
 
     let experiencias = [];
 
-    curriculo.Experiencia.forEach((experiencia) => {
+    curriculo.Experiencias.forEach((experiencia) => {
       experiencias.push({
         tipo: experiencia.tipo,
         cargo_titulo: experiencia.cargo_titulo,
@@ -309,14 +309,14 @@ const cambiarEstadoRevisado = async (empleado_id) => {
 
     await traerEmpleado(empleado_id);
 
-    const curriculo = await Curriculo.findOne({
+    const curriculo = await Curriculos.findOne({
       where: {
         empleado_id: empleado_id,
       },
     });
 
     if (curriculo.estado === "Pendiente por revisar") {
-      await Curriculo.update(
+      await Curriculos.update(
         {
           estado: "Revisado",
         },
@@ -331,7 +331,7 @@ const cambiarEstadoRevisado = async (empleado_id) => {
 
     await t.commit();
 
-    return await Curriculo.findOne({
+    return await Curriculos.findOne({
       where: {
         empleado_id: empleado_id,
       },
@@ -353,7 +353,7 @@ const traerCurriculoEmpleado = async (empleado_id) => {
   try {
     await traerEmpleado(empleado_id);
 
-    const curriculo = await Curriculo.findOne({
+    const curriculo = await Curriculos.findOne({
       where: {
         empleado_id: empleado_id,
         activo: true,
@@ -363,7 +363,7 @@ const traerCurriculoEmpleado = async (empleado_id) => {
       },
       include: [
         {
-          model: Empleado,
+          model: Empleados,
           attributes: {
             exclude: ["clave", "createdAt", "updatedAt"],
           },
@@ -378,19 +378,19 @@ const traerCurriculoEmpleado = async (empleado_id) => {
           },
         },
         {
-          model: Titulo_Obtenido,
+          model: Titulos_Obtenidos,
           attributes: {
             exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
           },
         },
         {
-          model: Experiencia,
+          model: Experiencias,
           attributes: {
             exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
           },
         },
         {
-          model: Idioma,
+          model: Idiomas,
           attributes: ["idioma_id", "nombre"],
           through: {
             attributes: ["nivel"],
@@ -409,12 +409,11 @@ const traerCurriculoEmpleado = async (empleado_id) => {
 
 const crearCurriculo = async (
   empleado_id,
-  grado_instruccion,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
   habilidades_tecnicas
 ) => {
-  if (!empleado_id || !grado_instruccion) {
+  if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -425,11 +424,10 @@ const crearCurriculo = async (
 
     await traerEmpleado(empleado_id);
 
-    const [curriculo, created] = await Curriculo.findOrCreate({
+    const [curriculo, created] = await Curriculos.findOrCreate({
       where: { empleado_id: empleado_id },
       defaults: {
         empleado_id: empleado_id,
-        grado_instruccion: grado_instruccion,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
         habilidades_tecnicas: habilidades_tecnicas,
@@ -455,12 +453,11 @@ const crearCurriculo = async (
 
 const modificarCurriculo = async (
   curriculo_id,
-  grado_instruccion,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
   habilidades_tecnicas
 ) => {
-  if (!curriculo_id || !grado_instruccion) {
+  if (!curriculo_id) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -471,9 +468,8 @@ const modificarCurriculo = async (
 
     await traerCurriculo(curriculo_id);
 
-    await Curriculo.update(
+    await Curriculos.update(
       {
-        grado_instruccion: grado_instruccion,
         disponibilidad_viajar: disponibilidad_viajar,
         disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
         habilidades_tecnicas: habilidades_tecnicas,
@@ -511,7 +507,7 @@ const inactivarCurriculo = async (curriculo_id) => {
 
     const curriculo = await traerCurriculo(curriculo_id);
 
-    await Curriculo.update(
+    await Curriculos.update(
       { activo: !curriculo.activo },
       {
         where: { curriculo_id: curriculo_id },

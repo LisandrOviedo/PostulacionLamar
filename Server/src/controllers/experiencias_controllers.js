@@ -1,10 +1,10 @@
-const { conn, Experiencia } = require("../db");
+const { conn, Experiencias } = require("../db");
 
 const { traerCurriculo } = require("./curriculos_controllers");
 
 const todasLasExperiencias = async () => {
   try {
-    const experiencias = await Experiencia.findAll();
+    const experiencias = await Experiencias.findAll();
 
     if (!experiencias.length) {
       throw new Error(`No existen experiencias`);
@@ -22,7 +22,7 @@ const traerExperiencia = async (experiencia_id) => {
   }
 
   try {
-    const experiencia = await Experiencia.findByPk(experiencia_id);
+    const experiencia = await Experiencias.findByPk(experiencia_id);
 
     if (!experiencia) {
       throw new Error(`No existe esa experiencia`);
@@ -47,7 +47,7 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
     t = await conn.transaction();
 
     for (const exp of experiencias) {
-      const [experiencia, created] = await Experiencia.findOrCreate({
+      const [experiencia, created] = await Experiencias.findOrCreate({
         where: {
           curriculo_id: curriculo_id,
           tipo: exp.tipo,
@@ -103,7 +103,7 @@ const modificarExperiencia = async (
 
     await traerExperiencia(experiencia_id);
 
-    await Experiencia.update(
+    await Experiencias.update(
       {
         tipo: tipo,
         cargo_titulo_id: cargo_titulo_id,
@@ -144,7 +144,7 @@ const inactivarExperiencia = async (experiencia_id) => {
 
     const experiencia = await traerExperiencia(experiencia_id);
 
-    await Experiencia.update(
+    await Experiencias.update(
       { activo: !experiencia.activo },
       {
         where: { experiencia_id: experiencia_id },
@@ -176,7 +176,7 @@ const eliminarExperienciasCurriculo = async (curriculo_id) => {
 
     await traerCurriculo(curriculo_id);
 
-    await Experiencia.destroy({
+    await Experiencias.destroy({
       where: {
         curriculo_id: curriculo_id,
       },

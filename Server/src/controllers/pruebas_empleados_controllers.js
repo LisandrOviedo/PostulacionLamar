@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
 
-const { conn, Pruebas_Empleado, Empleado } = require("../db");
+const { conn, Pruebas_Empleados, Empleados } = require("../db");
 
 const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
   if (!paginaActual || !limitePorPagina) {
@@ -9,11 +9,11 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
 
   try {
     const { count: totalRegistros, rows: dataPruebasEmpleados } =
-      await Pruebas_Empleado.findAndCountAll({
+      await Pruebas_Empleados.findAndCountAll({
         attributes: ["prueba_id", "prueba", "nombre", "createdAt"],
         include: [
           {
-            model: Empleado,
+            model: Empleados,
             attributes: [
               "empleado_id",
               "cedula",
@@ -32,7 +32,7 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
         where: filtros.prueba ? { prueba: filtros.prueba } : {},
         order: [
           filtros.orden_campo === "apellidos"
-            ? [Empleado, "apellidos", filtros.orden_por]
+            ? [Empleados, "apellidos", filtros.orden_por]
             : filtros.orden_campo === "prueba"
             ? ["prueba", filtros.orden_por]
             : filtros.orden_campo === "createdAt"
@@ -59,7 +59,7 @@ const traerPruebasEmpleados = async (empleado_id, prueba) => {
   }
 
   try {
-    const pruebas = await Pruebas_Empleado.findAll({
+    const pruebas = await Pruebas_Empleados.findAll({
       where: {
         empleado_id: empleado_id,
         prueba: prueba,
@@ -81,7 +81,7 @@ const traerPrueba = async (prueba_id) => {
   }
 
   try {
-    const prueba = await Pruebas_Empleado.findByPk(prueba_id);
+    const prueba = await Pruebas_Empleados.findByPk(prueba_id);
 
     if (!prueba) {
       throw new Error(`No existe esa prueba`);
@@ -103,7 +103,7 @@ const crearPrueba = async (empleado_id, prueba) => {
   try {
     t = await conn.transaction();
 
-    const crearPrueba = await Pruebas_Empleado.create(
+    const crearPrueba = await Pruebas_Empleados.create(
       {
         empleado_id: empleado_id,
         prueba: prueba,

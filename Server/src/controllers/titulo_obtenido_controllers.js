@@ -1,10 +1,10 @@
-const { conn, Titulo_Obtenido } = require("../db");
+const { conn, Titulos_Obtenidos } = require("../db");
 
-const { traerCurriculo } = require("./curriculos_controllers");
+const { traerEmpleado } = require("./empleados_controllers");
 
 const todosLosTitulosObtenidos = async () => {
   try {
-    const titulos_obtenidos = await Titulo_Obtenido.findAll();
+    const titulos_obtenidos = await Titulos_Obtenidos.findAll();
 
     if (!titulos_obtenidos.length) {
       throw new Error(`No existen títulos obtenidos`);
@@ -24,7 +24,7 @@ const traerTituloObtenido = async (titulo_obtenido_id) => {
   }
 
   try {
-    const titulo_obtenido = await Titulo_Obtenido.findByPk(titulo_obtenido_id);
+    const titulo_obtenido = await Titulos_Obtenidos.findByPk(titulo_obtenido_id);
 
     if (!titulo_obtenido) {
       throw new Error(`No existe ese título obtenido`);
@@ -36,8 +36,8 @@ const traerTituloObtenido = async (titulo_obtenido_id) => {
   }
 };
 
-const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
-  if (!curriculo_id || !titulos_obtenidos) {
+const crearTitulosObtenidos = async (empleado_id, titulos_obtenidos) => {
+  if (!empleado_id || !titulos_obtenidos) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -46,17 +46,22 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
   try {
     t = await conn.transaction();
 
-    await traerCurriculo(curriculo_id);
+    await traerEmpleado(empleado_id);
 
     for (const titulo of titulos_obtenidos) {
-      const [titulo_obtenido, created] = await Titulo_Obtenido.findOrCreate({
+      const [titulo_obtenido, created] = await Titulos_Obtenidos.findOrCreate({
         where: {
-          curriculo_id: curriculo_id,
-          nombre: titulo.nombre,
+          empleado_id: empleado_id,
+          nombre_instituto: titulo.nombre_instituto,
+          titulo_obtenido: titulo.titulo_obtenido,
         },
         defaults: {
-          curriculo_id: curriculo_id,
-          nombre: titulo.nombre,
+          empleado_id: empleado_id,
+          grado_instruccion: titulo.grado_instruccion,
+          fecha_desde: titulo.fecha_desde,
+          fecha_hasta: titulo.fecha_hasta,
+          nombre_instituto: titulo.nombre_instituto,
+          titulo_obtenido: titulo.titulo_obtenido,
         },
         transaction: t,
       });
@@ -74,10 +79,22 @@ const crearTitulosObtenidos = async (curriculo_id, titulos_obtenidos) => {
 
 const modificarTitulosObtenidos = async (
   titulo_obtenido_id,
-  nombre,
+  grado_instruccion,
+  fecha_desde,
+  fecha_hasta,
+  nombre_instituto,
+  titulo_obtenido,
   activo
 ) => {
-  if (!titulo_obtenido_id || !nombre || !activo) {
+  if (
+    !titulo_obtenido_id ||
+    !grado_instruccion ||
+    !fecha_desde ||
+    !fecha_hasta ||
+    !nombre_instituto ||
+    !titulo_obtenido ||
+    !activo
+  ) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -88,10 +105,13 @@ const modificarTitulosObtenidos = async (
 
     await traerTituloObtenido(titulo_obtenido_id);
 
-    await Titulo_Obtenido.update(
+    await Titulos_Obtenidos.update(
       {
-        nombre: nombre,
-        activo: activo,
+        grado_instruccion: grado_instruccion,
+        fecha_desde: fecha_desde,
+        fecha_hasta: fecha_hasta,
+        nombre_instituto: nombre_instituto,
+        titulo_obtenido: titulo_obtenido,
       },
       {
         where: {
@@ -125,7 +145,7 @@ const inactivarTituloObtenido = async (titulo_obtenido_id) => {
 
     const titulo_obtenido = await traerTituloObtenido(titulo_obtenido_id);
 
-    await Titulo_Obtenido.update(
+    await Titulos_Obtenidos.update(
       { activo: !titulo_obtenido.activo },
       {
         where: { titulo_obtenido_id: titulo_obtenido_id },
@@ -145,8 +165,8 @@ const inactivarTituloObtenido = async (titulo_obtenido_id) => {
   }
 };
 
-const eliminarTitulosCurriculo = async (curriculo_id) => {
-  if (!curriculo_id) {
+const eliminarTitulosEmpleado = async (empleado_id) => {
+  if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -155,11 +175,11 @@ const eliminarTitulosCurriculo = async (curriculo_id) => {
   try {
     t = await conn.transaction();
 
-    await traerCurriculo(curriculo_id);
+    await traerEmpleado(empleado_id);
 
-    await Titulo_Obtenido.destroy({
+    await Titulos_Obtenidos.destroy({
       where: {
-        curriculo_id: curriculo_id,
+        empleado_id: empleado_id,
       },
       transaction: t,
     });
@@ -170,7 +190,9 @@ const eliminarTitulosCurriculo = async (curriculo_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al eliminar los títulos obtenidos: ${error.message}`);
+    throw new Error(
+      `Error al eliminar los títulos obtenidos: ${error.message}`
+    );
   }
 };
 
@@ -180,5 +202,5 @@ module.exports = {
   crearTitulosObtenidos,
   modificarTitulosObtenidos,
   inactivarTituloObtenido,
-  eliminarTitulosCurriculo,
+  eliminarTitulosEmpleado,
 };

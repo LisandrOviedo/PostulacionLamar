@@ -1,4 +1,4 @@
-const { conn, Idioma, Idiomas_Curriculo } = require("../db");
+const { conn, Idiomas, Idiomas_Curriculos } = require("../db");
 
 const { traerCurriculo } = require("./curriculos_controllers");
 
@@ -6,7 +6,7 @@ const { idiomas } = require("../utils/idiomas");
 
 const todosLosIdiomas = async () => {
   try {
-    const idiomas = await Idioma.findAll({
+    const idiomas = await Idiomas.findAll({
       order: [["nombre", "ASC"]],
     });
 
@@ -22,7 +22,7 @@ const todosLosIdiomas = async () => {
 
 const todosLosIdiomasActivos = async () => {
   try {
-    const idiomas = await Idioma.findAll({
+    const idiomas = await Idiomas.findAll({
       where: { activo: true },
       order: [["nombre", "ASC"]],
     });
@@ -43,7 +43,7 @@ const traerIdioma = async (idioma_id) => {
   }
 
   try {
-    const idioma = await Idioma.findByPk(idioma_id);
+    const idioma = await Idiomas.findByPk(idioma_id);
 
     if (!idioma) {
       throw new Error(`No existe esa idioma`);
@@ -62,7 +62,7 @@ const cargarIdiomas = async () => {
     t = await conn.transaction();
 
     for (const idioma of idiomas) {
-      const [crearIdioma, created] = await Idioma.findOrCreate({
+      const [crearIdioma, created] = await Idiomas.findOrCreate({
         where: { nombre: idioma },
         defaults: {
           nombre: idioma,
@@ -91,7 +91,7 @@ const crearIdioma = async (nombre) => {
   try {
     t = await conn.transaction();
 
-    const [idioma, created] = await Idioma.findOrCreate({
+    const [idioma, created] = await Idiomas.findOrCreate({
       where: {
         nombre: nombre,
       },
@@ -129,7 +129,7 @@ const modificarIdioma = async (idioma_id, nombre, activo) => {
 
     await traerIdioma(idioma_id);
 
-    await Idioma.update(
+    await Idiomas.update(
       {
         nombre: nombre,
         activo: activo,
@@ -166,7 +166,7 @@ const inactivarIdioma = async (idioma_id) => {
 
     const idioma = await traerIdioma(idioma_id);
 
-    await Idioma.update(
+    await Idiomas.update(
       { activo: !idioma.activo },
       {
         where: { idioma_id: idioma_id },
@@ -199,7 +199,7 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
     await traerCurriculo(curriculo_id);
 
     for (const idioma of idiomas) {
-      const [crearIdioma, created] = await Idiomas_Curriculo.findOrCreate({
+      const [crearIdioma, created] = await Idiomas_Curriculos.findOrCreate({
         where: {
           curriculo_id: curriculo_id,
           idioma_id: idioma.idioma_id,
@@ -207,7 +207,7 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
         defaults: {
           curriculo_id: curriculo_id,
           idioma_id: idioma.idioma_id,
-          nivel: idioma.nivel || idioma.Idiomas_Curriculo.nivel,
+          nivel: idioma.nivel || idioma.Idiomas_Curriculos.nivel,
         },
         transaction: t,
       });
@@ -219,7 +219,9 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al agregar el idioma al curriculo: ${error.message}`);
+    throw new Error(
+      `Error al agregar el idioma al curriculo: ${error.message}`
+    );
   }
 };
 
@@ -235,7 +237,7 @@ const eliminarIdiomasCurriculo = async (curriculo_id) => {
 
     await traerCurriculo(curriculo_id);
 
-    await Idiomas_Curriculo.destroy({
+    await Idiomas_Curriculos.destroy({
       where: {
         curriculo_id: curriculo_id,
       },

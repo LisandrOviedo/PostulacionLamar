@@ -32,10 +32,6 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM("Si", "No"),
       allowNull: false,
     },
-    cicatriz: {
-      type: DataTypes.ENUM("Si", "No"),
-      allowNull: false,
-    },
     cicatriz_especifique: {
       type: DataTypes.STRING,
       allowNull: false,

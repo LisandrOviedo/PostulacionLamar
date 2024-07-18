@@ -4,14 +4,14 @@ const {
   crearTitulosObtenidos,
   modificarTitulosObtenidos,
   inactivarTituloObtenido,
-  eliminarTitulosCurriculo,
+  eliminarTitulosEmpleado,
 } = require("../controllers/titulo_obtenido_controllers");
 
 const getTitulosObtenidos = async (req, res) => {
-  const { curriculo_id } = req.params;
+  const { empleado_id } = req.params;
 
   try {
-    const response = await todosLosTitulosObtenidos(curriculo_id);
+    const response = await todosLosTitulosObtenidos(empleado_id);
 
     return res.json(response);
   } catch (error) {
@@ -32,11 +32,11 @@ const getTituloObtenido = async (req, res) => {
 };
 
 const postTitulosObtenidos = async (req, res) => {
-  const { curriculo_id, titulos_obtenidos } = req.body;
+  const { empleado_id, titulos_obtenidos } = req.body;
 
   try {
     const response = await crearTitulosObtenidos(
-      curriculo_id,
+      empleado_id,
       titulos_obtenidos
     );
 
@@ -47,11 +47,11 @@ const postTitulosObtenidos = async (req, res) => {
 };
 
 const putTituloObtenido = async (req, res) => {
-  const { curriculo_id, titulos_obtenidos } = req.body;
+  const { empleado_id, titulos_obtenidos } = req.body;
 
   try {
     const response = await modificarTitulosObtenidos(
-      curriculo_id,
+      empleado_id,
       titulos_obtenidos
     );
 
@@ -73,11 +73,11 @@ const deleteTituloObtenido = async (req, res) => {
   }
 };
 
-const deleteTitulosCurriculo = async (req, res) => {
-  const { curriculo_id } = req.params;
+const deleteTitulosEmpleado = async (req, res) => {
+  const { empleado_id } = req.params;
 
   try {
-    const response = await eliminarTitulosCurriculo(curriculo_id);
+    const response = await eliminarTitulosEmpleado(empleado_id);
 
     return res.status(201).json(response);
   } catch (error) {
@@ -91,5 +91,5 @@ module.exports = {
   postTitulosObtenidos,
   putTituloObtenido,
   deleteTituloObtenido,
-  deleteTitulosCurriculo,
+  deleteTitulosEmpleado,
 };
