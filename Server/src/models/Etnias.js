@@ -1,20 +1,14 @@
 const { DataTypes, UUIDV4 } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define("Area_Interes_Curriculo", {
-    area_interes_curriculo_id: {
+  sequelize.define("Etnias", {
+    etnia_id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: UUIDV4,
     },
-    curriculo_id: {
-      // Campo relacionado
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
-    area_interes_id: {
-      // Campo relacionado
-      type: DataTypes.UUID,
+    nombre: {
+      type: DataTypes.STRING(70),
       allowNull: false,
     },
     activo: {

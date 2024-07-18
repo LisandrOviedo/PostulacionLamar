@@ -1,32 +1,37 @@
 const { DataTypes, UUIDV4 } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define("Curriculo", {
-    curriculo_id: {
+  sequelize.define("Fichas_Ingresos", {
+    ficha_ingreso_id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: UUIDV4,
+    },
+    codigo_revision: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
     },
     empleado_id: {
       // Campo relacionado
       type: DataTypes.UUID,
       allowNull: false,
     },
-    disponibilidad_viajar: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
-    disponibilidad_cambio_residencia: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
-    habilidades_tecnicas: {
-      type: DataTypes.STRING,
+    cargo_id: {
+      // Campo relacionado
+      type: DataTypes.UUID,
       allowNull: false,
     },
-    estado: {
-      type: DataTypes.ENUM("Pendiente por revisar", "Revisado"),
-      defaultValue: "Pendiente por revisar",
+    salario: {
+      type: DataTypes.DECIMAL(11, 2),
+      allowNull: false,
+    },
+    fecha_ingreso: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    observaciones: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     activo: {
       type: DataTypes.BOOLEAN,

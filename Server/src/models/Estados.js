@@ -1,28 +1,20 @@
 const { DataTypes, UUIDV4 } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define("Pruebas_Empleado", {
-    prueba_id: {
+  sequelize.define("Estados", {
+    estado_id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: UUIDV4,
     },
-    empleado_id: {
+    pais_id: {
       // Campo relacionado
       type: DataTypes.UUID,
       allowNull: false,
     },
-    prueba: {
-      type: DataTypes.ENUM("Kostick"),
-      allowNull: false,
-    },
     nombre: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    ruta: {
-      type: DataTypes.STRING,
-      allowNull: true,
+      type: DataTypes.STRING(100),
+      allowNull: false,
     },
     activo: {
       type: DataTypes.BOOLEAN,

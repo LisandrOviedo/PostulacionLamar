@@ -1,8 +1,8 @@
 const { DataTypes, UUIDV4 } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define("Titulo_Obtenido", {
-    titulo_obtenido_id: {
+  sequelize.define("Cargos_Empleados", {
+    cargo_empleado_id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: UUIDV4,
@@ -12,31 +12,22 @@ module.exports = (sequelize) => {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    grado_instruccion: {
-      type: DataTypes.ENUM(
-        "Primaria",
-        "Secundaria",
-        "Técnica",
-        "Universitaria",
-        "Postgrado"
-      ),
+    cargo_id: {
+      // Campo relacionado
+      type: DataTypes.UUID,
       allowNull: false,
     },
-    fecha_desde: {
+    salario: {
+      type: DataTypes.DECIMAL(11, 2),
+      allowNull: false,
+    },
+    fecha_ingreso: {
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    fecha_hasta: {
+    fecha_egreso: {
       type: DataTypes.DATEONLY,
-      allowNull: false,
-    },
-    nombre_instituto: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    titulo_obtenido: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,
