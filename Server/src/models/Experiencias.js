@@ -1,7 +1,7 @@
 const { DataTypes, UUIDV4 } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define("Experiencia", {
+  sequelize.define("Experiencias", {
     experiencia_id: {
       type: DataTypes.UUID,
       primaryKey: true,
@@ -24,14 +24,13 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    duracion: {
-      type: DataTypes.ENUM(
-        "Menos de 1 año",
-        "1-2 años",
-        "3-4 años",
-        "5 años o más"
-      ),
-      defaultValue: "Menos de 1 año",
+    fecha_desde: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    fecha_hasta: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
     },
     activo: {
       type: DataTypes.BOOLEAN,
