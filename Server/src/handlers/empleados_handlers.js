@@ -40,10 +40,14 @@ const getEmpleado = async (req, res) => {
 };
 
 const getLogin = async (req, res) => {
-  const { cedula, clave } = req.query;
+  const { tipo_identificacion, numero_identificacion, clave } = req.query;
 
   try {
-    const response = await login(cedula, clave);
+    const response = await login(
+      tipo_identificacion,
+      numero_identificacion,
+      clave
+    );
 
     return res.json(response);
   } catch (error) {
@@ -52,34 +56,10 @@ const getLogin = async (req, res) => {
 };
 
 const postEmpleado = async (req, res) => {
-  const {
-    rol_id,
-    cedula,
-    nombres,
-    apellidos,
-    fecha_nacimiento,
-    genero,
-    etnia_id,
-    telefono,
-    correo,
-    direccion,
-    cantidad_hijos,
-  } = req.body;
+  const { datosPersonales } = req.body;
 
   try {
-    const response = await crearEmpleado(
-      rol_id,
-      cedula,
-      nombres,
-      apellidos,
-      fecha_nacimiento,
-      genero,
-      etnia_id,
-      telefono,
-      correo,
-      direccion,
-      cantidad_hijos
-    );
+    const response = await crearEmpleado(datosPersonales);
 
     return res.status(201).json(response);
   } catch (error) {

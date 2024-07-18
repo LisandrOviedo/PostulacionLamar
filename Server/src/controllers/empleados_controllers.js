@@ -6,11 +6,11 @@ const fs = require("fs");
 
 const {
   conn,
-  Empleado,
+  Empleados,
   Roles,
-  Cargo,
-  Cargo_Empleado,
-  Empresa,
+  Cargos,
+  Cargos_Empleados,
+  Empresas,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
@@ -37,7 +37,7 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
 
   try {
     const { count: totalRegistros, rows: dataEmpleados } =
-      await Empleado.findAndCountAll({
+      await Empleados.findAndCountAll({
         attributes: {
           exclude: ["rol_id", "clave"],
         },
@@ -83,7 +83,7 @@ const traerEmpleado = async (empleado_id) => {
   }
 
   try {
-    const empleado = await Empleado.findByPk(empleado_id, {
+    const empleado = await Empleados.findByPk(empleado_id, {
       attributes: {
         exclude: ["rol_id", "clave"],
       },
@@ -93,9 +93,9 @@ const traerEmpleado = async (empleado_id) => {
           attributes: ["nombre", "descripcion"],
         },
         {
-          model: Cargo,
+          model: Cargos,
           through: {
-            model: Cargo_Empleado,
+            model: Cargos_Empleados,
             where: {
               activo: true,
             },
@@ -104,7 +104,7 @@ const traerEmpleado = async (empleado_id) => {
           attributes: ["descripcion"],
           include: [
             {
-              model: Empresa,
+              model: Empresas,
               attributes: ["nombre"],
             },
           ],
@@ -122,17 +122,20 @@ const traerEmpleado = async (empleado_id) => {
   }
 };
 
-const login = async (cedula, clave) => {
-  if (!cedula || !clave) {
+const login = async (tipo_identificacion, numero_identificacion, clave) => {
+  if (!tipo_identificacion || !numero_identificacion || !clave) {
     throw new Error(`Datos faltantes`);
   }
 
   try {
-    const empleado = await Empleado.findOne({
+    const empleado = await Empleados.findOne({
       attributes: {
         exclude: ["rol_id"],
       },
-      where: { cedula: cedula },
+      where: {
+        tipo_identificacion: tipo_identificacion,
+        numero_identificacion: numero_identificacion,
+      },
       include: [
         {
           model: Roles,
@@ -212,7 +215,7 @@ const cargarEmpleados = async () => {
     // for (const empleado of empleados) {
     //   t = await conn.transaction();
 
-    //   const [crearEmpleado, created] = await Empleado.findOrCreate({
+    //   const [crearEmpleado, created] = await Empleados.findOrCreate({
     //     where: { cedula: empleado.cedula },
     //     defaults: {
     //       rol_id: rolAdmin.rol_id,
@@ -237,7 +240,7 @@ const cargarEmpleados = async () => {
     console.log(`${fechaHoraActual()} - Hizo la consulta de empleados`);
 
     for (const empleadoAPI of data) {
-      let empleado = await Empleado.findOne({
+      let empleado = await Empleados.findOne({
         where: {
           cedula: empleadoAPI.cedula,
         },
@@ -246,7 +249,7 @@ const cargarEmpleados = async () => {
       if (!empleado) {
         t = await conn.transaction();
 
-        await Empleado.create(
+        await Empleados.create(
           {
             rol_id: rolEmpleado.rol_id,
             cedula: empleadoAPI.cedula,
@@ -274,26 +277,62 @@ const cargarEmpleados = async () => {
 
 const crearEmpleado = async (
   rol_id,
-  cedula,
   nombres,
   apellidos,
-  fecha_nacimiento,
-  genero,
-  etnia_id,
+  tipo_identificacion,
+  numero_identificacion,
+  estado_civil,
+  rif,
   telefono,
   correo,
-  direccion,
-  cantidad_hijos
+  etnia_id,
+  mano_dominante,
+  sexo,
+  factor_grupo_sanguineo,
+  cantidad_hijos,
+  carga_familiar,
+  fecha_nacimiento,
+  nacimiento_ciudad_id,
+  nacimiento_estado_id,
+  nacimiento_pais_id,
+  licencia_grado,
+  licencia_vencimiento,
+  carta_medica_vencimiento,
+  talla_camisa,
+  talla_pantalon,
+  talla_calzado,
+  trabajo_especifique,
+  motivo_retiro,
+  posee_parientes_empresa
 ) => {
   if (
-    !cedula ||
     !nombres ||
     !apellidos ||
-    !fecha_nacimiento ||
-    !genero ||
+    !tipo_identificacion ||
+    !numero_identificacion ||
+    !estado_civil ||
+    !rif ||
     !telefono ||
-    !direccion ||
-    !cantidad_hijos
+    !correo ||
+    !etnia_id ||
+    !mano_dominante ||
+    !sexo ||
+    !factor_grupo_sanguineo ||
+    !cantidad_hijos ||
+    !carga_familiar ||
+    !fecha_nacimiento ||
+    !nacimiento_ciudad_id ||
+    !nacimiento_estado_id ||
+    !nacimiento_pais_id ||
+    !licencia_grado ||
+    !licencia_vencimiento ||
+    !carta_medica_vencimiento ||
+    !talla_camisa ||
+    !talla_pantalon ||
+    !talla_calzado ||
+    !trabajo_especifique ||
+    !motivo_retiro ||
+    !posee_parientes_empresa
   ) {
     throw new Error(`Datos faltantes`);
   }
@@ -305,22 +344,42 @@ const crearEmpleado = async (
 
     const claveCifrada = await bcrypt.hash("1234", 10);
 
-    const [empleado, created] = await Empleado.findOrCreate(
+    const [empleado, created] = await Empleados.findOrCreate(
       {
-        where: { cedula: cedula },
+        where: {
+          tipo_identificacion: tipo_identificacion,
+          numero_identificacion: numero_identificacion,
+        },
         defaults: {
           rol_id: rol_id,
-          cedula: cedula,
-          clave: claveCifrada,
           nombres: nombres,
           apellidos: apellidos,
-          fecha_nacimiento: fecha_nacimiento,
-          genero: genero,
-          etnia_id: etnia_id || null,
-          telefono: telefono,
+          tipo_identificacion: tipo_identificacion,
+          numero_identificacion: numero_identificacion,
+          clave: claveCifrada,
+          estado_civil: estado_civil,
+          rif: rif || null,
+          telefono: telefono || null,
           correo: correo || null,
-          direccion: direccion,
+          etnia_id: etnia_id || null,
+          mano_dominante: mano_dominante,
+          sexo: sexo,
+          factor_grupo_sanguineo: factor_grupo_sanguineo || null,
           cantidad_hijos: cantidad_hijos,
+          carga_familiar: carga_familiar,
+          fecha_nacimiento: fecha_nacimiento,
+          nacimiento_ciudad_id: nacimiento_ciudad_id,
+          nacimiento_estado_id: nacimiento_estado_id,
+          nacimiento_pais_id: nacimiento_pais_id,
+          licencia_grado: licencia_grado || null,
+          licencia_vencimiento: licencia_vencimiento || null,
+          carta_medica_vencimiento: carta_medica_vencimiento || null,
+          talla_camisa: talla_camisa,
+          talla_pantalon: talla_pantalon,
+          talla_calzado: talla_calzado,
+          trabajo_especifique: trabajo_especifique || null,
+          motivo_retiro: motivo_retiro || null,
+          posee_parientes_empresa: posee_parientes_empresa,
         },
       },
       { transaction: t }
@@ -356,7 +415,7 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
   try {
     t = await conn.transaction();
 
-    const empleado = await Empleado.findOne({
+    const empleado = await Empleados.findOne({
       where: {
         empleado_id: empleado_id,
       },
@@ -374,7 +433,7 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
 
     const claveCifrada = await bcrypt.hash(clave, 10);
 
-    await Empleado.update(
+    await Empleados.update(
       {
         clave: claveCifrada,
       },
@@ -409,10 +468,6 @@ const modificarEmpleado = async (datosPersonales) => {
     camposActualizar.rol_id = datosPersonales.rol_id;
   }
 
-  if (datosPersonales.cedula) {
-    camposActualizar.cedula = datosPersonales.cedula;
-  }
-
   if (datosPersonales.nombres) {
     camposActualizar.nombres = datosPersonales.nombres;
   }
@@ -421,18 +476,21 @@ const modificarEmpleado = async (datosPersonales) => {
     camposActualizar.apellidos = datosPersonales.apellidos;
   }
 
-  if (datosPersonales.fecha_nacimiento) {
-    camposActualizar.fecha_nacimiento = datosPersonales.fecha_nacimiento;
+  if (datosPersonales.tipo_identificacion) {
+    camposActualizar.tipo_identificacion = datosPersonales.tipo_identificacion;
   }
 
-  if (datosPersonales.genero && datosPersonales.genero !== "Sin registrar") {
-    camposActualizar.genero = datosPersonales.genero;
+  if (datosPersonales.numero_identificacion) {
+    camposActualizar.numero_identificacion =
+      datosPersonales.numero_identificacion;
   }
 
-  if (datosPersonales.etnia_id === "Ninguna") {
-    camposActualizar.etnia_id = null;
-  } else {
-    camposActualizar.etnia_id = datosPersonales.etnia_id;
+  if (datosPersonales.estado_civil) {
+    camposActualizar.estado_civil = datosPersonales.estado_civil;
+  }
+
+  if (datosPersonales.rif) {
+    camposActualizar.rif = datosPersonales.rif;
   }
 
   if (datosPersonales.telefono) {
@@ -443,13 +501,55 @@ const modificarEmpleado = async (datosPersonales) => {
     camposActualizar.correo = datosPersonales.correo;
   }
 
-  if (datosPersonales.direccion) {
-    camposActualizar.direccion = datosPersonales.direccion;
+  if (datosPersonales.etnia_id === "Ninguna") {
+    camposActualizar.etnia_id = null;
+  } else {
+    camposActualizar.etnia_id = datosPersonales.etnia_id;
+  }
+
+  if (datosPersonales.mano_dominante) {
+    camposActualizar.mano_dominante = datosPersonales.mano_dominante;
+  }
+
+  if (datosPersonales.sexo && datosPersonales.sexo !== "Sin registrar") {
+    camposActualizar.sexo = datosPersonales.sexo;
+  }
+
+  if (
+    datosPersonales.factor_grupo_sanguineo &&
+    datosPersonales.factor_grupo_sanguineo !== "Sin registrar"
+  ) {
+    camposActualizar.factor_grupo_sanguineo =
+      datosPersonales.factor_grupo_sanguineo;
   }
 
   if (datosPersonales.cantidad_hijos) {
     camposActualizar.cantidad_hijos = datosPersonales.cantidad_hijos;
   }
+
+  if (datosPersonales.carga_familiar) {
+    camposActualizar.carga_familiar = datosPersonales.carga_familiar;
+  }
+
+  if (datosPersonales.fecha_nacimiento) {
+    camposActualizar.fecha_nacimiento = datosPersonales.fecha_nacimiento;
+  }
+
+  if (datosPersonales.nacimiento_ciudad_id) {
+    camposActualizar.nacimiento_ciudad_id =
+      datosPersonales.nacimiento_ciudad_id;
+  }
+
+  if (datosPersonales.nacimiento_estado_id) {
+    camposActualizar.nacimiento_estado_id =
+      datosPersonales.nacimiento_estado_id;
+  }
+
+  if (datosPersonales.nacimiento_pais_id) {
+    camposActualizar.nacimiento_pais_id = datosPersonales.nacimiento_pais_id;
+  }
+
+  // POR ACÁ
 
   if (datosPersonales.activo) {
     camposActualizar.activo = datosPersonales.activo;
@@ -462,7 +562,7 @@ const modificarEmpleado = async (datosPersonales) => {
 
     await traerEmpleado(datosPersonales.empleado_id);
 
-    await Empleado.update(
+    await Empleados.update(
       camposActualizar,
       {
         where: {
@@ -509,7 +609,7 @@ const modificarFotoEmpleado = async (empleado_id, filename, path) => {
       });
     }
 
-    await Empleado.update(
+    await Empleados.update(
       {
         foto_perfil_nombre: filename,
         foto_perfil_ruta: path,
@@ -552,7 +652,7 @@ const actualizarClaveEmpleado = async (
   try {
     t = await conn.transaction();
 
-    const empleado = await Empleado.findByPk(empleado_id, {
+    const empleado = await Empleados.findByPk(empleado_id, {
       attributes: ["clave"],
     });
 
@@ -564,7 +664,7 @@ const actualizarClaveEmpleado = async (
 
     const claveCifradaNueva = await bcrypt.hash(claveNueva, 10);
 
-    await Empleado.update(
+    await Empleados.update(
       {
         clave: claveCifradaNueva,
       },
@@ -602,7 +702,7 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
 
     const claveCifrada = await bcrypt.hash("1234", 10);
 
-    await Empleado.update(
+    await Empleados.update(
       {
         clave: claveCifrada,
       },
@@ -638,7 +738,7 @@ const inactivarEmpleado = async (empleado_id) => {
 
     const empleado = await traerEmpleado(empleado_id);
 
-    await Empleado.update(
+    await Empleados.update(
       { activo: !empleado.activo },
       {
         where: { empleado_id: empleado_id },
