@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
     },
     pais_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     nombre: {

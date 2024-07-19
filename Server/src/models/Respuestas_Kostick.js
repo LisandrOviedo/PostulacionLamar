@@ -9,12 +9,12 @@ module.exports = (sequelize) => {
     },
     prueba_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     pregunta_kostick_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     activo: {

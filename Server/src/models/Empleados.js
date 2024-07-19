@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
     },
     rol_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     nombres: {
@@ -57,7 +57,7 @@ module.exports = (sequelize) => {
     },
     etnia_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     mano_dominante: {
@@ -86,17 +86,17 @@ module.exports = (sequelize) => {
     },
     nacimiento_ciudad_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     nacimiento_estado_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     nacimiento_pais_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     licencia_conducir_grado: {

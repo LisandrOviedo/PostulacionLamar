@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
     },
     empleado_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     alergia_medicamentos: {

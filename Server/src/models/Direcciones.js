@@ -8,7 +8,7 @@ module.exports = (sequelize) => {
       primaryKey: true,
     },
     empleado_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     calle_avenida: {
@@ -17,12 +17,12 @@ module.exports = (sequelize) => {
     },
     parroquia_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     municipio_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     tipo_vivienda: {
@@ -47,12 +47,12 @@ module.exports = (sequelize) => {
     },
     estado_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     pais_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     activo: {

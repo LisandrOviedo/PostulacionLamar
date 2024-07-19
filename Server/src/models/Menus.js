@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
     },
     padre_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     titulo: {

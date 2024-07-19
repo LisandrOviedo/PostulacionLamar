@@ -7,18 +7,19 @@ module.exports = (sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    codigo_revision: {
-      type: DataTypes.STRING(100),
+    codigo_revision_id: {
+      // Campo relacionado
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     empleado_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     cargo_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     salario: {
