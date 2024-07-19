@@ -110,8 +110,8 @@ const crearEtnia = async (nombre) => {
   }
 };
 
-const modificarEtnia = async (etnia_id, nombre, activo) => {
-  if (!etnia_id || !nombre || !activo) {
+const modificarEtnia = async (etnia_id, nombre) => {
+  if (!etnia_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -125,7 +125,6 @@ const modificarEtnia = async (etnia_id, nombre, activo) => {
     await Etnias.update(
       {
         nombre: nombre,
-        activo: activo,
       },
       {
         where: {

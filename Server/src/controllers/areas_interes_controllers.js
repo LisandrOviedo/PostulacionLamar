@@ -116,8 +116,8 @@ const crearAreaInteres = async (nombre) => {
   }
 };
 
-const modificarAreaInteres = async (area_interes_id, nombre, activo) => {
-  if (!area_interes_id || !nombre || !activo) {
+const modificarAreaInteres = async (area_interes_id, nombre) => {
+  if (!area_interes_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -131,7 +131,6 @@ const modificarAreaInteres = async (area_interes_id, nombre, activo) => {
     await Areas_Interes.update(
       {
         nombre: nombre,
-        activo: activo,
       },
       {
         where: {

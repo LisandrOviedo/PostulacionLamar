@@ -117,8 +117,8 @@ const crearIdioma = async (nombre) => {
   }
 };
 
-const modificarIdioma = async (idioma_id, nombre, activo) => {
-  if (!idioma_id || !nombre || !activo) {
+const modificarIdioma = async (idioma_id, nombre) => {
+  if (!idioma_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -132,7 +132,6 @@ const modificarIdioma = async (idioma_id, nombre, activo) => {
     await Idiomas.update(
       {
         nombre: nombre,
-        activo: activo,
       },
       {
         where: {

@@ -96,8 +96,8 @@ const crearRol = async (nombre, descripcion) => {
   }
 };
 
-const modificarRol = async (rol_id, nombre, descripcion, activo) => {
-  if (!rol_id || !nombre || !descripcion || !activo) {
+const modificarRol = async (rol_id, nombre, descripcion) => {
+  if (!rol_id || !nombre || !descripcion) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -113,7 +113,6 @@ const modificarRol = async (rol_id, nombre, descripcion, activo) => {
         rol_id: rol_id,
         nombre: nombre,
         descripcion: descripcion,
-        activo: activo,
       },
       {
         where: {

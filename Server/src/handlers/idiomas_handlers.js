@@ -54,10 +54,10 @@ const postIdioma = async (req, res) => {
 };
 
 const putIdioma = async (req, res) => {
-  const { idioma_id, nombre, activo } = req.body;
+  const { idioma_id, nombre } = req.body;
 
   try {
-    const response = await modificarIdioma(idioma_id, nombre, activo);
+    const response = await modificarIdioma(idioma_id, nombre);
 
     return res.json(response);
   } catch (error) {

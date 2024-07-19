@@ -41,10 +41,10 @@ const postRol = async (req, res) => {
 };
 
 const putRol = async (req, res) => {
-  const { rol_id, nombre, descripcion, activo } = req.body;
+  const { rol_id, nombre, descripcion } = req.body;
 
   try {
-    const response = await modificarRol(rol_id, nombre, descripcion, activo);
+    const response = await modificarRol(rol_id, nombre, descripcion);
 
     return res.json(response);
   } catch (error) {
