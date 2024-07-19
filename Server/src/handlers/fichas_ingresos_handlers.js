@@ -1,7 +1,6 @@
 const {
   todasLasFichasIngresos,
   traerFichaIngresoEmpleado,
-  traerFichaIngreso,
   crearFichaIngreso,
   modificarFichaIngreso,
   inactivarFichaIngreso,
@@ -17,23 +16,11 @@ const getFichasIngresos = async (req, res) => {
   }
 };
 
-const getFichaIngresoEmpleado = async (req, res) => {
+const getFichaIngreso = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
     const response = await traerFichaIngresoEmpleado(empleado_id);
-
-    return res.json(response);
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
-  }
-};
-
-const getFichaIngreso = async (req, res) => {
-  const { ficha_ingreso_id } = req.params;
-
-  try {
-    const response = await traerFichaIngreso(ficha_ingreso_id);
 
     return res.json(response);
   } catch (error) {
@@ -105,7 +92,6 @@ const deleteFichaIngreso = async (req, res) => {
 
 module.exports = {
   getFichasIngresos,
-  getFichaIngresoEmpleado,
   getFichaIngreso,
   postFichaIngreso,
   putFichaIngreso,

@@ -43,7 +43,7 @@ const getContactoEmergencia = async (req, res) => {
   }
 };
 
-const postContactosEmergenciaEmpleado = async (req, res) => {
+const postContactoEmergencia = async (req, res) => {
   const { empleado_id, contactos_emergencia } = req.body;
 
   try {
@@ -89,7 +89,7 @@ module.exports = {
   getContactosEmergencia,
   getContactosEmergenciaActivas,
   getContactoEmergencia,
-  postContactosEmergenciaEmpleado,
+  postContactoEmergencia,
   putContactoEmergencia,
   deleteContactoEmergencia,
 };
