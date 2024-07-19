@@ -43,8 +43,12 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
         },
         where: {
           [Op.and]: [
-            filtros.cedula
-              ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
+            filtros.numero_identificacion
+              ? {
+                  numero_identificacion: {
+                    [Op.like]: `%${filtros.numero_identificacion}%`,
+                  },
+                }
               : filtros.apellidos
               ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
               : {},
@@ -216,7 +220,7 @@ const cargarEmpleados = async () => {
     //   t = await conn.transaction();
 
     //   const [crearEmpleado, created] = await Empleados.findOrCreate({
-    //     where: { cedula: empleado.cedula },
+    //     where: { numero_identificacion: empleado.cedula },
     //     defaults: {
     //       rol_id: rolAdmin.rol_id,
     //       nombres: ordenarTextoAPI(empleado.nombres),
@@ -242,7 +246,7 @@ const cargarEmpleados = async () => {
     for (const empleadoAPI of data) {
       let empleado = await Empleados.findOne({
         where: {
-          cedula: empleadoAPI.cedula,
+          numero_identificacion: empleadoAPI.cedula,
         },
       });
 
@@ -252,11 +256,11 @@ const cargarEmpleados = async () => {
         await Empleados.create(
           {
             rol_id: rolEmpleado.rol_id,
-            cedula: empleadoAPI.cedula,
+            numero_identificacion: empleadoAPI.cedula,
             nombres: ordenarNombresAPI(empleadoAPI.nombres),
             apellidos: ordenarNombresAPI(empleadoAPI.apellidos),
             fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
-            direccion: ordenarDireccionesAPI(empleadoAPI.direccion) || null,
+            // direccion: ordenarDireccionesAPI(empleadoAPI.direccion) || null,
           },
           { transaction: t }
         );
@@ -275,7 +279,7 @@ const cargarEmpleados = async () => {
   }
 };
 
-const crearEmpleado = async (
+const crearEmpleado = async ({
   rol_id,
   nombres,
   apellidos,
@@ -295,43 +299,34 @@ const crearEmpleado = async (
   nacimiento_ciudad_id,
   nacimiento_estado_id,
   nacimiento_pais_id,
-  licencia_grado,
-  licencia_vencimiento,
+  licencia_conducir_grado,
+  licencia_conducir_vencimiento,
   carta_medica_vencimiento,
   talla_camisa,
   talla_pantalon,
   talla_calzado,
-  trabajo_especifique,
+  trabajo_anteriormente_especifique,
   motivo_retiro,
-  posee_parientes_empresa
-) => {
+  posee_parientes_empresa,
+}) => {
   if (
     !nombres ||
     !apellidos ||
     !tipo_identificacion ||
     !numero_identificacion ||
     !estado_civil ||
-    !rif ||
-    !telefono ||
-    !correo ||
     !etnia_id ||
     !mano_dominante ||
     !sexo ||
-    !factor_grupo_sanguineo ||
     !cantidad_hijos ||
     !carga_familiar ||
     !fecha_nacimiento ||
     !nacimiento_ciudad_id ||
     !nacimiento_estado_id ||
     !nacimiento_pais_id ||
-    !licencia_grado ||
-    !licencia_vencimiento ||
-    !carta_medica_vencimiento ||
     !talla_camisa ||
     !talla_pantalon ||
     !talla_calzado ||
-    !trabajo_especifique ||
-    !motivo_retiro ||
     !posee_parientes_empresa
   ) {
     throw new Error(`Datos faltantes`);
@@ -371,13 +366,14 @@ const crearEmpleado = async (
           nacimiento_ciudad_id: nacimiento_ciudad_id,
           nacimiento_estado_id: nacimiento_estado_id,
           nacimiento_pais_id: nacimiento_pais_id,
-          licencia_grado: licencia_grado || null,
-          licencia_vencimiento: licencia_vencimiento || null,
+          licencia_conducir_grado: licencia_conducir_grado || null,
+          licencia_conducir_vencimiento: licencia_conducir_vencimiento || null,
           carta_medica_vencimiento: carta_medica_vencimiento || null,
           talla_camisa: talla_camisa,
           talla_pantalon: talla_pantalon,
           talla_calzado: talla_calzado,
-          trabajo_especifique: trabajo_especifique || null,
+          trabajo_anteriormente_especifique:
+            trabajo_anteriormente_especifique || null,
           motivo_retiro: motivo_retiro || null,
           posee_parientes_empresa: posee_parientes_empresa,
         },
@@ -501,9 +497,7 @@ const modificarEmpleado = async (datosPersonales) => {
     camposActualizar.correo = datosPersonales.correo;
   }
 
-  if (datosPersonales.etnia_id === "Ninguna") {
-    camposActualizar.etnia_id = null;
-  } else {
+  if (datosPersonales.etnia_id) {
     camposActualizar.etnia_id = datosPersonales.etnia_id;
   }
 
@@ -511,14 +505,11 @@ const modificarEmpleado = async (datosPersonales) => {
     camposActualizar.mano_dominante = datosPersonales.mano_dominante;
   }
 
-  if (datosPersonales.sexo && datosPersonales.sexo !== "Sin registrar") {
+  if (datosPersonales.sexo) {
     camposActualizar.sexo = datosPersonales.sexo;
   }
 
-  if (
-    datosPersonales.factor_grupo_sanguineo &&
-    datosPersonales.factor_grupo_sanguineo !== "Sin registrar"
-  ) {
+  if (datosPersonales.factor_grupo_sanguineo) {
     camposActualizar.factor_grupo_sanguineo =
       datosPersonales.factor_grupo_sanguineo;
   }
@@ -549,7 +540,38 @@ const modificarEmpleado = async (datosPersonales) => {
     camposActualizar.nacimiento_pais_id = datosPersonales.nacimiento_pais_id;
   }
 
-  // POR ACÁ
+  if (datosPersonales.licencia_conducir_grado) {
+    camposActualizar.licencia_conducir_grado =
+      datosPersonales.licencia_conducir_grado;
+  }
+  if (datosPersonales.licencia_conducir_vencimiento) {
+    camposActualizar.licencia_conducir_vencimiento =
+      datosPersonales.licencia_conducir_vencimiento;
+  }
+  if (datosPersonales.carta_medica_vencimiento) {
+    camposActualizar.carta_medica_vencimiento =
+      datosPersonales.carta_medica_vencimiento;
+  }
+  if (datosPersonales.talla_camisa) {
+    camposActualizar.talla_camisa = datosPersonales.talla_camisa;
+  }
+  if (datosPersonales.talla_pantalon) {
+    camposActualizar.talla_pantalon = datosPersonales.talla_pantalon;
+  }
+  if (datosPersonales.talla_calzado) {
+    camposActualizar.talla_calzado = datosPersonales.talla_calzado;
+  }
+  if (datosPersonales.trabajo_anteriormente_especifique) {
+    camposActualizar.trabajo_anteriormente_especifique =
+      datosPersonales.trabajo_anteriormente_especifique;
+  }
+  if (datosPersonales.motivo_retiro) {
+    camposActualizar.motivo_retiro = datosPersonales.motivo_retiro;
+  }
+  if (datosPersonales.posee_parientes_empresa) {
+    camposActualizar.posee_parientes_empresa =
+      datosPersonales.posee_parientes_empresa;
+  }
 
   if (datosPersonales.activo) {
     camposActualizar.activo = datosPersonales.activo;
