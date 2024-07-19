@@ -38,6 +38,18 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
                 attributes: ["tipo", "nombre"],
                 where: { tipo: "perfil_pdf" },
               },
+              {
+                model: Titulos_Obtenidos,
+                attributes: {
+                  exclude: ["empleado_id", "activo", "createdAt", "updatedAt"],
+                },
+              },
+              {
+                model: Experiencias,
+                attributes: {
+                  exclude: ["empleado_id", "activo", "createdAt", "updatedAt"],
+                },
+              },
             ],
             where: filtros.cedula
               ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
@@ -58,18 +70,6 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
               : {},
           },
           {
-            model: Titulos_Obtenidos,
-            attributes: {
-              exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
-            },
-          },
-          {
-            model: Experiencias,
-            attributes: {
-              exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
-            },
-          },
-          {
             model: Idiomas,
             attributes: {
               exclude: ["activo", "createdAt", "updatedAt"],
@@ -85,8 +85,6 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
         order: [
           filtros.orden_campo === "apellidos"
             ? [Empleados, "apellidos", filtros.orden_por]
-            : filtros.orden_campo === "grado_instruccion"
-            ? ["grado_instruccion", filtros.orden_por]
             : filtros.orden_campo === "updatedAt"
             ? ["updatedAt", filtros.orden_por]
             : null,
@@ -168,10 +166,10 @@ const traerCurriculoPDF = async (empleado_id) => {
           titulo_campo: "Cantidad hijos: ",
           descripcion_campo: curriculo.Empleados.cantidad_hijos,
         },
-        {
-          titulo_campo: "Grado de instrucción: ",
-          descripcion_campo: curriculo.grado_instruccion,
-        },
+        // {
+        //   titulo_campo: "Grado de instrucción: ",
+        //   descripcion_campo: curriculo.Empleados.Titulo_Obtenidos.grado_instruccion,
+        // },
       ],
     });
 
@@ -193,9 +191,11 @@ const traerCurriculoPDF = async (empleado_id) => {
 
     let titulos_obtenidos = "";
 
-    curriculo.Titulo_Obtenidos.forEach((titulo, index) => {
+    curriculo.Empleados.Titulo_Obtenidos.forEach((titulo, index) => {
       titulos_obtenidos =
-        index === 0 ? titulo.nombre : titulos_obtenidos + `, ${titulo.nombre}`;
+        index === 0
+          ? titulo.titulo_obtenido
+          : titulos_obtenidos + `, ${titulo.titulo_obtenido}`;
     });
 
     content.push({
@@ -209,12 +209,13 @@ const traerCurriculoPDF = async (empleado_id) => {
 
     let experiencias = [];
 
-    curriculo.Experiencias.forEach((experiencia) => {
+    curriculo.Empleados.Experiencias.forEach((experiencia) => {
       experiencias.push({
         tipo: experiencia.tipo,
-        cargo_titulo: experiencia.cargo_titulo,
-        duracion: experiencia.duracion,
         empresa_centro_educativo: experiencia.empresa_centro_educativo,
+        cargo_titulo: experiencia.cargo_titulo,
+        fecha_desde: experiencia.fecha_desde,
+        fecha_hasta: experiencia.fecha_hasta,
       });
     });
 
@@ -367,6 +368,20 @@ const traerCurriculoEmpleado = async (empleado_id) => {
           attributes: {
             exclude: ["clave", "createdAt", "updatedAt"],
           },
+          include: [
+            {
+              model: Titulos_Obtenidos,
+              attributes: {
+                exclude: ["empleado_id", "activo", "createdAt", "updatedAt"],
+              },
+            },
+            {
+              model: Experiencias,
+              attributes: {
+                exclude: ["empleado_id", "activo", "createdAt", "updatedAt"],
+              },
+            },
+          ],
         },
         {
           model: Areas_Interes,
@@ -375,18 +390,6 @@ const traerCurriculoEmpleado = async (empleado_id) => {
           },
           through: {
             attributes: ["area_interes_curriculo_id"],
-          },
-        },
-        {
-          model: Titulos_Obtenidos,
-          attributes: {
-            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
-          },
-        },
-        {
-          model: Experiencias,
-          attributes: {
-            exclude: ["curriculo_id", "activo", "createdAt", "updatedAt"],
           },
         },
         {
