@@ -30,10 +30,10 @@ const getExperiencia = async (req, res) => {
 };
 
 const postExperiencia = async (req, res) => {
-  const { curriculo_id, experiencias } = req.body;
+  const { empleado_id, experiencias } = req.body;
 
   try {
-    const response = await crearExperiencia(curriculo_id, experiencias);
+    const response = await crearExperiencia(empleado_id, experiencias);
 
     return res.status(201).json(response);
   } catch (error) {
@@ -42,10 +42,10 @@ const postExperiencia = async (req, res) => {
 };
 
 const putExperiencia = async (req, res) => {
-  const { curriculo_id, experiencias } = req.body;
+  const { empleado_id, experiencias } = req.body;
 
   try {
-    const response = await modificarExperiencia(curriculo_id, experiencias);
+    const response = await modificarExperiencia(empleado_id, experiencias);
 
     return res.json(response);
   } catch (error) {
@@ -66,10 +66,10 @@ const deleteExperiencia = async (req, res) => {
 };
 
 const deleteExperienciasCurriculo = async (req, res) => {
-  const { curriculo_id } = req.params;
+  const { empleado_id } = req.params;
 
   try {
-    const response = await eliminarExperienciasCurriculo(curriculo_id);
+    const response = await eliminarExperienciasCurriculo(empleado_id);
 
     return res.status(201).json(response);
   } catch (error) {

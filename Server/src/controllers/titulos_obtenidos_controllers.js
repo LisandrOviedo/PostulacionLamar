@@ -24,7 +24,9 @@ const traerTituloObtenido = async (titulo_obtenido_id) => {
   }
 
   try {
-    const titulo_obtenido = await Titulos_Obtenidos.findByPk(titulo_obtenido_id);
+    const titulo_obtenido = await Titulos_Obtenidos.findByPk(
+      titulo_obtenido_id
+    );
 
     if (!titulo_obtenido) {
       throw new Error(`No existe ese título obtenido`);
