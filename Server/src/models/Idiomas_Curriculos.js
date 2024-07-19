@@ -1,11 +1,11 @@
-const { DataTypes, UUIDV4 } = require("sequelize");
+const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   sequelize.define("Idiomas_Curriculos", {
     idioma_empleado_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
-      defaultValue: UUIDV4,
     },
     curriculo_id: {
       // Campo relacionado
