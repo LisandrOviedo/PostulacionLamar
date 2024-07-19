@@ -5,7 +5,7 @@ const {
   modificarTitulosObtenidos,
   inactivarTituloObtenido,
   eliminarTitulosEmpleado,
-} = require("../controllers/titulo_obtenido_controllers");
+} = require("../controllers/titulos_obtenidos_controllers");
 
 const getTitulosObtenidos = async (req, res) => {
   const { empleado_id } = req.params;

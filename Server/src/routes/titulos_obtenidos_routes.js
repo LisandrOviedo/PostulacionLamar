@@ -6,7 +6,7 @@ const {
   putTituloObtenido,
   deleteTituloObtenido,
   deleteTitulosEmpleado,
-} = require("../handlers/titulo_obtenidos_handlers");
+} = require("../handlers/titulos_obtenidos_handlers");
 
 const { authenticateToken } = require("../auth/index");
 
