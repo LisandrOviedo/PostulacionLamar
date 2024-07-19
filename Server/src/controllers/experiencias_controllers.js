@@ -1,6 +1,6 @@
 const { conn, Experiencias } = require("../db");
 
-const { traerCurriculo } = require("./curriculos_controllers");
+const { traerEmpleado } = require("./empleados_controllers");
 
 const todasLasExperiencias = async () => {
   try {
@@ -34,32 +34,35 @@ const traerExperiencia = async (experiencia_id) => {
   }
 };
 
-const crearExperiencia = async (curriculo_id, experiencias) => {
-  if (!curriculo_id || !experiencias) {
+const crearExperiencia = async (empleado_id, experiencias) => {
+  if (!empleado_id || !experiencias) {
     throw new Error(`Datos faltantes`);
   }
 
   let t;
 
   try {
-    await traerCurriculo(curriculo_id);
+    await traerEmpleado(empleado_id);
 
     t = await conn.transaction();
 
     for (const exp of experiencias) {
       const [experiencia, created] = await Experiencias.findOrCreate({
         where: {
-          curriculo_id: curriculo_id,
+          empleado_id: empleado_id,
           tipo: exp.tipo,
-          cargo_titulo: exp.cargo_titulo,
           empresa_centro_educativo: exp.empresa_centro_educativo,
+          cargo_titulo: exp.cargo_titulo,
+          fecha_desde: exp.fecha_desde,
+          fecha_hasta: exp.fecha_hasta,
         },
         defaults: {
-          curriculo_id: curriculo_id,
+          empleado_id: empleado_id,
           tipo: exp.tipo,
-          cargo_titulo: exp.cargo_titulo,
-          duracion: exp.duracion,
           empresa_centro_educativo: exp.empresa_centro_educativo,
+          cargo_titulo: exp.cargo_titulo,
+          fecha_desde: exp.fecha_desde,
+          fecha_hasta: exp.fecha_hasta,
         },
         transaction: t,
       });
@@ -78,19 +81,19 @@ const crearExperiencia = async (curriculo_id, experiencias) => {
 const modificarExperiencia = async (
   experiencia_id,
   tipo,
-  cargo_titulo_id,
-  cargo_titulo_otro,
-  duracion,
   empresa_centro_educativo,
+  cargo_titulo,
+  fecha_desde,
+  fecha_hasta,
   activo
 ) => {
   if (
     !experiencia_id ||
     !tipo ||
-    !cargo_titulo_id ||
-    !cargo_titulo_otro ||
-    !duracion ||
     !empresa_centro_educativo ||
+    !cargo_titulo ||
+    !fecha_desde ||
+    !fecha_hasta ||
     !activo
   ) {
     throw new Error(`Datos faltantes`);
@@ -106,10 +109,10 @@ const modificarExperiencia = async (
     await Experiencias.update(
       {
         tipo: tipo,
-        cargo_titulo_id: cargo_titulo_id,
-        cargo_titulo_otro: cargo_titulo_otro,
-        duracion: duracion,
         empresa_centro_educativo: empresa_centro_educativo,
+        cargo_titulo: cargo_titulo,
+        fecha_desde: fecha_desde,
+        fecha_hasta: fecha_hasta,
         activo: activo,
       },
       {
@@ -164,8 +167,8 @@ const inactivarExperiencia = async (experiencia_id) => {
   }
 };
 
-const eliminarExperienciasCurriculo = async (curriculo_id) => {
-  if (!curriculo_id) {
+const eliminarExperienciasCurriculo = async (empleado_id) => {
+  if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -174,11 +177,11 @@ const eliminarExperienciasCurriculo = async (curriculo_id) => {
   try {
     t = await conn.transaction();
 
-    await traerCurriculo(curriculo_id);
+    await traerEmpleado(empleado_id);
 
     await Experiencias.destroy({
       where: {
-        curriculo_id: curriculo_id,
+        empleado_id: empleado_id,
       },
       transaction: t,
     });
