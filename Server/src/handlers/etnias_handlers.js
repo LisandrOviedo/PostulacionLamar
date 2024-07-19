@@ -52,10 +52,10 @@ const postEtnia = async (req, res) => {
 };
 
 const putEtnia = async (req, res) => {
-  const { etnia_id, nombre, activo } = req.body;
+  const { etnia_id, nombre } = req.body;
 
   try {
-    const response = await modificarEtnia(etnia_id, nombre, activo);
+    const response = await modificarEtnia(etnia_id, nombre);
 
     return res.json(response);
   } catch (error) {
