@@ -285,7 +285,6 @@ const putCurriculo = async (req, res) => {
     curriculo_id,
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
-    cantidad_hijos,
     habilidades_tecnicas,
   } = req.body;
 
@@ -294,7 +293,6 @@ const putCurriculo = async (req, res) => {
       curriculo_id,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
-      cantidad_hijos,
       habilidades_tecnicas
     );
 
