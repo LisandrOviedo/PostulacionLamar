@@ -5,7 +5,7 @@ const {
   crearReferenciaPersonal,
   modificarReferenciaPersonal,
   inactivarReferenciaPersonal,
-} = require("../controllers/referencia_personal_controllers");
+} = require("../controllers/referencias_personales_controllers");
 
 const getReferenciasPersonales = async (req, res) => {
   const { empleado_id } = req.params;

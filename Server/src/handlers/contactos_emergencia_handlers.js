@@ -5,7 +5,7 @@ const {
   crearContactoEmergencia,
   modificarContactoEmergencia,
   inactivarContactoEmergencia,
-} = require("../controllers/ciudades_controllers");
+} = require("../controllers/contactos_emergencia_controllers");
 
 const getContactosEmergencia = async (req, res) => {
   const { empleado_id } = req.params;

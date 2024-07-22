@@ -5,7 +5,7 @@ const {
   crearDatoBancario,
   modificarDatoBancario,
   inactivarDatoBancario,
-} = require("../controllers/datos_bancarios_handlers");
+} = require("../controllers/datos_bancarios_controllers");
 
 const getDatosBancarios = async (req, res) => {
   const { empleado_id } = req.params;
