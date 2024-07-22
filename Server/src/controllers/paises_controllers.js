@@ -1,5 +1,7 @@
 const { conn, Paises } = require("../db");
 
+const { paises } = require("../utils/paises");
+
 const todosLosPaises = async () => {
   try {
     const paises = await Paises.findAll();
@@ -48,31 +50,31 @@ const traerPais = async (pais_id) => {
   }
 };
 
-// const cargarPaises = async () => {
-//   let t;
+const cargarPaises = async () => {
+  let t;
 
-//   try {
-//     t = await conn.transaction();
+  try {
+    t = await conn.transaction();
 
-//     for (const pais of paises) {
-//       const [crearPais, created] = await Paises.findOrCreate({
-//         where: { nombre: pais },
-//         defaults: {
-//           nombre: pais,
-//         },
-//         transaction: t,
-//       });
-//     }
+    for (const pais of paises) {
+      const [crearPais, created] = await Paises.findOrCreate({
+        where: { nombre: pais },
+        defaults: {
+          nombre: pais,
+        },
+        transaction: t,
+      });
+    }
 
-//     await t.commit();
-//   } catch (error) {
-//     if (!t.finished) {
-//       await t.rollback();
-//     }
+    await t.commit();
+  } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
 
-//     throw new Error(`Error al crear las paises: ${error.message}`);
-//   }
-// };
+    throw new Error(`Error al crear los países: ${error.message}`);
+  }
+};
 
 const crearPais = async (nombre) => {
   if (!nombre) {
@@ -180,6 +182,7 @@ module.exports = {
   todosLosPaises,
   todosLosPaisesActivos,
   traerPais,
+  cargarPaises,
   crearPais,
   modificarPais,
   inactivarPais,
