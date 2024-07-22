@@ -11,6 +11,7 @@ const {
   Cargos,
   Cargos_Empleados,
   Empresas,
+  Paises,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
@@ -239,6 +240,12 @@ const cargarEmpleados = async () => {
       },
     });
 
+    const nacionalidad_venezolana = await Paises.findOne({
+      where: {
+        nombre: "Venezuela",
+      },
+    });
+
     const { data } = await axios(API_EMPLEADOS);
 
     console.log(`${fechaHoraActual()} - Hizo la consulta de empleados`);
@@ -259,7 +266,17 @@ const cargarEmpleados = async () => {
             numero_identificacion: empleadoAPI.cedula,
             nombres: ordenarNombresAPI(empleadoAPI.nombres),
             apellidos: ordenarNombresAPI(empleadoAPI.apellidos),
+            tipo_identificacion:
+              empleadoAPI.nacionalidad === "Venezolano"
+                ? "V"
+                : empleadoAPI.nacionalidad === "Extranjero"
+                ? "E"
+                : null,
             fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
+            nacimiento_pais_id:
+              empleadoAPI.nacionalidad === "Venezolano"
+                ? nacionalidad_venezolana.pais_id
+                : null,
             // direccion: ordenarDireccionesAPI(empleadoAPI.direccion) || null,
           },
           { transaction: t }
