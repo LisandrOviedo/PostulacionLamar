@@ -73,7 +73,7 @@ const postSalud = async (req, res) => {
 
 const putSalud = async (req, res) => {
   const {
-    empleado_id,
+    salud_id,
     alergia_medicamentos,
     alergia_alimentos,
     alergia_otros,
@@ -84,7 +84,7 @@ const putSalud = async (req, res) => {
 
   try {
     const response = await modificarSalud(
-      empleado_id,
+      salud_id,
       alergia_medicamentos,
       alergia_alimentos,
       alergia_otros,

@@ -56,10 +56,30 @@ const postDatoBancario = async (req, res) => {
 };
 
 const putDatoBancario = async (req, res) => {
-  const { empleado_id, datos_bancarios } = req.body;
+  const {
+    dato_bancario_id,
+    titular_cuenta,
+    entidad_bancaria,
+    numero_cuenta,
+    tipo_cuenta,
+    nombre_apellido_tercero,
+    tipo_identificacion_tercero,
+    numero_identificacion_tercero,
+    parentesco_tercero,
+  } = req.body;
 
   try {
-    const response = await modificarDatoBancario(empleado_id, datos_bancarios);
+    const response = await modificarDatoBancario(
+      dato_bancario_id,
+      titular_cuenta,
+      entidad_bancaria,
+      numero_cuenta,
+      tipo_cuenta,
+      nombre_apellido_tercero,
+      tipo_identificacion_tercero,
+      numero_identificacion_tercero,
+      parentesco_tercero
+    );
 
     return res.json(response);
   } catch (error) {

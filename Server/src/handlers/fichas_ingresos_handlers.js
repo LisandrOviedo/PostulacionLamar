@@ -1,5 +1,7 @@
 const {
   todasLasFichasIngresos,
+  todasLasFichasIngresosActivas,
+  traerFichaIngreso,
   traerFichaIngresoEmpleado,
   crearFichaIngreso,
   modificarFichaIngreso,
@@ -16,7 +18,29 @@ const getFichasIngresos = async (req, res) => {
   }
 };
 
+const getFichasIngresosActivas = async (req, res) => {
+  try {
+    const response = await todasLasFichasIngresosActivas();
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 const getFichaIngreso = async (req, res) => {
+  const { ficha_ingreso_id } = req.params;
+
+  try {
+    const response = await traerFichaIngreso(ficha_ingreso_id);
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const getFichaIngresoEmpleado = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -56,6 +80,7 @@ const postFichaIngreso = async (req, res) => {
 
 const putFichaIngreso = async (req, res) => {
   const {
+    ficha_ingreso_id,
     codigo_revision_id,
     cargo_id,
     salario,
@@ -65,6 +90,7 @@ const putFichaIngreso = async (req, res) => {
 
   try {
     const response = await modificarFichaIngreso(
+      ficha_ingreso_id,
       codigo_revision_id,
       cargo_id,
       salario,
@@ -92,7 +118,9 @@ const deleteFichaIngreso = async (req, res) => {
 
 module.exports = {
   getFichasIngresos,
+  getFichasIngresosActivas,
   getFichaIngreso,
+  getFichaIngresoEmpleado,
   postFichaIngreso,
   putFichaIngreso,
   deleteFichaIngreso,

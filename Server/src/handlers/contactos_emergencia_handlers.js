@@ -59,12 +59,21 @@ const postContactoEmergencia = async (req, res) => {
 };
 
 const putContactoEmergencia = async (req, res) => {
-  const { empleado_id, contactos_emergencia } = req.body;
+  const {
+    contacto_emergencia_id,
+    nombre_apellido,
+    parentesco,
+    telefono,
+    direccion,
+  } = req.body;
 
   try {
     const response = await modificarContactoEmergencia(
-      empleado_id,
-      contactos_emergencia
+      contacto_emergencia_id,
+      nombre_apellido,
+      parentesco,
+      telefono,
+      direccion
     );
 
     return res.json(response);

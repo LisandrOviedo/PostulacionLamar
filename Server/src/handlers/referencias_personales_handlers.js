@@ -59,12 +59,21 @@ const postReferenciaPersonal = async (req, res) => {
 };
 
 const putReferenciaPersonal = async (req, res) => {
-  const { empleado_id, referencias_personales } = req.body;
+  const {
+    referencia_personal_id,
+    nombre_apellido,
+    direccion,
+    telefono,
+    ocupacion,
+  } = req.body;
 
   try {
     const response = await modificarReferenciaPersonal(
-      empleado_id,
-      referencias_personales
+      referencia_personal_id,
+      nombre_apellido,
+      direccion,
+      telefono,
+      ocupacion
     );
 
     return res.json(response);
