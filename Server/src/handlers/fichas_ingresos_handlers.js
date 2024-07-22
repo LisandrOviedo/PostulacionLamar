@@ -54,7 +54,7 @@ const getFichaIngresoEmpleado = async (req, res) => {
 
 const postFichaIngreso = async (req, res) => {
   const {
-    codigo_revision_id,
+    revision_ficha_ingreso_id,
     empleado_id,
     cargo_id,
     salario,
@@ -64,7 +64,7 @@ const postFichaIngreso = async (req, res) => {
 
   try {
     const response = await crearFichaIngreso(
-      codigo_revision_id,
+      revision_ficha_ingreso_id,
       empleado_id,
       cargo_id,
       salario,
@@ -81,7 +81,7 @@ const postFichaIngreso = async (req, res) => {
 const putFichaIngreso = async (req, res) => {
   const {
     ficha_ingreso_id,
-    codigo_revision_id,
+    revision_ficha_ingreso_id,
     cargo_id,
     salario,
     fecha_ingreso,
@@ -91,7 +91,7 @@ const putFichaIngreso = async (req, res) => {
   try {
     const response = await modificarFichaIngreso(
       ficha_ingreso_id,
-      codigo_revision_id,
+      revision_ficha_ingreso_id,
       cargo_id,
       salario,
       fecha_ingreso,

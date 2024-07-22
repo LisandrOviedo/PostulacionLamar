@@ -65,6 +65,7 @@ const {
   Pruebas_Empleados,
   Referencias_Personales,
   Respuestas_Kostick,
+  Revisiones_Fichas_Ingresos,
   Roles,
   Salud,
   Sesiones,
@@ -440,6 +441,18 @@ Direcciones.belongsTo(Empleados, {
   },
 });
 
+// Revisiones_Fichas_Ingresos 1:M Fichas_Ingresos
+Revisiones_Fichas_Ingresos.hasMany(Fichas_Ingresos, {
+  foreignKey: {
+    name: "revision_ficha_ingreso_id",
+  },
+});
+Fichas_Ingresos.belongsTo(Revisiones_Fichas_Ingresos, {
+  foreignKey: {
+    name: "revision_ficha_ingreso_id",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -469,6 +482,7 @@ module.exports = {
   Pruebas_Empleados,
   Referencias_Personales,
   Respuestas_Kostick,
+  Revisiones_Fichas_Ingresos,
   Roles,
   Salud,
   Sesiones,

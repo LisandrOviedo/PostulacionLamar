@@ -74,7 +74,7 @@ const traerFichaIngresoEmpleado = async (empleado_id) => {
 };
 
 const crearFichaIngreso = async (
-  codigo_revision_id,
+  revision_ficha_ingreso_id,
   empleado_id,
   cargo_id,
   salario,
@@ -82,7 +82,7 @@ const crearFichaIngreso = async (
   observaciones
 ) => {
   if (
-    !codigo_revision_id ||
+    !revision_ficha_ingreso_id ||
     !empleado_id ||
     !cargo_id ||
     !salario ||
@@ -99,13 +99,13 @@ const crearFichaIngreso = async (
 
     const [crearDireccion, created] = await Fichas_Ingresos.findOrCreate({
       where: {
-        codigo_revision_id: codigo_revision_id,
+        revision_ficha_ingreso_id: revision_ficha_ingreso_id,
         empleado_id: empleado_id,
         cargo_id: cargo_id,
         salario: salario,
       },
       defaults: {
-        codigo_revision_id: codigo_revision_id,
+        revision_ficha_ingreso_id: revision_ficha_ingreso_id,
         empleado_id: empleado_id,
         cargo_id: cargo_id,
         salario: salario,
@@ -127,7 +127,7 @@ const crearFichaIngreso = async (
 
 const modificarFichaIngreso = async (
   ficha_ingreso_id,
-  codigo_revision_id,
+  revision_ficha_ingreso_id,
   cargo_id,
   salario,
   fecha_ingreso,
@@ -135,7 +135,7 @@ const modificarFichaIngreso = async (
 ) => {
   if (
     !ficha_ingreso_id ||
-    !codigo_revision_id ||
+    !revision_ficha_ingreso_id ||
     !cargo_id ||
     !salario ||
     !fecha_ingreso ||
@@ -153,7 +153,7 @@ const modificarFichaIngreso = async (
 
     await Fichas_Ingresos.update(
       {
-        codigo_revision_id: codigo_revision_id,
+        revision_ficha_ingreso_id: revision_ficha_ingreso_id,
         cargo_id: cargo_id,
         salario: salario,
         fecha_ingreso: fecha_ingreso,

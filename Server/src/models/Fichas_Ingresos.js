@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    codigo_revision_id: {
+    revision_ficha_ingreso_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: false,
