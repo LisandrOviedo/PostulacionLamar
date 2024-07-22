@@ -47,6 +47,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(50),
       allowNull: false,
     },
+    tipo_cuenta: {
+      type: DataTypes.ENUM("Ahorro", "Corriente"),
+      allowNull: false,
+    },
     nombre_apellido_tercero: {
       type: DataTypes.STRING(100),
       allowNull: true,
@@ -73,7 +77,7 @@ module.exports = (sequelize) => {
         "Sobrino/a",
         "Tío/a"
       ),
-      allowNull: false,
+      allowNull: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,
