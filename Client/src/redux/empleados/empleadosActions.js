@@ -19,8 +19,8 @@ import {
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-export const getLogin = (cedula, clave) => {
-  const URL_LOGIN = `${URL_SERVER}/empleados/login?cedula=${cedula}&clave=${clave}`;
+export const getLogin = (tipo_identificacion, numero_identificacion, clave) => {
+  const URL_LOGIN = `${URL_SERVER}/empleados/login?tipo_identificacion=${tipo_identificacion}&numero_identificacion=${numero_identificacion}&clave=${clave}`;
 
   return async (dispatch) => {
     try {

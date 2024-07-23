@@ -211,29 +211,6 @@ const cargarEmpleados = async () => {
   let t;
 
   try {
-    // const rolAdmin = await Roles.findOne({
-    //   where: {
-    //     nombre: "admin",
-    //   },
-    // });
-
-    // for (const empleado of empleados) {
-    //   t = await conn.transaction();
-
-    //   const [crearEmpleado, created] = await Empleados.findOrCreate({
-    //     where: { numero_identificacion: empleado.cedula },
-    //     defaults: {
-    //       rol_id: rolAdmin.rol_id,
-    //       nombres: ordenarTextoAPI(empleado.nombres),
-    //       apellidos: ordenarTextoAPI(empleado.apellidos),
-    //       fecha_nacimiento: empleado.fecha_nacimiento,
-    //     },
-    //     transaction: t,
-    //   });
-
-    //   await t.commit();
-    // }
-
     const rolEmpleado = await Roles.findOne({
       where: {
         nombre: "empleado",
@@ -251,39 +228,40 @@ const cargarEmpleados = async () => {
     console.log(`${fechaHoraActual()} - Hizo la consulta de empleados`);
 
     for (const empleadoAPI of data) {
-      let empleado = await Empleados.findOne({
+      t = await conn.transaction();
+
+      const [crearEmpleado, created] = await Empleados.findOrCreate({
         where: {
+          tipo_identificacion:
+            empleadoAPI.nacionalidad === "Venezolano"
+              ? "V"
+              : empleadoAPI.nacionalidad === "Extranjero"
+              ? "E"
+              : null,
           numero_identificacion: empleadoAPI.cedula,
         },
+        defaults: {
+          rol_id: rolEmpleado.rol_id,
+          nombres: ordenarNombresAPI(empleadoAPI.nombres),
+          apellidos: ordenarNombresAPI(empleadoAPI.apellidos),
+          tipo_identificacion:
+            empleadoAPI.nacionalidad === "Venezolano"
+              ? "V"
+              : empleadoAPI.nacionalidad === "Extranjero"
+              ? "E"
+              : null,
+          numero_identificacion: empleadoAPI.cedula,
+          fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
+          nacimiento_pais_id:
+            empleadoAPI.nacionalidad === "Venezolano"
+              ? nacionalidad_venezolana.pais_id
+              : null,
+          // direccion: ordenarDireccionesAPI(empleadoAPI.direccion) || null,
+        },
+        transaction: t,
       });
 
-      if (!empleado) {
-        t = await conn.transaction();
-
-        await Empleados.create(
-          {
-            rol_id: rolEmpleado.rol_id,
-            numero_identificacion: empleadoAPI.cedula,
-            nombres: ordenarNombresAPI(empleadoAPI.nombres),
-            apellidos: ordenarNombresAPI(empleadoAPI.apellidos),
-            tipo_identificacion:
-              empleadoAPI.nacionalidad === "Venezolano"
-                ? "V"
-                : empleadoAPI.nacionalidad === "Extranjero"
-                ? "E"
-                : null,
-            fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
-            nacimiento_pais_id:
-              empleadoAPI.nacionalidad === "Venezolano"
-                ? nacionalidad_venezolana.pais_id
-                : null,
-            // direccion: ordenarDireccionesAPI(empleadoAPI.direccion) || null,
-          },
-          { transaction: t }
-        );
-
-        await t.commit();
-      }
+      await t.commit();
     }
 
     console.log(`${fechaHoraActual()} - Terminó de registrar los empleados`);
