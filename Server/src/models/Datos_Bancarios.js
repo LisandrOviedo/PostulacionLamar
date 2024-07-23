@@ -1,19 +1,15 @@
-const { DataTypes, UUIDV4 } = require("sequelize");
+const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   sequelize.define("Datos_Bancarios", {
     dato_bancario_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
-      defaultValue: UUIDV4,
     },
     empleado_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
-    posee_cuenta_bancaria: {
-      type: DataTypes.ENUM("Si", "No"),
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     titular_cuenta: {
@@ -51,19 +47,23 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(50),
       allowNull: false,
     },
-    nombre_apellido: {
+    tipo_cuenta: {
+      type: DataTypes.ENUM("Ahorro", "Corriente"),
+      allowNull: false,
+    },
+    nombre_apellido_tercero: {
       type: DataTypes.STRING(100),
       allowNull: true,
     },
-    tipo_identificacion: {
+    tipo_identificacion_tercero: {
       type: DataTypes.ENUM("E", "V"),
       allowNull: true,
     },
-    numero_identificacion: {
+    numero_identificacion_tercero: {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
-    parentesco: {
+    parentesco_tercero: {
       type: DataTypes.ENUM(
         "Abuelo/a",
         "Amigo/a",
@@ -77,7 +77,7 @@ module.exports = (sequelize) => {
         "Sobrino/a",
         "Tío/a"
       ),
-      allowNull: false,
+      allowNull: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,

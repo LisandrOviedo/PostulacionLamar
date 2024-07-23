@@ -1,15 +1,15 @@
-const { DataTypes, UUIDV4 } = require("sequelize");
+const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   sequelize.define("Salud", {
     salud_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
-      defaultValue: UUIDV4,
     },
     empleado_id: {
       // Campo relacionado
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     alergia_medicamentos: {
@@ -29,10 +29,6 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     fuma: {
-      type: DataTypes.ENUM("Si", "No"),
-      allowNull: false,
-    },
-    cicatriz: {
       type: DataTypes.ENUM("Si", "No"),
       allowNull: false,
     },

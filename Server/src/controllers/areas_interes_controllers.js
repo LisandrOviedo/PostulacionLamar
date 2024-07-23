@@ -1,4 +1,4 @@
-const { conn, Areas_Interes, Area_Interes_Curriculo } = require("../db");
+const { conn, Areas_Interes, Areas_Interes_Curriculos } = require("../db");
 
 const { traerCurriculo } = require("./curriculos_controllers");
 
@@ -116,8 +116,8 @@ const crearAreaInteres = async (nombre) => {
   }
 };
 
-const modificarAreaInteres = async (area_interes_id, nombre, activo) => {
-  if (!area_interes_id || !nombre || !activo) {
+const modificarAreaInteres = async (area_interes_id, nombre) => {
+  if (!area_interes_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -131,7 +131,6 @@ const modificarAreaInteres = async (area_interes_id, nombre, activo) => {
     await Areas_Interes.update(
       {
         nombre: nombre,
-        activo: activo,
       },
       {
         where: {
@@ -198,8 +197,8 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
     await traerCurriculo(curriculo_id);
 
     for (const area of areas_interes) {
-      const [area_interes, created] = await Area_Interes_Curriculo.findOrCreate(
-        {
+      const [area_interes, created] =
+        await Areas_Interes_Curriculos.findOrCreate({
           where: {
             curriculo_id: curriculo_id,
             area_interes_id: area.area_interes_id,
@@ -209,8 +208,7 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
             area_interes_id: area.area_interes_id,
           },
           transaction: t,
-        }
-      );
+        });
     }
 
     await t.commit();
@@ -237,7 +235,7 @@ const eliminarAreasInteresCurriculo = async (curriculo_id) => {
 
     await traerCurriculo(curriculo_id);
 
-    await Area_Interes_Curriculo.destroy({
+    await Areas_Interes_Curriculos.destroy({
       where: {
         curriculo_id: curriculo_id,
       },

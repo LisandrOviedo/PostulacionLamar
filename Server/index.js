@@ -26,6 +26,8 @@ const { cerrarSesiones } = require("./src/controllers/sesiones_controllers.js");
 
 const { cargarEtnias } = require("./src/controllers/etnias_controllers.js");
 
+const { cargarPaises } = require("./src/controllers/paises_controllers.js");
+
 conn
   .sync()
   .then(() => {
@@ -33,7 +35,7 @@ conn
       console.log(`${fechaHoraActual()} - Server listening on port ${PORT}`);
 
       // Cerrar sesiones en la BD
-      await cerrarSesiones();
+      // await cerrarSesiones();
 
       // Registrar preguntas del test kostick en la BD
       // await cargarPreguntasKostick();
@@ -49,6 +51,9 @@ conn
 
       // Registrar etnias principales en la BD
       // await cargarEtnias();
+
+      // Registrar países principales en la BD
+      // await cargarPaises();
 
       // Registrar empleados en la BD
       // await cargarEmpleados();

@@ -5,15 +5,15 @@ const {
   postTitulosObtenidos,
   putTituloObtenido,
   deleteTituloObtenido,
-  deleteTitulosCurriculo,
-} = require("../handlers/titulo_obtenidos_handlers");
+  deleteTitulosEmpleado,
+} = require("../handlers/titulos_obtenidos_handlers");
 
 const { authenticateToken } = require("../auth/index");
 
 const titulos_obtenidos = Router();
 
 titulos_obtenidos.get(
-  "/curriculo/:curriculo_id",
+  "/empleado/:empleado_id",
   authenticateToken,
   getTitulosObtenidos
 );
@@ -29,9 +29,9 @@ titulos_obtenidos.put("/modificar", authenticateToken, putTituloObtenido);
 titulos_obtenidos.put("/inactivar", authenticateToken, deleteTituloObtenido);
 
 titulos_obtenidos.delete(
-  "/eliminarTitulos/:curriculo_id",
+  "/eliminarTitulos/:empleado_id",
   authenticateToken,
-  deleteTitulosCurriculo
+  deleteTitulosEmpleado
 );
 
 module.exports = titulos_obtenidos;

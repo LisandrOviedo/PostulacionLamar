@@ -11,6 +11,9 @@ const sequelize = new Sequelize(DB, USERDB, PASSWORD, {
   logging: false,
   native: false,
   timezone: "-04:00",
+  define: {
+    freezeTableName: true,
+  },
 });
 
 const basename = path.basename(__filename);
@@ -36,424 +39,452 @@ let capsEntries = entries.map((entry) => [
 sequelize.models = Object.fromEntries(capsEntries);
 
 const {
-  Area_Interes_Curriculo,
+  Areas_Interes_Curriculos,
   Areas_Interes,
-  Cargo_Empleado,
-  Cargo,
+  Cargos_Empleados,
+  Cargos,
   Ciudades,
   Contactos_Emergencia,
-  Curriculo,
+  Curriculos,
   Datos_Bancarios,
-  Documentos_Empleado,
-  Empleado,
-  Empresa,
-  Estado,
-  Etnia,
-  Experiencia,
-  Ficha_Ingreso,
-  Idioma,
-  Menu,
-  Municipio,
+  Direcciones,
+  Documentos_Empleados,
+  Empleados,
+  Empresas,
+  Estados,
+  Etnias,
+  Experiencias,
+  Fichas_Ingresos,
+  Idiomas,
+  Menus,
+  Municipios,
   Paises,
-  Parroquia,
-  Idiomas_Curriculo,
+  Parroquias,
+  Idiomas_Curriculos,
   Preguntas_Kostick,
-  Pruebas_Empleado,
+  Pruebas_Empleados,
   Referencias_Personales,
   Respuestas_Kostick,
+  Revisiones_Fichas_Ingresos,
   Roles,
   Salud,
   Sesiones,
-  Titulo_Obtenido,
+  Titulos_Obtenidos,
 } = sequelize.models;
 
 // RELACIONES DE MODELOS (TABLAS)
 // Roles 1:M Empleados
-Roles.hasMany(Empleado, {
+Roles.hasMany(Empleados, {
   foreignKey: {
     name: "rol_id",
   },
 });
-Empleado.belongsTo(Roles, {
+Empleados.belongsTo(Roles, {
   foreignKey: {
     name: "rol_id",
   },
 });
 
-// Curriculo 1:1 Empleado
-Curriculo.belongsTo(Empleado, {
+// Curriculos 1:1 Empleados
+Curriculos.belongsTo(Empleados, {
   foreignKey: {
     name: "empleado_id",
   },
 });
-Empleado.hasOne(Curriculo, {
+Empleados.hasOne(Curriculos, {
   foreignKey: {
     name: "empleado_id",
   },
 });
 
-// Areas_Interes M:M Curriculo
-Areas_Interes.belongsToMany(Curriculo, {
+// Areas_Interes M:M Curriculos
+Areas_Interes.belongsToMany(Curriculos, {
   through: "Area_Interes_Curriculo",
   foreignKey: {
     name: "area_interes_id",
   },
 });
-Curriculo.belongsToMany(Areas_Interes, {
+Curriculos.belongsToMany(Areas_Interes, {
   through: "Area_Interes_Curriculo",
   foreignKey: {
     name: "curriculo_id",
   },
 });
 
-// Empleado M:M Cargo
-Empleado.belongsToMany(Cargo, {
+// Empleados M:M Cargos
+Empleados.belongsToMany(Cargos, {
   through: "Cargo_Empleado",
   foreignKey: {
     name: "empleado_id",
   },
 });
-Cargo.belongsToMany(Empleado, {
+Cargos.belongsToMany(Empleados, {
   through: "Cargo_Empleado",
   foreignKey: {
     name: "cargo_id",
   },
 });
 
-// Empresa 1:M Cargo
-Empresa.hasMany(Cargo, {
+// Empresas 1:M Cargos
+Empresas.hasMany(Cargos, {
   foreignKey: {
     name: "empresa_id",
   },
 });
-Cargo.belongsTo(Empresa, {
+Cargos.belongsTo(Empresas, {
   foreignKey: {
     name: "empresa_id",
   },
 });
 
-// Empleado 1:M Titulo_Obtenido
-Empleado.hasMany(Titulo_Obtenido, {
+// Empleados 1:M Titulos_Obtenidos
+Empleados.hasMany(Titulos_Obtenidos, {
   foreignKey: {
     name: "empleado_id",
   },
 });
-Titulo_Obtenido.belongsTo(Empleado, {
-  foreignKey: {
-    name: "empleado_id",
-  },
-});
-
-// Empleado 1:M Experiencia
-Empleado.hasMany(Experiencia, {
-  foreignKey: {
-    name: "empleado_id",
-  },
-});
-Experiencia.belongsTo(Empleado, {
+Titulos_Obtenidos.belongsTo(Empleados, {
   foreignKey: {
     name: "empleado_id",
   },
 });
 
-// Empleado 1:M Documentos_Empleado
-Empleado.hasMany(Documentos_Empleado, {
+// Empleados 1:M Experiencias
+Empleados.hasMany(Experiencias, {
   foreignKey: {
     name: "empleado_id",
   },
 });
-Documentos_Empleado.belongsTo(Empleado, {
-  foreignKey: {
-    name: "empleado_id",
-  },
-});
-
-// Empleado 1:M Pruebas_Empleado
-Empleado.hasMany(Pruebas_Empleado, {
-  foreignKey: {
-    name: "empleado_id",
-  },
-});
-Pruebas_Empleado.belongsTo(Empleado, {
+Experiencias.belongsTo(Empleados, {
   foreignKey: {
     name: "empleado_id",
   },
 });
 
-// Pruebas_Empleado M:M Preguntas_Kostick
-Pruebas_Empleado.belongsToMany(Preguntas_Kostick, {
+// Empleados 1:M Documentos_Empleados
+Empleados.hasMany(Documentos_Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Documentos_Empleados.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Empleados 1:M Pruebas_Empleados
+Empleados.hasMany(Pruebas_Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Pruebas_Empleados.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Pruebas_Empleados M:M Preguntas_Kostick
+Pruebas_Empleados.belongsToMany(Preguntas_Kostick, {
   through: "Respuestas_Kostick",
   foreignKey: {
     name: "prueba_id",
   },
 });
-Preguntas_Kostick.belongsToMany(Pruebas_Empleado, {
+Preguntas_Kostick.belongsToMany(Pruebas_Empleados, {
   through: "Respuestas_Kostick",
   foreignKey: {
     name: "pregunta_kostick_id",
   },
 });
 
-// Curriculo M:M Idioma
-Curriculo.belongsToMany(Idioma, {
+// Curriculos M:M Idiomas
+Curriculos.belongsToMany(Idiomas, {
   through: "Idiomas_Curriculo",
   foreignKey: {
     name: "curriculo_id",
   },
 });
-Idioma.belongsToMany(Curriculo, {
+Idiomas.belongsToMany(Curriculos, {
   through: "Idiomas_Curriculo",
   foreignKey: {
     name: "idioma_id",
   },
 });
 
-// Sesiones 1:1 Empleado
-Sesiones.belongsTo(Empleado, {
+// Sesiones 1:1 Empleados
+Sesiones.belongsTo(Empleados, {
   foreignKey: {
     name: "empleado_id",
   },
 });
-Empleado.hasOne(Sesiones, {
+Empleados.hasOne(Sesiones, {
   foreignKey: {
     name: "empleado_id",
   },
 });
 
-// Etnia 1:M Empleado
-Etnia.hasMany(Empleado, {
+// Etnias 1:M Empleados
+Etnias.hasMany(Empleados, {
   foreignKey: {
     name: "etnia_id",
   },
 });
-Empleado.belongsTo(Etnia, {
+Empleados.belongsTo(Etnias, {
   foreignKey: {
     name: "etnia_id",
   },
 });
 
-// Paises 1:M Estado
-Paises.hasMany(Estado, {
+// Paises 1:M Estados
+Paises.hasMany(Estados, {
   foreignKey: {
     name: "pais_id",
   },
 });
-Estado.belongsTo(Paises, {
+Estados.belongsTo(Paises, {
   foreignKey: {
     name: "pais_id",
   },
 });
 
-// Estado 1:M Ciudades
-Estado.hasMany(Ciudades, {
+// Estados 1:M Ciudades
+Estados.hasMany(Ciudades, {
   foreignKey: {
     name: "estado_id",
   },
 });
-Ciudades.belongsTo(Estado, {
+Ciudades.belongsTo(Estados, {
   foreignKey: {
     name: "estado_id",
   },
 });
 
-// Ciudades 1:M Municipio
-Ciudades.hasMany(Municipio, {
+// Ciudades 1:M Municipios
+Ciudades.hasMany(Municipios, {
   foreignKey: {
     name: "ciudad_id",
   },
 });
-Municipio.belongsTo(Ciudades, {
+Municipios.belongsTo(Ciudades, {
   foreignKey: {
     name: "ciudad_id",
   },
 });
 
-// Municipio 1:M Parroquia
-Municipio.hasMany(Parroquia, {
+// Municipios 1:M Parroquias
+Municipios.hasMany(Parroquias, {
   foreignKey: {
     name: "municipio_id",
   },
 });
-Parroquia.belongsTo(Municipio, {
+Parroquias.belongsTo(Municipios, {
   foreignKey: {
     name: "municipio_id",
   },
 });
 
-// Ciudades 1:M Empleado
-Ciudades.hasMany(Empleado, {
+// Ciudades 1:M Empleados
+Ciudades.hasMany(Empleados, {
   foreignKey: {
     name: "nacimiento_ciudad_id",
   },
 });
-Empleado.belongsTo(Ciudades, {
+Empleados.belongsTo(Ciudades, {
   foreignKey: {
     name: "nacimiento_ciudad_id",
   },
 });
 
-// Estado 1:M Empleado
-Estado.hasMany(Empleado, {
+// Estados 1:M Empleados
+Estados.hasMany(Empleados, {
   foreignKey: {
     name: "nacimiento_estado_id",
   },
 });
-Empleado.belongsTo(Estado, {
+Empleados.belongsTo(Estados, {
   foreignKey: {
     name: "nacimiento_estado_id",
   },
 });
 
-// Paises 1:M Empleado
-Paises.hasMany(Empleado, {
+// Paises 1:M Empleados
+Paises.hasMany(Empleados, {
   foreignKey: {
     name: "nacimiento_pais_id",
   },
 });
-Empleado.belongsTo(Paises, {
+Empleados.belongsTo(Paises, {
   foreignKey: {
     name: "nacimiento_pais_id",
   },
 });
 
-// Parroquia 1:M Empleado
-Parroquia.hasMany(Empleado, {
+// Parroquias 1:M Empleados
+Parroquias.hasMany(Empleados, {
   foreignKey: {
     name: "parroquia_id",
   },
 });
-Empleado.belongsTo(Parroquia, {
+Empleados.belongsTo(Parroquias, {
   foreignKey: {
     name: "parroquia_id",
   },
 });
 
-// Municipio 1:M Empleado
-Municipio.hasMany(Empleado, {
+// Municipios 1:M Empleados
+Municipios.hasMany(Empleados, {
   foreignKey: {
     name: "municipio_id",
   },
 });
-Empleado.belongsTo(Municipio, {
+Empleados.belongsTo(Municipios, {
   foreignKey: {
     name: "municipio_id",
   },
 });
 
-// Estado 1:M Empleado
-Estado.hasMany(Empleado, {
+// Estados 1:M Empleados
+Estados.hasMany(Empleados, {
   foreignKey: {
     name: "estado_id",
   },
 });
-Empleado.belongsTo(Estado, {
+Empleados.belongsTo(Estados, {
   foreignKey: {
     name: "estado_id",
   },
 });
 
-// Paises 1:M Empleado
-Paises.hasMany(Empleado, {
+// Paises 1:M Empleados
+Paises.hasMany(Empleados, {
   foreignKey: {
     name: "pais_id",
   },
 });
-Empleado.belongsTo(Paises, {
+Empleados.belongsTo(Paises, {
   foreignKey: {
     name: "pais_id",
   },
 });
 
-// Empleado 1:M Salud
-Empleado.hasMany(Salud, {
+// Empleados 1:M Salud
+Empleados.hasMany(Salud, {
   foreignKey: {
     name: "empleado_id",
   },
 });
-Salud.belongsTo(Empleado, {
-  foreignKey: {
-    name: "empleado_id",
-  },
-});
-
-// Empleado 1:M Contactos_Emergencia
-Empleado.hasMany(Contactos_Emergencia, {
-  foreignKey: {
-    name: "empleado_id",
-  },
-});
-Contactos_Emergencia.belongsTo(Empleado, {
+Salud.belongsTo(Empleados, {
   foreignKey: {
     name: "empleado_id",
   },
 });
 
-// Empleado 1:M Referencias_Personales
-Empleado.hasMany(Referencias_Personales, {
+// Empleados 1:M Contactos_Emergencia
+Empleados.hasMany(Contactos_Emergencia, {
   foreignKey: {
     name: "empleado_id",
   },
 });
-Referencias_Personales.belongsTo(Empleado, {
-  foreignKey: {
-    name: "empleado_id",
-  },
-});
-
-// Datos_Bancarios 1:1 Empleado
-Datos_Bancarios.belongsTo(Empleado, {
-  foreignKey: {
-    name: "empleado_id",
-  },
-});
-Empleado.hasOne(Datos_Bancarios, {
+Contactos_Emergencia.belongsTo(Empleados, {
   foreignKey: {
     name: "empleado_id",
   },
 });
 
-// Ficha_Ingreso 1:1 Empleado
-Ficha_Ingreso.belongsTo(Empleado, {
+// Empleados 1:M Referencias_Personales
+Empleados.hasMany(Referencias_Personales, {
   foreignKey: {
     name: "empleado_id",
   },
 });
-Empleado.hasOne(Ficha_Ingreso, {
+Referencias_Personales.belongsTo(Empleados, {
   foreignKey: {
     name: "empleado_id",
+  },
+});
+
+// Empleados 1:M Datos_Bancarios
+Empleados.hasMany(Datos_Bancarios, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Datos_Bancarios.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Fichas_Ingresos 1:1 Empleados
+Fichas_Ingresos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Empleados.hasOne(Fichas_Ingresos, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Empleados 1:M Direcciones
+Empleados.hasMany(Direcciones, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Direcciones.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Revisiones_Fichas_Ingresos 1:M Fichas_Ingresos
+Revisiones_Fichas_Ingresos.hasMany(Fichas_Ingresos, {
+  foreignKey: {
+    name: "revision_ficha_ingreso_id",
+  },
+});
+Fichas_Ingresos.belongsTo(Revisiones_Fichas_Ingresos, {
+  foreignKey: {
+    name: "revision_ficha_ingreso_id",
   },
 });
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
-  Area_Interes_Curriculo,
+  Areas_Interes_Curriculos,
   Areas_Interes,
-  Cargo_Empleado,
-  Cargo,
+  Cargos_Empleados,
+  Cargos,
   Ciudades,
   Contactos_Emergencia,
-  Curriculo,
+  Curriculos,
   Datos_Bancarios,
-  Documentos_Empleado,
-  Empleado,
-  Empresa,
-  Estado,
-  Etnia,
-  Experiencia,
-  Ficha_Ingreso,
-  Idioma,
-  Menu,
-  Municipio,
+  Direcciones,
+  Documentos_Empleados,
+  Empleados,
+  Empresas,
+  Estados,
+  Etnias,
+  Experiencias,
+  Fichas_Ingresos,
+  Idiomas,
+  Menus,
+  Municipios,
   Paises,
-  Parroquia,
-  Idiomas_Curriculo,
+  Parroquias,
+  Idiomas_Curriculos,
   Preguntas_Kostick,
-  Pruebas_Empleado,
+  Pruebas_Empleados,
   Referencias_Personales,
   Respuestas_Kostick,
+  Revisiones_Fichas_Ingresos,
   Roles,
   Salud,
   Sesiones,
-  Titulo_Obtenido,
+  Titulos_Obtenidos,
 };
