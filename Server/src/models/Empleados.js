@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
     },
     tipo_identificacion: {
       type: DataTypes.ENUM("E", "V"),
-      allowNull: true,
+      allowNull: false,
     },
     numero_identificacion: {
       type: DataTypes.STRING(20),
@@ -61,7 +61,7 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
     mano_dominante: {
-      type: DataTypes.ENUM("Izquierdo", "Derecho"),
+      type: DataTypes.ENUM("Izquierda", "Derecha"),
       allowNull: true,
     },
     sexo: {
