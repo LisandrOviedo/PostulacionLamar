@@ -212,7 +212,7 @@ export function DatosPersonales() {
                     <Input
                       className="w-auto"
                       id="telefono"
-                      type="text"
+                      type="tel"
                       name="telefono"
                       value={datosPersonales.telefono}
                       onChange={handleInputChangeDatos}
