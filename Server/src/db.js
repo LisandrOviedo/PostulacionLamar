@@ -99,13 +99,13 @@ Empleados.hasOne(Curriculos, {
 
 // Areas_Interes M:M Curriculos
 Areas_Interes.belongsToMany(Curriculos, {
-  through: "Area_Interes_Curriculo",
+  through: "Areas_Interes_Curriculos",
   foreignKey: {
     name: "area_interes_id",
   },
 });
 Curriculos.belongsToMany(Areas_Interes, {
-  through: "Area_Interes_Curriculo",
+  through: "Areas_Interes_Curriculos",
   foreignKey: {
     name: "curriculo_id",
   },
@@ -201,13 +201,13 @@ Preguntas_Kostick.belongsToMany(Pruebas_Empleados, {
 
 // Curriculos M:M Idiomas
 Curriculos.belongsToMany(Idiomas, {
-  through: "Idiomas_Curriculo",
+  through: "Idiomas_Curriculos",
   foreignKey: {
     name: "curriculo_id",
   },
 });
 Idiomas.belongsToMany(Curriculos, {
-  through: "Idiomas_Curriculo",
+  through: "Idiomas_Curriculos",
   foreignKey: {
     name: "idioma_id",
   },
