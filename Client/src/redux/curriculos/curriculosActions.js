@@ -220,7 +220,7 @@ export const postCurriculo = (token, datosCurriculo) => {
 };
 
 const postAreasInteres = async (token, curriculo_id, areas_interes) => {
-  const URL_ADD_AREASINTERES = `${URL_SERVER}/areasinteres/agregarArea`;
+  const URL_ADD_AREASINTERES = `${URL_SERVER}/areas_interes/agregarArea`;
 
   try {
     await axios.post(
@@ -241,7 +241,7 @@ const postAreasInteres = async (token, curriculo_id, areas_interes) => {
 };
 
 const postTitulosObtenidos = async (token, curriculo_id, titulos_obtenidos) => {
-  const URL_ADD_TITULOSOBTENIDOS = `${URL_SERVER}/titulosobtenidos`;
+  const URL_ADD_TITULOSOBTENIDOS = `${URL_SERVER}/titulos_obtenidos`;
 
   try {
     await axios.post(
@@ -369,8 +369,8 @@ export const putCurriculo = (token, datosCurriculo) => {
 };
 
 const putAreasInteres = async (token, curriculo_id, areas_interes) => {
-  const URL_ADD_AREASINTERES = `${URL_SERVER}/areasinteres/agregarArea`;
-  const URL_DELETE_AREASINTERES = `${URL_SERVER}/areasinteres/eliminarAreas/${curriculo_id}`;
+  const URL_ADD_AREASINTERES = `${URL_SERVER}/areas_interes/agregarArea`;
+  const URL_DELETE_AREASINTERES = `${URL_SERVER}/areas_interes/eliminarAreas/${curriculo_id}`;
 
   try {
     await axios.delete(URL_DELETE_AREASINTERES, {
@@ -395,8 +395,8 @@ const putAreasInteres = async (token, curriculo_id, areas_interes) => {
 };
 
 const putTitulosObtenidos = async (token, curriculo_id, titulos_obtenidos) => {
-  const URL_ADD_TITULOSOBTENIDOS = `${URL_SERVER}/titulosobtenidos`;
-  const URL_DELETE_TITULOSOBTENIDOS = `${URL_SERVER}/titulosobtenidos/eliminarTitulos/${curriculo_id}`;
+  const URL_ADD_TITULOSOBTENIDOS = `${URL_SERVER}/titulos_obtenidos`;
+  const URL_DELETE_TITULOSOBTENIDOS = `${URL_SERVER}/titulos_obtenidos/eliminarTitulos/${curriculo_id}`;
 
   try {
     await axios.delete(URL_DELETE_TITULOSOBTENIDOS, {
