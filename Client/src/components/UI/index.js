@@ -1,4 +1,5 @@
 export { Button } from "./Button";
+export { Date } from "./Date";
 export { Input } from "./Input";
 export { InputFile } from "./InputFile";
 export { Label } from "./Label";
