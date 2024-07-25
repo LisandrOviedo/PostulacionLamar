@@ -354,50 +354,57 @@ const traerCurriculoEmpleado = async (empleado_id) => {
   try {
     await traerEmpleado(empleado_id);
 
-    const curriculo = await Curriculos.findOne({
+    const curriculo = await Empleados.findOne({
       where: {
         empleado_id: empleado_id,
         activo: true,
       },
-      attributes: {
-        exclude: ["empleado_id"],
-      },
+      attributes: ["empleado_id"],
       include: [
         {
-          model: Empleados,
+          model: Titulos_Obtenidos,
           attributes: {
-            exclude: ["clave", "createdAt", "updatedAt"],
+            exclude: [
+              "empleado_id",
+              "titulo_obtenido_id",
+              "activo",
+              "createdAt",
+              "updatedAt",
+            ],
           },
+        },
+        {
+          model: Experiencias,
+          attributes: {
+            exclude: [
+              "empleado_id",
+              "experiencia_id",
+              "activo",
+              "createdAt",
+              "updatedAt",
+            ],
+          },
+        },
+        {
+          model: Curriculos,
           include: [
             {
-              model: Titulos_Obtenidos,
+              model: Areas_Interes,
               attributes: {
-                exclude: ["empleado_id", "activo", "createdAt", "updatedAt"],
+                exclude: ["activo", "createdAt", "updatedAt"],
+              },
+              through: {
+                attributes: ["area_interes_curriculo_id"],
               },
             },
             {
-              model: Experiencias,
-              attributes: {
-                exclude: ["empleado_id", "activo", "createdAt", "updatedAt"],
+              model: Idiomas,
+              attributes: ["idioma_id", "nombre"],
+              through: {
+                attributes: ["nivel"],
               },
             },
           ],
-        },
-        {
-          model: Areas_Interes,
-          attributes: {
-            exclude: ["activo", "createdAt", "updatedAt"],
-          },
-          through: {
-            attributes: ["area_interes_curriculo_id"],
-          },
-        },
-        {
-          model: Idiomas,
-          attributes: ["idioma_id", "nombre"],
-          through: {
-            attributes: ["nivel"],
-          },
         },
       ],
     });
