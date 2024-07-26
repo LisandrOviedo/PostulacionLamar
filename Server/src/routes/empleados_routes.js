@@ -2,6 +2,7 @@ const { Router } = require("express");
 const {
   getEmpleados,
   getEmpleado,
+  getEmpleadoExistencia,
   getLogin,
   postEmpleado,
   putClaveTemporalEmpleado,
@@ -55,6 +56,7 @@ const upload = multer({ storage: storage });
 
 empleados.get("/detalle/:empleado_id", authenticateToken, getEmpleado);
 empleados.get("/login", getLogin);
+empleados.get("/empleadoExistencia", authenticateToken, getEmpleadoExistencia);
 
 empleados.post("/allEmpleados", authenticateToken, getEmpleados);
 empleados.post("/", authenticateToken, postEmpleado);

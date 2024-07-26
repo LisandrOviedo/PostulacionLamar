@@ -127,6 +127,32 @@ const traerEmpleado = async (empleado_id) => {
   }
 };
 
+const traerEmpleadoExistencia = async (
+  tipo_identificacion,
+  numero_identificacion
+) => {
+  if (!tipo_identificacion || !numero_identificacion) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  try {
+    const empleado = await Empleados.findOne({
+      where: {
+        tipo_identificacion: tipo_identificacion,
+        numero_identificacion: numero_identificacion,
+      },
+    });
+
+    if (!empleado) {
+      throw new Error(`No existe ese empleado`);
+    } else {
+      return { empleado_id: empleado.empleado_id };
+    }
+  } catch (error) {
+    throw new Error(`Error al traer el empleado: ${error.message}`);
+  }
+};
+
 const login = async (tipo_identificacion, numero_identificacion, clave) => {
   if (!tipo_identificacion || !numero_identificacion || !clave) {
     throw new Error(`Datos faltantes`);
@@ -759,6 +785,7 @@ const inactivarEmpleado = async (empleado_id) => {
 module.exports = {
   todosLosEmpleados,
   traerEmpleado,
+  traerEmpleadoExistencia,
   login,
   cargarEmpleados,
   crearEmpleado,
