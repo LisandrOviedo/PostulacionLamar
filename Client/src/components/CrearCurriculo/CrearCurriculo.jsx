@@ -6,8 +6,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresActions";
 import { getAllIdiomasActivos } from "../../redux/idiomas/idiomasActions";
 import {
-  postCurriculo,
+  putCurriculo,
   postCurriculoPDF,
+  getCurriculoEmpleado,
 } from "../../redux/curriculos/curriculosActions";
 
 import { Button, Date, Hr, Input, Label, Select, Title } from "../UI";
@@ -40,18 +41,17 @@ export function CrearCurriculo() {
 
   const [datosCurriculo, setDatosCurriculo] = useState({
     empleado_id: empleado.empleado_id,
-    titulos_obtenidos: curriculoEmpleado.Titulos_Obtenidos
-      ? curriculoEmpleado.Titulos_Obtenidos
-      : [],
+    curriculo_id: curriculoEmpleado?.Curriculo?.curriculo_id || "",
+    titulos_obtenidos: curriculoEmpleado?.Titulos_Obtenidos || [],
     disponibilidad_viajar:
-      curriculoEmpleado.Curriculo?.disponibilidad_viajar || false,
+      curriculoEmpleado?.Curriculo?.disponibilidad_viajar || false,
     disponibilidad_cambio_residencia:
-      curriculoEmpleado.Curriculo?.disponibilidad_cambio_residencia || false,
+      curriculoEmpleado?.Curriculo?.disponibilidad_cambio_residencia || false,
     habilidades_tecnicas:
-      curriculoEmpleado.Curriculo?.habilidades_tecnicas || "",
-    areas_interes: curriculoEmpleado.Curriculo?.Areas_Interes || [],
-    experiencias: curriculoEmpleado.Experiencias || [],
-    idiomas: curriculoEmpleado.Curriculo?.Idiomas || [],
+      curriculoEmpleado?.Curriculo?.habilidades_tecnicas || "",
+    areas_interes: curriculoEmpleado?.Curriculo?.Areas_Interes || [],
+    experiencias: curriculoEmpleado?.Experiencias || [],
+    idiomas: curriculoEmpleado?.Curriculo?.Idiomas || [],
   });
 
   const [errors, setErrors] = useState({});
@@ -60,7 +60,7 @@ export function CrearCurriculo() {
   const [isHiddenIdioma, setIsHiddenIdioma] = useState(true);
 
   const [isLoad, setIsLoad] = useState({
-    areas_interes: false,
+    areas_interes: datosCurriculo.areas_interes.length ? true : false,
   });
 
   useEffect(() => {
@@ -75,7 +75,7 @@ export function CrearCurriculo() {
     return () => {
       document.title = "Grupo Lamar";
     };
-  }, []);
+  }, [curriculoEmpleado]);
 
   const handleInputChangeCurriculo = (event) => {
     const { name, value } = event.target;
@@ -93,39 +93,29 @@ export function CrearCurriculo() {
     setDatosCurriculo({ ...datosCurriculo, [name]: checked });
   };
 
-  const handleTipoExpSelected = () => {
-    const select = document.getElementById("tipo");
-    const name = select.options[select.selectedIndex].text;
+  const handleTipoExpSelected = (e) => {
+    const { value } = e.target;
 
-    if (name === "Ninguno") {
+    if (value === "Ninguno") {
       setIsHidden(true);
-      return;
-    }
-
-    if (isHidden) {
+    } else if (value !== "Ninguno" && isHidden) {
       setIsHidden(false);
-      return;
     }
   };
 
-  const handleIdiomaSelected = () => {
-    const select = document.getElementById("idiomas");
-    const select2 = document.getElementById("nivel_idioma");
+  const handleIdiomaSelected = (e) => {
+    const { value } = e.target;
 
-    const name = select.options[select.selectedIndex].text;
+    const nivel_idioma = document.getElementById("nivel_idioma");
 
-    if (select2.selectedIndex !== 0) {
-      select2.selectedIndex = 0;
+    if (nivel_idioma.selectedIndex !== 0) {
+      nivel_idioma.selectedIndex = 0;
     }
 
-    if (name === "Ninguno") {
+    if (value === "Ninguno") {
       setIsHiddenIdioma(true);
-      return;
-    }
-
-    if (isHidden) {
+    } else if (value !== "Ninguno" && isHiddenIdioma) {
       setIsHiddenIdioma(false);
-      return;
     }
   };
 
@@ -411,14 +401,11 @@ export function CrearCurriculo() {
     });
   };
 
-  const handleCreateCurriculo = async () => {
-    if (
-      !datosCurriculo.grado_instruccion ||
-      !datosCurriculo.areas_interes.length
-    ) {
+  const handleSaveCurriculo = async () => {
+    if (!datosCurriculo.areas_interes.length) {
       return Swal.fire({
         title: "Oops...",
-        text: "Datos faltantes",
+        text: "Debes añadir al menos 1 área de interés",
         icon: "error",
         showConfirmButton: false,
         timer: 3000,
@@ -426,11 +413,16 @@ export function CrearCurriculo() {
     }
 
     try {
-      dispatch(postCurriculo(token, datosCurriculo))
+      dispatch(putCurriculo(token, datosCurriculo))
         .then(() => {
-          // Acciones a realizar después de que se resuelva la promesa exitosamente
+          dispatch(getCurriculoEmpleado(token, empleado.empleado_id));
+
           dispatch(
-            postCurriculoPDF(token, empleado.empleado_id, empleado.cedula)
+            postCurriculoPDF(
+              token,
+              empleado.empleado_id,
+              `${empleado.tipo_identificacion}${empleado.numero_identificacion}`
+            )
           )
             .then((response) => {
               Swal.fire({
@@ -443,11 +435,10 @@ export function CrearCurriculo() {
                 cancelButtonText: "No",
               }).then((result) => {
                 if (result.isConfirmed) {
-                  const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${response.data}`;
+                  const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${response.data}`;
                   window.open(URL_GET_PDF, "_blank");
                 }
               });
-
               navigate("/inicio");
             })
             .catch((error) => {
@@ -927,11 +918,7 @@ export function CrearCurriculo() {
         >
           <Label htmlFor="idiomas">Nivel del idioma</Label>
           <div className="flex gap-2">
-            <Select
-              id="nivel_idioma"
-              name="nivel_idioma"
-              onChange={handleTipoExpSelected}
-            >
+            <Select id="nivel_idioma" name="nivel_idioma">
               <option value="Principiante">Principiante</option>
               <option value="Intermedio">Intermedio</option>
               <option value="Avanzado">Avanzado</option>
@@ -999,7 +986,7 @@ export function CrearCurriculo() {
           </div>
         </div>
         <div className="md:col-span-3 flex justify-center items-center">
-          <Button className="m-0 w-auto" onClick={handleCreateCurriculo}>
+          <Button className="m-0 w-auto" onClick={handleSaveCurriculo}>
             Guardar Cambios
           </Button>
         </div>
