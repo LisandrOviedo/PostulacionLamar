@@ -9,6 +9,17 @@ export const DDMMYYYY = (fecha) => {
   return formattedDate;
 };
 
+export const YYYYMMDD = () => {
+  const isoDateString = new Date();
+  const isoDate = new Date(isoDateString);
+  const day = String(isoDate.getDate()).padStart(2, "0");
+  const month = String(isoDate.getMonth() + 1).padStart(2, "0");
+  const year = String(isoDate.getFullYear());
+  const formattedDate = `${year}-${month}-${day}`;
+
+  return formattedDate;
+};
+
 export const calcularEdad = (edad) => {
   const today = new Date();
   const birthDate = new Date(edad);

@@ -2,9 +2,11 @@ const { conn, Titulos_Obtenidos } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
 
-const todosLosTitulosObtenidos = async () => {
+const todosLosTitulosObtenidos = async (empleado_id) => {
   try {
-    const titulos_obtenidos = await Titulos_Obtenidos.findAll();
+    const titulos_obtenidos = await Titulos_Obtenidos.findAll({
+      where: { empleado_id: empleado_id },
+    });
 
     if (!titulos_obtenidos.length) {
       throw new Error(`No existen títulos obtenidos`);

@@ -5,7 +5,6 @@ const {
   getCurriculoPDF,
   getCurriculoPDFAnexos,
   getCurriculoEmpleado,
-  postCurriculo,
   putCurriculo,
   deleteCurriculo,
 } = require("../handlers/curriculos_handlers");
@@ -24,7 +23,6 @@ curriculos.get(
 curriculos.post("/detalle", authenticateToken, getCurriculoPDF);
 curriculos.post("/detalleAnexos", authenticateToken, getCurriculoPDFAnexos);
 curriculos.post("/allCurriculos", authenticateToken, getCurriculos);
-curriculos.post("/", authenticateToken, postCurriculo);
 
 curriculos.put("/modificar", authenticateToken, putCurriculo);
 curriculos.put("/inactivar", authenticateToken, deleteCurriculo);

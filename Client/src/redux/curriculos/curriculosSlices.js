@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   curriculos: {},
-  curriculo: {},
   curriculoEmpleado: {},
   paginaActual: 1,
   limitePorPagina: 2,
@@ -23,9 +22,6 @@ export const curriculoSlice = createSlice({
   reducers: {
     allCurriculos: (state, action) => {
       state.curriculos = action.payload;
-    },
-    createCurriculo: (state, action) => {
-      state.curriculo = action.payload;
     },
     curriculoEmpleado: (state, action) => {
       state.curriculoEmpleado = action.payload;
@@ -59,7 +55,6 @@ export const curriculoSlice = createSlice({
 
 export const {
   allCurriculos,
-  createCurriculo,
   curriculoEmpleado,
   curriculoDetail,
   paginaActual,

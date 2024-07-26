@@ -1,5 +1,3 @@
-import { clsx } from "clsx";
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -8,11 +6,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresActions";
 import { getAllIdiomasActivos } from "../../redux/idiomas/idiomasActions";
 import {
-  postCurriculo,
+  putCurriculo,
   postCurriculoPDF,
+  getCurriculoEmpleado,
 } from "../../redux/curriculos/curriculosActions";
 
-import { Button, Hr, Input, Label, Select, Title } from "../UI";
+import { Button, Date, Hr, Input, Label, Select, Title } from "../UI";
+
+import { YYYYMMDD } from "../../utils/formatearFecha";
 
 import validations from "../../utils/validacionesCurriculo";
 
@@ -26,6 +27,10 @@ export function CrearCurriculo() {
 
   const token = useSelector((state) => state.empleados.token);
 
+  const curriculoEmpleado = useSelector(
+    (state) => state.curriculos.curriculoEmpleado
+  );
+
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const areas_interes_activas = useSelector(
@@ -36,14 +41,17 @@ export function CrearCurriculo() {
 
   const [datosCurriculo, setDatosCurriculo] = useState({
     empleado_id: empleado.empleado_id,
-    grado_instruccion: "Basico",
-    titulos_obtenidos: [],
-    disponibilidad_viajar: true,
-    disponibilidad_cambio_residencia: false,
-    habilidades_tecnicas: "",
-    areas_interes: [],
-    experiencias: [],
-    idiomas: [],
+    curriculo_id: curriculoEmpleado?.Curriculo?.curriculo_id || "",
+    titulos_obtenidos: curriculoEmpleado?.Titulos_Obtenidos || [],
+    disponibilidad_viajar:
+      curriculoEmpleado?.Curriculo?.disponibilidad_viajar || false,
+    disponibilidad_cambio_residencia:
+      curriculoEmpleado?.Curriculo?.disponibilidad_cambio_residencia || false,
+    habilidades_tecnicas:
+      curriculoEmpleado?.Curriculo?.habilidades_tecnicas || "",
+    areas_interes: curriculoEmpleado?.Curriculo?.Areas_Interes || [],
+    experiencias: curriculoEmpleado?.Experiencias || [],
+    idiomas: curriculoEmpleado?.Curriculo?.Idiomas || [],
   });
 
   const [errors, setErrors] = useState({});
@@ -52,7 +60,7 @@ export function CrearCurriculo() {
   const [isHiddenIdioma, setIsHiddenIdioma] = useState(true);
 
   const [isLoad, setIsLoad] = useState({
-    areas_interes: false,
+    areas_interes: datosCurriculo.areas_interes.length ? true : false,
   });
 
   useEffect(() => {
@@ -62,12 +70,12 @@ export function CrearCurriculo() {
 
     dispatch(getAllIdiomasActivos(token));
 
-    document.title = "Grupo Lamar - Registrar Perfil Profesional";
+    document.title = "Grupo Lamar - Perfil Profesional";
 
     return () => {
       document.title = "Grupo Lamar";
     };
-  }, []);
+  }, [curriculoEmpleado]);
 
   const handleInputChangeCurriculo = (event) => {
     const { name, value } = event.target;
@@ -85,39 +93,29 @@ export function CrearCurriculo() {
     setDatosCurriculo({ ...datosCurriculo, [name]: checked });
   };
 
-  const handleTipoExpSelected = () => {
-    const select = document.getElementById("tipo");
-    const name = select.options[select.selectedIndex].text;
+  const handleTipoExpSelected = (e) => {
+    const { value } = e.target;
 
-    if (name === "Ninguno") {
+    if (value === "Ninguno") {
       setIsHidden(true);
-      return;
-    }
-
-    if (isHidden) {
+    } else if (value !== "Ninguno" && isHidden) {
       setIsHidden(false);
-      return;
     }
   };
 
-  const handleIdiomaSelected = () => {
-    const select = document.getElementById("idiomas");
-    const select2 = document.getElementById("nivel_idioma");
+  const handleIdiomaSelected = (e) => {
+    const { value } = e.target;
 
-    const name = select.options[select.selectedIndex].text;
+    const nivel_idioma = document.getElementById("nivel_idioma");
 
-    if (select2.selectedIndex !== 0) {
-      select2.selectedIndex = 0;
+    if (nivel_idioma.selectedIndex !== 0) {
+      nivel_idioma.selectedIndex = 0;
     }
 
-    if (name === "Ninguno") {
+    if (value === "Ninguno") {
       setIsHiddenIdioma(true);
-      return;
-    }
-
-    if (isHidden) {
+    } else if (value !== "Ninguno" && isHiddenIdioma) {
       setIsHiddenIdioma(false);
-      return;
     }
   };
 
@@ -138,13 +136,13 @@ export function CrearCurriculo() {
     const value = select.options[select.selectedIndex].value;
 
     const areaValidatorInclude = datosCurriculo.areas_interes.some(
-      (area) => area.area_interes_id === value && area.nombre === name
+      (area) => area.area_interes_id === parseInt(value) && area.nombre === name
     );
 
     if (areaValidatorInclude) {
       Swal.fire({
         title: "Oops...",
-        text: "Ya has agregado esta área de interés",
+        text: "Ya has agregado esa área de interés",
         icon: "error",
         showConfirmButton: false,
         timer: 3000,
@@ -156,7 +154,7 @@ export function CrearCurriculo() {
       ...datosCurriculo,
       areas_interes: [
         ...datosCurriculo.areas_interes,
-        { area_interes_id: value, nombre: name },
+        { area_interes_id: parseInt(value), nombre: name },
       ],
     });
 
@@ -167,6 +165,7 @@ export function CrearCurriculo() {
     if (select.selectedIndex !== 0) {
       select.selectedIndex = 0;
     }
+
     return;
   };
 
@@ -189,7 +188,7 @@ export function CrearCurriculo() {
     if (idiomaValidatorInclude) {
       Swal.fire({
         title: "Oops...",
-        text: "Ya has agregado este idioma",
+        text: "Ya has agregado ese idioma",
         icon: "error",
         showConfirmButton: false,
         timer: 3000,
@@ -201,7 +200,7 @@ export function CrearCurriculo() {
       ...datosCurriculo,
       idiomas: [
         ...datosCurriculo.idiomas,
-        { idioma_id: id, nombre: nombre, nivel: nivel },
+        { idioma_id: id, nombre: nombre, Idiomas_Curriculos: { nivel: nivel } },
       ],
     });
 
@@ -230,14 +229,26 @@ export function CrearCurriculo() {
   };
 
   const handleAddTituloObtenido = () => {
-    const select = document.getElementById("titulo_obtenido");
+    const input_fecha_desde = document.getElementById(
+      "fecha_desde_titulo_obtenido"
+    );
+    const input_grado_instruccion =
+      document.getElementById("grado_instruccion");
+    const input_fecha_hasta = document.getElementById(
+      "fecha_hasta_titulo_obtenido"
+    );
+    const input_nombre_instituto = document.getElementById("nombre_instituto");
+    const input_titulo_obtenido = document.getElementById("titulo_obtenido");
 
-    if (!select.value) {
-      select.focus();
-
+    if (
+      !input_fecha_desde.value ||
+      !input_fecha_hasta.value ||
+      !input_nombre_instituto.value ||
+      !input_titulo_obtenido.value
+    ) {
       Swal.fire({
         title: "Oops...",
-        text: "Debes ingresar el nombre del título obtenido",
+        text: "Faltan campos por llenar para añadir tu título obtenido",
         icon: "error",
         showConfirmButton: false,
         timer: 3000,
@@ -245,22 +256,17 @@ export function CrearCurriculo() {
       return;
     }
 
-    let duplicado = false;
+    const tituloValidatorInclude = datosCurriculo.titulos_obtenidos.some(
+      (titulo) =>
+        titulo.grado_instruccion === input_grado_instruccion.value &&
+        titulo.nombre_instituto === input_nombre_instituto.value &&
+        titulo.titulo_obtenido === input_titulo_obtenido.value
+    );
 
-    datosCurriculo.titulos_obtenidos.forEach((titulo_obtenido) => {
-      if (titulo_obtenido.nombre.toLowerCase() === select.value.toLowerCase()) {
-        duplicado = true;
-        return;
-      }
-    });
-
-    if (duplicado) {
-      select.value = "";
-      select.focus();
-
+    if (tituloValidatorInclude) {
       Swal.fire({
         title: "Oops...",
-        text: "Ya has agregado un título obtenido con ese nombre",
+        text: "Ya has agregado ese título",
         icon: "error",
         showConfirmButton: false,
         timer: 3000,
@@ -272,29 +278,46 @@ export function CrearCurriculo() {
       ...datosCurriculo,
       titulos_obtenidos: [
         ...datosCurriculo.titulos_obtenidos,
-        { nombre: select.value },
+        {
+          grado_instruccion: input_grado_instruccion.value,
+          fecha_desde: input_fecha_desde.value,
+          fecha_hasta: input_fecha_hasta.value,
+          nombre_instituto: input_nombre_instituto.value,
+          titulo_obtenido: input_titulo_obtenido.value,
+        },
       ],
     });
 
-    select.value = "";
-    select.focus();
-    return;
+    input_grado_instruccion.value = "Primaria";
+    input_fecha_desde.value = null;
+    input_fecha_hasta.value = null;
+    input_nombre_instituto.value = null;
+    input_titulo_obtenido.value = null;
   };
 
   const handleAddExperiencia = () => {
     const tipo = document.getElementById("tipo");
     const cargo_titulo = document.getElementById("cargo_titulo");
-    const duracion = document.getElementById("duracion");
+    const fecha_desde_experiencia = document.getElementById(
+      "fecha_desde_experiencia"
+    );
+    const fecha_hasta_experiencia = document.getElementById(
+      "fecha_hasta_experiencia"
+    );
     const empresa_centro_educativo = document.getElementById(
       "empresa_centro_educativo"
     );
 
-    if (!cargo_titulo.value || !empresa_centro_educativo) {
-      cargo_titulo.focus();
-
+    if (
+      !tipo.value ||
+      !empresa_centro_educativo.value ||
+      !cargo_titulo.value ||
+      !fecha_desde_experiencia.value ||
+      !fecha_hasta_experiencia.value
+    ) {
       Swal.fire({
         title: "Oops...",
-        text: "Debes escribir el nombre del cargo o título y el nombre de la empresa o centro educativo",
+        text: "Faltan campos por llenar para añadir tu experiencia",
         icon: "error",
         showConfirmButton: false,
         timer: 3000,
@@ -302,29 +325,19 @@ export function CrearCurriculo() {
       return;
     }
 
-    let duplicado = false;
-
-    datosCurriculo.experiencias.forEach((experiencia) => {
-      if (
+    const expValidatorInclude = datosCurriculo.experiencias.some(
+      (experiencia) =>
         experiencia.tipo.toLowerCase() === tipo.value.toLowerCase() &&
         experiencia.cargo_titulo.toLowerCase() ===
           cargo_titulo.value.toLowerCase() &&
         experiencia.empresa_centro_educativo ===
           empresa_centro_educativo.value.toLowerCase()
-      ) {
-        duplicado = true;
-        return;
-      }
-    });
+    );
 
-    if (duplicado) {
-      cargo_titulo.value = "";
-      empresa_centro_educativo.value = "";
-      cargo_titulo.focus();
-
+    if (expValidatorInclude) {
       Swal.fire({
         title: "Oops...",
-        text: "Ya has agregado una experiencia con ese cargo / título en esa empresa / centro educativo",
+        text: "Ya has agregado esa experiencia",
         icon: "error",
         showConfirmButton: false,
         timer: 3000,
@@ -338,17 +351,18 @@ export function CrearCurriculo() {
         ...datosCurriculo.experiencias,
         {
           tipo: tipo.value,
-          cargo_titulo: cargo_titulo.value,
-          duracion: duracion.value,
           empresa_centro_educativo: empresa_centro_educativo.value,
+          cargo_titulo: cargo_titulo.value,
+          fecha_desde: fecha_desde_experiencia.value,
+          fecha_hasta: fecha_hasta_experiencia.value,
         },
       ],
     });
 
-    cargo_titulo.value = "";
-    empresa_centro_educativo.value = "";
-    duracion.selectedIndex = 0;
-    cargo_titulo.focus();
+    cargo_titulo.value = null;
+    empresa_centro_educativo.value = null;
+    fecha_desde_experiencia.value = null;
+    fecha_hasta_experiencia.value = null;
   };
 
   const handleDeleteExp = (event) => {
@@ -387,14 +401,11 @@ export function CrearCurriculo() {
     });
   };
 
-  const handleCreateCurriculo = async () => {
-    if (
-      !datosCurriculo.grado_instruccion ||
-      !datosCurriculo.areas_interes.length
-    ) {
+  const handleSaveCurriculo = async () => {
+    if (!datosCurriculo.areas_interes.length) {
       return Swal.fire({
         title: "Oops...",
-        text: "Datos faltantes",
+        text: "Debes añadir al menos 1 área de interés",
         icon: "error",
         showConfirmButton: false,
         timer: 3000,
@@ -402,11 +413,16 @@ export function CrearCurriculo() {
     }
 
     try {
-      dispatch(postCurriculo(token, datosCurriculo))
+      dispatch(putCurriculo(token, datosCurriculo))
         .then(() => {
-          // Acciones a realizar después de que se resuelva la promesa exitosamente
+          dispatch(getCurriculoEmpleado(token, empleado.empleado_id));
+
           dispatch(
-            postCurriculoPDF(token, empleado.empleado_id, empleado.cedula)
+            postCurriculoPDF(
+              token,
+              empleado.empleado_id,
+              `${empleado.tipo_identificacion}${empleado.numero_identificacion}`
+            )
           )
             .then((response) => {
               Swal.fire({
@@ -419,11 +435,10 @@ export function CrearCurriculo() {
                 cancelButtonText: "No",
               }).then((result) => {
                 if (result.isConfirmed) {
-                  const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${response.data}`;
+                  const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${response.data}`;
                   window.open(URL_GET_PDF, "_blank");
                 }
               });
-
               navigate("/inicio");
             })
             .catch((error) => {
@@ -444,36 +459,127 @@ export function CrearCurriculo() {
     setErrors(validations({ ...errors, [name]: value }));
   };
 
+  const handleValidateDate = (e) => {
+    const fecha_desde_titulo_obtenido = document.getElementById(
+      "fecha_desde_titulo_obtenido"
+    );
+    const fecha_hasta_titulo_obtenido = document.getElementById(
+      "fecha_hasta_titulo_obtenido"
+    );
+    const fecha_desde_experiencia = document.getElementById(
+      "fecha_desde_experiencia"
+    );
+    const fecha_hasta_experiencia = document.getElementById(
+      "fecha_hasta_experiencia"
+    );
+
+    if (
+      fecha_desde_titulo_obtenido.value &&
+      fecha_hasta_titulo_obtenido.value &&
+      fecha_desde_titulo_obtenido.value >= fecha_hasta_titulo_obtenido.value
+    ) {
+      Swal.fire({
+        title: "Oops...",
+        text: `La "fecha desde" del título obtenido no puede ser igual o menor que la "fecha hasta"`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+
+      fecha_desde_titulo_obtenido.value = null;
+      fecha_hasta_titulo_obtenido.value = null;
+      return;
+    }
+
+    if (
+      fecha_desde_experiencia.value &&
+      fecha_hasta_experiencia.value &&
+      fecha_desde_experiencia.value >= fecha_hasta_experiencia.value
+    ) {
+      Swal.fire({
+        title: "Oops...",
+        text: `La "fecha desde" de la experiencia no puede ser igual o menor que la "fecha hasta"`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+
+      fecha_desde_experiencia.value = null;
+      fecha_hasta_experiencia.value = null;
+      return;
+    }
+
+    const { name, value } = e.target;
+
+    const fecha_actual = YYYYMMDD();
+
+    if (value > fecha_actual) {
+      const input = document.getElementById(name);
+
+      input.value = fecha_actual;
+    }
+  };
+
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white">
-      <Title>Crear Perfil Profesional</Title>
+      <Title>Perfil Profesional</Title>
       <br />
       <Hr />
       <br />
       <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
         <div className="flex flex-col place-content-between">
-          <Label htmlFor="grado_instruccion">
-            Grado de instrucción más alta obtenida
-          </Label>
+          <Label htmlFor="grado_instruccion">Grado de instrucción</Label>
           <Select
             id="grado_instruccion"
             name="grado_instruccion"
-            value={datosCurriculo.grado_instruccion}
-            onChange={handleInputChangeCurriculo}
+            defaultValue="Primaria"
           >
-            <option value="Basico">Básico</option>
-            <option value="Bachiller">Bachiller</option>
-            <option value="Tecnico Medio">Técnico Medio</option>
-            <option value="Tecnico Medio Superior">
-              Técnico Medio Superior
-            </option>
-            <option value="Universitario">Universitario</option>
+            <option value="Primaria">Primaria</option>
+            <option value="Secundaria">Secundaria</option>
+            <option value="Técnica">Técnica</option>
+            <option value="Universitaria">Universitaria</option>
+            <option value="Postgrado">Postgrado</option>
           </Select>
         </div>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="fecha_desde_titulo_obtenido">Fecha desde</Label>
+          <Date
+            id="fecha_desde_titulo_obtenido"
+            name="fecha_desde_titulo_obtenido"
+            type="date"
+            max={YYYYMMDD()}
+            onChange={handleValidateDate}
+          />
+        </div>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="fecha_hasta_titulo_obtenido">Fecha hasta</Label>
+          <Date
+            id="fecha_hasta_titulo_obtenido"
+            name="fecha_hasta_titulo_obtenido"
+            type="date"
+            max={YYYYMMDD()}
+            onChange={handleValidateDate}
+          />
+        </div>
         <div className="md:col-span-2 flex flex-col place-content-between">
-          <Label htmlFor="titulo_obtenido">
-            Títulos obtenidos (Agregar todos uno por uno)
-          </Label>
+          <Label htmlFor="nombre_instituto">Nombre instituto</Label>
+          <div className="flex gap-4 w-full items-start">
+            <Input
+              id="nombre_instituto"
+              type="text"
+              name="nombre_instituto"
+              onChange={handleValidate}
+              placeholder="Ingrese el nombre del instituto"
+            />
+            {errors.nombre_instituto && (
+              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
+                {errors.nombre_instituto}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="md:col-span-2 flex flex-col place-content-between">
+          <Label htmlFor="titulo_obtenido">Título obtenido</Label>
           <div className="flex gap-4 w-full items-start">
             <Input
               id="titulo_obtenido"
@@ -487,13 +593,7 @@ export function CrearCurriculo() {
                 {errors.titulo_obtenido}
               </p>
             )}
-            <Button
-              onClick={handleAddTituloObtenido}
-              disabled={errors.titulo_obtenido}
-              className={clsx("m-0 w-auto ", {
-                "opacity-50": errors.hasOwnProperty("titulo_obtenido"),
-              })}
-            >
+            <Button onClick={handleAddTituloObtenido} className="m-0 w-auto">
               Agregar
             </Button>
           </div>
@@ -508,6 +608,18 @@ export function CrearCurriculo() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Grado instrucción</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Fecha desde</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Fecha hasta</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Nombre instituto</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
                 </th>
               </tr>
@@ -518,7 +630,17 @@ export function CrearCurriculo() {
                   key={i}
                   className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
                 >
-                  <td className="px-4 py-4">{titulo_obtenido.nombre}</td>
+                  <td className="px-4 py-4">
+                    {titulo_obtenido.titulo_obtenido}
+                  </td>
+                  <td className="px-4 py-4">
+                    {titulo_obtenido.grado_instruccion}
+                  </td>
+                  <td className="px-4 py-4">{titulo_obtenido.fecha_desde}</td>
+                  <td className="px-4 py-4">{titulo_obtenido.fecha_hasta}</td>
+                  <td className="px-4 py-4">
+                    {titulo_obtenido.nombre_instituto}
+                  </td>
                   <td className="px-4 py-4">
                     <span
                       className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
@@ -664,13 +786,28 @@ export function CrearCurriculo() {
             isHidden ? "hidden" : "flex flex-col place-content-between"
           }`}
         >
-          <Label htmlFor="duracion">Duración de la experiencia</Label>
-          <Select id="duracion" name="duracion">
-            <option value="Menos de 1 año">Menos de 1 año</option>
-            <option value="1-2 años">1-2 años</option>
-            <option value="3-4 años">3-4 años</option>
-            <option value="5 años o más">5 años o más</option>
-          </Select>
+          <Label htmlFor="fecha_desde_experiencia">Fecha desde</Label>
+          <Date
+            id="fecha_desde_experiencia"
+            name="fecha_desde_experiencia"
+            type="date"
+            max={YYYYMMDD()}
+            onChange={handleValidateDate}
+          />
+        </div>
+        <div
+          className={` ${
+            isHidden ? "hidden" : "flex flex-col place-content-between"
+          }`}
+        >
+          <Label htmlFor="fecha_hasta_experiencia">Fecha hasta</Label>
+          <Date
+            id="fecha_hasta_experiencia"
+            name="fecha_hasta_experiencia"
+            type="date"
+            max={YYYYMMDD()}
+            onChange={handleValidateDate}
+          />
         </div>
         <div
           className={` ${
@@ -695,15 +832,7 @@ export function CrearCurriculo() {
                 {errors.empresa_centro_educativo}
               </p>
             )}
-            <Button
-              onClick={handleAddExperiencia}
-              disabled={errors.empresa_centro_educativo || errors.cargo_titulo}
-              className={clsx("m-0 w-auto ", {
-                "opacity-50":
-                  errors.hasOwnProperty("empresa_centro_educativo") ||
-                  errors.hasOwnProperty("cargo_titulo"),
-              })}
-            >
+            <Button onClick={handleAddExperiencia} className="m-0 w-auto">
               Agregar
             </Button>
           </div>
@@ -721,7 +850,10 @@ export function CrearCurriculo() {
                   <div className="flex items-center">Cargo / Título</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Duración</div>
+                  <div className="flex items-center">Fecha desde</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Fecha hasta</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
@@ -741,7 +873,8 @@ export function CrearCurriculo() {
                 >
                   <td className="px-4 py-4">{experiencia.tipo}</td>
                   <td className="px-4 py-4">{experiencia.cargo_titulo}</td>
-                  <td className="px-4 py-4">{experiencia.duracion}</td>
+                  <td className="px-4 py-4">{experiencia.fecha_desde}</td>
+                  <td className="px-4 py-4">{experiencia.fecha_hasta}</td>
                   <td className="px-4 py-4">
                     {experiencia.empresa_centro_educativo}
                   </td>
@@ -785,11 +918,7 @@ export function CrearCurriculo() {
         >
           <Label htmlFor="idiomas">Nivel del idioma</Label>
           <div className="flex gap-2">
-            <Select
-              id="nivel_idioma"
-              name="nivel_idioma"
-              onChange={handleTipoExpSelected}
-            >
+            <Select id="nivel_idioma" name="nivel_idioma">
               <option value="Principiante">Principiante</option>
               <option value="Intermedio">Intermedio</option>
               <option value="Avanzado">Avanzado</option>
@@ -821,7 +950,9 @@ export function CrearCurriculo() {
                   className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
                 >
                   <td className="px-4 py-4">{idioma.nombre}</td>
-                  <td className="px-4 py-4">{idioma.nivel}</td>
+                  <td className="px-4 py-4">
+                    {idioma.Idiomas_Curriculos.nivel}
+                  </td>
                   <td className="px-4 py-4">
                     <span
                       className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
@@ -845,6 +976,7 @@ export function CrearCurriculo() {
               className="text-sm resize-none block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               placeholder="Escribe tus habilidades técnicas"
               onChange={handleInputChangeCurriculo}
+              value={datosCurriculo.habilidades_tecnicas}
             ></textarea>
             {errors.habilidades_tecnicas && (
               <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
@@ -854,7 +986,7 @@ export function CrearCurriculo() {
           </div>
         </div>
         <div className="md:col-span-3 flex justify-center items-center">
-          <Button className="m-0 w-auto" onClick={handleCreateCurriculo}>
+          <Button className="m-0 w-auto" onClick={handleSaveCurriculo}>
             Guardar Cambios
           </Button>
         </div>

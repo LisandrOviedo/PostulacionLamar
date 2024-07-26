@@ -5,7 +5,6 @@ const {
   traerCurriculoPDFAnexos,
   cambiarEstadoRevisado,
   traerCurriculoEmpleado,
-  crearCurriculo,
   modificarCurriculo,
   inactivarCurriculo,
 } = require("../controllers/curriculos_controllers");
@@ -13,8 +12,6 @@ const {
 const {
   crearCurriculoPDF,
 } = require("../controllers/documentos_empleados_controllers");
-
-const { DDMMYYYYHHMM } = require("../utils/formatearFecha");
 
 const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
 
@@ -53,7 +50,7 @@ const getCurriculo = async (req, res) => {
 
 const getCurriculoPDF = async (req, res) => {
   const { empleado_id, cedula } = req.body;
-  const filename = `${DDMMYYYYHHMM()} - CV.pdf`;
+  const filename = "Perfil Profesional.pdf";
 
   try {
     const doc = new PDFDocument({
@@ -115,7 +112,8 @@ const getCurriculoPDF = async (req, res) => {
                 headers: [
                   "Tipo",
                   "Cargo / Título",
-                  "Duración",
+                  "Desde",
+                  "Hasta",
                   "Empresa / Centro Educativo",
                 ],
                 rows: [],
@@ -124,13 +122,51 @@ const getCurriculoPDF = async (req, res) => {
                 const row = [
                   experiencia.tipo,
                   experiencia.cargo_titulo,
-                  experiencia.duracion,
+                  experiencia.fecha_desde,
+                  experiencia.fecha_hasta,
                   experiencia.empresa_centro_educativo,
                 ];
                 table.rows.push(row);
               }
               await doc.table(table, {
-                columnsSize: [50, 160, 90, 170],
+                columnsSize: [50, 130, 70, 70, 160],
+                prepareHeader: () => doc.fontSize(11).font("Helvetica-Bold"),
+                prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+                  doc.fontSize(10).font("Helvetica");
+                },
+              });
+            })();
+          }
+        } else if (campo.titulo_campo === "Títulos Obtenidos") {
+          if (!campo.descripcion_campo.length) {
+            doc
+              .fontSize(11)
+              .font("Helvetica")
+              .text("No tiene títulos", { indent: 20 });
+          } else {
+            (async function createTable2() {
+              const table = {
+                headers: [
+                  "Grado Instrucción",
+                  "Desde",
+                  "Hasta",
+                  "Nombre Instituto",
+                  "Título Obtenido",
+                ],
+                rows: [],
+              };
+              for (const titulo of campo.descripcion_campo) {
+                const row = [
+                  titulo.grado_instruccion,
+                  titulo.fecha_desde,
+                  titulo.fecha_hasta,
+                  titulo.nombre_instituto,
+                  titulo.titulo_obtenido,
+                ];
+                table.rows.push(row);
+              }
+              await doc.table(table, {
+                columnsSize: [110, 70, 70, 115, 115],
                 prepareHeader: () => doc.fontSize(11).font("Helvetica-Bold"),
                 prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
                   doc.fontSize(10).font("Helvetica");
@@ -197,8 +233,6 @@ const getCurriculoPDF = async (req, res) => {
 
     doc.end();
 
-    await cambiarEstadoRevisado(empleado_id);
-
     await crearCurriculoPDF(empleado_id, filename, pdf_path);
 
     return res.status(201).json(filename);
@@ -258,30 +292,9 @@ const getCurriculoEmpleado = async (req, res) => {
   }
 };
 
-const postCurriculo = async (req, res) => {
-  const {
-    empleado_id,
-    disponibilidad_viajar,
-    disponibilidad_cambio_residencia,
-    habilidades_tecnicas,
-  } = req.body;
-
-  try {
-    const response = await crearCurriculo(
-      empleado_id,
-      disponibilidad_viajar,
-      disponibilidad_cambio_residencia,
-      habilidades_tecnicas
-    );
-
-    return res.status(201).json(response);
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
-  }
-};
-
 const putCurriculo = async (req, res) => {
   const {
+    empleado_id,
     curriculo_id,
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
@@ -290,6 +303,7 @@ const putCurriculo = async (req, res) => {
 
   try {
     const response = await modificarCurriculo(
+      empleado_id,
       curriculo_id,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
@@ -320,7 +334,6 @@ module.exports = {
   getCurriculoPDF,
   getCurriculoPDFAnexos,
   getCurriculoEmpleado,
-  postCurriculo,
   putCurriculo,
   deleteCurriculo,
 };

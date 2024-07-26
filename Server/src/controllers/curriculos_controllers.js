@@ -9,6 +9,7 @@ const {
   Experiencias,
   Documentos_Empleados,
   Idiomas,
+  Etnias,
 } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
@@ -130,46 +131,38 @@ const traerCurriculoPDF = async (empleado_id) => {
       contenido: [
         {
           titulo_campo: "Nombre completo: ",
-          descripcion_campo: `${curriculo.Empleados.nombres} ${curriculo.Empleados.apellidos}`,
+          descripcion_campo: `${curriculo.nombres} ${curriculo.apellidos}`,
         },
         {
-          titulo_campo: "Fecha de nacimiento: ",
-          descripcion_campo: `${
-            curriculo.Empleados.fecha_nacimiento
-          } (${calcularEdad(curriculo.Empleados.fecha_nacimiento)} años)`,
-        },
-        {
-          titulo_campo: "Número de cédula o identidad: ",
-          descripcion_campo: curriculo.Empleados.cedula,
-        },
-        {
-          titulo_campo: "Género: ",
-          descripcion_campo: curriculo.Empleados.genero,
-        },
-        {
-          titulo_campo: "Etnia: ",
-          descripcion_campo: curriculo.Empleados.etnia,
+          titulo_campo: "Número de identificación: ",
+          descripcion_campo: `${curriculo.tipo_identificacion}${curriculo.numero_identificacion}`,
         },
         {
           titulo_campo: "Número de teléfono: ",
-          descripcion_campo: curriculo.Empleados.telefono,
+          descripcion_campo: curriculo.telefono,
         },
         {
           titulo_campo: "Correo electrónico: ",
-          descripcion_campo: curriculo.Empleados.correo,
+          descripcion_campo: curriculo.correo,
         },
         {
-          titulo_campo: "Dirección: ",
-          descripcion_campo: curriculo.Empleados.direccion,
+          titulo_campo: "Etnia: ",
+          descripcion_campo: curriculo.Etnia?.nombre || null,
+        },
+        {
+          titulo_campo: "Sexo: ",
+          descripcion_campo: curriculo.sexo,
         },
         {
           titulo_campo: "Cantidad hijos: ",
-          descripcion_campo: curriculo.Empleados.cantidad_hijos,
+          descripcion_campo: curriculo.cantidad_hijos,
         },
-        // {
-        //   titulo_campo: "Grado de instrucción: ",
-        //   descripcion_campo: curriculo.Empleados.Titulo_Obtenidos.grado_instruccion,
-        // },
+        {
+          titulo_campo: "Fecha de nacimiento: ",
+          descripcion_campo: `${curriculo.fecha_nacimiento} (${calcularEdad(
+            curriculo.fecha_nacimiento
+          )} años)`,
+        },
       ],
     });
 
@@ -178,30 +171,37 @@ const traerCurriculoPDF = async (empleado_id) => {
       contenido: [
         {
           titulo_campo: "¿Puede viajar? ",
-          descripcion_campo: curriculo.disponibilidad_viajar ? "Si" : "No",
+          descripcion_campo: curriculo.Curriculo.disponibilidad_viajar
+            ? "Si"
+            : "No",
         },
         {
           titulo_campo: "¿Puede cambiar de residencia? ",
-          descripcion_campo: curriculo.disponibilidad_cambio_residencia
+          descripcion_campo: curriculo.Curriculo
+            .disponibilidad_cambio_residencia
             ? "Si"
             : "No",
         },
       ],
     });
 
-    let titulos_obtenidos = "";
+    let titulos_obtenidos = [];
 
-    curriculo.Empleados.Titulo_Obtenidos.forEach((titulo, index) => {
-      titulos_obtenidos =
-        index === 0
-          ? titulo.titulo_obtenido
-          : titulos_obtenidos + `, ${titulo.titulo_obtenido}`;
+    curriculo.Titulos_Obtenidos.forEach((titulo_obtenido) => {
+      titulos_obtenidos.push({
+        grado_instruccion: titulo_obtenido.grado_instruccion,
+        fecha_desde: titulo_obtenido.fecha_desde,
+        fecha_hasta: titulo_obtenido.fecha_hasta,
+        nombre_instituto: titulo_obtenido.nombre_instituto,
+        titulo_obtenido: titulo_obtenido.titulo_obtenido,
+      });
     });
 
     content.push({
       titulo: "Títulos Obtenidos",
       contenido: [
         {
+          titulo_campo: "Títulos Obtenidos",
           descripcion_campo: titulos_obtenidos,
         },
       ],
@@ -209,13 +209,13 @@ const traerCurriculoPDF = async (empleado_id) => {
 
     let experiencias = [];
 
-    curriculo.Empleados.Experiencias.forEach((experiencia) => {
+    curriculo.Experiencias.forEach((experiencia) => {
       experiencias.push({
         tipo: experiencia.tipo,
-        empresa_centro_educativo: experiencia.empresa_centro_educativo,
         cargo_titulo: experiencia.cargo_titulo,
         fecha_desde: experiencia.fecha_desde,
         fecha_hasta: experiencia.fecha_hasta,
+        empresa_centro_educativo: experiencia.empresa_centro_educativo,
       });
     });
 
@@ -231,10 +231,10 @@ const traerCurriculoPDF = async (empleado_id) => {
 
     let idiomas = [];
 
-    curriculo.Idiomas.forEach((idioma) => {
+    curriculo.Curriculo.Idiomas.forEach((idioma) => {
       idiomas.push({
         nombre: idioma.nombre,
-        nivel: idioma.Idiomas_Curriculo.nivel,
+        nivel: idioma.Idiomas_Curriculos.nivel,
       });
     });
 
@@ -252,14 +252,14 @@ const traerCurriculoPDF = async (empleado_id) => {
       titulo: "Habilidades Técnicas",
       contenido: [
         {
-          descripcion_campo: curriculo.habilidades_tecnicas,
+          descripcion_campo: curriculo.Curriculo.habilidades_tecnicas,
         },
       ],
     });
 
     let areas = "";
 
-    curriculo.Areas_Interes.forEach((area, index) => {
+    curriculo.Curriculo.Areas_Interes.forEach((area, index) => {
       areas = index === 0 ? area.nombre : areas + `, ${area.nombre}`;
     });
 
@@ -354,50 +354,59 @@ const traerCurriculoEmpleado = async (empleado_id) => {
   try {
     await traerEmpleado(empleado_id);
 
-    const curriculo = await Curriculos.findOne({
+    const curriculo = await Empleados.findOne({
       where: {
         empleado_id: empleado_id,
         activo: true,
       },
-      attributes: {
-        exclude: ["empleado_id"],
-      },
       include: [
         {
-          model: Empleados,
+          model: Etnias,
+        },
+        {
+          model: Titulos_Obtenidos,
           attributes: {
-            exclude: ["clave", "createdAt", "updatedAt"],
+            exclude: [
+              "empleado_id",
+              "titulo_obtenido_id",
+              "activo",
+              "createdAt",
+              "updatedAt",
+            ],
           },
+        },
+        {
+          model: Experiencias,
+          attributes: {
+            exclude: [
+              "empleado_id",
+              "experiencia_id",
+              "activo",
+              "createdAt",
+              "updatedAt",
+            ],
+          },
+        },
+        {
+          model: Curriculos,
           include: [
             {
-              model: Titulos_Obtenidos,
+              model: Areas_Interes,
               attributes: {
-                exclude: ["empleado_id", "activo", "createdAt", "updatedAt"],
+                exclude: ["activo", "createdAt", "updatedAt"],
+              },
+              through: {
+                attributes: ["area_interes_curriculo_id"],
               },
             },
             {
-              model: Experiencias,
-              attributes: {
-                exclude: ["empleado_id", "activo", "createdAt", "updatedAt"],
+              model: Idiomas,
+              attributes: ["idioma_id", "nombre"],
+              through: {
+                attributes: ["nivel"],
               },
             },
           ],
-        },
-        {
-          model: Areas_Interes,
-          attributes: {
-            exclude: ["activo", "createdAt", "updatedAt"],
-          },
-          through: {
-            attributes: ["area_interes_curriculo_id"],
-          },
-        },
-        {
-          model: Idiomas,
-          attributes: ["idioma_id", "nombre"],
-          through: {
-            attributes: ["nivel"],
-          },
         },
       ],
     });
@@ -410,8 +419,9 @@ const traerCurriculoEmpleado = async (empleado_id) => {
   }
 };
 
-const crearCurriculo = async (
+const modificarCurriculo = async (
   empleado_id,
+  curriculo_id,
   disponibilidad_viajar,
   disponibilidad_cambio_residencia,
   habilidades_tecnicas
@@ -423,72 +433,54 @@ const crearCurriculo = async (
   let t;
 
   try {
-    t = await conn.transaction();
+    if (curriculo_id) {
+      t = await conn.transaction();
 
-    await traerEmpleado(empleado_id);
+      await traerCurriculo(curriculo_id);
 
-    const [curriculo, created] = await Curriculos.findOrCreate({
-      where: { empleado_id: empleado_id },
-      defaults: {
-        empleado_id: empleado_id,
-        disponibilidad_viajar: disponibilidad_viajar,
-        disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
-        habilidades_tecnicas: habilidades_tecnicas,
-      },
-      transaction: t,
-    });
-
-    await t.commit();
-
-    if (created) {
-      return curriculo;
-    }
-
-    throw new Error(`Ya existe un curriculo para ese empleado`);
-  } catch (error) {
-    if (!t.finished) {
-      await t.rollback();
-    }
-
-    throw new Error(`Error al crear el curriculo: ${error.message}`);
-  }
-};
-
-const modificarCurriculo = async (
-  curriculo_id,
-  disponibilidad_viajar,
-  disponibilidad_cambio_residencia,
-  habilidades_tecnicas
-) => {
-  if (!curriculo_id) {
-    throw new Error(`Datos faltantes`);
-  }
-
-  let t;
-
-  try {
-    t = await conn.transaction();
-
-    await traerCurriculo(curriculo_id);
-
-    await Curriculos.update(
-      {
-        disponibilidad_viajar: disponibilidad_viajar,
-        disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
-        habilidades_tecnicas: habilidades_tecnicas,
-        estado: "Pendiente por revisar",
-      },
-      {
-        where: {
-          curriculo_id: curriculo_id,
+      await Curriculos.update(
+        {
+          disponibilidad_viajar: disponibilidad_viajar,
+          disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
+          habilidades_tecnicas: habilidades_tecnicas,
+          estado: "Pendiente por revisar",
         },
-      },
-      { transaction: t }
-    );
+        {
+          where: {
+            curriculo_id: curriculo_id,
+          },
+        },
+        { transaction: t }
+      );
 
-    await t.commit();
+      await t.commit();
 
-    return await traerCurriculo(curriculo_id);
+      return await traerCurriculo(curriculo_id);
+    } else {
+      t = await conn.transaction();
+
+      await traerEmpleado(empleado_id);
+
+      const [crearCurriculo, created] = await Curriculos.findOrCreate({
+        where: {
+          empleado_id: empleado_id,
+        },
+        defaults: {
+          empleado_id: empleado_id,
+          disponibilidad_viajar: disponibilidad_viajar,
+          disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
+          habilidades_tecnicas: habilidades_tecnicas,
+          estado: "Pendiente por revisar",
+        },
+        transaction: t,
+      });
+
+      await t.commit();
+
+      if (created) {
+        return await traerCurriculo(crearCurriculo.curriculo_id);
+      }
+    }
   } catch (error) {
     if (!t.finished) {
       await t.rollback();
@@ -537,7 +529,6 @@ module.exports = {
   traerCurriculoPDFAnexos,
   cambiarEstadoRevisado,
   traerCurriculoEmpleado,
-  crearCurriculo,
   modificarCurriculo,
   inactivarCurriculo,
 };

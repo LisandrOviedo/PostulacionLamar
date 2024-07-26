@@ -455,27 +455,6 @@ const modificarEmpleado = async (datosPersonales) => {
 
   const camposActualizar = {};
 
-  if (datosPersonales.rol_id) {
-    camposActualizar.rol_id = datosPersonales.rol_id;
-  }
-
-  if (datosPersonales.nombres) {
-    camposActualizar.nombres = datosPersonales.nombres;
-  }
-
-  if (datosPersonales.apellidos) {
-    camposActualizar.apellidos = datosPersonales.apellidos;
-  }
-
-  if (datosPersonales.tipo_identificacion) {
-    camposActualizar.tipo_identificacion = datosPersonales.tipo_identificacion;
-  }
-
-  if (datosPersonales.numero_identificacion) {
-    camposActualizar.numero_identificacion =
-      datosPersonales.numero_identificacion;
-  }
-
   if (datosPersonales.estado_civil) {
     camposActualizar.estado_civil = datosPersonales.estado_civil;
   }
@@ -492,7 +471,9 @@ const modificarEmpleado = async (datosPersonales) => {
     camposActualizar.correo = datosPersonales.correo;
   }
 
-  if (datosPersonales.etnia_id) {
+  if (datosPersonales.etnia_id === "Ninguna") {
+    camposActualizar.etnia_id = null;
+  } else if (datosPersonales.etnia_id) {
     camposActualizar.etnia_id = datosPersonales.etnia_id;
   }
 
@@ -517,10 +498,6 @@ const modificarEmpleado = async (datosPersonales) => {
     camposActualizar.carga_familiar = datosPersonales.carga_familiar;
   }
 
-  if (datosPersonales.fecha_nacimiento) {
-    camposActualizar.fecha_nacimiento = datosPersonales.fecha_nacimiento;
-  }
-
   if (datosPersonales.nacimiento_ciudad_id) {
     camposActualizar.nacimiento_ciudad_id =
       datosPersonales.nacimiento_ciudad_id;
@@ -539,37 +516,41 @@ const modificarEmpleado = async (datosPersonales) => {
     camposActualizar.licencia_conducir_grado =
       datosPersonales.licencia_conducir_grado;
   }
+
   if (datosPersonales.licencia_conducir_vencimiento) {
     camposActualizar.licencia_conducir_vencimiento =
       datosPersonales.licencia_conducir_vencimiento;
   }
+
   if (datosPersonales.carta_medica_vencimiento) {
     camposActualizar.carta_medica_vencimiento =
       datosPersonales.carta_medica_vencimiento;
   }
+
   if (datosPersonales.talla_camisa) {
     camposActualizar.talla_camisa = datosPersonales.talla_camisa;
   }
+
   if (datosPersonales.talla_pantalon) {
     camposActualizar.talla_pantalon = datosPersonales.talla_pantalon;
   }
+
   if (datosPersonales.talla_calzado) {
     camposActualizar.talla_calzado = datosPersonales.talla_calzado;
   }
+
   if (datosPersonales.trabajo_anteriormente_especifique) {
     camposActualizar.trabajo_anteriormente_especifique =
       datosPersonales.trabajo_anteriormente_especifique;
   }
+
   if (datosPersonales.motivo_retiro) {
     camposActualizar.motivo_retiro = datosPersonales.motivo_retiro;
   }
+
   if (datosPersonales.posee_parientes_empresa) {
     camposActualizar.posee_parientes_empresa =
       datosPersonales.posee_parientes_empresa;
-  }
-
-  if (datosPersonales.activo) {
-    camposActualizar.activo = datosPersonales.activo;
   }
 
   let t;
