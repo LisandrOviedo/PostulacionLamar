@@ -231,7 +231,7 @@ export function BarraNavegacion() {
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
-                          Crear / Modificar
+                          Actualizar Perfil
                         </Link>
                       </li>
                       <li>
