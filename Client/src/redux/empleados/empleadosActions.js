@@ -59,6 +59,34 @@ export const getEmpleadoDetail = (token, empleado_id) => {
   };
 };
 
+export const getEmpleadoExistencia = async (
+  token,
+  tipo_identificacion,
+  numero_identificacion
+) => {
+  const URL_EMPLEADO_EXISTENCIA = `${URL_SERVER}/empleados/empleadoExistencia?tipo_identificacion=${tipo_identificacion}&numero_identificacion=${numero_identificacion}`;
+
+  try {
+    const { data } = await axios(URL_EMPLEADO_EXISTENCIA, {
+      headers: { authorization: `Bearer ${token}` },
+    });
+
+    if (data.empleado_id) {
+      return Swal.fire({
+        title: "Oops...",
+        text: "Este empleado ya existe",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
+
 export const putPassword = async (token, body) => {
   const URL_PUT_PASSWORD = `${URL_SERVER}/empleados/modificarClave`;
 
