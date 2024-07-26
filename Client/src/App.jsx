@@ -10,7 +10,6 @@ import {
   BarraNavegacion,
   CrearCurriculo,
   DatosPersonales,
-  DetalleCurriculo,
   InfoCurriculo,
   Inicio,
   PaginaNoEncontrada,
@@ -71,10 +70,6 @@ function App() {
             <Route
               path="/perfilProfesional/registro"
               element={<CrearCurriculo />}
-            />
-            <Route
-              path="/perfilProfesional/detalle/:curriculo_id"
-              element={<DetalleCurriculo />}
             />
             <Route
               path="/perfilProfesional/misDocumentos"
