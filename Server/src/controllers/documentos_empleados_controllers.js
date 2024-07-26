@@ -110,36 +110,35 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
       },
     });
 
-    if (pdf_actual !== null) {
-      const rutaArchivo = pdf_actual.ruta;
-
-      fs.unlink(rutaArchivo, (error) => {
-        if (error) {
-          console.error(
-            `${fechaHoraActual()} - Error al borrar el archivo:`,
-            error
-          );
-        }
+    if (pdf_actual) {
+      await Documentos_Empleados.update(
+        {
+          nombre: filename,
+          ruta: pdf_path,
+        },
+        {
+          where: {
+            empleado_id: empleado_id,
+            tipo: "perfil_pdf",
+          },
+        },
+        { transaction: t }
+      );
+    } else {
+      await Documentos_Empleados.findOrCreate({
+        where: {
+          empleado_id: empleado_id,
+          tipo: "perfil_pdf",
+        },
+        defaults: {
+          empleado_id: empleado_id,
+          tipo: "perfil_pdf",
+          nombre: filename,
+          ruta: pdf_path,
+        },
+        transaction: t,
       });
     }
-
-    await Documentos_Empleados.destroy({
-      where: {
-        empleado_id: empleado_id,
-        tipo: "perfil_pdf",
-      },
-      transaction: t,
-    });
-
-    await Documentos_Empleados.create(
-      {
-        empleado_id: empleado_id,
-        tipo: "perfil_pdf",
-        nombre: filename,
-        ruta: pdf_path,
-      },
-      { transaction: t }
-    );
 
     await t.commit();
   } catch (error) {
