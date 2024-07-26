@@ -1,6 +1,7 @@
 const {
   todosLosEmpleados,
   traerEmpleado,
+  traerEmpleadoExistencia,
   login,
   crearEmpleado,
   actualizarClaveTemporalEmpleado,
@@ -32,6 +33,21 @@ const getEmpleado = async (req, res) => {
 
   try {
     const response = await traerEmpleado(empleado_id);
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const getEmpleadoExistencia = async (req, res) => {
+  const { tipo_identificacion, numero_identificacion } = req.query;
+
+  try {
+    const response = await traerEmpleadoExistencia(
+      tipo_identificacion,
+      numero_identificacion
+    );
 
     return res.json(response);
   } catch (error) {
@@ -147,6 +163,7 @@ const deleteEmpleado = async (req, res) => {
 module.exports = {
   getEmpleados,
   getEmpleado,
+  getEmpleadoExistencia,
   getLogin,
   postEmpleado,
   putClaveTemporalEmpleado,
