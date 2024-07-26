@@ -22,6 +22,7 @@ import {
   PanelAdmin,
   Postulaciones,
   PruebasEmpleados,
+  FormularioIngreso
 } from "./components/";
 
 import {
@@ -106,6 +107,10 @@ function App() {
             <Route
               path="/admin/pruebasEmpleados"
               element={<PruebasEmpleados />}
+            />
+            <Route
+              path="/admin/formularioIngreso"
+              element={<FormularioIngreso />}
             />
           </Route>
         </Routes>

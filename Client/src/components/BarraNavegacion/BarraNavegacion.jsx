@@ -361,6 +361,21 @@ export function BarraNavegacion() {
                     </Link>
                   </li>
                   <li>
+                    <Link
+                      to="/admin/formularioIngreso"
+                      className="block text-white hover:text-[#F0C95C]"
+                      onClick={() => {
+                        toggleMenuBurger();
+                        toggleMenu({});
+                      }}
+                    >
+                      <div className="flex items-center justify-between p-2">
+                        <div className="mx-auto">Formulario de Ingreso</div>
+                      </div>
+                    </Link>
+                  </li>
+
+                  <li>
                     <span
                       onClick={() => logout("admin")}
                       className="block text-white hover:text-[#F0C95C]"
