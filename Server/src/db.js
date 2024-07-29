@@ -113,13 +113,13 @@ Curriculos.belongsToMany(Areas_Interes, {
 
 // Empleados M:M Cargos
 Empleados.belongsToMany(Cargos, {
-  through: "Cargo_Empleado",
+  through: "Cargos_Empleados",
   foreignKey: {
     name: "empleado_id",
   },
 });
 Cargos.belongsToMany(Empleados, {
-  through: "Cargo_Empleado",
+  through: "Cargos_Empleados",
   foreignKey: {
     name: "cargo_id",
   },

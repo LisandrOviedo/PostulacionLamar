@@ -1,8 +1,7 @@
-import React from "react";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export const Input = ({ className, pattern, ...props }) => {
+export const Input = ({ className, ...props }) => {
   return (
     <input
       className={twMerge(
@@ -12,7 +11,6 @@ export const Input = ({ className, pattern, ...props }) => {
         )
       )}
       autoComplete="off"
-      pattern={pattern}
       {...props}
     />
   );
