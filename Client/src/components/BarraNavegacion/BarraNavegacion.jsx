@@ -44,7 +44,7 @@ export function BarraNavegacion() {
     setIsHovered(!isHovered);
   };
 
-  const logout = (rol) => {
+  const logout = () => {
     Swal.fire({
       text: "¿Seguro que deseas salir?",
       icon: "warning",
@@ -59,16 +59,9 @@ export function BarraNavegacion() {
 
         dispatch(resetAreasInteres());
         dispatch(resetCurriculos());
-        dispatch(resetEmpleados());
         dispatch(resetIdiomas());
         dispatch(resetPruebas());
-
-        if (rol === "empleado") {
-          navigate("/");
-          return;
-        }
-        navigate("/admin/acceso");
-        return;
+        dispatch(resetEmpleados());
       }
     });
   };
@@ -78,7 +71,7 @@ export function BarraNavegacion() {
   const asideRef = useRef(null);
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
-  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${empleado.foto_perfil_nombre}`;
+  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${empleado.foto_perfil_nombre}`;
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -254,16 +247,15 @@ export function BarraNavegacion() {
                       </li>
                     </ul>
                   </li>
-                  <li>
-                    <span
-                      onClick={() => logout("empleado")}
-                      className="block text-white hover:text-[#F0C95C]"
-                    >
-                      <div className="flex items-center justify-between p-2">
-                        <div className="mx-auto">Cerrar Sesión</div>
-                      </div>
-                    </span>
-                  </li>
+                  <Link
+                    to="/"
+                    className="block text-white hover:text-[#F0C95C] text-center"
+                    onClick={logout}
+                  >
+                    <div className="flex items-center justify-between p-2">
+                      <div className="mx-auto">Cerrar Sesión</div>
+                    </div>
+                  </Link>
                 </>
               )}
               {pathname.startsWith("/admin/") && (
@@ -361,14 +353,15 @@ export function BarraNavegacion() {
                     </Link>
                   </li>
                   <li>
-                    <span
-                      onClick={() => logout("admin")}
-                      className="block text-white hover:text-[#F0C95C]"
+                    <Link
+                      to="/admin/acceso"
+                      className="block text-white hover:text-[#F0C95C] text-center"
+                      onClick={logout}
                     >
                       <div className="flex items-center justify-between p-2">
                         <div className="mx-auto">Cerrar Sesión</div>
                       </div>
-                    </span>
+                    </Link>
                   </li>
                 </>
               )}
