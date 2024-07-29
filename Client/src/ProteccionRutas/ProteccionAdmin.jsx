@@ -7,7 +7,7 @@ export const ProteccionAdmin = () => {
   return userState.empleado_id && userState.Role.nombre !== "empleado" ? (
     <Outlet />
   ) : (
-    <Navigate replace to="/tthh/admin/acceso" />
+    <Navigate replace to="/admin/acceso" />
   );
 };
 

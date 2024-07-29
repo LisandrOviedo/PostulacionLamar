@@ -7,7 +7,7 @@ export const ProteccionEmpleado = () => {
   return userState.empleado_id && userState.Role.nombre ? (
     <Outlet />
   ) : (
-    <Navigate replace to="/tthh" />
+    <Navigate replace to="/" />
   );
 };
 
