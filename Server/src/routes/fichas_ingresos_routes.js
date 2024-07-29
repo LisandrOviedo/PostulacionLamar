@@ -14,7 +14,7 @@ const { authenticateToken } = require("../auth/index");
 const fichas_ingresos = Router();
 
 fichas_ingresos.get("/", authenticateToken, getFichasIngresos);
-fichas_ingresos.get("/activas", authenticateToken, getFichasIngresosActivas);
+fichas_ingresos.get("/activos", authenticateToken, getFichasIngresosActivas);
 fichas_ingresos.get(
   "/detalle/:ficha_ingreso_id",
   authenticateToken,

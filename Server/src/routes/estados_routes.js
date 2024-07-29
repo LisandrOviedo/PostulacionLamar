@@ -13,7 +13,7 @@ const { authenticateToken } = require("../auth/index");
 const estados = Router();
 
 estados.get("/:pais_id", authenticateToken, getEstados);
-estados.get("/activas/:pais_id", authenticateToken, getEstadosActivos);
+estados.get("/activos/:pais_id", authenticateToken, getEstadosActivos);
 estados.get("/detalle/:estado_id", authenticateToken, getEstado);
 
 estados.post("/", authenticateToken, postEstado);

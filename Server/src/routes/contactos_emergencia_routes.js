@@ -18,7 +18,7 @@ contactos_emergencia.get(
   getContactosEmergencia
 );
 contactos_emergencia.get(
-  "/activas/:empleado_id",
+  "/activos/:empleado_id",
   authenticateToken,
   getContactosEmergenciaActivas
 );

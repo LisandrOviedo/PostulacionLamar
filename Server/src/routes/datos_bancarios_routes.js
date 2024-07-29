@@ -14,7 +14,7 @@ const datos_bancarios = Router();
 
 datos_bancarios.get("/:empleado_id", authenticateToken, getDatosBancarios);
 datos_bancarios.get(
-  "/activas/:empleado_id",
+  "/activos/:empleado_id",
   authenticateToken,
   getDatosBancariosActivos
 );

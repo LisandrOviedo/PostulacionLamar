@@ -18,7 +18,7 @@ revisiones_fichas_ingresos.get(
   getRevisionesFichasIngresos
 );
 revisiones_fichas_ingresos.get(
-  "/activas",
+  "/activos",
   authenticateToken,
   getRevisionesFichasIngresosActivas
 );
