@@ -18,12 +18,7 @@ const { API_EMPLEADOS } = process.env;
 
 const { YYYYMMDD, fechaHoraActual } = require("../utils/formatearFecha");
 
-const {
-  ordenarNombresAPI,
-  ordenarDireccionesAPI,
-} = require("../utils/formatearTexto");
-
-const { empleados } = require("../utils/empleados");
+const { ordenarNombresAPI } = require("../utils/formatearTexto");
 
 const { crearSesion, traerSesion } = require("./sesiones_controllers");
 
