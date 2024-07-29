@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import validations from "../../utils/validacionesAcceso";
 
-import { Button, Input, Label, Title } from "../UI";
+import { Button, Input, Label, Radio, Title } from "../UI";
 
 import { getLogin } from "../../redux/empleados/empleadosActions";
 
@@ -18,7 +18,8 @@ export function AccesoAdmin() {
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const [data, setData] = useState({
-    cedula: "",
+    tipo_identificacion: "V",
+    numero_identificacion: "",
     clave: "",
   });
 
@@ -28,9 +29,9 @@ export function AccesoAdmin() {
     useState(false);
 
   const handleLogin = () => {
-    const { cedula, clave } = data;
+    const { tipo_identificacion, numero_identificacion, clave } = data;
 
-    dispatch(getLogin(cedula, clave))
+    dispatch(getLogin(tipo_identificacion, numero_identificacion, clave))
       .then(() => {
         // Acciones a realizar después de que se resuelva la promesa exitosamente
       })
@@ -49,7 +50,10 @@ export function AccesoAdmin() {
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
-    setErrors(validations({ ...data, [name]: value }));
+
+    if (name !== "tipo_identificacion") {
+      setErrors(validations({ ...data, [name]: value }));
+    }
   };
 
   useEffect(() => {
@@ -118,15 +122,39 @@ export function AccesoAdmin() {
           </Title>
         </div>
       </div>
-
       <div className="mt-10 w-[70%] sm:w-[50%] md:w-[40%] lg:w-[30%] space-y-6">
+        <div className="flex justify-center gap-x-4">
+          <div className="flex items-center gap-x-2">
+            <Radio
+              id="venezolano"
+              name="tipo_identificacion"
+              value="V"
+              onChange={handleOnChange}
+              defaultChecked={true}
+            />
+            <Label htmlFor="venezolano" className="mb-0">
+              Venezolano
+            </Label>
+          </div>
+          <div className="flex items-center gap-x-2">
+            <Radio
+              id="extranjero"
+              name="tipo_identificacion"
+              value="E"
+              onChange={handleOnChange}
+            />
+            <Label htmlFor="extranjero" className="mb-0">
+              Extranjero
+            </Label>
+          </div>
+        </div>
         <div>
-          <Label htmlFor="cedula">Número de cédula</Label>
+          <Label htmlFor="numero_identificacion">Número de cédula</Label>
           <div className="mt-2">
             <Input
-              id="cedula"
-              name="cedula"
-              type="text"
+              id="numero_identificacion"
+              name="numero_identificacion"
+              type="number"
               placeholder="123456789"
               onChange={handleOnChange}
               onKeyDown={handleKeyDown}
@@ -134,14 +162,13 @@ export function AccesoAdmin() {
               maxLength="9"
               required
             />
-            {errors.clave && (
+            {errors.numero_identificacion && (
               <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-                {errors.cedula}
+                {errors.numero_identificacion}
               </p>
             )}
           </div>
         </div>
-
         <div>
           <div className="flex items-center justify-between">
             <Label htmlFor="clave">Contraseña</Label>
@@ -172,15 +199,22 @@ export function AccesoAdmin() {
             )}
           </div>
         </div>
-
         <div className="flex flex-col items-center justify-center">
           <Button
             id="btn_continuar"
             onClick={handleLogin}
-            disabled={Object.keys(errors).length || !data.cedula || !data.clave}
+            disabled={
+              Object.keys(errors).length ||
+              !data.tipo_identificacion ||
+              !data.numero_identificacion ||
+              !data.clave
+            }
             className={clsx("", {
               "opacity-50":
-                Object.keys(errors).length || !data.cedula || !data.clave,
+                Object.keys(errors).length ||
+                !data.tipo_identificacion ||
+                !data.numero_identificacion ||
+                !data.clave,
             })}
           >
             Acceder
