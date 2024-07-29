@@ -13,7 +13,7 @@ const { authenticateToken } = require("../auth/index");
 const salud = Router();
 
 salud.get("/:empleado_id", authenticateToken, getSaluds);
-salud.get("/activas/:empleado_id", authenticateToken, getSaludActivas);
+salud.get("/activos/:empleado_id", authenticateToken, getSaludActivas);
 salud.get("/detalle/:salud_id", authenticateToken, getSalud);
 
 salud.post("/", authenticateToken, postSalud);

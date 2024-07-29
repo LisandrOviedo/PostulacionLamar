@@ -18,7 +18,7 @@ referencias_personales.get(
   getReferenciasPersonales
 );
 referencias_personales.get(
-  "/activas/:empleado_id",
+  "/activos/:empleado_id",
   authenticateToken,
   getReferenciasPersonalesActivas
 );

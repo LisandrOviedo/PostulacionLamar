@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import validations from "../../utils/validacionesAcceso";
 
-import { Button, Input, Label, Title, Radio } from "../UI"; // Asegúrate de importar Radio correctamente
+import { Button, Input, Label, Title } from "../UI";
 
 import { getLogin } from "../../redux/empleados/empleadosActions";
 
@@ -18,8 +18,7 @@ export function AccesoAdmin() {
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const [data, setData] = useState({
-    tipo_identificacion: "V", // Valor predeterminado para el radio button
-    numero_identificacion: "",
+    cedula: "",
     clave: "",
   });
 
@@ -50,7 +49,10 @@ export function AccesoAdmin() {
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
-    setErrors(validations({ ...data, [name]: value }));
+
+    if (name !== "tipo_identificacion") {
+      setErrors(validations({ ...data, [name]: value }));
+    }
   };
 
   useEffect(() => {
@@ -119,42 +121,13 @@ export function AccesoAdmin() {
           </Title>
         </div>
       </div>
-
       <div className="mt-10 w-[70%] sm:w-[50%] md:w-[40%] lg:w-[30%] space-y-6">
-        <div className="flex justify-center gap-x-4">
-          <div className="flex items-center gap-x-2">
-            <Radio
-              id="venezolano"
-              name="tipo_identificacion"
-              value="V"
-              onChange={handleOnChange}
-              defaultChecked={true}
-            />
-            <Label htmlFor="venezolano" className="mb-0">
-              Venezolano
-            </Label>
-          </div>
-          <div className="flex items-center gap-x-2">
-            <Radio
-              id="extranjero"
-              name="tipo_identificacion"
-              value="E"
-              onChange={handleOnChange}
-            />
-            <Label htmlFor="extranjero" className="mb-0">
-              Extranjero
-            </Label>
-          </div>
-        </div>
-
         <div>
-          <Label htmlFor="numero_identificacion">
-            Número de identificación
-          </Label>
+          <Label htmlFor="cedula">Número de cédula</Label>
           <div className="mt-2">
             <Input
-              id="numero_identificacion"
-              name="numero_identificacion"
+              id="cedula"
+              name="cedula"
               type="text"
               placeholder="123456789"
               onChange={handleOnChange}
@@ -200,21 +173,14 @@ export function AccesoAdmin() {
             )}
           </div>
         </div>
-
         <div className="flex flex-col items-center justify-center">
           <Button
             id="btn_continuar"
             onClick={handleLogin}
-            disabled={
-              Object.keys(errors).length ||
-              !data.numero_identificacion ||
-              !data.clave
-            }
+            disabled={Object.keys(errors).length || !data.cedula || !data.clave}
             className={clsx("", {
               "opacity-50":
-                Object.keys(errors).length ||
-                !data.numero_identificacion ||
-                !data.clave,
+                Object.keys(errors).length || !data.cedula || !data.clave,
             })}
           >
             Acceder
