@@ -51,7 +51,7 @@ export function AccesoEmpleado() {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
 
-    if (!name === "tipo_identificacion") {
+    if (name !== "tipo_identificacion") {
       setErrors(validations({ ...data, [name]: value }));
     }
   };
@@ -147,7 +147,6 @@ export function AccesoEmpleado() {
             </Label>
           </div>
         </div>
-
         <div>
           <Label htmlFor="numero_identificacion">
             Número de identificación
@@ -156,7 +155,7 @@ export function AccesoEmpleado() {
             <Input
               id="numero_identificacion"
               name="numero_identificacion"
-              type="text"
+              type="number"
               placeholder="123456789"
               onChange={handleOnChange}
               onKeyDown={handleKeyDown}
@@ -201,7 +200,6 @@ export function AccesoEmpleado() {
             )}
           </div>
         </div>
-
         <div className="flex items-center justify-center">
           <Button
             id="btn_continuar"
