@@ -95,7 +95,7 @@ export const deleteFiltros = () => {
   };
 };
 
-export const postCurriculoPDF = (token, empleado_id, cedula) => {
+export const postCurriculoPDF = (token, empleado_id, identificacion) => {
   const URL_CURRICULO = `${URL_SERVER}/curriculos/detalle`;
 
   return async () => {
@@ -104,7 +104,7 @@ export const postCurriculoPDF = (token, empleado_id, cedula) => {
         URL_CURRICULO,
         {
           empleado_id: empleado_id,
-          cedula: cedula,
+          identificacion: identificacion,
         },
         {
           headers: { authorization: `Bearer ${token}` },
@@ -120,7 +120,7 @@ export const postCurriculoPDF = (token, empleado_id, cedula) => {
   };
 };
 
-export const getCurriculoPDFAnexos = (token, empleado_id, cedula) => {
+export const getCurriculoPDFAnexos = (token, empleado_id, identificacion) => {
   const URL_CURRICULO = `${URL_SERVER}/curriculos/detalleAnexos`;
 
   return async () => {
@@ -129,7 +129,7 @@ export const getCurriculoPDFAnexos = (token, empleado_id, cedula) => {
         URL_CURRICULO,
         {
           empleado_id: empleado_id,
-          cedula: cedula,
+          identificacion: identificacion,
         },
         {
           headers: { authorization: `Bearer ${token}` },
