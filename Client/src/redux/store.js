@@ -5,8 +5,10 @@ import storage from "redux-persist/lib/storage";
 import areas_interes from "./areasInteres/areasInteresSlices";
 import curriculos from "./curriculos/curriculosSlices";
 import empleados from "./empleados/empleadosSlices";
+import estados from "./estados/estadosSlices";
 import etnias from "./etnias/etniasSlices";
 import idiomas from "./idiomas/idiomasSlices";
+import paises from "./paises/paisesSlices";
 import pruebas_empleados from "./pruebasEmpleados/pruebasEmpleadosSlices";
 
 // Configuración de Redux Persist
@@ -21,8 +23,10 @@ const rootReducer = combineReducers({
   areas_interes: areas_interes,
   curriculos: curriculos,
   empleados: empleados,
+  estados: estados,
   etnias: etnias,
   idiomas: idiomas,
+  paises: paises,
   pruebas_empleados: pruebas_empleados,
 });
 

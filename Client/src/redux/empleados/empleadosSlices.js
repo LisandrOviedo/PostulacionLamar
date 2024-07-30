@@ -9,7 +9,7 @@ const initialState = {
   paginaActual: 1,
   limitePorPagina: 2,
   filtros: {
-    cedula: "",
+    numero_identificacion: "",
     apellidos: "",
     activo: "",
     orden_campo: "",
@@ -47,7 +47,7 @@ export const empleadoSlice = createSlice({
     },
     resetFilters: (state) => {
       state.filtros = {
-        cedula: "",
+        numero_identificacion: "",
         apellidos: "",
         activo: "",
         orden_campo: "",

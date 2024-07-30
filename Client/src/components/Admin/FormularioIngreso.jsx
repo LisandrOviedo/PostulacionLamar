@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEtniasActivas } from "../../redux/etnias/etniasActions";
+import { getAllPaisesActivos } from "../../redux/paises/paisesActions";
+import { getAllEstadosActivos } from "../../redux/estados/estadosActions";
 
 import { Button, Input, Label, Select, Title, Hr } from "../UI";
 
@@ -12,6 +14,8 @@ export function FormularioIngreso() {
   const token = useSelector((state) => state.empleados.token);
 
   const etnias_activas = useSelector((state) => state.etnias.etnias_activas);
+  const paises_activos = useSelector((state) => state.paises.paises_activos);
+  const estados_activos = useSelector((state) => state.estados.estados_activos);
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
@@ -51,11 +55,18 @@ export function FormularioIngreso() {
     document.title = "Grupo Lamar - Formulario de ingreso (Admin)";
 
     dispatch(getAllEtniasActivas(token));
+    dispatch(getAllPaisesActivos(token));
 
     return () => {
       document.title = "Grupo Lamar";
     };
-  }, []);
+  }, [dispatch, token]);
+
+  useEffect(() => {
+    if (datosIngreso.pais) {
+      dispatch(getAllEstadosActivos(token, datosIngreso.pais));
+    }
+  }, [dispatch, token, datosIngreso.pais]);
 
   const handleValidate = (e) => {
     const { name, value } = e.target;
@@ -445,7 +456,59 @@ export function FormularioIngreso() {
             </div>
           </div>
           {/* //TODO: llenar los selects segun pais, estado parroquia etc */}
+
           <div className="pt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+            <div>
+              <Label htmlFor="pais">Pais (redux)</Label>
+              <Select
+                className="w-full"
+                id="pais"
+                name="pais"
+                value={datosIngreso.pais}
+                onChange={handleValidate}
+              >
+                <option value=""></option>
+                {paises_activos?.length
+                  ? paises_activos?.map(
+                      (pais, i) =>
+                        pais.activo && (
+                          <option
+                            key={i}
+                            name={pais.nombre}
+                            value={pais.pais_id}
+                          >
+                            {pais.nombre}
+                          </option>
+                        )
+                    )
+                  : null}
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="estado">estado (redux)</Label>
+              <Select
+                className="w-full"
+                id="estado"
+                name="estado"
+                value={datosIngreso.estado}
+                onChange={handleValidate}
+              >
+                {estados_activos?.length
+                  ? estados_activos?.map(
+                      (estado, i) =>
+                        estado.activo && (
+                          <option
+                            key={i}
+                            name={estado.nombre}
+                            value={estado.estado_id}
+                          >
+                            {estado.nombre}
+                          </option>
+                        )
+                    )
+                  : null}
+              </Select>
+            </div>
             <div>
               <Label htmlFor="parroquia_id">Parroquia</Label>
               <Input name="parroquia_id" onChange={handleValidate} />
@@ -491,23 +554,9 @@ export function FormularioIngreso() {
               )}
             </div>
 
-
             {/* TODO: agregar input para numero de casa o en caso de edificio piso y apto */}
 
-            <div>
-              <Label htmlFor="estado_id">Estado</Label>
-              <Input
-                id="estado_id"
-                name="estado_id"
-                onChange={handleValidate}
-              />
-              {errors.estado && <p className="text-red-500">{errors.estado}</p>}
-            </div>
-            <div>
-              <Label htmlFor="pais_id">Pais</Label>
-              <Input id="pais_id" name="pais_id" onChange={handleValidate} />
-              {errors.pais && <p className="text-red-500">{errors.pais}</p>}
-            </div>
+            
           </div>
           <div className="pt-4 grid grid-cols-2 gap-4 sm:grid-cols-5">
             <div>
@@ -1306,22 +1355,13 @@ export function FormularioIngreso() {
               </div>
               <div>
                 <Label htmlFor="">Departamento / Gerencia</Label>
-                <Select
-                  id=""
-                  name=""
-                  onChange={handleValidate}
-                >
+                <Select id="" name="" onChange={handleValidate}>
                   <option value="1">Administracion</option>
-                  
                 </Select>
               </div>
               <div>
                 <Label htmlFor="salario">Salario</Label>
-                <Input
-                  id="salario"
-                  name="salario"
-                  onChange={handleValidate}
-                />
+                <Input id="salario" name="salario" onChange={handleValidate} />
                 {errors.numero_cuenta && (
                   <p className="text-red-500">{errors.salario}</p>
                 )}
@@ -1341,12 +1381,19 @@ export function FormularioIngreso() {
             </div>
           </div>
           <div className="mt-4">
-            <Label htmlFor="observaciones" >Observaciones</Label>
-            <Input id="observaciones" name="observaciones" className="h-24" type="textarea" />
+            <Label htmlFor="observaciones">Observaciones</Label>
+            <Input
+              id="observaciones"
+              name="observaciones"
+              className="h-24"
+              type="textarea"
+            />
           </div>
 
           <div className="mt-8 justify-center">
-            <Button className="w-auto" type="submit">Guardar</Button>
+            <Button className="w-auto" type="submit">
+              Guardar
+            </Button>
           </div>
         </form>
       </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -25,6 +25,8 @@ import { DDMMYYYY } from "../../utils/formatearFecha";
 import Swal from "sweetalert2";
 
 export function Empleados() {
+  const tableRef = useRef(null);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -41,7 +43,7 @@ export function Empleados() {
   const filtros = useSelector((state) => state.empleados.filtros);
 
   const [filters, setFilters] = useState({
-    cedula: filtros.cedula || "",
+    numero_identificacion: filtros.numero_identificacion || "",
     apellidos: filtros.apellidos || "",
     activo: filtros.activo || "",
     orden_campo: filtros.orden_campo || "",
@@ -83,10 +85,10 @@ export function Empleados() {
       setFilters((prevFilters) => {
         let updatedFilters = { ...prevFilters };
 
-        if (value === "cedula") {
+        if (value === "numero_identificacion") {
           updatedFilters.apellidos = "";
         } else if (value === "apellidos") {
-          updatedFilters.cedula = "";
+          updatedFilters.numero_identificacion = "";
         }
 
         return { ...updatedFilters, [value]: valueBuscarPor };
@@ -95,9 +97,23 @@ export function Empleados() {
   };
 
   const handleResetFilters = () => {
-    dispatch(deleteFiltros()).then(function () {
-      window.location.reload();
+    setFilters({
+      numero_identificacion: "",
+      apellidos: "",
+      activo: "",
+      orden_campo: "",
+      orden_por: "",
     });
+
+    const buscarPor = document.getElementById("buscar_por");
+    const inputSearch = document.getElementById("input_search");
+    const activo = document.getElementById("activo");
+
+    buscarPor.selectedIndex = 0;
+    inputSearch.value = "";
+    activo.selectedIndex = 0;
+
+    dispatch(deleteFiltros());
   };
 
   const handleFind = () => {
@@ -117,8 +133,6 @@ export function Empleados() {
   }, []);
 
   useEffect(() => {
-    window.scroll(0, 0);
-
     dispatch(getAllEmpleados(token, filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
 
@@ -174,13 +188,17 @@ export function Empleados() {
 
   const paginaAnterior = () => {
     if (paginaActual > 1) {
-      dispatch(postPaginaActual(paginaActual - 1));
+      dispatch(postPaginaActual(paginaActual - 1)).then(() => {
+        tableRef.current.scrollIntoView({ behavior: "smooth" });
+      });
     }
   };
 
   const paginaSiguiente = () => {
     if (paginaActual < empleados.cantidadPaginas) {
-      dispatch(postPaginaActual(paginaActual + 1));
+      dispatch(postPaginaActual(paginaActual + 1)).then(() => {
+        tableRef.current.scrollIntoView({ behavior: "smooth" });
+      });
     }
   };
 
@@ -234,9 +252,13 @@ export function Empleados() {
             id="buscar_por"
             name="buscar_por"
             onChange={handleChangeFiltersSelect}
-            defaultValue={filtros.apellidos ? "apellidos" : "cedula"}
+            defaultValue={
+              filtros.apellidos ? "apellidos" : "numero_identificacion"
+            }
           >
-            <option value="cedula">Número de cédula</option>
+            <option value="numero_identificacion">
+              Número de identificación
+            </option>
             <option value="apellidos">Apellidos</option>
           </Select>
         </div>
@@ -249,8 +271,8 @@ export function Empleados() {
             defaultValue={
               filtros.apellidos
                 ? `${filtros.apellidos}`
-                : filtros.cedula
-                ? `${filtros.cedula}`
+                : filtros.numero_identificacion
+                ? `${filtros.numero_identificacion}`
                 : ""
             }
           />
@@ -261,7 +283,7 @@ export function Empleados() {
             id="activo"
             name="activo"
             onChange={handleChangeFilters}
-            value={filters.activo}
+            defaultValue={filters.activo}
           >
             <option value="">Todos</option>
             <option value="1">Activos</option>
@@ -282,31 +304,27 @@ export function Empleados() {
             <option value="30">30</option>
           </Select>
         </div>
-        <div className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start gap-2">
-          <a href="#tabla">
-            <Button className="m-0 w-auto" onClick={handleFind}>
-              Buscar
-            </Button>
-          </a>
-          <a href="#tabla">
-            <Button className="m-0 w-auto" onClick={handleResetFilters}>
-              Restablecer Filtros
-            </Button>
-          </a>
+        <div
+          id="tabla"
+          ref={tableRef}
+          className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start gap-2"
+        >
+          <Button className="m-0 w-auto" onClick={handleFind}>
+            Buscar
+          </Button>
+          <Button className="m-0 w-auto" onClick={handleResetFilters}>
+            Restablecer Filtros
+          </Button>
         </div>
       </div>
       <div className="mt-8 sm:mx-auto w-full">
         <div className=" overflow-x-auto shadow-md rounded-lg">
-          <table
-            id="tabla"
-            className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400"
-          >
+          <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400">
             <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    <a
-                      href="#tabla"
+                    <span
                       id="apellidos"
                       name="apellidos"
                       onClick={changeOrder}
@@ -327,11 +345,11 @@ export function Empleados() {
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
                       />
-                    </a>
+                    </span>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Cédula</div>
+                  <div className="flex items-center">Número identificación</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Teléfono</div>
@@ -341,9 +359,7 @@ export function Empleados() {
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    <a
-                      href="#tabla"
-                      id="activo"
+                    <span
                       name="activo"
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
@@ -363,13 +379,12 @@ export function Empleados() {
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
                       />
-                    </a>
+                    </span>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    <a
-                      href="#tabla"
+                    <span
                       id="updatedAt"
                       name="updatedAt"
                       onClick={changeOrder}
@@ -390,7 +405,7 @@ export function Empleados() {
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
                       />
-                    </a>
+                    </span>
                   </div>
                 </th>
 
@@ -416,7 +431,9 @@ export function Empleados() {
                     <td className="px-4 py-4">
                       {empleado.apellidos} {empleado.nombres}
                     </td>
-                    <td className="px-4 py-4">{empleado.cedula}</td>
+                    <td className="px-4 py-4">
+                      {empleado.numero_identificacion}
+                    </td>
                     <td className="px-4 py-4">
                       {empleado.telefono || "Sin registrar / No posee"}
                     </td>
@@ -469,27 +486,29 @@ export function Empleados() {
           )}
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
-              <a
-                href="#tabla"
+              <span
                 onClick={paginaAnterior}
-                className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
+                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
                   paginaActual <= 1
                     ? "cursor-default"
-                    : "cursor-pointer hover:text-black hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                    : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}
               >
                 Pág. Anterior
-              </a>
+              </span>
             </li>
             {calcularPaginasARenderizar(
               paginaActual,
               empleados.cantidadPaginas
             ).map((page) => (
               <li key={page}>
-                <a
-                  href="#tabla"
-                  onClick={() => dispatch(postPaginaActual(page))}
+                <span
+                  onClick={() =>
+                    dispatch(postPaginaActual(page)).then(() => {
+                      tableRef.current.scrollIntoView({ behavior: "smooth" });
+                    })
+                  }
                   className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                     page === paginaActual
                       ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"
@@ -497,22 +516,21 @@ export function Empleados() {
                   }`}
                 >
                   {page}
-                </a>
+                </span>
               </li>
             ))}
             <li>
-              <a
-                href="#tabla"
+              <span
                 onClick={paginaSiguiente}
-                className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
+                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
                   paginaActual >= empleados.cantidadPaginas
                     ? "cursor-default"
-                    : "cursor-pointer hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white"
+                    : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}
               >
                 Pág. Siguiente
-              </a>
+              </span>
             </li>
           </ul>
         </nav>
