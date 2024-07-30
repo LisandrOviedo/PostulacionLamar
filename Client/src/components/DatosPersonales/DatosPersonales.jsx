@@ -150,7 +150,7 @@ export function DatosPersonales() {
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                   <dt className="text-sm font-bold leading-6 text-gray-900">
-                    Estado Civil
+                    Estado civil
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                     <Select
@@ -280,7 +280,7 @@ export function DatosPersonales() {
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                   <dt className="text-sm font-bold leading-6 text-gray-900">
-                    Mano Dominante
+                    Mano dominante
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                     <Select
@@ -321,7 +321,7 @@ export function DatosPersonales() {
                 {empleado.factor_grupo_sanguineo ? (
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
-                      Factor Grupo Sanguíneo
+                      Factor grupo sanguíneo
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                       {empleado.factor_grupo_sanguineo}
