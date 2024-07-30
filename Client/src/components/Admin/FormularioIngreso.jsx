@@ -1301,48 +1301,48 @@ export function FormularioIngreso() {
                     }));
                   }}
                 >
-                  <option value="propia">Propia</option>
+                  <option value="1">Obrero General</option>
                 </Select>
               </div>
               <div>
-                <Label htmlFor="entidad_bancaria">Departamento / Gerencia</Label>
+                <Label htmlFor="">Departamento / Gerencia</Label>
                 <Select
-                  id="entidad_bancaria"
-                  name="entidad_bancaria"
+                  id=""
+                  name=""
                   onChange={handleValidate}
                 >
-                  <option value="100% Banco">100% Banco</option>
+                  <option value="1">Administracion</option>
                   
                 </Select>
               </div>
               <div>
-                <Label htmlFor="numero_cuenta">Salario</Label>
+                <Label htmlFor="salario">Salario</Label>
                 <Input
-                  id="numero_cuenta"
-                  name="numero_cuenta"
+                  id="salario"
+                  name="salario"
                   onChange={handleValidate}
                 />
                 {errors.numero_cuenta && (
-                  <p className="text-red-500">{errors.numero_cuenta}</p>
+                  <p className="text-red-500">{errors.salario}</p>
                 )}
               </div>
               <div>
-                <Label htmlFor="numero_cuenta">Fecha de Ingreso</Label>
+                <Label htmlFor="fecha_ingreso">Fecha de Ingreso</Label>
                 <Input
-                  id="numero_cuenta"
-                  name="numero_cuenta"
+                  id="fecha_ingreso"
+                  name="fecha_ingreso"
                   type="date"
                   onChange={handleValidate}
                 />
-                {errors.numero_cuenta && (
-                  <p className="text-red-500">{errors.numero_cuenta}</p>
+                {errors.fecha_ingreso && (
+                  <p className="text-red-500">{errors.fecha_ingreso}</p>
                 )}
               </div>
             </div>
           </div>
           <div className="mt-4">
-            <Label>Observaciones</Label>
-            <Input className="h-24" type="textarea" />
+            <Label htmlFor="observaciones" >Observaciones</Label>
+            <Input id="observaciones" name="observaciones" className="h-24" type="textarea" />
           </div>
 
           <div className="mt-8 justify-center">
