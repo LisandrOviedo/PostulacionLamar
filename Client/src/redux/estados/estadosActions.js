@@ -8,8 +8,8 @@ import { alertError } from "../../utils/sweetAlert2";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-export const getallEstadosActivos = (token, pais) => {
-  const URL_ALL_ESTADOS_ACTIVOS = `${URL_SERVER}/estados/activos/${pais}`;
+export const getAllEstadosActivos = (token, pais_id) => {
+  const URL_ALL_ESTADOS_ACTIVOS = `${URL_SERVER}/estados/activos/${pais_id}`;
 
   return async (dispatch) => {
     try {
