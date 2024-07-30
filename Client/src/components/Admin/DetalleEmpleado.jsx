@@ -13,7 +13,7 @@ export function DetalleEmpleado() {
   const navigate = useNavigate();
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
-  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${empleado.foto_perfil_nombre}`;
+  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.numero_identificacion}${empleado.tipo_identificacion}/${empleado.foto_perfil_nombre}`;
 
   useEffect(() => {
     window.scroll(0, 0);
@@ -56,7 +56,25 @@ export function DetalleEmpleado() {
                       {empleado.nombres} {empleado.apellidos}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Nacionalidad
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.tipo_identificacion === "V"
+                        ? "Venezolano"
+                        : "Extranjero"}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Número de identificación
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.numero_identificacion}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
                       Fecha nacimiento
                     </dt>
@@ -67,55 +85,71 @@ export function DetalleEmpleado() {
                       {" años)"}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
-                      Número de cédula
+                      Estado civil
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.cedula}
+                      {empleado.estado_civil || "Sin registrar"}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
-                      Género
+                      RIF
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.genero || "Sin registrar"}
+                      {empleado.rif || "Sin registrar"}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                    <dt className="text-sm font-bold leading-6 text-gray-900">
-                      Etnia
-                    </dt>
-                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.etnia || "Ninguna"}
-                    </dd>
-                  </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
                       Número de contacto
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.telefono || "Sin registrar / No posee"}
+                      {empleado.telefono || "Sin registrar"}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
                       Correo electrónico
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.correo || "Sin registrar / No posee"}
+                      {empleado.correo || "Sin registrar"}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
-                      Dirección
+                      Etnia
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.direccion || "Sin registrar"}
+                      {empleado.Etnia?.nombre || "Sin registrar"}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Mano dominante
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.mano_dominante || "Sin registrar"}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Sexo
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.sexo || "Sin registrar"}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Factor grupo sanguíneo
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.factor_grupo_sanguineo || "Sin registrar"}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
                       Cantidad de hijos
                     </dt>
