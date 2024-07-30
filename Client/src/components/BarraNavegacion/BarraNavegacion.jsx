@@ -62,6 +62,12 @@ export function BarraNavegacion() {
         dispatch(resetIdiomas());
         dispatch(resetPruebas());
         dispatch(resetEmpleados());
+
+        if (empleado.Role.nombre === "admin") {
+          navigate("/admin/acceso");
+        } else {
+          navigate("/");
+        }
       }
     });
   };
@@ -248,7 +254,6 @@ export function BarraNavegacion() {
                     </ul>
                   </li>
                   <Link
-                    to="/"
                     className="block text-white hover:text-[#F0C95C] text-center"
                     onClick={logout}
                   >
@@ -354,7 +359,6 @@ export function BarraNavegacion() {
                   </li>
                   <li>
                     <Link
-                      to="/admin/acceso"
                       className="block text-white hover:text-[#F0C95C] text-center"
                       onClick={logout}
                     >
