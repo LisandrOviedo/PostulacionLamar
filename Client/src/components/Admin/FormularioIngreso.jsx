@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllEtniasActivas } from "../../redux/etnias/etniasActions";
 import { getAllPaisesActivos } from "../../redux/paises/paisesActions";
 import { getAllEstadosActivos } from "../../redux/estados/estadosActions";
+import { getAllMunicipiosActivos } from "../../redux/municipios/municipiosActions";
+import { getAllCiudadesActivas } from "../../redux/ciudades/ciudadesActions";
+import { getAllParroquiasActivas } from "../../redux/parroquias/parroquiasActions";
 
 import { Button, Input, Label, Select, Title, Hr } from "../UI";
 
@@ -16,6 +19,9 @@ export function FormularioIngreso() {
   const etnias_activas = useSelector((state) => state.etnias.etnias_activas);
   const paises_activos = useSelector((state) => state.paises.paises_activos);
   const estados_activos = useSelector((state) => state.estados.estados_activos);
+  // const ciudades_activas = useSelector((state) => state.ciudades.ciudades_activas)
+  // const municipios_activos = useSelector((state) => state.municipios.municipios_activos)
+  // const parroquias_activas = useSelector((state) => state.parroquias.parroquias_activas)
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
@@ -67,6 +73,24 @@ export function FormularioIngreso() {
       dispatch(getAllEstadosActivos(token, datosIngreso.pais));
     }
   }, [dispatch, token, datosIngreso.pais]);
+
+  useEffect(() => {
+    if (datosIngreso.estado) {
+      dispatch(getAllCiudadesActivas(token, datosIngreso.estado));
+    }
+  }, [dispatch, token, datosIngreso.estado]);
+
+  useEffect(() => {
+    if (datosIngreso.ciudad) {
+      dispatch(getAllMunicipiosActivos(token, datosIngreso.ciudad));
+    }
+  }, [dispatch, token, datosIngreso.ciudad])
+
+  useEffect(()=> {
+    if (datosIngreso.municipio) {
+      dispatch(getAllParroquiasActivas(token, datosIngreso.municipio))
+    }
+  }, [dispatch, token, datosIngreso.municipio])
 
   const handleValidate = (e) => {
     const { name, value } = e.target;
@@ -485,7 +509,7 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="estado">estado (redux)</Label>
+              <Label htmlFor="estado">Estado (redux)</Label>
               <Select
                 className="w-full"
                 id="estado"
@@ -510,11 +534,54 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="parroquia_id">Parroquia</Label>
-              <Input name="parroquia_id" onChange={handleValidate} />
-              {errors.parroquia && (
-                <p className="text-red-500">{errors.parroquia}</p>
-              )}
+              <Label htmlFor="ciudad">Ciudad (redux)</Label>
+              <Select
+                className="w-full"
+                id="ciudad"
+                name="ciudad"
+                value={datosIngreso.ciudad}
+                onChange={handleValidate}
+              >
+                {/* {ciudades_activas?.length
+                  ? ciudades_activas?.map(
+                      (ciudad, i) =>
+                        ciudad.activo && (
+                          <option
+                            key={i}
+                            name={ciudad.nombre}
+                            value={ciudad.estado_id}
+                          >
+                            {ciudad.nombre}
+                          </option>
+                        )
+                    )
+                  : null} */}
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="municipio">Municipio (redux)</Label>
+              <Select
+                className="w-full"
+                id="municipio"
+                name="municipio"
+                value={datosIngreso.municipio}
+                onChange={handleValidate}
+              >
+                {/* {municipios_activos?.length
+                  ? municipios_activos?.map(
+                      (municipio, i) =>
+                        municipio.activo && (
+                          <option
+                            key={i}
+                            name={municipio.nombre}
+                            value={municipio.estado_id}
+                          >
+                            {eunicipio.nombre}
+                          </option>
+                        )
+                    )
+                  : null} */}
+              </Select>
             </div>
             <div>
               <Label htmlFor="municipio_id">Municipio</Label>
@@ -555,8 +622,6 @@ export function FormularioIngreso() {
             </div>
 
             {/* TODO: agregar input para numero de casa o en caso de edificio piso y apto */}
-
-            
           </div>
           <div className="pt-4 grid grid-cols-2 gap-4 sm:grid-cols-5">
             <div>

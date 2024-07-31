@@ -17,11 +17,11 @@ const fs = require("fs");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const { cedula } = req.body;
+    const { identificacion } = req.body;
 
     const uploadPath = path.join(
       __dirname,
-      `../../public/documentosEmpleados/${cedula}/`
+      `../../public/documentosEmpleados/${identificacion}/`
     );
 
     fs.mkdirSync(uploadPath, { recursive: true });
@@ -47,13 +47,13 @@ const upload = multer({ storage: storage });
 
 documentos_empleados.get("/detalle/:empleado_id", authenticateToken, getAnexos);
 
-documentos_empleados.get("/documento/:cedula/:originalname", (req, res) => {
-  const { cedula, originalname } = req.params;
+documentos_empleados.get("/documento/:identificacion/:originalname", (req, res) => {
+  const { identificacion, originalname } = req.params;
 
   res.sendFile(
     path.join(
       __dirname,
-      `../../public/documentosEmpleados/${cedula}/${originalname}`
+      `../../public/documentosEmpleados/${identificacion}/${originalname}`
     )
   );
 });

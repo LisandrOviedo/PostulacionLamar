@@ -137,6 +137,8 @@ export const resetPassword = async (token, empleado_id) => {
       }
     );
 
+    await putCerrarSesion(token, empleado_id);
+
     return Swal.fire({
       text: `Su contraseña ha sido reiniciada exitosamente a "1234"`,
       icon: "success",
@@ -242,6 +244,8 @@ export const putActivo = async (token, empleado_id) => {
       }
     );
 
+    await putCerrarSesion(token, empleado_id);
+
     return Swal.fire({
       text: "¡Empleado actualizado exitosamente!",
       icon: "success",
@@ -249,6 +253,24 @@ export const putActivo = async (token, empleado_id) => {
       timer: 1000,
       width: "20em",
     });
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
+
+const putCerrarSesion = async (token, empleado_id) => {
+  const URL_CERRAR_SESION = `${URL_SERVER}/sesiones/inactivar`;
+
+  try {
+    await axios.put(
+      URL_CERRAR_SESION,
+      { empleado_id },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
   } catch (error) {
     alertError(error);
 

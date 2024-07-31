@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
@@ -23,6 +23,8 @@ import {
 import { DDMMYYYY } from "../../utils/formatearFecha";
 
 export function Postulaciones() {
+  const tableRef = useRef(null);
+
   const dispatch = useDispatch();
 
   const token = useSelector((state) => state.empleados.token);
@@ -46,7 +48,7 @@ export function Postulaciones() {
   const idiomas_activos = useSelector((state) => state.idiomas.idiomas_activos);
 
   const [filters, setFilters] = useState({
-    cedula: filtros.cedula || "",
+    numero_identificacion: filtros.numero_identificacion || "",
     apellidos: filtros.apellidos || "",
     area_interes_id: filtros.area_interes_id || "",
     estado: filtros.estado || "",
@@ -90,10 +92,10 @@ export function Postulaciones() {
       setFilters((prevFilters) => {
         let updatedFilters = { ...prevFilters };
 
-        if (value === "cedula") {
+        if (value === "numero_identificacion") {
           updatedFilters.apellidos = "";
         } else if (value === "apellidos") {
-          updatedFilters.cedula = "";
+          updatedFilters.numero_identificacion = "";
         }
 
         return { ...updatedFilters, [value]: valueBuscarPor };
@@ -101,8 +103,7 @@ export function Postulaciones() {
     }
   };
 
-  const handleResetFilters = (e) => {
-    e.preventDefault();
+  const handleResetFilters = () => {
     dispatch(deleteFiltros()).then(function () {
       window.location.reload();
     });
@@ -130,21 +131,19 @@ export function Postulaciones() {
   }, []);
 
   useEffect(() => {
-    window.scroll(0, 0);
-
     dispatch(getAllCurriculos(token, filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
 
-  const handleVerDetalles = (cedula, nombre) => {
-    const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${cedula}/${nombre}`;
+  const handleVerDetalles = (identificacion, nombre) => {
+    const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${nombre}`;
 
     window.open(URL_GET_PDF, "_blank");
   };
 
-  const handleVerDetallesAnexos = (empleado_id, cedula) => {
-    dispatch(getCurriculoPDFAnexos(token, empleado_id, cedula))
+  const handleVerDetallesAnexos = (empleado_id, identificacion) => {
+    dispatch(getCurriculoPDFAnexos(token, empleado_id, identificacion))
       .then(() => {
-        const URL_GET_PDF_ANEXOS = `${URL_SERVER}/documentos_empleados/documento/${cedula}/Anexos ${cedula}.zip`;
+        const URL_GET_PDF_ANEXOS = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/Anexos ${identificacion}.zip`;
 
         window.open(URL_GET_PDF_ANEXOS, "_blank");
       })
@@ -196,14 +195,18 @@ export function Postulaciones() {
   const paginaAnterior = (e) => {
     e.preventDefault();
     if (paginaActual > 1) {
-      dispatch(postPaginaActual(paginaActual - 1));
+      dispatch(postPaginaActual(paginaActual - 1)).then(() => {
+        tableRef.current.scrollIntoView({ behavior: "smooth" });
+      });
     }
   };
 
   const paginaSiguiente = (e) => {
     e.preventDefault();
     if (paginaActual < curriculos.cantidadPaginas) {
-      dispatch(postPaginaActual(paginaActual + 1));
+      dispatch(postPaginaActual(paginaActual + 1)).then(() => {
+        tableRef.current.scrollIntoView({ behavior: "smooth" });
+      });
     }
   };
 
@@ -219,9 +222,13 @@ export function Postulaciones() {
             id="buscar_por"
             name="buscar_por"
             onChange={handleChangeFiltersSelect}
-            defaultValue={filtros.apellidos ? "apellidos" : "cedula"}
+            defaultValue={
+              filtros.apellidos ? "apellidos" : "numero_identificacion"
+            }
           >
-            <option value="cedula">Número de cédula</option>
+            <option value="numero_identificacion">
+              Número de identificación
+            </option>
             <option value="apellidos">Apellidos</option>
           </Select>
         </div>
@@ -234,8 +241,8 @@ export function Postulaciones() {
             defaultValue={
               filtros.apellidos
                 ? `${filtros.apellidos}`
-                : filtros.cedula
-                ? `${filtros.cedula}`
+                : filtros.numero_identificacion
+                ? `${filtros.numero_identificacion}`
                 : ""
             }
           />
@@ -317,17 +324,17 @@ export function Postulaciones() {
             <option value="30">30</option>
           </Select>
         </div>
-        <div className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start gap-2">
-          <a href="#tabla">
-            <Button className="m-0 w-auto" onClick={handleFind}>
-              Buscar
-            </Button>
-          </a>
-          <a href="#tabla">
-            <Button className="m-0 w-auto" onClick={handleResetFilters}>
-              Restablecer Filtros
-            </Button>
-          </a>
+        <div
+          id="tabla"
+          ref={tableRef}
+          className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start gap-2"
+        >
+          <Button className="m-0 w-auto" onClick={handleFind}>
+            Buscar
+          </Button>
+          <Button className="m-0 w-auto" onClick={handleResetFilters}>
+            Restablecer Filtros
+          </Button>
         </div>
       </div>
       <div className="mt-8 sm:mx-auto w-full">
@@ -340,8 +347,7 @@ export function Postulaciones() {
               <tr>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    <a
-                      href="#tabla"
+                    <span
                       id="apellidos"
                       name="apellidos"
                       onClick={changeOrder}
@@ -362,11 +368,13 @@ export function Postulaciones() {
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
                       />
-                    </a>
+                    </span>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Cédula</div>
+                  <div className="flex items-center">
+                    Número de identificación
+                  </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Teléfono</div>
@@ -379,35 +387,7 @@ export function Postulaciones() {
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    <a
-                      href="#tabla"
-                      id="grado_instruccion"
-                      name="grado_instruccion"
-                      onClick={changeOrder}
-                      className="text-black hover:text-black flex items-center"
-                    >
-                      Grado Instrucción
-                      <img
-                        name="grado_instruccion"
-                        src={
-                          filters.orden_campo === "grado_instruccion" &&
-                          filters.orden_por === "ASC"
-                            ? "./SortAZ.svg"
-                            : filters.orden_campo === "grado_instruccion" &&
-                              filters.orden_por === "DESC"
-                            ? "./SortZA.svg"
-                            : "./Sort.svg"
-                        }
-                        alt="Icon Sort"
-                        className="w-5 h-5 ms-1.5 cursor-pointer"
-                      />
-                    </a>
-                  </div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    <a
-                      href="#tabla"
+                    <span
                       id="updatedAt"
                       name="updatedAt"
                       onClick={changeOrder}
@@ -428,7 +408,7 @@ export function Postulaciones() {
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
                       />
-                    </a>
+                    </span>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -457,7 +437,9 @@ export function Postulaciones() {
                       {curriculo.Empleado.apellidos}{" "}
                       {curriculo.Empleado.nombres}
                     </td>
-                    <td className="px-4 py-4">{curriculo.Empleado.cedula}</td>
+                    <td className="px-4 py-4">
+                      {curriculo.Empleado.numero_identificacion}
+                    </td>
                     <td className="px-4 py-4">
                       {curriculo.Empleado.telefono ||
                         "Sin registrar / No posee"}
@@ -475,7 +457,6 @@ export function Postulaciones() {
                           }`
                       )}
                     </td>
-                    <td className="px-4 py-4">{curriculo.grado_instruccion}</td>
                     <td className="px-4 py-4">
                       {DDMMYYYY(curriculo.updatedAt)}
                     </td>
@@ -485,7 +466,7 @@ export function Postulaciones() {
                         className="m-0 w-auto"
                         onClick={() =>
                           handleVerDetalles(
-                            curriculo.Empleado.cedula,
+                            `${curriculo.Empleado.tipo_identificacion}${curriculo.Empleado.numero_identificacion}`,
                             curriculo.Empleado.Documentos_Empleados[0].nombre
                           )
                         }
@@ -497,7 +478,7 @@ export function Postulaciones() {
                         onClick={() =>
                           handleVerDetallesAnexos(
                             curriculo.Empleado.empleado_id,
-                            curriculo.Empleado.cedula
+                            `${curriculo.Empleado.tipo_identificacion}${curriculo.Empleado.numero_identificacion}`
                           )
                         }
                       >
@@ -518,26 +499,24 @@ export function Postulaciones() {
           )}
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
-              <a
-                href="#tabla"
+              <span
                 onClick={paginaAnterior}
-                className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
-                ${
-                  paginaActual <= 1
-                    ? "cursor-default"
-                    : "cursor-pointer hover:text-black hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
-                }`}
+                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                  ${
+                    paginaActual <= 1
+                      ? "cursor-default"
+                      : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                  }`}
               >
                 Pág. Anterior
-              </a>
+              </span>
             </li>
             {calcularPaginasARenderizar(
               paginaActual,
               curriculos.cantidadPaginas
             ).map((page) => (
               <li key={page}>
-                <a
-                  href="#tabla"
+                <span
                   onClick={() => dispatch(postPaginaActual(page))}
                   className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                     page === paginaActual
@@ -546,22 +525,21 @@ export function Postulaciones() {
                   }`}
                 >
                   {page}
-                </a>
+                </span>
               </li>
             ))}
             <li>
-              <a
-                href="#tabla"
+              <span
                 onClick={paginaSiguiente}
-                className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
+                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
                   paginaActual >= curriculos.cantidadPaginas
                     ? "cursor-default"
-                    : "cursor-pointer hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white"
+                    : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}
               >
                 Pág. Siguiente
-              </a>
+              </span>
             </li>
           </ul>
         </nav>

@@ -12,6 +12,7 @@ const {
   Cargos_Empleados,
   Empresas,
   Paises,
+  Etnias,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
@@ -91,6 +92,10 @@ const traerEmpleado = async (empleado_id) => {
         {
           model: Roles,
           attributes: ["nombre", "descripcion"],
+        },
+        {
+          model: Etnias,
+          attributes: ["nombre"],
         },
         {
           model: Cargos,
