@@ -84,9 +84,8 @@ module.exports = (sequelize) => {
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    nacimiento_ciudad_id: {
-      // Campo relacionado
-      type: DataTypes.INTEGER,
+    nacimiento_lugar: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     nacimiento_estado_id: {
