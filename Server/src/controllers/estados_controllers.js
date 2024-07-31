@@ -1,4 +1,6 @@
-const { conn, Estados } = require("../db");
+const { conn, Estados, Paises } = require("../db");
+
+const { estados } = require("../utils/estados");
 
 const todosLosEstados = async (pais_id) => {
   if (!pais_id) {
@@ -60,31 +62,44 @@ const traerEstado = async (estado_id) => {
   }
 };
 
-// const cargarEstados = async () => {
-//   let t;
+const cargarEstados = async () => {
+  let t;
 
-//   try {
-//     t = await conn.transaction();
+  try {
+    for (const estado of estados) {
+      const pais = await Paises.findOne({
+        where: {
+          nombre: estado.pais,
+        },
+      });
 
-//     for (const estado of estados) {
-//       const [crearEstado, created] = await Estados.findOrCreate({
-//         where: { nombre: estado },
-//         defaults: {
-//           nombre: estado,
-//         },
-//         transaction: t,
-//       });
-//     }
+      if (pais) {
+        for (const nombreEstado of estado.estados) {
+          t = await conn.transaction();
 
-//     await t.commit();
-//   } catch (error) {
-//     if (!t.finished) {
-//       await t.rollback();
-//     }
+          const [crearEstado, created] = await Estados.findOrCreate({
+            where: { pais_id: pais.pais_id, nombre: nombreEstado },
+            defaults: {
+              pais_id: pais.pais_id,
+              nombre: nombreEstado,
+            },
+            transaction: t,
+          });
 
-//     throw new Error(`Error al crear las estados: ${error.message}`);
-//   }
-// };
+          await t.commit();
+        }
+      } else {
+        throw new Error(`No existe el país ${estado.pais}`);
+      }
+    }
+  } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error(`Error al crear las estados: ${error.message}`);
+  }
+};
 
 const crearEstado = async (pais_id, nombre) => {
   if (!pais_id || !nombre) {
@@ -194,6 +209,7 @@ module.exports = {
   todosLosEstados,
   todosLosEstadosActivos,
   traerEstado,
+  cargarEstados,
   crearEstado,
   modificarEstado,
   inactivarEstado,
