@@ -12,8 +12,8 @@ const { authenticateToken } = require("../auth/index");
 
 const municipios = Router();
 
-municipios.get("/:ciudad_id", authenticateToken, getMunicipios);
-municipios.get("/activos/:ciudad_id", authenticateToken, getMunicipiosActivos);
+municipios.get("/:estado_id", authenticateToken, getMunicipios);
+municipios.get("/activos/:estado_id", authenticateToken, getMunicipiosActivos);
 municipios.get("/detalle/:municipio_id", authenticateToken, getMunicipio);
 
 municipios.post("/", authenticateToken, postMunicipio);
