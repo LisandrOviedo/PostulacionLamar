@@ -28,6 +28,12 @@ const { cargarEtnias } = require("./src/controllers/etnias_controllers.js");
 
 const { cargarPaises } = require("./src/controllers/paises_controllers.js");
 
+const { cargarEstados } = require("./src/controllers/estados_controllers.js");
+
+const {
+  cargarMunicipios,
+} = require("./src/controllers/municipios_controllers.js");
+
 conn
   .sync()
   .then(() => {
@@ -54,6 +60,12 @@ conn
 
       // Registrar países principales en la BD
       // await cargarPaises();
+
+      // Registrar estados principales en la BD
+      // await cargarEstados();
+
+      // Registrar municipios principales en la BD
+      // await cargarMunicipios();
 
       // Registrar empleados en la BD
       // await cargarEmpleados();
