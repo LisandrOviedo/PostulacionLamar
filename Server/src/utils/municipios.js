@@ -1,5 +1,6 @@
 const municipios = [
   {
+    pais: "Venezuela",
     estado: "Amazonas",
     municipios: [
       "Autónomo Alto Orinoco",
@@ -12,6 +13,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Anzoátegui",
     municipios: [
       "Anaco",
@@ -38,6 +40,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Apure",
     municipios: [
       "Achaguas",
@@ -50,6 +53,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Aragua",
     municipios: [
       "Bolívar",
@@ -73,6 +77,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Barinas",
     municipios: [
       "Alberto Arvelo Torrealba",
@@ -90,6 +95,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Bolívar",
     municipios: [
       "Bolivariano Angostura",
@@ -106,6 +112,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Miranda",
     municipios: [
       "Acevedo",
@@ -132,6 +139,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Carabobo",
     municipios: [
       "Bejuma",
@@ -151,6 +159,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Cojedes",
     municipios: [
       "Anzoátegui",
@@ -165,10 +174,12 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Delta Amacuro",
     municipios: ["Antonio Diaz", "Casacoima", "Pedernales", "Tucupita"],
   },
   {
+    pais: "Venezuela",
     estado: "Dependencias Federales",
     municipios: [
       "Archipiélago Los Roques",
@@ -182,8 +193,13 @@ const municipios = [
       "Territorio Nacional",
     ],
   },
-  { estado: "Distrito Capital", municipios: ["Bolivariano Libertador"] },
   {
+    pais: "Venezuela",
+    estado: "Distrito Capital",
+    municipios: ["Bolivariano Libertador"],
+  },
+  {
+    pais: "Venezuela",
     estado: "Falcón",
     municipios: [
       "Acosta",
@@ -214,6 +230,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Guárico",
     municipios: [
       "Autónomo José Tadeo Monagas",
@@ -233,8 +250,9 @@ const municipios = [
       "Santa María De Ipire",
     ],
   },
-  { estado: "La Guaira", municipios: ["Vargas"] },
+  { pais: "Venezuela", estado: "La Guaira", municipios: ["Vargas"] },
   {
+    pais: "Venezuela",
     estado: "Lara",
     municipios: [
       "Andrés Eloy Blanco",
@@ -249,6 +267,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Mérida",
     municipios: [
       "Alberto Adriani",
@@ -277,6 +296,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Monagas",
     municipios: [
       "Acosta",
@@ -295,6 +315,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Nueva Esparta",
     municipios: [
       "Antolín Del Campo",
@@ -311,6 +332,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Portuguesa",
     municipios: [
       "Agua Blanca",
@@ -330,6 +352,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Sucre",
     municipios: [
       "Andrés Eloy Blanco",
@@ -350,6 +373,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Táchira",
     municipios: [
       "Andrés Bello",
@@ -384,6 +408,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Trujillo",
     municipios: [
       "Andrés Bello",
@@ -409,6 +434,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Yaracuy",
     municipios: [
       "Aristides Bastidas",
@@ -428,6 +454,7 @@ const municipios = [
     ],
   },
   {
+    pais: "Venezuela",
     estado: "Zulia",
     municipios: [
       "Almirante Padilla",

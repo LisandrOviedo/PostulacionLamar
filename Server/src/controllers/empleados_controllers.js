@@ -317,7 +317,7 @@ const crearEmpleado = async ({
   cantidad_hijos,
   carga_familiar,
   fecha_nacimiento,
-  nacimiento_ciudad_id,
+  nacimiento_lugar,
   nacimiento_estado_id,
   nacimiento_pais_id,
   licencia_conducir_grado,
@@ -342,7 +342,7 @@ const crearEmpleado = async ({
     !cantidad_hijos ||
     !carga_familiar ||
     !fecha_nacimiento ||
-    !nacimiento_ciudad_id ||
+    !nacimiento_lugar ||
     !nacimiento_estado_id ||
     !nacimiento_pais_id ||
     !talla_camisa ||
@@ -384,7 +384,7 @@ const crearEmpleado = async ({
           cantidad_hijos: cantidad_hijos,
           carga_familiar: carga_familiar,
           fecha_nacimiento: fecha_nacimiento,
-          nacimiento_ciudad_id: nacimiento_ciudad_id,
+          nacimiento_lugar: nacimiento_lugar,
           nacimiento_estado_id: nacimiento_estado_id,
           nacimiento_pais_id: nacimiento_pais_id,
           licencia_conducir_grado: licencia_conducir_grado || null,
@@ -524,9 +524,8 @@ const modificarEmpleado = async (datosPersonales) => {
     camposActualizar.carga_familiar = datosPersonales.carga_familiar;
   }
 
-  if (datosPersonales.nacimiento_ciudad_id) {
-    camposActualizar.nacimiento_ciudad_id =
-      datosPersonales.nacimiento_ciudad_id;
+  if (datosPersonales.nacimiento_lugar) {
+    camposActualizar.nacimiento_lugar = datosPersonales.nacimiento_lugar;
   }
 
   if (datosPersonales.nacimiento_estado_id) {

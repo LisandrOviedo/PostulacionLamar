@@ -3,7 +3,6 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 
 import areas_interes from "./areasInteres/areasInteresSlices";
-import ciudades from "./ciudades/ciudadesSlices";
 import curriculos from "./curriculos/curriculosSlices";
 import empleados from "./empleados/empleadosSlices";
 import estados from "./estados/estadosSlices";
@@ -24,7 +23,6 @@ const persistConfig = {
 // Combinar el userReducer con Redux Persist
 const rootReducer = combineReducers({
   areas_interes: areas_interes,
-  ciudades: ciudades,
   curriculos: curriculos,
   empleados: empleados,
   estados: estados,

@@ -1,7 +1,6 @@
 const { Router } = require("express");
 
 const areas_interes = require("./areas_interes_routes");
-const ciudades = require("./ciudades_routes");
 const contactos_emergencia = require("./contactos_emergencia_routes");
 const curriculos = require("./curriculos_routes");
 const datos_bancarios = require("./datos_bancarios_routes");
@@ -29,7 +28,6 @@ const titulos_obtenidos = require("./titulos_obtenidos_routes");
 const router = Router();
 
 router.use("/tthh/areas_interes", areas_interes);
-router.use("/tthh/ciudades", ciudades);
 router.use("/tthh/contactos_emergencia", contactos_emergencia);
 router.use("/tthh/curriculos", curriculos);
 router.use("/tthh/datos_bancarios", datos_bancarios);

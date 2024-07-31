@@ -1,14 +1,16 @@
-const { conn, Municipios } = require("../db");
+const { conn, Municipios, Paises, Estados } = require("../db");
 
-const todosLosMunicipios = async (ciudad_id) => {
-  if (!ciudad_id) {
+const { municipios } = require("../utils/municipios");
+
+const todosLosMunicipios = async (estado_id) => {
+  if (!estado_id) {
     throw new Error(`Datos faltantes`);
   }
 
   try {
     const municipios = await Municipios.findAll({
       where: {
-        ciudad_id: ciudad_id,
+        estado_id: estado_id,
       },
     });
 
@@ -22,14 +24,14 @@ const todosLosMunicipios = async (ciudad_id) => {
   }
 };
 
-const todosLosMunicipiosActivos = async (ciudad_id) => {
-  if (!ciudad_id) {
+const todosLosMunicipiosActivos = async (estado_id) => {
+  if (!estado_id) {
     throw new Error(`Datos faltantes`);
   }
 
   try {
     const municipios = await Municipios.findAll({
-      where: { ciudad_id: ciudad_id, activo: true },
+      where: { estado_id: estado_id, activo: true },
     });
 
     if (!municipios.length) {
@@ -60,31 +62,55 @@ const traerMunicipio = async (municipio_id) => {
   }
 };
 
-// const cargarMunicipios = async () => {
-//   let t;
+const cargarMunicipios = async () => {
+  let t;
 
-//   try {
-//     t = await conn.transaction();
+  try {
+    for (const municipio of municipios) {
+      const pais = await Paises.findOne({
+        where: {
+          nombre: municipio.pais,
+        },
+      });
 
-//     for (const municipio of municipios) {
-//       const [crearMunicipio, created] = await Municipios.findOrCreate({
-//         where: { nombre: municipio },
-//         defaults: {
-//           nombre: municipio,
-//         },
-//         transaction: t,
-//       });
-//     }
+      if (pais) {
+        const estado = await Estados.findOne({
+          where: {
+            pais_id: pais.pais_id,
+            nombre: municipio.estado,
+          },
+        });
 
-//     await t.commit();
-//   } catch (error) {
-//     if (!t.finished) {
-//       await t.rollback();
-//     }
+        if (estado) {
+          for (const municipioNombre of municipio.municipios) {
+            t = await conn.transaction();
 
-//     throw new Error(`Error al crear las municipios: ${error.message}`);
-//   }
-// };
+            const [crearMunicipio, created] = await Municipios.findOrCreate({
+              where: { estado_id: estado.estado_id, nombre: municipioNombre },
+              defaults: {
+                estado_id: estado.estado_id,
+                nombre: municipioNombre,
+              },
+              transaction: t,
+            });
+
+            await t.commit();
+          }
+        } else {
+          throw new Error(`No existe el estado ${municipio.estado}`);
+        }
+      } else {
+        throw new Error(`No existe el país ${municipio.pais}`);
+      }
+    }
+  } catch (error) {
+    if (!t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error(`Error al crear las municipios: ${error.message}`);
+  }
+};
 
 const crearMunicipio = async (municipio_id, nombre) => {
   if (!municipio_id || !nombre) {
@@ -121,8 +147,8 @@ const crearMunicipio = async (municipio_id, nombre) => {
   }
 };
 
-const modificarMunicipio = async (municipio_id, ciudad_id, nombre) => {
-  if (!municipio_id || !ciudad_id || !nombre) {
+const modificarMunicipio = async (municipio_id, estado_id, nombre) => {
+  if (!municipio_id || !estado_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -135,7 +161,7 @@ const modificarMunicipio = async (municipio_id, ciudad_id, nombre) => {
 
     await Municipios.update(
       {
-        ciudad_id: ciudad_id,
+        estado_id: estado_id,
         nombre: nombre,
       },
       {
@@ -194,6 +220,7 @@ module.exports = {
   todosLosMunicipios,
   todosLosMunicipiosActivos,
   traerMunicipio,
+  cargarMunicipios,
   crearMunicipio,
   modificarMunicipio,
   inactivarMunicipio,
