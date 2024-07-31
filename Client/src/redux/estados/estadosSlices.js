@@ -1,15 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  estados_activos: [],
+  estados_nacimiento: [],
+  estados_residencia: [],
 };
 
 export const estadosSlice = createSlice({
   name: "estados",
   initialState,
   reducers: {
-    allEstadosActivos: (state, action) => {
-      state.estados_activos = action.payload;
+    allEstadosNacimiento: (state, action) => {
+      state.estados_nacimiento = action.payload;
+    },
+    allEstadosResidencia: (state, action) => {
+      state.estados_residencia = action.payload;
+    },
+    resetStateEstadosNacimiento: (state) => {
+      state.estados_nacimiento = [];
+    },
+    resetStateEstadosResidencia: (state) => {
+      state.estados_residencia = [];
     },
     resetState: () => {
       return initialState;
@@ -17,5 +27,11 @@ export const estadosSlice = createSlice({
   },
 });
 
-export const { allEstadosActivos, resetState } = estadosSlice.actions;
+export const {
+  allEstadosNacimiento,
+  allEstadosResidencia,
+  resetStateEstadosNacimiento,
+  resetStateEstadosResidencia,
+  resetState,
+} = estadosSlice.actions;
 export default estadosSlice.reducer;

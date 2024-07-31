@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import validations from "../../utils/validacionesAcceso";
 
-import { Button, Input, Label, Title } from "../UI";
+import { Button, Input, Label, Radio, Title } from "../UI";
 
 import { getLogin } from "../../redux/empleados/empleadosActions";
 
@@ -18,7 +18,8 @@ export function AccesoAdmin() {
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const [data, setData] = useState({
-    cedula: "",
+    tipo_identificacion: "V",
+    numero_identificacion: "",
     clave: "",
   });
 
@@ -58,7 +59,7 @@ export function AccesoAdmin() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    if (empleado?.activo && empleado.Role?.nombre === "admin") {
+    if (empleado.activo && empleado.Role.nombre === "admin") {
       return navigate("/admin/panel");
     }
 
@@ -77,12 +78,12 @@ export function AccesoAdmin() {
 
     if (empleado?.changePassword) {
       return navigate("/miPerfil/actualizarClaveTemporal");
-    } else if (empleado?.activo && empleado.Role?.nombre === "empleado") {
+    } else if (empleado.activo && empleado.Role?.nombre === "empleado") {
       Swal.fire({
         text: "Datos incorrectos",
         icon: "error",
       });
-    } else if (empleado?.activo && empleado.Role?.nombre === "admin") {
+    } else if (empleado.activo && empleado.Role?.nombre === "admin") {
       Swal.fire({
         title: "¡Bienvenido!",
         text: "Sesión iniciada correctamente",
@@ -122,13 +123,38 @@ export function AccesoAdmin() {
         </div>
       </div>
       <div className="mt-10 w-[70%] sm:w-[50%] md:w-[40%] lg:w-[30%] space-y-6">
+        <div className="flex justify-center gap-x-4">
+          <div className="flex items-center gap-x-2">
+            <Radio
+              id="venezolano"
+              name="tipo_identificacion"
+              value="V"
+              onChange={handleOnChange}
+              defaultChecked={true}
+            />
+            <Label htmlFor="venezolano" className="mb-0">
+              Venezolano
+            </Label>
+          </div>
+          <div className="flex items-center gap-x-2">
+            <Radio
+              id="extranjero"
+              name="tipo_identificacion"
+              value="E"
+              onChange={handleOnChange}
+            />
+            <Label htmlFor="extranjero" className="mb-0">
+              Extranjero
+            </Label>
+          </div>
+        </div>
         <div>
-          <Label htmlFor="cedula">Número de cédula</Label>
+          <Label htmlFor="numero_identificacion">Número de cédula</Label>
           <div className="mt-2">
             <Input
-              id="cedula"
-              name="cedula"
-              type="text"
+              id="numero_identificacion"
+              name="numero_identificacion"
+              type="number"
               placeholder="123456789"
               onChange={handleOnChange}
               onKeyDown={handleKeyDown}
@@ -177,10 +203,18 @@ export function AccesoAdmin() {
           <Button
             id="btn_continuar"
             onClick={handleLogin}
-            disabled={Object.keys(errors).length || !data.cedula || !data.clave}
+            disabled={
+              Object.keys(errors).length ||
+              !data.tipo_identificacion ||
+              !data.numero_identificacion ||
+              !data.clave
+            }
             className={clsx("", {
               "opacity-50":
-                Object.keys(errors).length || !data.cedula || !data.clave,
+                Object.keys(errors).length ||
+                !data.tipo_identificacion ||
+                !data.numero_identificacion ||
+                !data.clave,
             })}
           >
             Acceder
