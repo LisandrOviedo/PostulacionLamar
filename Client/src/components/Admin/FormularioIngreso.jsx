@@ -4,7 +4,6 @@ import { getAllEtniasActivas } from "../../redux/etnias/etniasActions";
 import { getAllPaisesActivos } from "../../redux/paises/paisesActions";
 import { getAllEstadosActivos } from "../../redux/estados/estadosActions";
 import { getAllMunicipiosActivos } from "../../redux/municipios/municipiosActions";
-import { getAllCiudadesActivas } from "../../redux/ciudades/ciudadesActions";
 import { getAllParroquiasActivas } from "../../redux/parroquias/parroquiasActions";
 
 import { Button, Input, Label, Select, Title, Hr } from "../UI";
@@ -19,9 +18,6 @@ export function FormularioIngreso() {
   const etnias_activas = useSelector((state) => state.etnias.etnias_activas);
   const paises_activos = useSelector((state) => state.paises.paises_activos);
   const estados_activos = useSelector((state) => state.estados.estados_activos);
-  const ciudades_activas = useSelector(
-    (state) => state.ciudades.ciudades_activas
-  );
   const municipios_activos = useSelector(
     (state) => state.municipios.municipios_activos
   );
@@ -37,6 +33,7 @@ export function FormularioIngreso() {
     titulos_obtenidos: [],
     experiencias: [],
     contactos_emergencia: [],
+    tipo_vivienda: "Casa"
   });
 
   const [titulosObtenidos, setTitulosObtenidos] = useState({
@@ -310,7 +307,6 @@ export function FormularioIngreso() {
         <form onSubmit={handleSubmit}>
           {/* Información Personal */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {/* TODO: comprobar cedula si existe y bloquear todos los campos, desbloquear hasta que compruebe cedula */}
             <div>
               <Label htmlFor="numero_identificacion">Identificación</Label>
               <div className="grid grid-cols-4">
