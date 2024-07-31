@@ -83,16 +83,8 @@ export function FormularioIngreso() {
   useEffect(() => {
     if (datosIngreso.estado_id) {
       dispatch(getAllMunicipiosActivos(token, datosIngreso.estado_id));
-
-      // dispatch(getAllCiudadesActivas(token, datosIngreso.estado_id));
     }
   }, [dispatch, token, datosIngreso.estado_id]);
-
-  // useEffect(() => {
-  //   if (datosIngreso.ciudad_id) {
-  //     dispatch(getAllMunicipiosActivos(token, datosIngreso.ciudad_id));
-  //   }
-  // }, [dispatch, token, datosIngreso.ciudad_id]);
 
   useEffect(() => {
     if (datosIngreso.municipio_id) {
@@ -442,7 +434,7 @@ export function FormularioIngreso() {
               )}
             </div>
             <div>
-              <Label htmlFor="nacionalidad_id">Nacionalidad (redux)</Label>
+              <Label htmlFor="nacionalidad_id">Nacionalidad</Label>
               <Select
                 className="w-full"
                 id="nacionalidad_id"
@@ -468,7 +460,7 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="estado_nacimiento_id">Estado de Nacimiento (redux)</Label>
+              <Label htmlFor="estado_nacimiento_id">Estado de Nacimiento</Label>
               <Select
                 className="w-full"
                 id="estado_nacimiento_id"
@@ -493,18 +485,18 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="nacimiento_ciudad_id">Lugar de Nacimiento</Label>
+              <Label htmlFor="nacimiento_lugar">Lugar de Nacimiento *</Label>
               <Input
-                id="nacimiento_ciudad_id"
-                name="nacimiento_ciudad_id"
+                id="nacimiento_lugar"
+                name="nacimiento_lugar"
                 onChange={handleValidate}
               />
               {errors.lugarNacimiento && (
                 <p className="text-red-500">{errors.lugarNacimiento}</p>
               )}
-            </div>        
+            </div>
             <div>
-              <Label htmlFor="pais_id">Pais (redux)</Label>
+              <Label htmlFor="pais_id">Pais de Residencia</Label>
               <Select
                 className="w-full"
                 id="pais_id"
@@ -530,7 +522,7 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="estado_id">Estado (redux)</Label>
+              <Label htmlFor="estado_id">Estado de Residencia</Label>
               <Select
                 className="w-full"
                 id="estado_id"
@@ -555,16 +547,11 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="ciudad">Ciudad</Label>
-              <Input
-                id="ciudad"
-                name="ciudad"
-                onChange={handleValidate}
-              />
-              
+              <Label htmlFor="ciudad">Ciudad de Residencia</Label>
+              <Input id="ciudad" name="ciudad" onChange={handleValidate} />
             </div>
             <div>
-              <Label htmlFor="municipio_id">Municipio (redux)</Label>
+              <Label htmlFor="municipio_id">Municipio</Label>
               <Select
                 className="w-full"
                 id="municipio_id"
@@ -590,7 +577,7 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="parroquia_id">Parroquia (redux)</Label>
+              <Label htmlFor="parroquia_id">Parroquia</Label>
               <Select
                 className="w-full"
                 id="parroquia_id"
