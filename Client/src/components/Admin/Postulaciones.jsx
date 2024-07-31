@@ -438,6 +438,7 @@ export function Postulaciones() {
                       {curriculo.Empleado.nombres}
                     </td>
                     <td className="px-4 py-4">
+                      {curriculo.Empleado.tipo_identificacion}
                       {curriculo.Empleado.numero_identificacion}
                     </td>
                     <td className="px-4 py-4">
@@ -517,7 +518,11 @@ export function Postulaciones() {
             ).map((page) => (
               <li key={page}>
                 <span
-                  onClick={() => dispatch(postPaginaActual(page))}
+                  onClick={() =>
+                    dispatch(postPaginaActual(page)).then(() => {
+                      tableRef.current.scrollIntoView({ behavior: "smooth" });
+                    })
+                  }
                   className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                     page === paginaActual
                       ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"

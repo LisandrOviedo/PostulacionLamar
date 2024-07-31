@@ -432,6 +432,7 @@ export function Empleados() {
                       {empleado.apellidos} {empleado.nombres}
                     </td>
                     <td className="px-4 py-4">
+                      {empleado.tipo_identificacion}
                       {empleado.numero_identificacion}
                     </td>
                     <td className="px-4 py-4">

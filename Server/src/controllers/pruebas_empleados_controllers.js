@@ -16,14 +16,19 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
             model: Empleados,
             attributes: [
               "empleado_id",
-              "cedula",
+              "tipo_identificacion",
+              "numero_identificacion",
               "nombres",
               "apellidos",
               "telefono",
               "correo",
             ],
-            where: filtros.cedula
-              ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
+            where: filtros.numero_identificacion
+              ? {
+                  numero_identificacion: {
+                    [Op.like]: `%${filtros.numero_identificacion}%`,
+                  },
+                }
               : filtros.apellidos
               ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
               : {},

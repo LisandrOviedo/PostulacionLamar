@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
@@ -19,6 +19,8 @@ import {
 import { DDMMYYYY } from "../../utils/formatearFecha";
 
 export function PruebasEmpleados() {
+  const tableRef = useRef(null);
+
   const dispatch = useDispatch();
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
@@ -40,7 +42,7 @@ export function PruebasEmpleados() {
   const filtros = useSelector((state) => state.pruebas_empleados.filtros);
 
   const [filters, setFilters] = useState({
-    cedula: filtros.cedula || "",
+    numero_identificacion: filtros.numero_identificacion || "",
     apellidos: filtros.apellidos || "",
     prueba: filtros.prueba || "",
     orden_campo: filtros.orden_campo || "",
@@ -82,10 +84,10 @@ export function PruebasEmpleados() {
       setFilters((prevFilters) => {
         let updatedFilters = { ...prevFilters };
 
-        if (value === "cedula") {
+        if (value === "numero_identificacion") {
           updatedFilters.apellidos = "";
         } else if (value === "apellidos") {
-          updatedFilters.cedula = "";
+          updatedFilters.numero_identificacion = "";
         }
 
         return { ...updatedFilters, [value]: valueBuscarPor };
@@ -93,8 +95,7 @@ export function PruebasEmpleados() {
     }
   };
 
-  const handleResetFilters = (e) => {
-    e.preventDefault();
+  const handleResetFilters = () => {
     dispatch(deleteFiltros()).then(function () {
       window.location.reload();
     });
@@ -118,8 +119,6 @@ export function PruebasEmpleados() {
   }, []);
 
   useEffect(() => {
-    window.scroll(0, 0);
-
     dispatch(
       getAllPruebasEmpleados(token, filtros, paginaActual, limitePorPagina)
     );
@@ -168,19 +167,23 @@ export function PruebasEmpleados() {
   const paginaAnterior = (e) => {
     e.preventDefault();
     if (paginaActual > 1) {
-      dispatch(postPaginaActual(paginaActual - 1));
+      dispatch(postPaginaActual(paginaActual - 1)).then(() => {
+        tableRef.current.scrollIntoView({ behavior: "smooth" });
+      });
     }
   };
 
   const paginaSiguiente = (e) => {
     e.preventDefault();
     if (paginaActual < pruebas_empleados.cantidadPaginas) {
-      dispatch(postPaginaActual(paginaActual + 1));
+      dispatch(postPaginaActual(paginaActual + 1)).then(() => {
+        tableRef.current.scrollIntoView({ behavior: "smooth" });
+      });
     }
   };
 
-  const handleVerResultados = (cedula, prueba_nombre) => {
-    const URL_GET_RESULTADOS = `${URL_SERVER}/documentos_empleados/documento/${cedula}/${prueba_nombre}`;
+  const handleVerResultados = (identificacion, prueba_nombre) => {
+    const URL_GET_RESULTADOS = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${prueba_nombre}`;
 
     window.open(URL_GET_RESULTADOS, "_blank");
   };
@@ -197,9 +200,13 @@ export function PruebasEmpleados() {
             id="buscar_por"
             name="buscar_por"
             onChange={handleChangeFiltersSelect}
-            defaultValue={filtros.apellidos ? "apellidos" : "cedula"}
+            defaultValue={
+              filtros.apellidos ? "apellidos" : "numero_identificacion"
+            }
           >
-            <option value="cedula">Número de cédula</option>
+            <option value="numero_identificacion">
+              Número de identificación
+            </option>
             <option value="apellidos">Apellidos</option>
           </Select>
         </div>
@@ -212,8 +219,8 @@ export function PruebasEmpleados() {
             defaultValue={
               filtros.apellidos
                 ? `${filtros.apellidos}`
-                : filtros.cedula
-                ? `${filtros.cedula}`
+                : filtros.numero_identificacion
+                ? `${filtros.numero_identificacion}`
                 : ""
             }
           />
@@ -244,17 +251,17 @@ export function PruebasEmpleados() {
             <option value="30">30</option>
           </Select>
         </div>
-        <div className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start gap-2">
-          <a href="#tabla">
-            <Button className="m-0 w-auto" onClick={handleFind}>
-              Buscar
-            </Button>
-          </a>
-          <a href="#tabla">
-            <Button className="m-0 w-auto" onClick={handleResetFilters}>
-              Restablecer Filtros
-            </Button>
-          </a>
+        <div
+          id="tabla"
+          ref={tableRef}
+          className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start gap-2"
+        >
+          <Button className="m-0 w-auto" onClick={handleFind}>
+            Buscar
+          </Button>
+          <Button className="m-0 w-auto" onClick={handleResetFilters}>
+            Restablecer Filtros
+          </Button>
         </div>
       </div>
       <div className="mt-8 sm:mx-auto w-full">
@@ -267,8 +274,7 @@ export function PruebasEmpleados() {
               <tr>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    <a
-                      href="#tabla"
+                    <span
                       id="apellidos"
                       name="apellidos"
                       onClick={changeOrder}
@@ -289,11 +295,13 @@ export function PruebasEmpleados() {
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
                       />
-                    </a>
+                    </span>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Cédula</div>
+                  <div className="flex items-center">
+                    Número de identificación
+                  </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Teléfono</div>
@@ -303,8 +311,7 @@ export function PruebasEmpleados() {
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    <a
-                      href="#tabla"
+                    <span
                       id="prueba"
                       name="prueba"
                       onClick={changeOrder}
@@ -325,13 +332,12 @@ export function PruebasEmpleados() {
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
                       />
-                    </a>
+                    </span>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    <a
-                      href="#tabla"
+                    <span
                       id="createdAt"
                       name="createdAt"
                       onClick={changeOrder}
@@ -352,7 +358,7 @@ export function PruebasEmpleados() {
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
                       />
-                    </a>
+                    </span>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -377,7 +383,10 @@ export function PruebasEmpleados() {
                     <td className="px-4 py-4">
                       {prueba.Empleado.apellidos} {prueba.Empleado.nombres}
                     </td>
-                    <td className="px-4 py-4">{prueba.Empleado.cedula}</td>
+                    <td className="px-4 py-4">
+                      {prueba.Empleado.tipo_identificacion}
+                      {prueba.Empleado.numero_identificacion}
+                    </td>
                     <td className="px-4 py-4">
                       {prueba.Empleado.telefono || "Sin registrar"}
                     </td>
@@ -391,7 +400,7 @@ export function PruebasEmpleados() {
                         className="m-0 w-auto"
                         onClick={() =>
                           handleVerResultados(
-                            prueba.Empleado.cedula,
+                            `${prueba.Empleado.tipo_identificacion}${prueba.Empleado.numero_identificacion}`,
                             prueba.nombre
                           )
                         }
@@ -413,8 +422,7 @@ export function PruebasEmpleados() {
           )}
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
-              <a
-                href="#tabla"
+              <span
                 onClick={paginaAnterior}
                 className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
                 ${
@@ -424,16 +432,19 @@ export function PruebasEmpleados() {
                 }`}
               >
                 Pág. Anterior
-              </a>
+              </span>
             </li>
             {calcularPaginasARenderizar(
               paginaActual,
               pruebas_empleados.cantidadPaginas
             ).map((page) => (
               <li key={page}>
-                <a
-                  href="#tabla"
-                  onClick={() => dispatch(postPaginaActual(page))}
+                <span
+                  onClick={() =>
+                    dispatch(postPaginaActual(page)).then(() => {
+                      tableRef.current.scrollIntoView({ behavior: "smooth" });
+                    })
+                  }
                   className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                     page === paginaActual
                       ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"
@@ -441,12 +452,11 @@ export function PruebasEmpleados() {
                   }`}
                 >
                   {page}
-                </a>
+                </span>
               </li>
             ))}
             <li>
-              <a
-                href="#tabla"
+              <span
                 onClick={paginaSiguiente}
                 className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
                 ${
@@ -456,7 +466,7 @@ export function PruebasEmpleados() {
                 }`}
               >
                 Pág. Siguiente
-              </a>
+              </span>
             </li>
           </ul>
         </nav>

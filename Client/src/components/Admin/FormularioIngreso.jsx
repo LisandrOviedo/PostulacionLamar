@@ -19,9 +19,15 @@ export function FormularioIngreso() {
   const etnias_activas = useSelector((state) => state.etnias.etnias_activas);
   const paises_activos = useSelector((state) => state.paises.paises_activos);
   const estados_activos = useSelector((state) => state.estados.estados_activos);
-  // const ciudades_activas = useSelector((state) => state.ciudades.ciudades_activas)
-  // const municipios_activos = useSelector((state) => state.municipios.municipios_activos)
-  // const parroquias_activas = useSelector((state) => state.parroquias.parroquias_activas)
+  const ciudades_activas = useSelector(
+    (state) => state.ciudades.ciudades_activas
+  );
+  const municipios_activos = useSelector(
+    (state) => state.municipios.municipios_activos
+  );
+  const parroquias_activas = useSelector(
+    (state) => state.parroquias.parroquias_activas
+  );
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
@@ -69,28 +75,30 @@ export function FormularioIngreso() {
   }, [dispatch, token]);
 
   useEffect(() => {
-    if (datosIngreso.pais) {
-      dispatch(getAllEstadosActivos(token, datosIngreso.pais));
+    if (datosIngreso.pais_id) {
+      dispatch(getAllEstadosActivos(token, datosIngreso.pais_id));
     }
-  }, [dispatch, token, datosIngreso.pais]);
+  }, [dispatch, token, datosIngreso.pais_id]);
 
   useEffect(() => {
-    if (datosIngreso.estado) {
-      dispatch(getAllCiudadesActivas(token, datosIngreso.estado));
+    if (datosIngreso.estado_id) {
+      dispatch(getAllMunicipiosActivos(token, datosIngreso.estado_id));
+
+      // dispatch(getAllCiudadesActivas(token, datosIngreso.estado_id));
     }
-  }, [dispatch, token, datosIngreso.estado]);
+  }, [dispatch, token, datosIngreso.estado_id]);
+
+  // useEffect(() => {
+  //   if (datosIngreso.ciudad_id) {
+  //     dispatch(getAllMunicipiosActivos(token, datosIngreso.ciudad_id));
+  //   }
+  // }, [dispatch, token, datosIngreso.ciudad_id]);
 
   useEffect(() => {
-    if (datosIngreso.ciudad) {
-      dispatch(getAllMunicipiosActivos(token, datosIngreso.ciudad));
+    if (datosIngreso.municipio_id) {
+      dispatch(getAllParroquiasActivas(token, datosIngreso.municipio_id));
     }
-  }, [dispatch, token, datosIngreso.ciudad])
-
-  useEffect(()=> {
-    if (datosIngreso.municipio) {
-      dispatch(getAllParroquiasActivas(token, datosIngreso.municipio))
-    }
-  }, [dispatch, token, datosIngreso.municipio])
+  }, [dispatch, token, datosIngreso.municipio_id]);
 
   const handleValidate = (e) => {
     const { name, value } = e.target;
@@ -434,61 +442,12 @@ export function FormularioIngreso() {
               )}
             </div>
             <div>
-              <Label htmlFor="nacimiento_ciudad_id">Lugar de Nacimiento</Label>
-              <Input
-                id="nacimiento_ciudad_id"
-                name="nacimiento_ciudad_id"
-                onChange={handleValidate}
-              />
-              {errors.lugarNacimiento && (
-                <p className="text-red-500">{errors.lugarNacimiento}</p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="nacimiento_estado_id">Estado de Nacimiento</Label>
-              <Input
-                id="nacimiento_estado_id"
-                name="nacimiento_estado_id"
-                onChange={handleValidate}
-              />
-              {errors.estadoNacimiento && (
-                <p className="text-red-500">{errors.estadoNacimiento}</p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="nacimiento_pais_id">Nacionalidad</Label>
-              <Input
-                id="nacimiento_pais_id"
-                name="nacimiento_pais_id"
-                onChange={handleValidate}
-              />
-              {errors.nacionalidad && (
-                <p className="text-red-500">{errors.nacionalidad}</p>
-              )}
-            </div>
-
-            <div className="col-span-2">
-              <Label htmlFor="calle_avenida">Calle / Avenida</Label>
-              <Input
-                id="calle_avenida"
-                name="calle_avenida"
-                onChange={handleValidate}
-              />
-              {errors.direccion && (
-                <p className="text-red-500">{errors.direccion}</p>
-              )}
-            </div>
-          </div>
-          {/* //TODO: llenar los selects segun pais, estado parroquia etc */}
-
-          <div className="pt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
-            <div>
-              <Label htmlFor="pais">Pais (redux)</Label>
+              <Label htmlFor="nacionalidad_id">Nacionalidad (redux)</Label>
               <Select
                 className="w-full"
-                id="pais"
-                name="pais"
-                value={datosIngreso.pais}
+                id="nacionalidad_id"
+                name="nacionalidad_id"
+                value={datosIngreso.nacionalidad_id}
                 onChange={handleValidate}
               >
                 <option value=""></option>
@@ -509,12 +468,12 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="estado">Estado (redux)</Label>
+              <Label htmlFor="estado_nacimiento_id">Estado de Nacimiento (redux)</Label>
               <Select
                 className="w-full"
-                id="estado"
-                name="estado"
-                value={datosIngreso.estado}
+                id="estado_nacimiento_id"
+                name="estado_nacimiento_id"
+                value={datosIngreso.estado_nacimiento_id}
                 onChange={handleValidate}
               >
                 {estados_activos?.length
@@ -534,65 +493,127 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="ciudad">Ciudad (redux)</Label>
+              <Label htmlFor="nacimiento_ciudad_id">Lugar de Nacimiento</Label>
+              <Input
+                id="nacimiento_ciudad_id"
+                name="nacimiento_ciudad_id"
+                onChange={handleValidate}
+              />
+              {errors.lugarNacimiento && (
+                <p className="text-red-500">{errors.lugarNacimiento}</p>
+              )}
+            </div>        
+            <div>
+              <Label htmlFor="pais_id">Pais (redux)</Label>
               <Select
                 className="w-full"
-                id="ciudad"
-                name="ciudad"
-                value={datosIngreso.ciudad}
+                id="pais_id"
+                name="pais_id"
+                value={datosIngreso.pais_id}
                 onChange={handleValidate}
               >
-                {/* {ciudades_activas?.length
-                  ? ciudades_activas?.map(
-                      (ciudad, i) =>
-                        ciudad.activo && (
+                <option value=""></option>
+                {paises_activos?.length
+                  ? paises_activos?.map(
+                      (pais, i) =>
+                        pais.activo && (
                           <option
                             key={i}
-                            name={ciudad.nombre}
-                            value={ciudad.estado_id}
+                            name={pais.nombre}
+                            value={pais.pais_id}
                           >
-                            {ciudad.nombre}
+                            {pais.nombre}
                           </option>
                         )
                     )
-                  : null} */}
+                  : null}
               </Select>
             </div>
             <div>
-              <Label htmlFor="municipio">Municipio (redux)</Label>
+              <Label htmlFor="estado_id">Estado (redux)</Label>
               <Select
                 className="w-full"
-                id="municipio"
-                name="municipio"
-                value={datosIngreso.municipio}
+                id="estado_id"
+                name="estado_id"
+                value={datosIngreso.estado_id}
                 onChange={handleValidate}
               >
-                {/* {municipios_activos?.length
+                {estados_activos?.length
+                  ? estados_activos?.map(
+                      (estado, i) =>
+                        estado.activo && (
+                          <option
+                            key={i}
+                            name={estado.nombre}
+                            value={estado.estado_id}
+                          >
+                            {estado.nombre}
+                          </option>
+                        )
+                    )
+                  : null}
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="ciudad">Ciudad</Label>
+              <Input
+                id="ciudad"
+                name="ciudad"
+                onChange={handleValidate}
+              />
+              
+            </div>
+            <div>
+              <Label htmlFor="municipio_id">Municipio (redux)</Label>
+              <Select
+                className="w-full"
+                id="municipio_id"
+                name="municipio_id"
+                value={datosIngreso.municipio_id}
+                onChange={handleValidate}
+              >
+                <option>-</option>
+                {municipios_activos?.length
                   ? municipios_activos?.map(
                       (municipio, i) =>
                         municipio.activo && (
                           <option
                             key={i}
                             name={municipio.nombre}
-                            value={municipio.estado_id}
+                            value={municipio.municipio_id}
                           >
-                            {eunicipio.nombre}
+                            {municipio.nombre}
                           </option>
                         )
                     )
-                  : null} */}
+                  : null}
               </Select>
             </div>
             <div>
-              <Label htmlFor="municipio_id">Municipio</Label>
-              <Input
-                id="municipio_id"
-                name="municipio_id"
+              <Label htmlFor="parroquia_id">Parroquia (redux)</Label>
+              <Select
+                className="w-full"
+                id="parroquia_id"
+                name="parroquia_id"
+                value={datosIngreso.parroquia_id}
                 onChange={handleValidate}
-              />
-              {errors.municipio && (
-                <p className="text-red-500">{errors.municipio}</p>
-              )}
+              >
+                <option>-</option>
+                {parroquias_activas?.length
+                  ? parroquias_activas?.map(
+                      (parroquia, i) =>
+                        parroquia.activo && (
+                          <option
+                            key={i}
+                            name={parroquia.nombre}
+                            value={parroquia.parroquia_id}
+                          >
+                            {parroquia.nombre}
+                          </option>
+                        )
+                    )
+                  : null}
+              </Select>
             </div>
             <div>
               <Label htmlFor="urbanizacion_sector">Urbanizacion / Sector</Label>
@@ -606,22 +627,70 @@ export function FormularioIngreso() {
               )}
             </div>
             <div>
+              <Label htmlFor="calle_avenida">Calle / Avenida</Label>
+              <Input
+                id="calle_avenida"
+                name="calle_avenida"
+                onChange={handleValidate}
+              />
+              {errors.direccion && (
+                <p className="text-red-500">{errors.direccion}</p>
+              )}
+            </div>
+            <div>
               <Label htmlFor="tipo_vivienda">Tipo de Vivienda</Label>
               <Select
                 id="tipo_vivienda"
                 name="tipo_vivienda"
                 defaultValue="Casa"
-                onChange={handleValidate}
+                onChange={(e) => {
+                  handleValidate(e);
+                  setDatosIngreso((prevState) => ({
+                    ...prevState,
+                    tipoVivienda: e.target.value,
+                  }));
+                }}
               >
                 <option value="Casa">Casa</option>
                 <option value="Edificio">Edificio</option>
               </Select>
-              {errors.tipo_vivienda && (
-                <p className="text-red-500">{errors.tipo_vivienda}</p>
-              )}
             </div>
 
-            {/* TODO: agregar input para numero de casa o en caso de edificio piso y apto */}
+            {datosIngreso.tipo_vivienda === "Casa" && (
+              <div>
+                <Label htmlFor="numero_casa">Numero de Casa</Label>
+                <Input
+                  name="numero_casa"
+                  id="numero_casa"
+                  onChange={handleValidate}
+                />
+                {errors.tallaCalzado && (
+                  <p className="text-red-500">{errors.tallaCalzado}</p>
+                )}
+              </div>
+            )}
+            {datosIngreso.tipo_vivienda === "Edificio" && (
+              <div className="grid grid-cols-2">
+                <div className="mr-2">
+                  <Label htmlFor="piso">piso</Label>
+                  <Input name="piso" id="piso" onChange={handleValidate} />
+                  {errors.tallaCalzado && (
+                    <p className="text-red-500">{errors.tallaCalzado}</p>
+                  )}
+                </div>
+                <div className="ml-2">
+                  <Label htmlFor="apartamento">apartamento</Label>
+                  <Input
+                    name="apartamento"
+                    id="apartamento"
+                    onChange={handleValidate}
+                  />
+                  {errors.tallaCalzado && (
+                    <p className="text-red-500">{errors.tallaCalzado}</p>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
           <div className="pt-4 grid grid-cols-2 gap-4 sm:grid-cols-5">
             <div>
@@ -717,7 +786,7 @@ export function FormularioIngreso() {
             </div>
             <div>
               <Label htmlFor="licencia_conducir_vencimiento">
-                Fecha de Nacimiento
+                Fecha de Vencimiento Licencia de Conducir
               </Label>
               <Input
                 type="date"
