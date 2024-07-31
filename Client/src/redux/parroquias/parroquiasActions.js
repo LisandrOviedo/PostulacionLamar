@@ -26,7 +26,7 @@ export const getAllParroquiasActivas = (token, municipio_id) => {
   };
 };
 
-export const resetEstados = () => {
+export const resetParroquias = () => {
   return async (dispatch) => {
     try {
       return dispatch(resetState());

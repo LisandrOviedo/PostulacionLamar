@@ -26,7 +26,7 @@ export const getAllMunicipiosActivos = (token, estado_id) => {
   };
 };
 
-export const resetEstados = () => {
+export const resetMunicipios = () => {
   return async (dispatch) => {
     try {
       return dispatch(resetState());
