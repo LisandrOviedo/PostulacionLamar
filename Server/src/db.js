@@ -43,7 +43,6 @@ const {
   Areas_Interes,
   Cargos_Empleados,
   Cargos,
-  Ciudades,
   Contactos_Emergencia,
   Curriculos,
   Datos_Bancarios,
@@ -249,27 +248,15 @@ Estados.belongsTo(Paises, {
   },
 });
 
-// Estados 1:M Ciudades
-Estados.hasMany(Ciudades, {
+// Estados 1:M Municipios
+Estados.hasMany(Municipios, {
   foreignKey: {
     name: "estado_id",
   },
 });
-Ciudades.belongsTo(Estados, {
+Municipios.belongsTo(Estados, {
   foreignKey: {
     name: "estado_id",
-  },
-});
-
-// Ciudades 1:M Municipios
-Ciudades.hasMany(Municipios, {
-  foreignKey: {
-    name: "ciudad_id",
-  },
-});
-Municipios.belongsTo(Ciudades, {
-  foreignKey: {
-    name: "ciudad_id",
   },
 });
 
@@ -285,18 +272,6 @@ Parroquias.belongsTo(Municipios, {
   },
 });
 
-// Ciudades 1:M Empleados
-Ciudades.hasMany(Empleados, {
-  foreignKey: {
-    name: "nacimiento_ciudad_id",
-  },
-});
-Empleados.belongsTo(Ciudades, {
-  foreignKey: {
-    name: "nacimiento_ciudad_id",
-  },
-});
-
 // Estados 1:M Empleados
 Estados.hasMany(Empleados, {
   foreignKey: {
@@ -321,49 +296,49 @@ Empleados.belongsTo(Paises, {
   },
 });
 
-// Parroquias 1:M Empleados
-Parroquias.hasMany(Empleados, {
+// Parroquias 1:M Direcciones
+Parroquias.hasMany(Direcciones, {
   foreignKey: {
     name: "parroquia_id",
   },
 });
-Empleados.belongsTo(Parroquias, {
+Direcciones.belongsTo(Parroquias, {
   foreignKey: {
     name: "parroquia_id",
   },
 });
 
-// Municipios 1:M Empleados
-Municipios.hasMany(Empleados, {
+// Municipios 1:M Direcciones
+Municipios.hasMany(Direcciones, {
   foreignKey: {
     name: "municipio_id",
   },
 });
-Empleados.belongsTo(Municipios, {
+Direcciones.belongsTo(Municipios, {
   foreignKey: {
     name: "municipio_id",
   },
 });
 
-// Estados 1:M Empleados
-Estados.hasMany(Empleados, {
+// Estados 1:M Direcciones
+Estados.hasMany(Direcciones, {
   foreignKey: {
     name: "estado_id",
   },
 });
-Empleados.belongsTo(Estados, {
+Direcciones.belongsTo(Estados, {
   foreignKey: {
     name: "estado_id",
   },
 });
 
-// Paises 1:M Empleados
-Paises.hasMany(Empleados, {
+// Paises 1:M Direcciones
+Paises.hasMany(Direcciones, {
   foreignKey: {
     name: "pais_id",
   },
 });
-Empleados.belongsTo(Paises, {
+Direcciones.belongsTo(Paises, {
   foreignKey: {
     name: "pais_id",
   },
@@ -460,7 +435,6 @@ module.exports = {
   Areas_Interes,
   Cargos_Empleados,
   Cargos,
-  Ciudades,
   Contactos_Emergencia,
   Curriculos,
   Datos_Bancarios,
