@@ -13,15 +13,15 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     alergia_medicamentos: {
-      type: DataTypes.ENUM("Si", "No"),
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
     alergia_alimentos: {
-      type: DataTypes.ENUM("Si", "No"),
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
     alergia_otros: {
-      type: DataTypes.ENUM("Si", "No"),
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
     alergia_especifique: {
@@ -29,7 +29,7 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     fuma: {
-      type: DataTypes.ENUM("Si", "No"),
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
     cicatriz_especifique: {
