@@ -143,9 +143,7 @@ const traerEmpleadoExistencia = async (
       },
     });
 
-    if (!empleado) {
-      throw new Error(`No existe ese empleado`);
-    } else {
+    if (empleado) {
       return { empleado_id: empleado.empleado_id };
     }
   } catch (error) {
