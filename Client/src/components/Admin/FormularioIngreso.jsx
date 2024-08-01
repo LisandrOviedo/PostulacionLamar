@@ -16,6 +16,7 @@ import {
   getAllParroquiasActivas,
   resetParroquias,
 } from "../../redux/parroquias/parroquiasActions";
+import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
 import validations from "../../utils/validacionesAcceso";
 import { Button, Input, Label, Select, Title, Hr } from "../UI";
 
@@ -141,6 +142,9 @@ export function FormularioIngreso() {
         const newState = { ...prevState };
         delete newState.tipo_identificacion_tercero;
         delete newState.parentesco_tercero;
+        delete newState.nombre_apellido_tercero;
+        delete newState.numero_identificacion_tercero;
+
         newState.titular_cuenta = "Propia";
         return newState;
       });
@@ -376,6 +380,17 @@ export function FormularioIngreso() {
     input_direccion.value = null;
   };
 
+  const handleEmpleadoExiste = (e) => {
+    const { value } = e.target;
+    if (value) {
+      getEmpleadoExistencia(
+        token,
+        datosIngreso.tipo_identificacion,
+        datosIngreso.numero_identificacion
+      );
+    }
+  };
+
   const handleSubmit = () => {
     console.log("sumbmit");
   };
@@ -408,6 +423,7 @@ export function FormularioIngreso() {
                   id="numero_identificacion"
                   name="numero_identificacion"
                   onChange={handleValidate}
+                  onBlur={handleEmpleadoExiste}
                 />
               </div>
             </div>
@@ -1391,6 +1407,7 @@ export function FormularioIngreso() {
                 <Select
                   id="parentesco_tercero"
                   name="parentesco_tercero"
+                  defaultValue={datosIngreso.parentesco_tercero}
                   onChange={handleValidate}
                 >
                   <option value="Abuelo(a)">Abuelo(a)</option>
