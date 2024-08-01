@@ -18,17 +18,17 @@ module.exports = (sequelize) => {
     },
     parentesco: {
       type: DataTypes.ENUM(
-        "Abuelo/a",
-        "Amigo/a",
+        "Abuelo(a)",
+        "Amigo(a)",
         "Cónyuge",
-        "Hermano/a",
-        "Hijo/a",
+        "Hermano(a)",
+        "Hijo(a)",
         "Madre",
-        "Nieto/a",
+        "Nieto(a)",
         "Padre",
-        "Primo/a",
-        "Sobrino/a",
-        "Tío/a"
+        "Primo(a)",
+        "Sobrino(a)",
+        "Tío(a)"
       ),
       allowNull: false,
     },
