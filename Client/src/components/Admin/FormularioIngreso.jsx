@@ -136,7 +136,24 @@ export function FormularioIngreso() {
   const handleValidate = (e) => {
     const { name, value } = e.target;
 
-    setDatosIngreso({ ...datosIngreso, [name]: value });
+    if (name === "titular_cuenta" && value === "Propia") {
+      setDatosIngreso((prevState) => {
+        const newState = { ...prevState };
+        delete newState.tipo_identificacion_tercero;
+        delete newState.parentesco_tercero;
+        newState.titular_cuenta = "Propia";
+        return newState;
+      });
+    } else if (name === "titular_cuenta" && value === "Tercero") {
+      setDatosIngreso({
+        ...datosIngreso,
+        tipo_identificacion_tercero: "V",
+        parentesco_tercero: "Abuelo(a)",
+        [name]: value,
+      });
+    } else {
+      setDatosIngreso({ ...datosIngreso, [name]: value });
+    }
   };
 
   const handleRemoveTitulosObtenidos = (index) => {
@@ -1170,17 +1187,17 @@ export function FormularioIngreso() {
             <div>
               <Label htmlFor="parentesco_contacto_emergencia">Parentesco</Label>
               <Select id="parentesco_contacto_emergencia" name="parentesco">
-                <option value="Abuelo/a">Abuelo/a</option>
-                <option value="Amigo/a">Amigo/a</option>
+                <option value="Abuelo(a)">Abuelo(a)</option>
+                <option value="Amigo(a)">Amigo(a)</option>
                 <option value="Conyuge">Conyuge</option>
-                <option value="Hermano/a">Hermano/a</option>
-                <option value="Hijo/a">Hijo/a</option>
+                <option value="Hermano(a)">Hermano(a)</option>
+                <option value="Hijo(a)">Hijo(a)</option>
                 <option value="Madre">Madre</option>
-                <option value="Nieto/a">Nieto/a</option>
+                <option value="Nieto(a)">Nieto(a)</option>
                 <option value="Padre">Padre</option>
-                <option value="Primo/a">Primo/a</option>
-                <option value="Sobrino/a">Sobrino/a</option>
-                <option value="Tio/a">Tio/a</option>
+                <option value="Primo(a)">Primo(a)</option>
+                <option value="Sobrino(a)">Sobrino(a)</option>
+                <option value="Tio(a)">Tio(a)</option>
               </Select>
             </div>
             <div>
@@ -1335,7 +1352,7 @@ export function FormularioIngreso() {
                 <div className="grid grid-cols-4">
                   <Select
                     name="tipo_identificacion_tercero"
-                    defaultValue="V"
+                    defaultValue={datosIngreso.tipo_identificacion_tercero}
                     onChange={handleValidate}
                   >
                     <option value="V">V</option>
@@ -1371,18 +1388,22 @@ export function FormularioIngreso() {
               </div>
               <div>
                 <Label htmlFor="parentesco_tercero">Parentesco</Label>
-                <Select id="parentesco_tercero" name="parentesco_tercero">
-                  <option value="Abuelo/a">Abuelo/a</option>
-                  <option value="Amigo/a">Amigo/a</option>
+                <Select
+                  id="parentesco_tercero"
+                  name="parentesco_tercero"
+                  onChange={handleValidate}
+                >
+                  <option value="Abuelo(a)">Abuelo(a)</option>
+                  <option value="Amigo(a)">Amigo(a)</option>
                   <option value="Conyuge">Conyuge</option>
-                  <option value="Hermano/a">Hermano/a</option>
-                  <option value="Hijo/a">Hijo/a</option>
+                  <option value="Hermano(a)">Hermano(a)</option>
+                  <option value="Hijo(a)">Hijo(a)</option>
                   <option value="Madre">Madre</option>
-                  <option value="Nieto/a">Nieto/a</option>
+                  <option value="Nieto(a)">Nieto(a)</option>
                   <option value="Padre">Padre</option>
-                  <option value="Primo/a">Primo/a</option>
-                  <option value="Sobrino/a">Sobrino/a</option>
-                  <option value="Tio/a">Tio/a</option>
+                  <option value="Primo(a)">Primo(a)</option>
+                  <option value="Sobrino(a)">Sobrino(a)</option>
+                  <option value="Tio(a)">Tio(a)</option>
                 </Select>
                 {errors.parentesco_tercero && (
                   <p className="text-red-500">{errors.parentesco_tercero}</p>
