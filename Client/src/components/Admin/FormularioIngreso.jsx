@@ -381,18 +381,26 @@ export function FormularioIngreso() {
   };
 
   const handleEmpleadoExiste = (e) => {
+    e.preventDefault();
     const { value } = e.target;
     if (value) {
       getEmpleadoExistencia(
         token,
         datosIngreso.tipo_identificacion,
         datosIngreso.numero_identificacion
-      );
+      ).then((data) => {
+        if (data) {
+          const numero_identificacion = document.getElementById(
+            "numero_identificacion"
+          );
+          numero_identificacion.value = null;
+        }
+      });
     }
   };
 
   const handleSubmit = () => {
-    console.log("sumbmit");
+    console.log(datosIngreso);
   };
 
   return (
@@ -1486,11 +1494,13 @@ export function FormularioIngreso() {
         </div>
         <div className="mt-4">
           <Label htmlFor="observaciones">Observaciones</Label>
-          <Input
+          <textarea
             id="observaciones"
             name="observaciones"
-            className="h-24"
+            className="bg-gray-50 border border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-[#002846] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             type="textarea"
+            rows="3"
+            maxLength="255"
             onChange={handleValidate}
           />
         </div>
