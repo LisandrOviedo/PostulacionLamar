@@ -144,7 +144,11 @@ const traerEmpleadoExistencia = async (
     });
 
     if (empleado) {
-      return { empleado_id: empleado.empleado_id };
+      return {
+        empleado_id: empleado.empleado_id,
+        activo: empleado.activo,
+        motivo_retiro: empleado.motivo_retiro || null,
+      };
     }
   } catch (error) {
     throw new Error(`Error al traer el empleado: ${error.message}`);

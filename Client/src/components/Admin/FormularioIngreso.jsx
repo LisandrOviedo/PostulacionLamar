@@ -51,7 +51,7 @@ export function FormularioIngreso() {
     estado_civil: "Soltero(a)",
     mano_dominante: "Derecha",
     sexo: "Masculino",
-    factor_grupo_sanguineo: "A+",
+    factor_grupo_sanguineo: "No sabe",
     cantidad_hijos: "0",
     carga_familiar: "0",
     tipo_vivienda: "Casa",
@@ -136,6 +136,8 @@ export function FormularioIngreso() {
 
   const handleValidate = (e) => {
     const { name, value } = e.target;
+
+    document.getElementById("fecha_nacimiento").placeholder = "";
 
     if (name === "titular_cuenta" && value === "Propia") {
       setDatosIngreso((prevState) => {
@@ -411,7 +413,7 @@ export function FormularioIngreso() {
       <br />
       <Hr />
       <br />
-      <div className="sm:w-full sm:max-w-6xl">
+      <div className="sm:w-full sm:max-w-7xl">
         {/* Información Personal */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
@@ -519,8 +521,6 @@ export function FormularioIngreso() {
                 : null}
             </Select>
           </div>
-        </div>
-        <div className="pt-4 grid grid-cols-2 gap-4 sm:grid-cols-5">
           <div>
             <Label htmlFor="mano_dominante">Mano Dominante</Label>
             <Select
@@ -533,6 +533,9 @@ export function FormularioIngreso() {
               <option value="Izquierda">Izquierda</option>
             </Select>
           </div>
+        </div>
+
+        <div className="pt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
           <div>
             <Label htmlFor="sexo">Sexo</Label>
             <Select
@@ -554,6 +557,7 @@ export function FormularioIngreso() {
               defaultValue={datosIngreso.factor_grupo_sanguineo}
               onChange={handleValidate}
             >
+              <option value="No sabe">No sabe</option>
               <option value="A+">A+</option>
               <option value="B+">B+</option>
               <option value="AB+">AB+</option>
@@ -605,6 +609,7 @@ export function FormularioIngreso() {
               type="date"
               id="fecha_nacimiento"
               name="fecha_nacimiento"
+              defaultToNow={true}
               onChange={handleValidate}
             />
             {errors.fecha_nacimiento && (
@@ -884,7 +889,7 @@ export function FormularioIngreso() {
 
           <div>
             <Label htmlFor="carta_medica_vencimiento">
-              ¿Posee Carta Medica? Especifique su fecha de vencimiento
+              ¿Posee Carta Médica? Indique la fecha de vencimiento
             </Label>
             <Input
               type="date"
@@ -952,7 +957,7 @@ export function FormularioIngreso() {
               <Input id="nombre_instituto" name="nombre_instituto" />
             </div>
             <div className="col-span-2">
-              <Label htmlFor="titulo_obtenido">Grado Obtenido</Label>
+              <Label htmlFor="titulo_obtenido">Titulo Obtenido</Label>
               <Input id="titulo_obtenido" name="titulo_obtenido" />
             </div>
             <div className="col-span-2">
@@ -978,8 +983,8 @@ export function FormularioIngreso() {
         <div className="mt-8">
           <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg mt-8">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
-              <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
-                <tr className="text-white">
+              <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
+                <tr className="text_black">
                   <th scope="col" className="px-4 py-3">
                     <div className="flex items-center">
                       Grado de Instrucción
@@ -991,7 +996,7 @@ export function FormularioIngreso() {
                     </div>
                   </th>
                   <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Grado Obtenido</div>
+                    <div className="flex items-center">Titulo Obtenido</div>
                   </th>
                   <th scope="col" className="px-4 py-3">
                     <div className="flex items-center">Fecha Desde</div>
@@ -1012,7 +1017,7 @@ export function FormularioIngreso() {
                   >
                     <td className="px-4 py-4">{edu.grado_instruccion}</td>
                     <td className="px-4 py-4">{edu.nombre_instituto}</td>
-                    <td className="px-4 py-4">{edu.grado_obtenido}</td>
+                    <td className="px-4 py-4">{edu.titulo_obtenido}</td>
                     <td className="px-4 py-4">{edu.fecha_desde}</td>
                     <td className="px-4 py-4">{edu.fecha_hasta}</td>
                     <td className="px-4 py-4">
@@ -1079,8 +1084,8 @@ export function FormularioIngreso() {
         <div className="mt-8">
           <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg mt-8">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
-              <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
-                <tr className="text-white">
+              <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
+                <tr className="text-black">
                   <th scope="col" className="px-4 py-3">
                     <div className="flex items-center">Empresa</div>
                   </th>
@@ -1128,44 +1133,61 @@ export function FormularioIngreso() {
         {/* Salud */}
         <div className="mt-8">
           <Title>Salud</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="flex items-center justify-arround gap-2">
-              <div className="flex gap-2">
-                <Label htmlFor="alergia_alimentos">Alimentos</Label>
-                <input
-                  name="alergia_alimentos"
-                  id="alergia_alimentos"
-                  type="checkbox"
-                  checked={datosIngreso.alergia_alimentos}
-                  onChange={handleChecked}
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="flex flex-col gap-4">
+              <Label className="font-semibold">Alergias</Label>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="alergia_alimentos">Alimentos</Label>
+                  <input
+                    name="alergia_alimentos"
+                    id="alergia_alimentos"
+                    type="checkbox"
+                    checked={datosIngreso.alergia_alimentos}
+                    onChange={handleChecked}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="alergia_medicamentos">Medicamentos</Label>
+                  <input
+                    name="alergia_medicamentos"
+                    id="alergia_medicamentos"
+                    type="checkbox"
+                    checked={datosIngreso.alergia_medicamentos}
+                    onChange={handleChecked}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="alergia_otros">Otros</Label>
+                  <input
+                    name="alergia_otros"
+                    id="alergia_otros"
+                    type="checkbox"
+                    checked={datosIngreso.alergia_otros}
+                    onChange={handleChecked}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                </div>
               </div>
-              <div className="flex gap-2">
-                <Label htmlFor="alergia_medicamentos">Medicamentos</Label>
-                <input
-                  name="alergia_medicamentos"
-                  id="alergia_medicamentos"
-                  type="checkbox"
-                  checked={datosIngreso.alergia_medicamentos}
-                  onChange={handleChecked}
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-              </div>
+            </div>
 
-              <div className="flex gap-2">
-                <Label htmlFor="alergia_otros">Otros</Label>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center mt-10 gap-2">
+                <Label htmlFor="fuma">Fuma?</Label>
                 <input
-                  name="alergia_otros"
-                  id="alergia_otros"
+                  name="fuma"
+                  id="fuma"
                   type="checkbox"
-                  checked={datosIngreso.alergia_otros}
+                  checked={datosIngreso.fuma}
                   onChange={handleChecked}
                   className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                 />
               </div>
             </div>
-            <div className="col-span-2">
+
+            <div>
               <Label htmlFor="alergia_especifique">Especifique Alergia</Label>
               <Input
                 name="alergia_especifique"
@@ -1173,18 +1195,8 @@ export function FormularioIngreso() {
                 onChange={handleValidate}
               />
             </div>
-            <div className="flex gap-2 justify-center">
-              <Label htmlFor="fuma">Fuma?</Label>
-              <input
-                name="fuma"
-                id="fuma"
-                type="checkbox"
-                checked={datosIngreso.fuma}
-                onChange={handleChecked}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
-            </div>
-            <div className="col-span-2">
+
+            <div>
               <Label htmlFor="cicatriz_especifique">
                 Tiene usted Alguna Cicatriz? Especifique
               </Label>
@@ -1252,8 +1264,8 @@ export function FormularioIngreso() {
         <div className="mt-8">
           <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg mt-8">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
-              <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
-                <tr className="text-white">
+              <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
+                <tr className="text-black">
                   <th scope="col" className="px-4 py-3">
                     <div className="flex items-center">Nombre y Apellido</div>
                   </th>
@@ -1441,8 +1453,41 @@ export function FormularioIngreso() {
         {/* ESPACIO PARA EL DEPARTAMENTO DE TALENTO HUMANO */}
 
         <div className="mt-8">
-          <Title>Espacio para el departamento de talento humano</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Title>Ingreso</Title>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div>
+              <Label htmlFor="sede_id">Sede</Label>
+              {/* if superadmin = select, if admin = disabled="true" */}
+              <Select
+                id="sede_id"
+                name="sede_id"
+                onChange={(e) => {
+                  handleValidate(e);
+                  setDatosIngreso((prevState) => ({
+                    ...prevState,
+                    sede_id: e.target.value,
+                  }));
+                }}
+              >
+                <option value="1">Corporativo</option>
+                <option value="2">INMARLACA</option>
+                <option value="3">BALAMAR</option>
+                {/* todas las demas empresas */}
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="cargo_departamento">
+                Departamento / Gerencia
+              </Label>
+              <Select
+                id="cargo_departamento"
+                name="cargo_departamento"
+                onChange={handleValidate}
+              >
+                <option value="1">Administracion</option>
+              </Select>
+            </div>
             <div>
               <Label htmlFor="cargo_id">Cargo</Label>
               <Select
@@ -1460,18 +1505,6 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="cargo_departamento">
-                Departamento / Gerencia
-              </Label>
-              <Select
-                id="cargo_departamento"
-                name="cargo_departamento"
-                onChange={handleValidate}
-              >
-                <option value="1">Administracion</option>
-              </Select>
-            </div>
-            <div>
               <Label htmlFor="salario">Salario</Label>
               <Input id="salario" name="salario" onChange={handleValidate} />
               {errors.numero_cuenta && (
@@ -1484,6 +1517,7 @@ export function FormularioIngreso() {
                 id="fecha_ingreso"
                 name="fecha_ingreso"
                 type="date"
+                defaultToNow={true}
                 onChange={handleValidate}
               />
               {errors.fecha_ingreso && (
@@ -1505,7 +1539,7 @@ export function FormularioIngreso() {
           />
         </div>
 
-        <div className="mt-8 justify-center">
+        <div className="mt-8 flex justify-center">
           <Button className="w-auto" type="submit">
             Guardar
           </Button>
