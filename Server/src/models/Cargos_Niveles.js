@@ -1,33 +1,29 @@
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define("Cargos_Empleados", {
-    cargo_empleado_id: {
+  sequelize.define("Cargos_Niveles", {
+    cargo_nivel_id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    cargo_departamento_id: {
+    cargo_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    empleado_id: {
+    nivel_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    salario: {
+    salario_min: {
       type: DataTypes.DECIMAL(11, 2),
       allowNull: false,
     },
-    fecha_ingreso: {
-      type: DataTypes.DATEONLY,
+    salario_max: {
+      type: DataTypes.DECIMAL(11, 2),
       allowNull: false,
-    },
-    fecha_egreso: {
-      type: DataTypes.DATEONLY,
-      allowNull: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,
