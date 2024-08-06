@@ -8,11 +8,16 @@ const {
   conn,
   Empleados,
   Roles,
-  Cargos,
-  Cargos_Empleados,
+  Cargos_Departamentos,
+  Cargos_Niveles,
+  Departamentos,
+  Empresas_Departamentos,
+  Niveles,
   Empresas,
   Paises,
   Etnias,
+  Cargos,
+  Cargos_Empleados,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
@@ -98,21 +103,25 @@ const traerEmpleado = async (empleado_id) => {
           attributes: ["nombre"],
         },
         {
-          model: Cargos,
+          model: Cargos_Departamentos,
+          attributes: [
+            "cargo_departamento_id",
+            "car_niv_id",
+            "emp_dep_id",
+            "activo",
+          ],
           through: {
             model: Cargos_Empleados,
+            attributes: [
+              "cargo_empleado_id",
+              "salario",
+              "fecha_ingreso",
+              "fecha_egreso",
+            ],
             where: {
               activo: true,
             },
-            attributes: [],
           },
-          attributes: ["descripcion"],
-          include: [
-            {
-              model: Empresas,
-              attributes: ["nombre"],
-            },
-          ],
         },
       ],
     });
@@ -121,7 +130,49 @@ const traerEmpleado = async (empleado_id) => {
       throw new Error(`No existe ese empleado`);
     }
 
-    return empleado;
+    const cargo_nivel = await Cargos.findAll({
+      attributes: ["descripcion"],
+      include: [
+        {
+          model: Niveles,
+          attributes: ["descripcion"],
+          through: {
+            model: Cargos_Niveles,
+            attributes: ["cargo_nivel_id", "salario_min", "salario_max"],
+            where: {
+              cargo_nivel_id: empleado.Cargos_Departamentos[0].car_niv_id,
+            },
+          },
+          required: true,
+        },
+      ],
+    });
+
+    const empresa_departamento = await Empresas.findAll({
+      attributes: ["nombre"],
+      include: [
+        {
+          model: Departamentos,
+          attributes: ["nombre"],
+          through: {
+            model: Empresas_Departamentos,
+            attributes: ["empresa_departamento_id"],
+            where: {
+              empresa_departamento_id:
+                empleado.Cargos_Departamentos[0].emp_dep_id,
+            },
+          },
+          required: true,
+        },
+      ],
+    });
+
+    const empleadoJSON = empleado.toJSON();
+
+    empleadoJSON.Cargo_Nivel = cargo_nivel;
+    empleadoJSON.Empresa_Departamento = empresa_departamento;
+
+    return empleadoJSON;
   } catch (error) {
     throw new Error(`Error al traer el empleado: ${error.message}`);
   }
