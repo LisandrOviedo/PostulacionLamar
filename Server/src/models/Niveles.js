@@ -1,22 +1,18 @@
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define("Cargos", {
-    cargo_id: {
+  sequelize.define("Niveles", {
+    nivel_id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    codigo_cargo: {
-      type: DataTypes.STRING(12),
+    nivel: {
+      type: DataTypes.INTEGER(2),
       allowNull: false,
     },
     descripcion: {
-      type: DataTypes.STRING(80),
-      allowNull: false,
-    },
-    descripcion_cargo_antiguo: {
-      type: DataTypes.STRING(80),
+      type: DataTypes.STRING(20),
       allowNull: false,
     },
     activo: {
