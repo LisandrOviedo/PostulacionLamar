@@ -19,6 +19,7 @@ import {
 import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
 import validations from "../../utils/validacionesAcceso";
 import { Button, Input, Label, Select, Title, Hr } from "../UI";
+import { FaFloppyDisk } from "react-icons/fa6";
 
 import Swal from "sweetalert2";
 
@@ -401,12 +402,13 @@ export function FormularioIngreso() {
     }
   };
 
+  //TODO: esperando por backend
   const handleSubmit = () => {
     console.log(datosIngreso);
   };
 
   return (
-    <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8">
+    <div className="mt-24 sm:mt-32 items-center px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
         <Title>Formulario de Ingreso</Title>
       </div>
@@ -860,7 +862,8 @@ export function FormularioIngreso() {
             </div>
           )}
         </div>
-        <div className="pt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+
+        <div className="pt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 items-end">
           <div>
             <Label htmlFor="licencia_conducir_grado">
               ¿Posee Licencia de Conducir? Especifique el grado
@@ -937,7 +940,7 @@ export function FormularioIngreso() {
         {/* Educación */}
         <div className="mt-8 ">
           <Title>Educación</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
             <div>
               <Label htmlFor="grado_instruccion">Grado de instrucción</Label>
               <Select
@@ -952,19 +955,19 @@ export function FormularioIngreso() {
                 <option value="Postgrado">Postgrado</option>-{" "}
               </Select>
             </div>
-            <div className="col-span-2">
+            <div className="">
               <Label htmlFor="nombre_instituto">Nombre del Instituto</Label>
               <Input id="nombre_instituto" name="nombre_instituto" />
             </div>
-            <div className="col-span-2">
+            <div className="">
               <Label htmlFor="titulo_obtenido">Titulo Obtenido</Label>
               <Input id="titulo_obtenido" name="titulo_obtenido" />
             </div>
-            <div className="col-span-2">
+            <div className="">
               <Label htmlFor="fecha_desde_titulo">Desde</Label>
               <Input id="fecha_desde_titulo" name="fecha_desde" type="date" />
             </div>
-            <div className="col-span-2">
+            <div className="">
               <Label htmlFor="fecha_hasta_titulo">Hasta</Label>
               <Input id="fecha_hasta_titulo" name="fecha_hasta" type="date" />
             </div>
@@ -972,7 +975,7 @@ export function FormularioIngreso() {
               <Button
                 type="button"
                 onClick={handleAddTituloObtenido}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="w-full flex mt-7 items-center justify-center space-x-2"
               >
                 Agregar Título
               </Button>
@@ -1039,7 +1042,7 @@ export function FormularioIngreso() {
         <div className="mt-8 ">
           <Title>Trabajos Anteriores</Title>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
             <div>
               <Label htmlFor="empresa_centro_educativo">
                 Nombre de la empresa
@@ -1069,11 +1072,11 @@ export function FormularioIngreso() {
                 type="date"
               />
             </div>
-            <div>
+            <div className="sm:col-span-2 md:col-span-1">
               <Button
                 type="button"
                 onClick={handleAddExperiencia}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="w-full flex mt-7 items-center justify-center space-x-2"
               >
                 Agregar Trabajo Anterior
               </Button>
@@ -1212,7 +1215,7 @@ export function FormularioIngreso() {
         {/* Contacto de Emergencia */}
         <div className="mt-8">
           <Title>Contactos de Emergencia</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="nombre_apellido">Nombre y Apellido</Label>
               <Input id="nombre_apellido" name="nombre_apellido" />
@@ -1244,7 +1247,7 @@ export function FormularioIngreso() {
                 type="tel"
               />
             </div>
-            <div className="col-span-2">
+            <div className="md:col-span-2">
               <Label htmlFor="direccion">Direccion</Label>
               <Input id="direccion" name="direccion" />
             </div>
@@ -1253,7 +1256,7 @@ export function FormularioIngreso() {
               <Button
                 type="button"
                 onClick={handleAddContactoEmergencia}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="w-full flex mt-7 items-center justify-center space-x-2"
               >
                 Agregar Contacto Emergencia
               </Button>
@@ -1540,8 +1543,12 @@ export function FormularioIngreso() {
         </div>
 
         <div className="mt-8 flex justify-center">
-          <Button className="w-auto" type="submit">
-            Guardar
+          <Button
+            className="sm:w-full md:w-auto flex items-center justify-center space-x-2"
+            type="submit"
+          >
+            <FaFloppyDisk />
+            <span>Guardar</span>
           </Button>
         </div>
       </div>

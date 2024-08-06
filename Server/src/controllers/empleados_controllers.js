@@ -146,8 +146,8 @@ const traerEmpleadoExistencia = async (
     if (empleado) {
       return {
         empleado_id: empleado.empleado_id,
-        activo: empleado.activo,
-        motivo_retiro: empleado.motivo_retiro || null,
+        // activo: empleado.activo,
+        // motivo_retiro: empleado.motivo_retiro || null,
       };
     }
   } catch (error) {
