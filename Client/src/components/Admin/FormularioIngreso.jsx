@@ -17,6 +17,19 @@ import {
   resetParroquias,
 } from "../../redux/parroquias/parroquiasActions";
 import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
+import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
+import {
+  getAllDepartamentosActivos,
+  resetDepartamentos,
+} from "../../redux/departamentos/departamentosActions";
+import {
+  getAllCargosNivelesActivos,
+  resetCargosNiveles,
+} from "../../redux/cargosNiveles/cargosNivelesActions";
+import {
+  getAllCargosActivos,
+  resetCargos,
+} from "../../redux/cargos/cargosActions";
 import validations from "../../utils/validacionesAcceso";
 import { Button, Input, Label, Select, Title, Hr } from "../UI";
 import { FaFloppyDisk, FaCircleInfo } from "react-icons/fa6";
@@ -57,6 +70,17 @@ export function FormularioIngreso() {
     (state) => state.parroquias.parroquias_activas
   );
 
+  const empresas_activas = useSelector(
+    (state) => state.empresas.empresas_activas
+  );
+  const departamentos_activos = useSelector(
+    (state) => state.departamentos.departamentos_activos
+  );
+  const cargos_activos = useSelector((state) => state.cargos.cargos_activos);
+  const cargos_niveles_activos = useSelector(
+    (state) => state.cargosNiveles.cargos_niveles_activos
+  );
+
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const [errors, setErrors] = useState({});
@@ -94,6 +118,7 @@ export function FormularioIngreso() {
     };
   }, []);
 
+  // geo useEffect
   useEffect(() => {
     if (
       datosIngreso.nacionalidad_id &&
@@ -148,6 +173,8 @@ export function FormularioIngreso() {
       setDatosIngreso({ ...datosIngreso, parroquia_id: "Seleccione" });
     }
   }, [datosIngreso.municipio_id]);
+
+  //dpto-cargo useEffect
 
   const handleValidate = (e) => {
     const { name, value } = e.target;
