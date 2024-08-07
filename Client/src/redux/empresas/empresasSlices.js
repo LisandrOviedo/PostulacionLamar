@@ -8,7 +8,7 @@ export const empresasSlice = createSlice({
   name: "empresas",
   initialState,
   reducers: {
-    allEmpresasActivos: (state, action) => {
+    allEmpresasActivas: (state, action) => {
       state.empresas = action.payload;
     },
     resetState: () => {
@@ -17,5 +17,5 @@ export const empresasSlice = createSlice({
   },
 });
 
-export const { allEmpresasActivos, resetState } = empresasSlice.actions;
+export const { allEmpresasActivas, resetState } = empresasSlice.actions;
 export default empresasSlice.reducer;
