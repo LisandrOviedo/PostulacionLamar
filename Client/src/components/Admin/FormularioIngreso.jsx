@@ -30,6 +30,7 @@ import {
   getAllCargosActivos,
   resetCargos,
 } from "../../redux/cargos/cargosActions";
+import { postFichaIngreso } from "../../redux/fichasIngresos/fichasIngresosActions";
 import validations from "../../utils/validacionesAcceso";
 import { Button, Input, Label, Select, Title, Hr } from "../UI";
 import { FaFloppyDisk, FaCircleInfo } from "react-icons/fa6";
@@ -39,18 +40,6 @@ import Swal from "sweetalert2";
 
 export function FormularioIngreso() {
   const dispatch = useDispatch();
-
-  const handleFocus = (e) => {
-    console.log("focus");
-    document.getElementById("fecha_nacimiento");
-  };
-
-  const handleBlur = (e) => {
-    console.log("blur");
-    // if (!e.target.value) {
-    //   // e.target.style.color = "transparent";
-    // }
-  };
 
   const token = useSelector((state) => state.empleados.token);
 
@@ -104,6 +93,7 @@ export function FormularioIngreso() {
     fuma: false,
     titular_cuenta: "Propia",
     entidad_bancaria: "100% Banco",
+    fecha_ingreso: YYYYMMDD(),
   });
 
   useEffect(() => {
@@ -222,7 +212,24 @@ export function FormularioIngreso() {
 
     document.getElementById("fecha_nacimiento").placeholder = "";
 
-    if (name === "titular_cuenta" && value === "Propia") {
+    if (name === "tipo_vivienda" && value === "Casa") {
+      setDatosIngreso((prevState) => {
+        const newState = { ...prevState };
+        delete newState.piso;
+        delete newState.apartamento;
+
+        newState.tipo_vivienda = "Casa";
+        return newState;
+      });
+    } else if (name === "tipo_vivienda" && value === "Edificio") {
+      setDatosIngreso((prevState) => {
+        const newState = { ...prevState };
+        delete newState.numero_casa;
+
+        newState.tipo_vivienda = "Edificio";
+        return newState;
+      });
+    } else if (name === "titular_cuenta" && value === "Propia") {
       setDatosIngreso((prevState) => {
         const newState = { ...prevState };
         delete newState.tipo_identificacion_tercero;
@@ -484,9 +491,8 @@ export function FormularioIngreso() {
     }
   };
 
-  //TODO: esperando por backend
   const handleSubmit = () => {
-    console.log(datosIngreso);
+    dispatch(postFichaIngreso(token, datosIngreso));
   };
 
   return (
@@ -517,7 +523,6 @@ export function FormularioIngreso() {
                   id="numero_identificacion"
                   name="numero_identificacion"
                   onChange={handleValidate}
-                  onBlur={handleEmpleadoExiste}
                 />
               </div>
             </div>
@@ -692,8 +697,6 @@ export function FormularioIngreso() {
             <Input
               type="date"
               id="fecha_nacimiento"
-              onBlur={() => handleBlur()}
-              onFocus={() => handleFocus()}
               name="fecha_nacimiento"
               onChange={handleValidate}
             />
@@ -896,13 +899,7 @@ export function FormularioIngreso() {
               id="tipo_vivienda"
               name="tipo_vivienda"
               defaultValue={datosIngreso.tipo_vivienda}
-              onChange={(e) => {
-                handleValidate(e);
-                setDatosIngreso((prevState) => ({
-                  ...prevState,
-                  tipo_vivienda: e.target.value,
-                }));
-              }}
+              onChange={handleValidate}
             >
               <option value="Casa">Casa</option>
               <option value="Edificio">Edificio</option>
@@ -1675,7 +1672,7 @@ export function FormularioIngreso() {
                 id="fecha_ingreso"
                 name="fecha_ingreso"
                 type="date"
-                defaultValue={YYYYMMDD()}
+                defaultValue={datosIngreso.fecha_ingreso}
                 onChange={handleValidate}
               />
               {errors.fecha_ingreso && (
@@ -1700,7 +1697,7 @@ export function FormularioIngreso() {
         <div className="mt-8 flex justify-center">
           <Button
             className="sm:w-full md:w-auto flex items-center justify-center space-x-2"
-            type="submit"
+            onClick={handleSubmit}
           >
             <FaFloppyDisk />
             <span>Guardar</span>
