@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
     },
     descripcion_cargo_antiguo: {
       type: DataTypes.STRING(80),
-      allowNull: false,
+      allowNull: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,
