@@ -19,16 +19,30 @@ import {
 import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
 import validations from "../../utils/validacionesAcceso";
 import { Button, Input, Label, Select, Title, Hr } from "../UI";
-import { FaFloppyDisk } from "react-icons/fa6";
+import { FaFloppyDisk, FaCircleInfo } from "react-icons/fa6";
+import { YYYYMMDD } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
 export function FormularioIngreso() {
   const dispatch = useDispatch();
 
+  const handleFocus = (e) => {
+    console.log("focus");
+    document.getElementById("fecha_nacimiento");
+  };
+
+  const handleBlur = (e) => {
+    console.log("blur");
+    // if (!e.target.value) {
+    //   // e.target.style.color = "transparent";
+    // }
+  };
+
   const token = useSelector((state) => state.empleados.token);
 
   const etnias_activas = useSelector((state) => state.etnias.etnias_activas);
+  const empleado = useSelector((state) => state.empleados.empleado);
   const paises_activos = useSelector((state) => state.paises.paises_activos);
   const estados_residencia = useSelector(
     (state) => state.estados.estados_residencia
@@ -610,8 +624,9 @@ export function FormularioIngreso() {
             <Input
               type="date"
               id="fecha_nacimiento"
+              onBlur={() => handleBlur()}
+              onFocus={() => handleFocus()}
               name="fecha_nacimiento"
-              defaultToNow={true}
               onChange={handleValidate}
             />
             {errors.fecha_nacimiento && (
@@ -1459,24 +1474,20 @@ export function FormularioIngreso() {
           <Title>Ingreso</Title>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
-              <Label htmlFor="sede_id">Sede</Label>
+              <Label htmlFor="empresa">Empresa</Label>
               {/* if superadmin = select, if admin = disabled="true" */}
-              <Select
-                id="sede_id"
-                name="sede_id"
-                onChange={(e) => {
-                  handleValidate(e);
-                  setDatosIngreso((prevState) => ({
-                    ...prevState,
-                    sede_id: e.target.value,
-                  }));
-                }}
-              >
-                <option value="1">Corporativo</option>
-                <option value="2">INMARLACA</option>
-                <option value="3">BALAMAR</option>
-                {/* todas las demas empresas */}
-              </Select>
+              {empleado.Role.nombre !== "Admin" ? (
+                <Input
+                  id="empresa"
+                  name="empresa"
+                  readOnly
+                  value={empleado.Empresa_Departamento[0].nombre}
+                />
+              ) : (
+                <Select>
+                  <option>Seleccione</option>
+                </Select>
+              )}
             </div>
 
             <div>
@@ -1493,22 +1504,21 @@ export function FormularioIngreso() {
             </div>
             <div>
               <Label htmlFor="cargo_id">Cargo</Label>
-              <Select
-                id="cargo_id"
-                name="cargo_id"
-                onChange={(e) => {
-                  handleValidate(e);
-                  setDatosIngreso((prevState) => ({
-                    ...prevState,
-                    cargo_id: e.target.value,
-                  }));
-                }}
-              >
+              <Select id="cargo_id" name="cargo_id">
                 <option value="1">Obrero General</option>
               </Select>
             </div>
             <div>
-              <Label htmlFor="salario">Salario</Label>
+              <Label htmlFor="nivel_id">Nivel</Label>
+              <Select id="nivel_id" name="nivel_id">
+                <option value="1">1</option>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="salario" className="flex">
+                Salario <FaCircleInfo className="ml-2 text-gray-600" />
+              </Label>
+              {/* rango_salario se asignara al min y max del input, ademas debe mostrarse al administrador */}
               <Input id="salario" name="salario" onChange={handleValidate} />
               {errors.numero_cuenta && (
                 <p className="text-red-500">{errors.salario}</p>
@@ -1520,7 +1530,7 @@ export function FormularioIngreso() {
                 id="fecha_ingreso"
                 name="fecha_ingreso"
                 type="date"
-                defaultToNow={true}
+                defaultValue={YYYYMMDD()}
                 onChange={handleValidate}
               />
               {errors.fecha_ingreso && (

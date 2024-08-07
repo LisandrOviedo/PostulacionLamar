@@ -1,23 +1,40 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
+import {
+  getAllEmpleados,
+  postFiltros,
+  deleteFiltros,
+} from "../../redux/empleados/empleadosActions";
 import { Button, Input, Label, Select, Title, Hr } from "../UI";
 import { FaMagnifyingGlass, FaFloppyDisk } from "react-icons/fa6";
-import Swal from "sweetalert2";
+import { YYYYMMDD } from "../../utils/formatearFecha";
 
 export function Movimientos() {
   const dispatch = useDispatch();
-
   const token = useSelector((state) => state.empleados.token);
+  const filtros = useSelector((state) => state.empleados.filtros);
+
   const [errors, setErrors] = useState({});
-  const [datosMovimiento, setDatosMovimimento] = useState({});
-  const [duracionTipo, setDuracionTipo] = useState(""); // Estado para manejar la selección
+  const [filters, setFilters] = useState({
+    numero_identificacion: filtros.numero_identificacion || "",
+    activo: 1,
+  });
+  const [datosMovimiento, setDatosMovimimento] = useState({
+    tipo_identificacion: "V",
+    tipo_movimiento: "Temporal",
+    numero_identificacion: "",
+    nombres: "",
+    apellidos: "",
+    codigo_nomina: "",
+    cargo_actual: "",
+    empresa: "",
+    sueldo_actual: "",
+    fecha_ingreso: YYYYMMDD(),
+  });
 
   useEffect(() => {
     window.scroll(0, 0);
-
     document.title = "Grupo Lamar - Movimientos";
-
     return () => {
       document.title = "Grupo Lamar";
     };
@@ -28,27 +45,67 @@ export function Movimientos() {
     setDatosMovimimento({ ...datosMovimiento, [name]: value });
   };
 
-  const handleEmpleadoExiste = (e) => {
-    e.preventDefault();
-    const { value } = e.target;
-    if (value) {
-      getEmpleadoExistencia(
-        token,
-        datosMovimiento.tipo_identificacion,
-        datosMovimiento.numero_identificacion
-      ).then((data) => {
-        if (data) {
-          const numero_identificacion = document.getElementById(
-            "numero_identificacion"
-          );
-          numero_identificacion.value = null;
-        }
-      });
-    }
+  const handleResetFilters = () => {
+    setFilters({
+      numero_identificacion: "",
+    });
+
+    const inputSearch = document.getElementById("numero_identificacion");
+    inputSearch.value = "";
+    dispatch(deleteFiltros());
   };
 
-  const handleDuracionTipoChange = (e) => {
-    setDuracionTipo(e.target.value);
+  const handleFind = () => {
+    dispatch(postFiltros(filters));
+  };
+
+  const handleEmpleadoExiste = async (e) => {
+    const { value } = e.target;
+
+    if (value.trim() !== "") {
+      try {
+        const filtros = { numero_identificacion: value };
+        await dispatch(postFiltros(filtros));
+
+        const response = await dispatch(getAllEmpleados(token, filtros, 1, 1));
+        const empleados = response.payload.empleados;
+
+        console.log(response.payload.empleados[0]);
+
+        if (empleados.length > 0) {
+          const empleado = empleados[0];
+          setDatosMovimimento({
+            tipo_identificacion: empleado.tipo_identificacion || "V",
+            numero_identificacion: empleado.numero_identificacion || "",
+            nombres: empleado.nombres || "",
+            apellidos: empleado.apellidos || "",
+            codigo_nomina: empleado.codigo_nomina || "",
+            cargo_actual: empleado.cargo_actual || "",
+            empresa: empleado.empresa || "",
+            sueldo_actual: empleado.sueldo_actual || "",
+            fecha_ingreso: empleado.fecha_ingreso || YYYYMMDD(),
+          });
+          setErrors({}); // Clear errors if employee is found
+        } else {
+          setErrors({ numero_identificacion: "Empleado no encontrado" });
+          // Clear datosMovimiento if employee is not found
+          setDatosMovimimento({
+            tipo_identificacion: "V",
+            tipo_movimiento: "Temporal",
+            numero_identificacion: "",
+            nombres: "",
+            apellidos: "",
+            codigo_nomina: "",
+            cargo_actual: "",
+            empresa: "",
+            sueldo_actual: "",
+            fecha_ingreso: YYYYMMDD(),
+          });
+        }
+      } catch (error) {
+        setErrors({ numero_identificacion: "Error al buscar el empleado" });
+      }
+    }
   };
 
   return (
@@ -72,7 +129,6 @@ export function Movimientos() {
                 <option value="V">V</option>
                 <option value="E">E</option>
               </Select>
-
               <div className="col-span-3 pl-3">
                 <Input
                   id="numero_identificacion"
@@ -91,47 +147,70 @@ export function Movimientos() {
             <Input
               id="nombres"
               name="nombres"
-              value="John"
+              value={datosMovimiento.nombres}
               readOnly
-              //   value={empleado.nombre}
             />
           </div>
           <div>
             <Label htmlFor="apellidos">Apellidos</Label>
-            <Input id="apellidos" name="apellidos" value="Doe" readOnly />
+            <Input
+              id="apellidos"
+              name="apellidos"
+              value={datosMovimiento.apellidos}
+              readOnly
+            />
           </div>
           <div>
             <Label htmlFor="codigo_nomina">Codigo de Nomina</Label>
             <Input
               id="codigo_nomina"
               name="codigo_nomina"
-              value="T01"
+              value={datosMovimiento.codigo_nomina}
               readOnly
             />
           </div>
           <div>
             <Label htmlFor="cargo_actual">Cargo Actual</Label>
-            <Input id="cargo_actual" value="Obrero I" readOnly />
+            <Input
+              id="cargo_actual"
+              name="cargo_actual"
+              value={datosMovimiento.cargo_actual}
+              readOnly
+            />
           </div>
           <div>
-            <Label htmlFor="correo">Empresa</Label>
-            <Input id="correo" name="correo" value="test@mail.com" readOnly />
+            <Label htmlFor="empresa">Empresa</Label>
+            <Input
+              id="empresa"
+              name="empresa"
+              value={datosMovimiento.empresa}
+              readOnly
+            />
           </div>
           <div>
             <Label htmlFor="sueldo_actual">Sueldo Actual</Label>
             <Input
               id="sueldo_actual"
               name="sueldo_actual"
-              value="12000"
+              value={datosMovimiento.sueldo_actual}
               readOnly
             />
           </div>
           <div>
-            <Label>Fecha de Ingreso</Label>
-            <Input type="date" readOnly defaultToNow={true} />
+            <Label htmlFor="fecha_ingreso">Fecha de Ingreso</Label>
+            <Input
+              type="date"
+              id="fecha_ingreso"
+              name="fecha_ingreso"
+              value={datosMovimiento.fecha_ingreso}
+              readOnly
+            />
           </div>
           <div>
-            <Button className="w-full flex items-center justify-center space-x-2 mt-7">
+            <Button
+              className="w-full flex items-center justify-center space-x-2 mt-7"
+              onClick={handleFind}
+            >
               <FaMagnifyingGlass />
               <span>Buscar</span>
             </Button>
@@ -145,12 +224,18 @@ export function Movimientos() {
           <Select
             id="duracion_tipo"
             name="duracion_tipo"
-            onChange={handleDuracionTipoChange}
+            onChange={(e) =>
+              setDatosMovimimento({
+                ...datosMovimiento,
+                tipo_movimiento: e.target.value,
+              })
+            }
+            defaultValue={datosMovimiento.tipo_movimiento}
           >
             <option value="Temporal">Temporal</option>
             <option value="Permanente">Permanente</option>
           </Select>
-          {duracionTipo === "Temporal" && (
+          {datosMovimiento.tipo_movimiento === "Temporal" && (
             <div className="mt-4">
               <Label htmlFor="duracion_temporal">Duración (días)</Label>
               <Input
@@ -186,80 +271,12 @@ export function Movimientos() {
         <Hr />
         <br />
         <div>
-          <Title>Nueva Condición Laboral del Trabajador</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div>
-              <Label htmlFor="nuevo_cargo">Nuevo Cargo</Label>
-              <Input
-                id="nuevo_cargo"
-                name="nuevo_cargo"
-                onChange={handleValidate}
-              />
-              {errors.nuevo_cargo && (
-                <p className="text-red-500">{errors.nuevo_cargo}</p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="nueva_empresa">Nueva Empresa</Label>
-              <Input
-                id="nueva_empresa"
-                name="nueva_empresa"
-                onChange={handleValidate}
-              />
-              {errors.nueva_empresa && (
-                <p className="text-red-500">{errors.nueva_empresa}</p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="nueva_unidad_adscripcion">
-                Nueva Unidad Organizativa de Adscripción
-              </Label>
-              <Input
-                id="nueva_unidad_adscripcion"
-                name="nueva_unidad_adscripcion"
-                onChange={handleValidate}
-              />
-              {errors.nueva_unidad_adscripcion && (
-                <p className="text-red-500">
-                  {errors.nueva_unidad_adscripcion}
-                </p>
-              )}
-            </div>
-          </div>
-          <div>
-            <Label>Vigencia del Movimiento</Label>
-            <div className="grid grid-cols-2">
-              <div>
-                <Label htmlFor="vigencia_desde">Desde</Label>
-                <Input
-                  id="vigencia_desde"
-                  name="vigencia_desde"
-                  type="date"
-                  onChange={handleValidate}
-                />
-                {errors.vigencia_desde && (
-                  <p className="text-red-500">{errors.vigencia_desde}</p>
-                )}
-              </div>
-              <div className="ml-4">
-                <Label htmlFor="vigencia_hasta">Hasta</Label>
-                <Input
-                  id="vigencia_hasta"
-                  name="vigencia_hasta"
-                  type="date"
-                  onChange={handleValidate}
-                />
-                {errors.vigencia_hasta && (
-                  <p className="text-red-500">{errors.vigencia_hasta}</p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="mt-8 flex justify-center">
-          <Button className="w-auto flex items-center space-x-2" type="submit">
+          <Button
+            className="w-full flex items-center justify-center space-x-2"
+            onClick={handleEmpleadoExiste}
+          >
             <FaFloppyDisk />
-            <span>Guardar</span>
+            <span>Guardar Movimiento</span>
           </Button>
         </div>
       </div>
