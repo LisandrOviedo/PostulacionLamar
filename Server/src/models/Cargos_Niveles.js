@@ -12,9 +12,8 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    nivel_id: {
-      // Campo relacionado
-      type: DataTypes.INTEGER,
+    nivel: {
+      type: DataTypes.ENUM("Junior", "Semi-Senior", "Senior"),
       allowNull: false,
     },
     salario_min: {
