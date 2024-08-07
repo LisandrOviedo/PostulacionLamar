@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  departamentos: [],
+  departamentos_activos: [],
 };
 
 export const departamentosSlice = createSlice({
@@ -9,7 +9,7 @@ export const departamentosSlice = createSlice({
   initialState,
   reducers: {
     allDepartamentosActivos: (state, action) => {
-      state.departamentos = action.payload;
+      state.departamentos_activos = action.payload;
     },
     resetState: () => {
       return initialState;

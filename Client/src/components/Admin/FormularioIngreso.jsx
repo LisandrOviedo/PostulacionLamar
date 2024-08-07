@@ -78,7 +78,7 @@ export function FormularioIngreso() {
   );
   const cargos_activos = useSelector((state) => state.cargos.cargos_activos);
   const cargos_niveles_activos = useSelector(
-    (state) => state.cargosNiveles.cargos_niveles_activos
+    (state) => state.cargos_niveles.cargos_niveles_activos
   );
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
@@ -112,6 +112,7 @@ export function FormularioIngreso() {
 
     dispatch(getAllEtniasActivas(token));
     dispatch(getAllPaisesActivos(token));
+    dispatch(getAllEmpresasActivas(token));
 
     return () => {
       document.title = "Grupo Lamar";
@@ -174,7 +175,47 @@ export function FormularioIngreso() {
     }
   }, [datosIngreso.municipio_id]);
 
-  //dpto-cargo useEffect
+  useEffect(() => {
+    if (datosIngreso.empresa_id && datosIngreso.empresa_id !== "Seleccione") {
+      dispatch(resetDepartamentos());
+      dispatch(resetCargos());
+      dispatch(resetCargosNiveles());
+      setDatosIngreso({ ...datosIngreso, departamento_id: "Seleccione" });
+      dispatch(getAllDepartamentosActivos(token, datosIngreso.empresa_id));
+    } else {
+      dispatch(resetDepartamentos());
+      dispatch(resetCargos());
+      dispatch(resetCargosNiveles());
+      setDatosIngreso({ ...datosIngreso, departamento_id: "Seleccione" });
+    }
+  }, [datosIngreso.empresa_id]);
+
+  useEffect(() => {
+    if (
+      datosIngreso.departamento_id &&
+      datosIngreso.departamento_id !== "Seleccione"
+    ) {
+      dispatch(resetCargos());
+      dispatch(resetCargosNiveles());
+      setDatosIngreso({ ...datosIngreso, cargo_id: "Seleccione" });
+      dispatch(getAllCargosActivos(token, datosIngreso.departamento_id));
+    } else {
+      dispatch(resetCargos());
+      dispatch(resetCargosNiveles());
+      setDatosIngreso({ ...datosIngreso, cargo_id: "Seleccione" });
+    }
+  }, [datosIngreso.departamento_id]);
+
+  useEffect(() => {
+    if (datosIngreso.cargo_id && datosIngreso.cargo_id !== "Seleccione") {
+      dispatch(resetCargosNiveles());
+      setDatosIngreso({ ...datosIngreso, cargo_nivel_id: "Seleccione" });
+      dispatch(getAllCargosNivelesActivos(token, datosIngreso.cargo_id));
+    } else {
+      dispatch(resetCargosNiveles());
+      setDatosIngreso({ ...datosIngreso, cargo_nivel_id: "Seleccione" });
+    }
+  }, [datosIngreso.cargo_id]);
 
   const handleValidate = (e) => {
     const { name, value } = e.target;
@@ -1503,42 +1544,119 @@ export function FormularioIngreso() {
             <div>
               <Label htmlFor="empresa">Empresa</Label>
               {/* if superadmin = select, if admin = disabled="true" */}
-              {empleado.Role.nombre !== "Admin" ? (
+              {empleado.Role.nombre !== "admin" ? (
                 <Input
                   id="empresa"
                   name="empresa"
                   readOnly
-                  value={empleado.Empresa_Departamento[0].nombre}
+                  value={
+                    empleado?.Cargos_Niveles[0]?.Cargo.Departamento.Empresa
+                      .nombre
+                  }
                 />
               ) : (
-                <Select>
+                <Select
+                  className="w-full"
+                  id="empresa_id"
+                  name="empresa_id"
+                  defaultValue="Seleccione"
+                  onChange={handleValidate}
+                >
                   <option>Seleccione</option>
+                  {empresas_activas?.length
+                    ? empresas_activas?.map(
+                        (empresa, i) =>
+                          empresa.activo && (
+                            <option
+                              key={i}
+                              name={empresa.nombre}
+                              value={empresa.empresa_id}
+                            >
+                              {empresa.nombre}
+                            </option>
+                          )
+                      )
+                    : null}
                 </Select>
               )}
             </div>
 
             <div>
-              <Label htmlFor="cargo_departamento">
-                Departamento / Gerencia
-              </Label>
+              <Label htmlFor="departamento_id">Departamento</Label>
               <Select
-                id="cargo_departamento"
-                name="cargo_departamento"
+                className="w-full"
+                id="departamento_id"
+                name="departamento_id"
+                defaultValue="Seleccione"
                 onChange={handleValidate}
               >
-                <option value="1">Administracion</option>
+                <option>Seleccione</option>
+                {departamentos_activos?.length
+                  ? departamentos_activos?.map(
+                      (departamento, i) =>
+                        departamento.activo && (
+                          <option
+                            key={i}
+                            name={departamento.nombre}
+                            value={departamento.departamento_id}
+                          >
+                            {departamento.nombre}
+                          </option>
+                        )
+                    )
+                  : null}
               </Select>
             </div>
             <div>
               <Label htmlFor="cargo_id">Cargo</Label>
-              <Select id="cargo_id" name="cargo_id">
-                <option value="1">Obrero General</option>
+              <Select
+                className="w-full"
+                id="cargo_id"
+                name="cargo_id"
+                defaultValue="Seleccione"
+                onChange={handleValidate}
+              >
+                <option>Seleccione</option>
+                {cargos_activos?.length
+                  ? cargos_activos?.map(
+                      (cargo, i) =>
+                        cargo.activo && (
+                          <option
+                            key={i}
+                            name={cargo.descripcion}
+                            value={cargo.cargo_id}
+                          >
+                            {cargo.descripcion}
+                          </option>
+                        )
+                    )
+                  : null}
               </Select>
             </div>
             <div>
-              <Label htmlFor="nivel_id">Nivel</Label>
-              <Select id="nivel_id" name="nivel_id">
-                <option value="1">1</option>
+              <Label htmlFor="cargo_nivel_id">Nivel</Label>
+              <Select
+                className="w-full"
+                id="cargo_nivel_id"
+                name="cargo_nivel_id"
+                defaultValue="Seleccione"
+                onChange={handleValidate}
+              >
+                <option>Seleccione</option>
+                {cargos_niveles_activos?.length
+                  ? cargos_niveles_activos?.map(
+                      (cargo_nivel, i) =>
+                        cargo_nivel.activo && (
+                          <option
+                            key={i}
+                            name={cargo_nivel.nivel}
+                            value={cargo_nivel.cargo_nivel_id}
+                          >
+                            {cargo_nivel.nivel}
+                          </option>
+                        )
+                    )
+                  : null}
               </Select>
             </div>
             <div>

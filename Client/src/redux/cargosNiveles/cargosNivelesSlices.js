@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  cargosNiveles: [],
+  cargos_niveles_activos: [],
 };
 
 export const cargosNivelesSlice = createSlice({
@@ -9,7 +9,7 @@ export const cargosNivelesSlice = createSlice({
   initialState,
   reducers: {
     allCargosNivelesActivos: (state, action) => {
-      state.cargosNiveles = action.payload;
+      state.cargos_niveles_activos = action.payload;
     },
     resetState: () => {
       return initialState;

@@ -8,12 +8,12 @@ import { alertError } from "../../utils/sweetAlert2";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-export const getAllDepartamentosActivos = (token) => {
-  const URL_ALL_EMPRESAS = `${URL_SERVER}/departamentos/activos`;
+export const getAllDepartamentosActivos = (token, empresa_id) => {
+  const URL_ALL_DEPARTAMENTOS_ACTIVOS = `${URL_SERVER}/departamentos/activos/${empresa_id}`;
 
   return async (dispatch) => {
     try {
-      const { data } = await axios(URL_ALL_EMPRESAS, {
+      const { data } = await axios(URL_ALL_DEPARTAMENTOS_ACTIVOS, {
         headers: { authorization: `Bearer ${token}` },
       });
 

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  cargos: [],
+  cargos_activos: [],
 };
 
 export const cargosSlice = createSlice({
@@ -9,7 +9,7 @@ export const cargosSlice = createSlice({
   initialState,
   reducers: {
     allCargosActivos: (state, action) => {
-      state.cargos = action.payload;
+      state.cargos_activos = action.payload;
     },
     resetState: () => {
       return initialState;

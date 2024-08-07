@@ -13,7 +13,7 @@ const { authenticateToken } = require("../auth/index");
 const empresas = Router();
 
 empresas.get("/", authenticateToken, getEmpresas);
-empresas.get("/activos", authenticateToken, getEmpresasActivas);
+empresas.get("/activas", authenticateToken, getEmpresasActivas);
 empresas.get("/detalle/:empresa_id", authenticateToken, getEmpresa);
 
 empresas.post("/", authenticateToken, postEmpresa);
