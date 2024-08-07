@@ -17,10 +17,6 @@ const todasLasEmpresas = async () => {
   try {
     const empresas = await Empresas.findAll();
 
-    if (!empresas.length) {
-      throw new Error(`No existen empresas`);
-    }
-
     return empresas;
   } catch (error) {
     throw new Error(`Error al traer todas las empresas: ${error.message}`);
@@ -32,10 +28,6 @@ const todasLasEmpresasActivas = async () => {
     const empresas = await Empresas.findAll({
       where: { activo: true },
     });
-
-    if (!empresas.length) {
-      throw new Error(`No existen empresas`);
-    }
 
     return empresas;
   } catch (error) {

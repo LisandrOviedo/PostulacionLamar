@@ -14,10 +14,6 @@ const todosLosEstados = async (pais_id) => {
       },
     });
 
-    if (!estados.length) {
-      throw new Error(`No existen estados`);
-    }
-
     return estados;
   } catch (error) {
     throw new Error(`Error al traer todos los estados: ${error.message}`);
@@ -33,10 +29,6 @@ const todosLosEstadosActivos = async (pais_id) => {
     const estados = await Estados.findAll({
       where: { pais_id: pais_id, activo: true },
     });
-
-    if (!estados.length) {
-      throw new Error(`No existen estados`);
-    }
 
     return estados;
   } catch (error) {

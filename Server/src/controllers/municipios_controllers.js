@@ -14,10 +14,6 @@ const todosLosMunicipios = async (estado_id) => {
       },
     });
 
-    if (!municipios.length) {
-      throw new Error(`No existen municipios`);
-    }
-
     return municipios;
   } catch (error) {
     throw new Error(`Error al traer todos los municipios: ${error.message}`);
@@ -33,10 +29,6 @@ const todosLosMunicipiosActivos = async (estado_id) => {
     const municipios = await Municipios.findAll({
       where: { estado_id: estado_id, activo: true },
     });
-
-    if (!municipios.length) {
-      throw new Error(`No existen municipios`);
-    }
 
     return municipios;
   } catch (error) {

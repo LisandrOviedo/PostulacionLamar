@@ -13,13 +13,13 @@ const todosLosCargosEmpleados = async (empleado_id) => {
     });
 
     if (!cargos_empleados.length) {
-      throw new Error(`No existen cargos_empleados`);
+      throw new Error(`No existen cargos para ese empleado`);
     }
 
     return cargos_empleados;
   } catch (error) {
     throw new Error(
-      `Error al traer todos los cargos_empleados: ${error.message}`
+      `Error al traer todos los cargos de ese empleado: ${error.message}`
     );
   }
 };
