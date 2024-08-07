@@ -8,20 +8,20 @@ module.exports = (sequelize) => {
       primaryKey: true,
     },
     codigo_empresa: {
-      type: DataTypes.STRING(3),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     nombre: {
-      type: DataTypes.STRING(80),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     direccion: {
-      type: DataTypes.STRING(80),
-      allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     rif: {
-      type: DataTypes.STRING(12),
-      allowNull: false,
+      type: DataTypes.STRING(20),
+      allowNull: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,
