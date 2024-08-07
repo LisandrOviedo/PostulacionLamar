@@ -38,22 +38,29 @@ const cargarRoles = async () => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     for (const rol of roles) {
-      const [crearRol, created] = await Roles.findOrCreate({
-        where: { nombre: rol.nombre },
-        defaults: {
+      const rolExiste = await Roles.findOne({
+        where: {
           nombre: rol.nombre,
-          descripcion: rol.descripcion,
         },
-        transaction: t,
       });
-    }
 
-    await t.commit();
+      if (!rolExiste) {
+        t = await conn.transaction();
+
+        await Roles.create(
+          {
+            nombre: rol.nombre,
+            descripcion: rol.descripcion,
+          },
+          { transaction: t }
+        );
+
+        await t.commit();
+      }
+    }
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -88,7 +95,7 @@ const crearRol = async (nombre, descripcion) => {
 
     throw new Error(`Ya existe un rol con ese nombre`);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -126,7 +133,7 @@ const modificarRol = async (rol_id, nombre, descripcion) => {
 
     return await traerRol(rol_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -157,7 +164,7 @@ const inactivarRol = async (rol_id) => {
 
     return await traerRol(rol_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

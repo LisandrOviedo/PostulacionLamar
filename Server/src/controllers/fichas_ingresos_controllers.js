@@ -117,7 +117,7 @@ const crearFichaIngreso = async (
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -171,7 +171,7 @@ const modificarFichaIngreso = async (
 
     return await traerFichaIngreso(ficha_ingreso_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -203,7 +203,7 @@ const inactivarFichaIngreso = async (ficha_ingreso_id) => {
 
     return await traerFichaIngreso(ficha_ingreso_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

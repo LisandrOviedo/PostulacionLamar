@@ -78,7 +78,7 @@ const traerParroquia = async (parroquia_id) => {
 
 //     await t.commit();
 //   } catch (error) {
-//     if (!t.finished) {
+//     if (t && !t.finished) {
 //       await t.rollback();
 //     }
 
@@ -113,7 +113,7 @@ const crearParroquia = async (municipio_id, nombre) => {
 
     throw new Error(`Ya existe una parroquia con ese nombre`);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -150,7 +150,7 @@ const modificarParroquia = async (parroquia_id, municipio_id, nombre) => {
 
     return await traerParroquia(parroquia_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -182,7 +182,7 @@ const inactivarParroquia = async (parroquia_id) => {
 
     return await traerParroquia(parroquia_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

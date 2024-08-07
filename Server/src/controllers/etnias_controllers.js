@@ -54,21 +54,28 @@ const cargarEtnias = async () => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     for (const etnia of etnias) {
-      const [crearEtnia, created] = await Etnias.findOrCreate({
-        where: { nombre: etnia },
-        defaults: {
+      const etniaExiste = await Etnias.findOne({
+        where: {
           nombre: etnia,
         },
-        transaction: t,
       });
-    }
 
-    await t.commit();
+      if (!etniaExiste) {
+        t = await conn.transaction();
+
+        await Etnias.create(
+          {
+            nombre: etnia,
+          },
+          { transaction: t }
+        );
+
+        await t.commit();
+      }
+    }
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -102,7 +109,7 @@ const crearEtnia = async (nombre) => {
 
     throw new Error(`Ya existe una etnia con ese nombre`);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -138,7 +145,7 @@ const modificarEtnia = async (etnia_id, nombre) => {
 
     return await traerEtnia(etnia_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -170,7 +177,7 @@ const inactivarEtnia = async (etnia_id) => {
 
     return await traerEtnia(etnia_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

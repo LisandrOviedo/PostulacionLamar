@@ -100,7 +100,7 @@ const crearDatoBancario = async (empleado_id, datos_bancarios) => {
       await t.commit();
     }
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -163,7 +163,7 @@ const modificarDatoBancario = async (
 
     return await traerDatoBancario(dato_bancario_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -195,7 +195,7 @@ const inactivarDatoBancario = async (dato_bancario_id) => {
 
     return await traerDatoBancario(dato_bancario_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

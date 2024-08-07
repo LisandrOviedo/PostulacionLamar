@@ -298,48 +298,57 @@ const cargarEmpleados = async () => {
       },
     });
 
-    const { data } = await axios(API_EMPLEADOS);
+    if (rolEmpleado && nacionalidad_venezolana) {
+      const { data } = await axios(API_EMPLEADOS);
 
-    console.log(`${fechaHoraActual()} - Hizo la consulta de empleados`);
+      console.log(`${fechaHoraActual()} - Hizo la consulta de empleados`);
 
-    for (const empleadoAPI of data) {
-      t = await conn.transaction();
+      for (const empleadoAPI of data) {
+        const empleado = await Empleados.findOne({
+          where: {
+            tipo_identificacion:
+              empleadoAPI.nacionalidad === "Venezolano"
+                ? "V"
+                : empleadoAPI.nacionalidad === "Extranjero"
+                ? "E"
+                : null,
+            numero_identificacion: empleadoAPI.cedula,
+          },
+        });
 
-      const [crearEmpleado, created] = await Empleados.findOrCreate({
-        where: {
-          tipo_identificacion:
-            empleadoAPI.nacionalidad === "Venezolano"
-              ? "V"
-              : empleadoAPI.nacionalidad === "Extranjero"
-              ? "E"
-              : null,
-          numero_identificacion: empleadoAPI.cedula,
-        },
-        defaults: {
-          rol_id: rolEmpleado.rol_id,
-          nombres: ordenarNombresAPI(empleadoAPI.nombres),
-          apellidos: ordenarNombresAPI(empleadoAPI.apellidos),
-          tipo_identificacion:
-            empleadoAPI.nacionalidad === "Venezolano"
-              ? "V"
-              : empleadoAPI.nacionalidad === "Extranjero"
-              ? "E"
-              : null,
-          numero_identificacion: empleadoAPI.cedula,
-          fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
-          nacimiento_pais_id:
-            empleadoAPI.nacionalidad === "Venezolano"
-              ? nacionalidad_venezolana.pais_id
-              : null,
-          // direccion: ordenarDireccionesAPI(empleadoAPI.direccion) || null,
-        },
-        transaction: t,
-      });
+        if (!empleado) {
+          t = await conn.transaction();
 
-      await t.commit();
+          await Empleados.create(
+            {
+              rol_id: rolEmpleado.rol_id,
+              nombres: ordenarNombresAPI(empleadoAPI.nombres),
+              apellidos: ordenarNombresAPI(empleadoAPI.apellidos),
+              tipo_identificacion:
+                empleadoAPI.nacionalidad === "Venezolano"
+                  ? "V"
+                  : empleadoAPI.nacionalidad === "Extranjero"
+                  ? "E"
+                  : null,
+              numero_identificacion: empleadoAPI.cedula,
+              fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
+              nacimiento_pais_id:
+                empleadoAPI.nacionalidad === "Venezolano"
+                  ? nacionalidad_venezolana.pais_id
+                  : null,
+              // direccion: ordenarDireccionesAPI(empleadoAPI.direccion) || null,
+            },
+            { transaction: t }
+          );
+
+          await t.commit();
+        }
+      }
+
+      console.log(`${fechaHoraActual()} - Terminó de registrar los empleados`);
+    } else {
+      throw new Error(`No existe el rol "Empleado" o país "Venezuela"`);
     }
-
-    console.log(`${fechaHoraActual()} - Terminó de registrar los empleados`);
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -459,7 +468,7 @@ const crearEmpleado = async ({
 
     throw new Error(`Ya existe un empleado con esa cédula de identidad`);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -515,7 +524,7 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -648,7 +657,7 @@ const modificarEmpleado = async (datosPersonales) => {
 
     return await traerEmpleado(datosPersonales.empleado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -698,7 +707,7 @@ const modificarFotoEmpleado = async (empleado_id, filename, path) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -752,7 +761,7 @@ const actualizarClaveEmpleado = async (
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -790,7 +799,7 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -822,7 +831,7 @@ const inactivarEmpleado = async (empleado_id) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

@@ -100,7 +100,7 @@ const crearSalud = async (
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -157,7 +157,7 @@ const modificarSalud = async (
 
     return await traerSalud(salud_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -189,7 +189,7 @@ const inactivarSalud = async (salud_id) => {
 
     return await traerSalud(salud_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

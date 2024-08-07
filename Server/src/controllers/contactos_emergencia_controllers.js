@@ -98,7 +98,7 @@ const crearContactoEmergencia = async (empleado_id, contactos_emergencia) => {
       await t.commit();
     }
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -151,7 +151,7 @@ const modificarContactoEmergencia = async (
 
     return await traerContactoEmergencia(contacto_emergencia_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -187,7 +187,7 @@ const inactivarContactoEmergencia = async (contacto_emergencia_id) => {
 
     return await traerContactoEmergencia(contacto_emergencia_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

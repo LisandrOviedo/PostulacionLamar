@@ -338,7 +338,7 @@ const cambiarEstadoRevisado = async (empleado_id) => {
       },
     });
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -482,7 +482,7 @@ const modificarCurriculo = async (
       }
     }
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -514,7 +514,7 @@ const inactivarCurriculo = async (curriculo_id) => {
 
     return await traerCurriculo(curriculo_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

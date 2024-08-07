@@ -75,25 +75,33 @@ const cargarEstados = async () => {
 
       if (pais) {
         for (const nombreEstado of estado.estados) {
-          t = await conn.transaction();
-
-          const [crearEstado, created] = await Estados.findOrCreate({
-            where: { pais_id: pais.pais_id, nombre: nombreEstado },
-            defaults: {
+          const estado = await Estados.findOne({
+            where: {
               pais_id: pais.pais_id,
               nombre: nombreEstado,
             },
-            transaction: t,
           });
 
-          await t.commit();
+          if (!estado) {
+            t = await conn.transaction();
+
+            await Estados.create(
+              {
+                pais_id: pais.pais_id,
+                nombre: nombreEstado,
+              },
+              { transaction: t }
+            );
+
+            await t.commit();
+          }
         }
       } else {
         throw new Error(`No existe el país ${estado.pais}`);
       }
     }
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -128,7 +136,7 @@ const crearEstado = async (pais_id, nombre) => {
 
     throw new Error(`Ya existe un estado con ese nombre`);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -165,7 +173,7 @@ const modificarEstado = async (estado_id, pais_id, nombre) => {
 
     return await traerEstado(estado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -197,7 +205,7 @@ const inactivarEstado = async (estado_id) => {
 
     return await traerEstado(estado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

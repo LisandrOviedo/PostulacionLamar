@@ -70,7 +70,7 @@ const crearExperiencia = async (empleado_id, experiencias) => {
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -127,7 +127,7 @@ const modificarExperiencia = async (
 
     return await traerExperiencia(experiencia_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -159,7 +159,7 @@ const inactivarExperiencia = async (experiencia_id) => {
 
     return await traerExperiencia(experiencia_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -188,7 +188,7 @@ const eliminarExperienciasCurriculo = async (empleado_id) => {
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

@@ -120,7 +120,7 @@ const crearPrueba = async (empleado_id, prueba) => {
 
     return crearPrueba;
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

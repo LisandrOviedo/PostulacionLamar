@@ -54,21 +54,28 @@ const cargarPaises = async () => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     for (const pais of paises) {
-      const [crearPais, created] = await Paises.findOrCreate({
-        where: { nombre: pais },
-        defaults: {
+      const paisExiste = await Paises.findOne({
+        where: {
           nombre: pais,
         },
-        transaction: t,
       });
-    }
 
-    await t.commit();
+      if (!paisExiste) {
+        t = await conn.transaction();
+
+        await Paises.create(
+          {
+            nombre: pais,
+          },
+          { transaction: t }
+        );
+
+        await t.commit();
+      }
+    }
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -102,7 +109,7 @@ const crearPais = async (nombre) => {
 
     throw new Error(`Ya existe un país con ese nombre`);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -138,7 +145,7 @@ const modificarPais = async (pais_id, nombre) => {
 
     return await traerPais(pais_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -170,7 +177,7 @@ const inactivarPais = async (pais_id) => {
 
     return await traerPais(pais_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

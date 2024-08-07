@@ -73,38 +73,44 @@ const cargarMunicipios = async () => {
         },
       });
 
-      if (pais) {
-        const estado = await Estados.findOne({
-          where: {
-            pais_id: pais.pais_id,
-            nombre: municipio.estado,
-          },
-        });
+      const estado = await Estados.findOne({
+        where: {
+          pais_id: pais.pais_id,
+          nombre: municipio.estado,
+        },
+      });
 
-        if (estado) {
-          for (const municipioNombre of municipio.municipios) {
+      if (pais && estado) {
+        for (const municipioNombre of municipio.municipios) {
+          const municipioExiste = await Municipios.findOne({
+            where: {
+              estado_id: estado.estado_id,
+              nombre: municipioNombre,
+            },
+          });
+
+          if (!municipioExiste) {
             t = await conn.transaction();
 
-            const [crearMunicipio, created] = await Municipios.findOrCreate({
-              where: { estado_id: estado.estado_id, nombre: municipioNombre },
-              defaults: {
+            await Municipios.create(
+              {
                 estado_id: estado.estado_id,
                 nombre: municipioNombre,
               },
-              transaction: t,
-            });
+              { transaction: t }
+            );
 
             await t.commit();
           }
-        } else {
-          throw new Error(`No existe el estado ${municipio.estado}`);
         }
       } else {
-        throw new Error(`No existe el país ${municipio.pais}`);
+        throw new Error(
+          `No existe el país o estado ${municipio.pais} / ${municipio.estado}`
+        );
       }
     }
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -139,7 +145,7 @@ const crearMunicipio = async (municipio_id, nombre) => {
 
     throw new Error(`Ya existe un municipio con ese nombre`);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -176,7 +182,7 @@ const modificarMunicipio = async (municipio_id, estado_id, nombre) => {
 
     return await traerMunicipio(municipio_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -208,7 +214,7 @@ const inactivarMunicipio = async (municipio_id) => {
 
     return await traerMunicipio(municipio_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
