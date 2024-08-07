@@ -6,10 +6,6 @@ const todosLosPaises = async () => {
   try {
     const paises = await Paises.findAll();
 
-    if (!paises.length) {
-      throw new Error(`No existen paises`);
-    }
-
     return paises;
   } catch (error) {
     throw new Error(`Error al traer todos los paises: ${error.message}`);
@@ -21,10 +17,6 @@ const todosLosPaisesActivos = async () => {
     const paises = await Paises.findAll({
       where: { activo: true },
     });
-
-    if (!paises.length) {
-      throw new Error(`No existen paises`);
-    }
 
     return paises;
   } catch (error) {

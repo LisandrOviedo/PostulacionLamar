@@ -12,10 +12,6 @@ const todasLasParroquias = async (municipio_id) => {
       },
     });
 
-    if (!parroquias.length) {
-      throw new Error(`No existen parroquias`);
-    }
-
     return parroquias;
   } catch (error) {
     throw new Error(`Error al traer todas las parroquias: ${error.message}`);
@@ -31,10 +27,6 @@ const todasLasParroquiasActivas = async (municipio_id) => {
     const parroquias = await Parroquias.findAll({
       where: { municipio_id: municipio_id, activo: true },
     });
-
-    if (!parroquias.length) {
-      throw new Error(`No existen parroquias`);
-    }
 
     return parroquias;
   } catch (error) {

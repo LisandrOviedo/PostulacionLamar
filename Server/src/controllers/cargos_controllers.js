@@ -12,10 +12,6 @@ const todosLosCargos = async (departamento_id) => {
       },
     });
 
-    if (!cargos.length) {
-      throw new Error(`No existen cargos`);
-    }
-
     return cargos;
   } catch (error) {
     throw new Error(`Error al traer todos los cargos: ${error.message}`);
@@ -31,10 +27,6 @@ const todosLosCargosActivos = async (departamento_id) => {
     const cargos = await Cargos.findAll({
       where: { departamento_id: departamento_id, activo: true },
     });
-
-    if (!cargos.length) {
-      throw new Error(`No existen cargos`);
-    }
 
     return cargos;
   } catch (error) {

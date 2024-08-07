@@ -12,10 +12,6 @@ const todosLosDepartamentos = async (empresa_id) => {
       },
     });
 
-    if (!departamentos.length) {
-      throw new Error(`No existen departamentos`);
-    }
-
     return departamentos;
   } catch (error) {
     throw new Error(`Error al traer todos los departamentos: ${error.message}`);
@@ -31,10 +27,6 @@ const todosLosDepartamentosActivos = async (empresa_id) => {
     const departamentos = await Departamentos.findAll({
       where: { empresa_id: empresa_id, activo: true },
     });
-
-    if (!departamentos.length) {
-      throw new Error(`No existen departamentos`);
-    }
 
     return departamentos;
   } catch (error) {

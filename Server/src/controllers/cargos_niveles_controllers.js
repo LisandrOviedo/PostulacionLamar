@@ -12,10 +12,6 @@ const todosLosCargosNiveles = async (cargo_id) => {
       },
     });
 
-    if (!cargos_niveles.length) {
-      throw new Error(`No existen niveles para ese cargo`);
-    }
-
     return cargos_niveles;
   } catch (error) {
     throw new Error(
@@ -33,10 +29,6 @@ const todosLosCargosNivelesActivos = async (cargo_id) => {
     const cargos_niveles = await Cargos_Niveles.findAll({
       where: { cargo_id: cargo_id, activo: true },
     });
-
-    if (!cargos_niveles.length) {
-      throw new Error(`No existen niveles para ese cargo`);
-    }
 
     return cargos_niveles;
   } catch (error) {
