@@ -1,12 +1,16 @@
 const { Router } = require("express");
 
 const areas_interes = require("./areas_interes_routes");
+const cargos_niveles = require("./cargos_niveles_routes");
+const cargos = require("./cargos_routes");
 const contactos_emergencia = require("./contactos_emergencia_routes");
 const curriculos = require("./curriculos_routes");
 const datos_bancarios = require("./datos_bancarios_routes");
+const departamentos = require("./departamentos_routes");
 const direcciones = require("./direcciones_routes");
 const documentos_empleados = require("./documentos_empleados_routes");
 const empleados = require("./empleados_routes");
+const empresas = require("./empresas_routes");
 const estados = require("./estados_routes");
 const etnias = require("./etnias_routes");
 const experiencias = require("./experiencias_routes");
@@ -28,12 +32,16 @@ const titulos_obtenidos = require("./titulos_obtenidos_routes");
 const router = Router();
 
 router.use("/tthh/areas_interes", areas_interes);
+router.use("/tthh/cargos_niveles", cargos_niveles);
+router.use("/tthh/cargos", cargos);
 router.use("/tthh/contactos_emergencia", contactos_emergencia);
 router.use("/tthh/curriculos", curriculos);
 router.use("/tthh/datos_bancarios", datos_bancarios);
+router.use("/tthh/departamentos", departamentos);
 router.use("/tthh/direcciones", direcciones);
 router.use("/tthh/documentos_empleados", documentos_empleados);
 router.use("/tthh/empleados", empleados);
+router.use("/tthh/empresas", empresas);
 router.use("/tthh/estados", estados);
 router.use("/tthh/etnias", etnias);
 router.use("/tthh/experiencias", experiencias);
