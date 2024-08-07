@@ -95,7 +95,7 @@ const crearReferenciaPersonal = async (empleado_id, referencias_personales) => {
       await t.commit();
     }
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -146,7 +146,7 @@ const modificarReferenciaPersonal = async (
 
     return await traerReferenciaPersonal(referencia_personal_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -182,7 +182,7 @@ const inactivarReferenciaPersonal = async (referencia_personal_id) => {
 
     return await traerReferenciaPersonal(referencia_personal_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

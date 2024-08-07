@@ -87,7 +87,7 @@ const crearRevisionFichaIngreso = async (codigo, fecha, numero) => {
       `Ya existe una revisión de ficha de ingreso con ese nombre`
     );
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -132,7 +132,7 @@ const modificarRevisionFichaIngreso = async (
 
     return await traerRevisionFichaIngreso(revision_ficha_ingreso_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -168,7 +168,7 @@ const inactivarRevisionFichaIngreso = async (revision_ficha_ingreso_id) => {
 
     return await traerRevisionFichaIngreso(revision_ficha_ingreso_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

@@ -85,7 +85,7 @@ const crearAnexos = async (empleado_id, anexos) => {
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -142,7 +142,7 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

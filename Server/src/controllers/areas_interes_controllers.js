@@ -60,21 +60,28 @@ const cargarAreaInteres = async () => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     for (const area of areasInteres) {
-      const [area_interes, created] = await Areas_Interes.findOrCreate({
-        where: { nombre: area },
-        defaults: {
+      const area_interes = await Areas_Interes.findOne({
+        where: {
           nombre: area,
         },
-        transaction: t,
       });
-    }
 
-    await t.commit();
+      if (!area_interes) {
+        t = await conn.transaction();
+
+        await Areas_Interes.create(
+          {
+            nombre: area,
+          },
+          { transaction: t }
+        );
+
+        await t.commit();
+      }
+    }
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -108,7 +115,7 @@ const crearAreaInteres = async (nombre) => {
 
     throw new Error(`Ya existe un área de interés con ese nombre`);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -144,7 +151,7 @@ const modificarAreaInteres = async (area_interes_id, nombre) => {
 
     return await traerAreaInteres(area_interes_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -176,7 +183,7 @@ const inactivarAreaInteres = async (area_interes_id) => {
 
     return await traerAreaInteres(area_interes_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -213,7 +220,7 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -244,7 +251,7 @@ const eliminarAreasInteresCurriculo = async (curriculo_id) => {
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

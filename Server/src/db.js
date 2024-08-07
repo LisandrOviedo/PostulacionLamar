@@ -41,7 +41,6 @@ sequelize.models = Object.fromEntries(capsEntries);
 const {
   Areas_Interes_Curriculos,
   Areas_Interes,
-  Cargos_Departamentos,
   Cargos_Empleados,
   Cargos_Niveles,
   Cargos,
@@ -52,7 +51,6 @@ const {
   Direcciones,
   Documentos_Empleados,
   Empleados,
-  Empresas_Departamentos,
   Empresas,
   Estados,
   Etnias,
@@ -62,7 +60,6 @@ const {
   Idiomas,
   Menus,
   Municipios,
-  Niveles,
   Paises,
   Parroquias,
   Preguntas_Kostick,
@@ -407,59 +404,53 @@ Fichas_Ingresos.belongsTo(Revisiones_Fichas_Ingresos, {
   },
 });
 
-// Cargos M:M Niveles
-Cargos.belongsToMany(Niveles, {
-  through: "Cargos_Niveles",
-  foreignKey: {
-    name: "cargo_id",
-  },
-});
-Niveles.belongsToMany(Cargos, {
-  through: "Cargos_Niveles",
-  foreignKey: {
-    name: "nivel_id",
-  },
-});
-
-// Empresas M:M Departamentos
-Empresas.belongsToMany(Departamentos, {
-  through: "Empresas_Departamentos",
+// Empresas 1:M Departamentos
+Empresas.hasMany(Departamentos, {
   foreignKey: {
     name: "empresa_id",
   },
 });
-Departamentos.belongsToMany(Empresas, {
-  through: "Empresas_Departamentos",
+Departamentos.belongsTo(Empresas, {
+  foreignKey: {
+    name: "empresa_id",
+  },
+});
+
+// Departamentos 1:M Cargos
+Departamentos.hasMany(Cargos, {
+  foreignKey: {
+    name: "departamento_id",
+  },
+});
+Cargos.belongsTo(Departamentos, {
   foreignKey: {
     name: "departamento_id",
   },
 });
 
-// Cargos_Niveles M:M Empresas_Departamentos
-Cargos_Niveles.belongsToMany(Empresas_Departamentos, {
-  through: "Cargos_Departamentos",
+// Cargos 1:M Cargos_Niveles
+Cargos.hasMany(Cargos_Niveles, {
   foreignKey: {
-    name: "car_niv_id",
+    name: "cargo_id",
   },
 });
-Empresas_Departamentos.belongsToMany(Cargos_Niveles, {
-  through: "Cargos_Departamentos",
+Cargos_Niveles.belongsTo(Cargos, {
   foreignKey: {
-    name: "emp_dep_id",
+    name: "cargo_id",
   },
 });
 
-// Cargos_Departamentos M:M Empleados
-Cargos_Departamentos.belongsToMany(Empleados, {
-  through: "Cargos_Empleados",
-  foreignKey: {
-    name: "cargo_departamento_id",
-  },
-});
-Empleados.belongsToMany(Cargos_Departamentos, {
+// Empleados M:M Cargos_Niveles
+Empleados.belongsToMany(Cargos_Niveles, {
   through: "Cargos_Empleados",
   foreignKey: {
     name: "empleado_id",
+  },
+});
+Cargos_Niveles.belongsToMany(Empleados, {
+  through: "Cargos_Empleados",
+  foreignKey: {
+    name: "cargo_nivel_id",
   },
 });
 
@@ -468,7 +459,6 @@ module.exports = {
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
   Areas_Interes_Curriculos,
   Areas_Interes,
-  Cargos_Departamentos,
   Cargos_Empleados,
   Cargos_Niveles,
   Cargos,
@@ -479,7 +469,6 @@ module.exports = {
   Direcciones,
   Documentos_Empleados,
   Empleados,
-  Empresas_Departamentos,
   Empresas,
   Estados,
   Etnias,
@@ -489,7 +478,6 @@ module.exports = {
   Idiomas,
   Menus,
   Municipios,
-  Niveles,
   Paises,
   Parroquias,
   Preguntas_Kostick,

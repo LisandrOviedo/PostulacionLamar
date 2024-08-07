@@ -73,7 +73,7 @@ const crearTitulosObtenidos = async (empleado_id, titulos_obtenidos) => {
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -129,7 +129,7 @@ const modificarTitulosObtenidos = async (
 
     return await traerTituloObtenido(titulo_obtenido_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -161,7 +161,7 @@ const inactivarTituloObtenido = async (titulo_obtenido_id) => {
 
     return await traerTituloObtenido(titulo_obtenido_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -190,7 +190,7 @@ const eliminarTitulosEmpleado = async (empleado_id) => {
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

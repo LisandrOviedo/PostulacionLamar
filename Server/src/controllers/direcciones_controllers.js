@@ -91,7 +91,7 @@ const crearDireccion = async (empleado_id, direccion) => {
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -160,7 +160,7 @@ const modificarDireccion = async (
 
     return await traerDireccion(direccion_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -192,7 +192,7 @@ const inactivarDireccion = async (direccion_id) => {
 
     return await traerDireccion(direccion_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

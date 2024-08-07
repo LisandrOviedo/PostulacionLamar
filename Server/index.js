@@ -34,6 +34,8 @@ const {
   cargarMunicipios,
 } = require("./src/controllers/municipios_controllers.js");
 
+const { cargarEmpresas } = require("./src/controllers/empresas_controllers.js");
+
 conn
   .sync()
   .then(() => {
@@ -66,6 +68,9 @@ conn
 
       // Registrar municipios principales en la BD
       // await cargarMunicipios();
+
+      // Registrar empresas principales en la BD
+      // await cargarEmpresas();
 
       // Registrar empleados en la BD
       // await cargarEmpleados();

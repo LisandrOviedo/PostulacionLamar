@@ -8,11 +8,8 @@ const {
   conn,
   Empleados,
   Roles,
-  Cargos_Departamentos,
   Cargos_Niveles,
   Departamentos,
-  Empresas_Departamentos,
-  Niveles,
   Empresas,
   Paises,
   Etnias,
@@ -103,24 +100,33 @@ const traerEmpleado = async (empleado_id) => {
           attributes: ["nombre"],
         },
         {
-          model: Cargos_Departamentos,
-          attributes: [
-            "cargo_departamento_id",
-            "car_niv_id",
-            "emp_dep_id",
-            "activo",
+          model: Cargos_Niveles,
+          attributes: ["cargo_nivel_id", "nivel"],
+          include: [
+            {
+              model: Cargos,
+              attributes: [
+                "cargo_id",
+                "descripcion",
+                "descripcion_cargo_antiguo",
+              ],
+              include: [
+                {
+                  model: Departamentos,
+                  attributes: ["departamento_id", "nombre"],
+                  include: [
+                    {
+                      model: Empresas,
+                      attributes: ["empresa_id", "nombre"],
+                    },
+                  ],
+                },
+              ],
+            },
           ],
           through: {
             model: Cargos_Empleados,
-            attributes: [
-              "cargo_empleado_id",
-              "salario",
-              "fecha_ingreso",
-              "fecha_egreso",
-            ],
-            where: {
-              activo: true,
-            },
+            attributes: ["cargo_empleado_id", "fecha_ingreso", "fecha_egreso"],
           },
         },
       ],
@@ -130,49 +136,7 @@ const traerEmpleado = async (empleado_id) => {
       throw new Error(`No existe ese empleado`);
     }
 
-    const cargo_nivel = await Cargos.findAll({
-      attributes: ["descripcion"],
-      include: [
-        {
-          model: Niveles,
-          attributes: ["descripcion"],
-          through: {
-            model: Cargos_Niveles,
-            attributes: ["cargo_nivel_id", "salario_min", "salario_max"],
-            where: {
-              cargo_nivel_id: empleado.Cargos_Departamentos[0].car_niv_id,
-            },
-          },
-          required: true,
-        },
-      ],
-    });
-
-    const empresa_departamento = await Empresas.findAll({
-      attributes: ["nombre"],
-      include: [
-        {
-          model: Departamentos,
-          attributes: ["nombre"],
-          through: {
-            model: Empresas_Departamentos,
-            attributes: ["empresa_departamento_id"],
-            where: {
-              empresa_departamento_id:
-                empleado.Cargos_Departamentos[0].emp_dep_id,
-            },
-          },
-          required: true,
-        },
-      ],
-    });
-
-    const empleadoJSON = empleado.toJSON();
-
-    empleadoJSON.Cargo_Nivel = cargo_nivel;
-    empleadoJSON.Empresa_Departamento = empresa_departamento;
-
-    return empleadoJSON;
+    return empleado;
   } catch (error) {
     throw new Error(`Error al traer el empleado: ${error.message}`);
   }
@@ -302,48 +266,57 @@ const cargarEmpleados = async () => {
       },
     });
 
-    const { data } = await axios(API_EMPLEADOS);
+    if (rolEmpleado && nacionalidad_venezolana) {
+      const { data } = await axios(API_EMPLEADOS);
 
-    console.log(`${fechaHoraActual()} - Hizo la consulta de empleados`);
+      console.log(`${fechaHoraActual()} - Hizo la consulta de empleados`);
 
-    for (const empleadoAPI of data) {
-      t = await conn.transaction();
+      for (const empleadoAPI of data) {
+        const empleado = await Empleados.findOne({
+          where: {
+            tipo_identificacion:
+              empleadoAPI.nacionalidad === "Venezolano"
+                ? "V"
+                : empleadoAPI.nacionalidad === "Extranjero"
+                ? "E"
+                : null,
+            numero_identificacion: empleadoAPI.cedula,
+          },
+        });
 
-      const [crearEmpleado, created] = await Empleados.findOrCreate({
-        where: {
-          tipo_identificacion:
-            empleadoAPI.nacionalidad === "Venezolano"
-              ? "V"
-              : empleadoAPI.nacionalidad === "Extranjero"
-              ? "E"
-              : null,
-          numero_identificacion: empleadoAPI.cedula,
-        },
-        defaults: {
-          rol_id: rolEmpleado.rol_id,
-          nombres: ordenarNombresAPI(empleadoAPI.nombres),
-          apellidos: ordenarNombresAPI(empleadoAPI.apellidos),
-          tipo_identificacion:
-            empleadoAPI.nacionalidad === "Venezolano"
-              ? "V"
-              : empleadoAPI.nacionalidad === "Extranjero"
-              ? "E"
-              : null,
-          numero_identificacion: empleadoAPI.cedula,
-          fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
-          nacimiento_pais_id:
-            empleadoAPI.nacionalidad === "Venezolano"
-              ? nacionalidad_venezolana.pais_id
-              : null,
-          // direccion: ordenarDireccionesAPI(empleadoAPI.direccion) || null,
-        },
-        transaction: t,
-      });
+        if (!empleado) {
+          t = await conn.transaction();
 
-      await t.commit();
+          await Empleados.create(
+            {
+              rol_id: rolEmpleado.rol_id,
+              nombres: ordenarNombresAPI(empleadoAPI.nombres),
+              apellidos: ordenarNombresAPI(empleadoAPI.apellidos),
+              tipo_identificacion:
+                empleadoAPI.nacionalidad === "Venezolano"
+                  ? "V"
+                  : empleadoAPI.nacionalidad === "Extranjero"
+                  ? "E"
+                  : null,
+              numero_identificacion: empleadoAPI.cedula,
+              fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
+              nacimiento_pais_id:
+                empleadoAPI.nacionalidad === "Venezolano"
+                  ? nacionalidad_venezolana.pais_id
+                  : null,
+              // direccion: ordenarDireccionesAPI(empleadoAPI.direccion) || null,
+            },
+            { transaction: t }
+          );
+
+          await t.commit();
+        }
+      }
+
+      console.log(`${fechaHoraActual()} - Terminó de registrar los empleados`);
+    } else {
+      throw new Error(`No existe el rol "Empleado" o país "Venezuela"`);
     }
-
-    console.log(`${fechaHoraActual()} - Terminó de registrar los empleados`);
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -463,7 +436,7 @@ const crearEmpleado = async ({
 
     throw new Error(`Ya existe un empleado con esa cédula de identidad`);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -519,7 +492,7 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -652,7 +625,7 @@ const modificarEmpleado = async (datosPersonales) => {
 
     return await traerEmpleado(datosPersonales.empleado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -702,7 +675,7 @@ const modificarFotoEmpleado = async (empleado_id, filename, path) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -756,7 +729,7 @@ const actualizarClaveEmpleado = async (
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -794,7 +767,7 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -826,7 +799,7 @@ const inactivarEmpleado = async (empleado_id) => {
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

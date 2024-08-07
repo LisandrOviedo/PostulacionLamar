@@ -59,21 +59,28 @@ const cargarIdiomas = async () => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     for (const idioma of idiomas) {
-      const [crearIdioma, created] = await Idiomas.findOrCreate({
-        where: { nombre: idioma },
-        defaults: {
+      const idiomaExiste = await Idiomas.findOne({
+        where: {
           nombre: idioma,
         },
-        transaction: t,
       });
-    }
 
-    await t.commit();
+      if (!idiomaExiste) {
+        t = await conn.transaction();
+
+        await Idiomas.create(
+          {
+            nombre: idioma,
+          },
+          { transaction: t }
+        );
+
+        await t.commit();
+      }
+    }
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -109,7 +116,7 @@ const crearIdioma = async (nombre) => {
 
     throw new Error(`Ya existe un idioma con ese nombre`);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -145,7 +152,7 @@ const modificarIdioma = async (idioma_id, nombre) => {
 
     return await traerIdioma(idioma_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -177,7 +184,7 @@ const inactivarIdioma = async (idioma_id) => {
 
     return await traerIdioma(idioma_id);
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -214,7 +221,7 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -245,7 +252,7 @@ const eliminarIdiomasCurriculo = async (curriculo_id) => {
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 

@@ -373,15 +373,18 @@ export function DatosPersonales() {
                 </div>
               </>
             )}
-            {empleado?.Cargo_Nivel?.length > 0 &&
-              empleado?.Empresa_Departamento.length > 0 && (
+            {empleado?.Cargos_Niveles?.length > 0 &&
+              empleado?.Cargos_Niveles?.length > 0 && (
                 <>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
                       Nombre empresa
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.Empresa_Departamento[0].nombre}
+                      {
+                        empleado?.Cargos_Niveles[0]?.Cargo.Departamento.Empresa
+                          .nombre
+                      }
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -389,8 +392,8 @@ export function DatosPersonales() {
                       Cargo actual
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.Cargo_Nivel[0].descripcion}{" "}
-                      {empleado.Cargo_Nivel[0].Niveles[0].descripcion}
+                      {empleado?.Cargos_Niveles[0]?.Cargo.descripcion}{" "}
+                      {empleado?.Cargos_Niveles[0]?.nivel}
                     </dd>
                   </div>
                 </>

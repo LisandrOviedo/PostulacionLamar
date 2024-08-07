@@ -7,6 +7,11 @@ module.exports = (sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
+    empresa_id: {
+      // Campo relacionado
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     nombre: {
       type: DataTypes.STRING(80),
       allowNull: false,

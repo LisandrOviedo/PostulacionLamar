@@ -20,7 +20,7 @@ const cerrarSesiones = async () => {
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -51,7 +51,7 @@ const cerrarSesion = async (empleado_id) => {
 
     await t.commit();
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
@@ -124,7 +124,7 @@ const crearSesion = async (empleado_id, token) => {
       return await traerSesion(empleado_id);
     }
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
