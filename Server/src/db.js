@@ -66,7 +66,6 @@ const {
   Pruebas_Empleados,
   Referencias_Personales,
   Respuestas_Kostick,
-  Revisiones_Fichas_Ingresos,
   Roles,
   Salud,
   Sesiones,
@@ -368,18 +367,6 @@ Datos_Bancarios.belongsTo(Empleados, {
   },
 });
 
-// Empleados 1:M Fichas_Ingresos
-Empleados.hasMany(Fichas_Ingresos, {
-  foreignKey: {
-    name: "empleado_id",
-  },
-});
-Fichas_Ingresos.belongsTo(Empleados, {
-  foreignKey: {
-    name: "empleado_id",
-  },
-});
-
 // Empleados 1:M Direcciones
 Empleados.hasMany(Direcciones, {
   foreignKey: {
@@ -389,18 +376,6 @@ Empleados.hasMany(Direcciones, {
 Direcciones.belongsTo(Empleados, {
   foreignKey: {
     name: "empleado_id",
-  },
-});
-
-// Revisiones_Fichas_Ingresos 1:M Fichas_Ingresos
-Revisiones_Fichas_Ingresos.hasMany(Fichas_Ingresos, {
-  foreignKey: {
-    name: "revision_ficha_ingreso_id",
-  },
-});
-Fichas_Ingresos.belongsTo(Revisiones_Fichas_Ingresos, {
-  foreignKey: {
-    name: "revision_ficha_ingreso_id",
   },
 });
 
@@ -454,6 +429,20 @@ Cargos_Niveles.belongsToMany(Empleados, {
   },
 });
 
+// Empleados M:M Cargos_Niveles
+Empleados.belongsToMany(Cargos_Niveles, {
+  through: "Fichas_Ingresos",
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Cargos_Niveles.belongsToMany(Empleados, {
+  through: "Fichas_Ingresos",
+  foreignKey: {
+    name: "cargo_nivel_id",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -484,7 +473,6 @@ module.exports = {
   Pruebas_Empleados,
   Referencias_Personales,
   Respuestas_Kostick,
-  Revisiones_Fichas_Ingresos,
   Roles,
   Salud,
   Sesiones,
