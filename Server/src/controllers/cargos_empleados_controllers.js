@@ -67,12 +67,10 @@ const traerCargoEmpleado = async (cargo_empleado_id) => {
 };
 
 const crearCargoEmpleado = async (
-  cargo_nivel_id,
   empleado_id,
-  salario,
-  fecha_ingreso
+  { cargo_nivel_id, salario, fecha_ingreso }
 ) => {
-  if (!cargo_nivel_id || !empleado_id || !salario || !fecha_ingreso) {
+  if (!empleado_id || !cargo_nivel_id || !salario || !fecha_ingreso) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -83,14 +81,14 @@ const crearCargoEmpleado = async (
 
     const [cargo_empleado, created] = await Cargos_Empleados.findOrCreate({
       where: {
-        cargo_nivel_id: cargo_nivel_id,
         empleado_id: empleado_id,
+        cargo_nivel_id: cargo_nivel_id,
         salario: salario,
         fecha_ingreso: fecha_ingreso,
       },
       defaults: {
-        cargo_nivel_id: cargo_nivel_id,
         empleado_id: empleado_id,
+        cargo_nivel_id: cargo_nivel_id,
         salario: salario,
         fecha_ingreso: fecha_ingreso,
       },
