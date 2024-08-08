@@ -74,6 +74,7 @@ export function FormularioIngreso() {
 
   const [errors, setErrors] = useState({});
 
+  const [rangoSalario, setRangoSalario] = useState();
   const [datosIngreso, setDatosIngreso] = useState({
     tipo_identificacion: "V",
     estado_civil: "Soltero(a)",
@@ -249,6 +250,17 @@ export function FormularioIngreso() {
         parentesco_tercero: "Abuelo(a)",
         [name]: value,
       });
+    } else if (name === cargo_nivel_id) {
+      const selectedCargoNivel = cargos_niveles_activos.find(
+        (cargo_nivel) => cargo_nivel.cargo_nivel_id === value
+      );
+
+      if (selectedCargoNivel) {
+        setRangoSalario(() => ({
+          min: selectedCargoNivel.min,
+          max: selectedCargoNivel.max,
+        }));
+      }
     } else {
       setDatosIngreso({ ...datosIngreso, [name]: value });
     }
@@ -474,27 +486,51 @@ export function FormularioIngreso() {
     input_direccion.value = null;
   };
 
-  const handleEmpleadoExiste = (e) => {
-    e.preventDefault();
-    const { value } = e.target;
-    if (value) {
-      getEmpleadoExistencia(
-        token,
-        datosIngreso.tipo_identificacion,
-        datosIngreso.numero_identificacion
-      ).then((data) => {
-        if (data) {
-          const numero_identificacion = document.getElementById(
-            "numero_identificacion"
-          );
-          numero_identificacion.value = null;
-        }
-      });
-    }
-  };
+  // const handleEmpleadoExiste = (e) => {
+  //   console.log("exist?");
+  //   e.preventDefault();
+  //   const { value } = e.target;
+  //   if (value) {
+  //     getEmpleadoExistencia(
+  //       token,
+  //       datosIngreso.tipo_identificacion,
+  //       datosIngreso.numero_identificacion
+  //     ).then((data) => {
+  //       if (data) {
+  //         const numero_identificacion = document.getElementById(
+  //           "numero_identificacion"
+  //         );
+  //         numero_identificacion.value = null;
+  //       }
+  //     });
+  //   }
+  // };
 
   const handleSubmit = () => {
     dispatch(postFichaIngreso(token, datosIngreso));
+    setDatosIngreso({
+      tipo_identificacion: "V",
+      estado_civil: "Soltero(a)",
+      mano_dominante: "Derecha",
+      sexo: "Masculino",
+      factor_grupo_sanguineo: "Seleccione",
+      cantidad_hijos: "0",
+      carga_familiar: "0",
+      tipo_vivienda: "Casa",
+      grado_instruccion: "Primaria",
+      titulos_obtenidos: [],
+      experiencias: [],
+      posee_parientes_empresa: "0",
+      contactos_emergencia: [],
+      alergia_alimentos: false,
+      alergia_medicamentos: false,
+      alergia_otros: false,
+      fuma: false,
+      titular_cuenta: "Propia",
+      entidad_bancaria: "100% Banco",
+      tipo_cuenta: "Corriente",
+      fecha_ingreso: YYYYMMDD(),
+    });
   };
 
   return (
@@ -700,6 +736,7 @@ export function FormularioIngreso() {
               type="date"
               id="fecha_nacimiento"
               name="fecha_nacimiento"
+              max={YYYYMMDD()}
               onChange={handleValidate}
             />
             {errors.fecha_nacimiento && (
@@ -968,6 +1005,7 @@ export function FormularioIngreso() {
               type="date"
               id="licencia_conducir_vencimiento"
               name="licencia_conducir_vencimiento"
+              max={YYYYMMDD()}
               onChange={handleValidate}
             />
           </div>
@@ -980,6 +1018,7 @@ export function FormularioIngreso() {
               type="date"
               id="carta_medica_vencimiento"
               name="carta_medica_vencimiento"
+              max={YYYYMMDD()}
               onChange={handleValidate}
             />
           </div>
@@ -1037,21 +1076,31 @@ export function FormularioIngreso() {
                 <option value="Postgrado">Postgrado</option>-{" "}
               </Select>
             </div>
-            <div className="">
+            <div>
               <Label htmlFor="nombre_instituto">Nombre del Instituto</Label>
               <Input id="nombre_instituto" name="nombre_instituto" />
             </div>
-            <div className="">
+            <div>
               <Label htmlFor="titulo_obtenido">Titulo Obtenido</Label>
               <Input id="titulo_obtenido" name="titulo_obtenido" />
             </div>
-            <div className="">
+            <div>
               <Label htmlFor="fecha_desde_titulo">Desde</Label>
-              <Input id="fecha_desde_titulo" name="fecha_desde" type="date" />
+              <Input
+                id="fecha_desde_titulo"
+                name="fecha_desde"
+                type="date"
+                max={YYYYMMDD()}
+              />
             </div>
-            <div className="">
+            <div>
               <Label htmlFor="fecha_hasta_titulo">Hasta</Label>
-              <Input id="fecha_hasta_titulo" name="fecha_hasta" type="date" />
+              <Input
+                id="fecha_hasta_titulo"
+                name="fecha_hasta"
+                type="date"
+                max={YYYYMMDD()}
+              />
             </div>
             <div>
               <Button
@@ -1144,6 +1193,7 @@ export function FormularioIngreso() {
                 id="fecha_desde_experiencia"
                 name="fecha_desde"
                 type="date"
+                max={YYYYMMDD()}
               />
             </div>
             <div>
@@ -1152,6 +1202,7 @@ export function FormularioIngreso() {
                 id="fecha_hasta_experiencia"
                 name="fecha_hasta"
                 type="date"
+                max={YYYYMMDD()}
               />
             </div>
             <div className="sm:col-span-2 md:col-span-1">
@@ -1709,6 +1760,7 @@ export function FormularioIngreso() {
                   : null}
               </Select>
             </div>
+            <span>{rangoSalario.min || "00"}</span>
             <div>
               <Label htmlFor="salario" className="flex">
                 Salario <FaCircleInfo className="ml-2 text-gray-600" />
