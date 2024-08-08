@@ -62,43 +62,53 @@ const traerDatoBancario = async (dato_bancario_id) => {
   }
 };
 
-const crearDatoBancario = async (empleado_id, datos_bancarios) => {
-  if (!empleado_id || !datos_bancarios) {
+const crearDatoBancario = async (
+  empleado_id,
+  {
+    titular_cuenta,
+    entidad_bancaria,
+    numero_cuenta,
+    tipo_cuenta,
+    nombre_apellido_tercero,
+    tipo_identificacion_tercero,
+    numero_identificacion_tercero,
+    parentesco_tercero,
+  }
+) => {
+  if (
+    !empleado_id ||
+    !titular_cuenta ||
+    !entidad_bancaria ||
+    !numero_cuenta ||
+    !tipo_cuenta
+  ) {
     throw new Error(`Datos faltantes`);
   }
 
   let t;
 
   try {
-    for (const dato_bancario of datos_bancarios) {
-      t = await conn.transaction();
+    t = await conn.transaction();
 
-      const [crearDatoBancario, created] = await Datos_Bancarios.findOrCreate({
-        where: {
-          empleado_id: empleado_id,
-          titular_cuenta: dato_bancario.titular_cuenta,
-          entidad_bancaria: dato_bancario.entidad_bancaria,
-          numero_cuenta: dato_bancario.numero_cuenta,
-        },
-        defaults: {
-          empleado_id: empleado_id,
-          titular_cuenta: dato_bancario.titular_cuenta,
-          entidad_bancaria: dato_bancario.entidad_bancaria,
-          numero_cuenta: dato_bancario.numero_cuenta,
-          tipo_cuenta: dato_bancario.tipo_cuenta,
-          nombre_apellido_tercero:
-            dato_bancario.nombre_apellido_tercero || null,
-          tipo_identificacion_tercero:
-            dato_bancario.tipo_identificacion_tercero || null,
-          numero_identificacion_tercero:
-            dato_bancario.numero_identificacion_tercero || null,
-          parentesco_tercero: dato_bancario.parentesco_tercero || null,
-        },
-        transaction: t,
-      });
+    const [crearDatoBancario, created] = await Datos_Bancarios.findOrCreate({
+      where: {
+        numero_cuenta: numero_cuenta,
+      },
+      defaults: {
+        empleado_id: empleado_id,
+        titular_cuenta: titular_cuenta,
+        entidad_bancaria: entidad_bancaria,
+        numero_cuenta: numero_cuenta,
+        tipo_cuenta: tipo_cuenta,
+        nombre_apellido_tercero: nombre_apellido_tercero || null,
+        tipo_identificacion_tercero: tipo_identificacion_tercero || null,
+        numero_identificacion_tercero: numero_identificacion_tercero || null,
+        parentesco_tercero: parentesco_tercero || null,
+      },
+      transaction: t,
+    });
 
-      await t.commit();
-    }
+    await t.commit();
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
