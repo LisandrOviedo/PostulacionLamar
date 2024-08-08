@@ -30,7 +30,7 @@ import {
   getAllCargosActivos,
   resetCargos,
 } from "../../redux/cargos/cargosActions";
-import { postFichaIngreso } from "../../redux/fichasIngresos/fichasIngresosActions";
+import { saveFichaIngreso } from "../../redux/fichasIngresos/fichasIngresosActions";
 import validations from "../../utils/validacionesAcceso";
 import { Button, Input, Label, Select, Title, Hr } from "../UI";
 import { FaFloppyDisk, FaCircleInfo } from "react-icons/fa6";
@@ -74,7 +74,6 @@ export function FormularioIngreso() {
 
   const [errors, setErrors] = useState({});
 
-  const [rangoSalario, setRangoSalario] = useState();
   const [datosIngreso, setDatosIngreso] = useState({
     tipo_identificacion: "V",
     estado_civil: "Soltero(a)",
@@ -250,17 +249,6 @@ export function FormularioIngreso() {
         parentesco_tercero: "Abuelo(a)",
         [name]: value,
       });
-    } else if (name === cargo_nivel_id) {
-      const selectedCargoNivel = cargos_niveles_activos.find(
-        (cargo_nivel) => cargo_nivel.cargo_nivel_id === value
-      );
-
-      if (selectedCargoNivel) {
-        setRangoSalario(() => ({
-          min: selectedCargoNivel.min,
-          max: selectedCargoNivel.max,
-        }));
-      }
     } else {
       setDatosIngreso({ ...datosIngreso, [name]: value });
     }
@@ -507,30 +495,7 @@ export function FormularioIngreso() {
   // };
 
   const handleSubmit = () => {
-    dispatch(postFichaIngreso(token, datosIngreso));
-    setDatosIngreso({
-      tipo_identificacion: "V",
-      estado_civil: "Soltero(a)",
-      mano_dominante: "Derecha",
-      sexo: "Masculino",
-      factor_grupo_sanguineo: "Seleccione",
-      cantidad_hijos: "0",
-      carga_familiar: "0",
-      tipo_vivienda: "Casa",
-      grado_instruccion: "Primaria",
-      titulos_obtenidos: [],
-      experiencias: [],
-      posee_parientes_empresa: "0",
-      contactos_emergencia: [],
-      alergia_alimentos: false,
-      alergia_medicamentos: false,
-      alergia_otros: false,
-      fuma: false,
-      titular_cuenta: "Propia",
-      entidad_bancaria: "100% Banco",
-      tipo_cuenta: "Corriente",
-      fecha_ingreso: YYYYMMDD(),
-    });
+    dispatch(saveFichaIngreso(token, datosIngreso));
   };
 
   return (
@@ -1760,7 +1725,6 @@ export function FormularioIngreso() {
                   : null}
               </Select>
             </div>
-            <span>{rangoSalario.min || "00"}</span>
             <div>
               <Label htmlFor="salario" className="flex">
                 Salario <FaCircleInfo className="ml-2 text-gray-600" />

@@ -8,7 +8,7 @@ const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
 // POST FICHA INGRESO
 
-export const postFichaIngreso = (token, datosIngreso) => {
+export const saveFichaIngreso = (token, datosIngreso) => {
   const URL_POST_EMPLEADO = `${URL_SERVER}/empleados`;
 
   return async () => {
@@ -45,7 +45,9 @@ export const postFichaIngreso = (token, datosIngreso) => {
 
       await postDatosBancarios(token, data.empleado_id, datosIngreso);
 
-      //   await postFichaIngreso(token, data.empleado_id, datosIngreso);
+      await postCargoEmpleado(token, data.empleado_id, datosIngreso);
+
+      await postFichaIngreso(token, data.empleado_id, datosIngreso);
 
       return Swal.fire({
         text: "¡Ingreso exitoso!",
@@ -191,25 +193,46 @@ const postDatosBancarios = async (token, empleado_id, datosIngreso) => {
   }
 };
 
-// const postFichaIngreso = async (token, empleado_id, datosIngreso) => {
-//   const URL_ADD_FICHAS_INGRESOS = `${URL_SERVER}/fichas_ingresos`;
+const postCargoEmpleado = async (token, empleado_id, datosIngreso) => {
+  const URL_ADD_CARGO_EMPLEADO = `${URL_SERVER}/cargos_empleados`;
 
-//   try {
-//     await axios.post(
-//       `${URL_ADD_FICHAS_INGRESOS}`,
-//       {
-//         empleado_id,
-//         datosIngreso,
-//       },
-//       {
-//         headers: { authorization: `Bearer ${token}` },
-//       }
-//     );
-//   } catch (error) {
-//     alertError(error);
+  try {
+    await axios.post(
+      `${URL_ADD_CARGO_EMPLEADO}`,
+      {
+        empleado_id,
+        datosIngreso,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+  } catch (error) {
+    alertError(error);
 
-//     throw new Error();
-//   }
-// };
+    throw new Error();
+  }
+};
+
+const postFichaIngreso = async (token, empleado_id, datosIngreso) => {
+  const URL_ADD_FICHA_INGRESO = `${URL_SERVER}/fichas_ingresos`;
+
+  try {
+    await axios.post(
+      `${URL_ADD_FICHA_INGRESO}`,
+      {
+        empleado_id,
+        datosIngreso,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
 
 // FIN POST FICHA INGRESO
