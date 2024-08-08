@@ -79,13 +79,14 @@ export function FormularioIngreso() {
     estado_civil: "Soltero(a)",
     mano_dominante: "Derecha",
     sexo: "Masculino",
-    factor_grupo_sanguineo: "No sabe",
+    factor_grupo_sanguineo: "Seleccione",
     cantidad_hijos: "0",
     carga_familiar: "0",
     tipo_vivienda: "Casa",
     grado_instruccion: "Primaria",
     titulos_obtenidos: [],
     experiencias: [],
+    posee_parientes_empresa: "0",
     contactos_emergencia: [],
     alergia_alimentos: false,
     alergia_medicamentos: false,
@@ -93,6 +94,7 @@ export function FormularioIngreso() {
     fuma: false,
     titular_cuenta: "Propia",
     entidad_bancaria: "100% Banco",
+    tipo_cuenta: "Corriente",
     fecha_ingreso: YYYYMMDD(),
   });
 
@@ -112,16 +114,16 @@ export function FormularioIngreso() {
   // geo useEffect
   useEffect(() => {
     if (
-      datosIngreso.nacionalidad_id &&
-      datosIngreso.nacionalidad_id !== "Seleccione"
+      datosIngreso.nacimiento_pais_id &&
+      datosIngreso.nacimiento_pais_id !== "Seleccione"
     ) {
-      setDatosIngreso({ ...datosIngreso, estado_nacimiento_id: "Seleccione" });
-      dispatch(getAllEstadosNacimiento(token, datosIngreso.nacionalidad_id));
+      setDatosIngreso({ ...datosIngreso, nacimiento_estado_id: "Seleccione" });
+      dispatch(getAllEstadosNacimiento(token, datosIngreso.nacimiento_pais_id));
     } else {
       dispatch(resetEstadosNacimiento());
-      setDatosIngreso({ ...datosIngreso, estado_nacimiento_id: "Seleccione" });
+      setDatosIngreso({ ...datosIngreso, nacimiento_estado_id: "Seleccione" });
     }
-  }, [datosIngreso.nacionalidad_id]);
+  }, [datosIngreso.nacimiento_pais_id]);
 
   useEffect(() => {
     if (datosIngreso.pais_id && datosIngreso.pais_id !== "Seleccione") {
@@ -646,7 +648,7 @@ export function FormularioIngreso() {
               defaultValue={datosIngreso.factor_grupo_sanguineo}
               onChange={handleValidate}
             >
-              <option value="No sabe">No sabe</option>
+              <option value="Seleccione">Seleccione</option>
               <option value="A+">A+</option>
               <option value="B+">B+</option>
               <option value="AB+">AB+</option>
@@ -716,11 +718,11 @@ export function FormularioIngreso() {
             )}
           </div>
           <div>
-            <Label htmlFor="nacionalidad_id">Nacionalidad</Label>
+            <Label htmlFor="nacimiento_pais_id">Nacionalidad</Label>
             <Select
               className="w-full"
-              id="nacionalidad_id"
-              name="nacionalidad_id"
+              id="nacimiento_pais_id"
+              name="nacimiento_pais_id"
               defaultValue="Seleccione"
               onChange={handleValidate}
             >
@@ -736,17 +738,17 @@ export function FormularioIngreso() {
                   )
                 : null}
             </Select>
-            {errors.nacionalidad_id && (
-              <p className="text-red-500">{errors.nacionalidad_id}</p>
+            {errors.nacimiento_pais_id && (
+              <p className="text-red-500">{errors.nacimiento_pais_id}</p>
             )}
           </div>
           <div>
-            <Label htmlFor="estado_nacimiento_id">Estado de Nacimiento</Label>
+            <Label htmlFor="nacimiento_estado_id">Estado de Nacimiento</Label>
             <Select
               className="w-full"
-              id="estado_nacimiento_id"
-              name="estado_nacimiento_id"
-              value={datosIngreso.estado_nacimiento_id}
+              id="nacimiento_estado_id"
+              name="nacimiento_estado_id"
+              value={datosIngreso.nacimiento_estado_id}
               onChange={handleValidate}
             >
               <option name="Seleccione">Seleccione</option>
@@ -765,8 +767,8 @@ export function FormularioIngreso() {
                   )
                 : null}
             </Select>
-            {errors.estado_nacimiento_id && (
-              <p className="text-red-500">{errors.estado_nacimiento_id}</p>
+            {errors.nacimiento_estado_id && (
+              <p className="text-red-500">{errors.nacimiento_estado_id}</p>
             )}
           </div>
 
@@ -1213,12 +1215,50 @@ export function FormularioIngreso() {
           </div>
         </div>
 
+        <div className="mt-8">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 items-end md:grid-cols-3">
+            <div>
+              <Label htmlFor="trabajo_anteriormente_especifique">
+                ¿Trabajo Anteriormente en esta empresa? Especifique
+              </Label>
+              <Input
+                id="trabajo_anteriormente_especifique"
+                name="trabajo_anteriormente_especifique"
+                onChange={handleValidate}
+              />
+            </div>
+            <div>
+              <Label htmlFor="motivo_retiro">Motivo del Retiro</Label>
+              <Input
+                id="motivo_retiro"
+                name="motivo_retiro"
+                onChange={handleValidate}
+              />
+            </div>
+            <div>
+              <Label htmlFor="posee_parientes_empresa">
+                ¿Posee parientes que trabajen en esta empresa? Especifique
+                cuantos
+              </Label>
+              <Input
+                type="number"
+                min="0"
+                max="30"
+                defaultValue={datosIngreso.posee_parientes_empresa}
+                onChange={handleValidate}
+                id="posee_parientes_empresa"
+                name="posee_parientes_empresa"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Salud */}
         <div className="mt-8">
           <Title>Salud</Title>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-4">
-              <Label className="font-semibold">Alergias</Label>
+              <span className="font-semibold">Alergias</span>
               <div className="flex flex-wrap gap-4">
                 <div className="flex items-center gap-2">
                   <Label htmlFor="alergia_alimentos">Alimentos</Label>
@@ -1395,7 +1435,7 @@ export function FormularioIngreso() {
         {/* Datos Bancarios */}
         <div className="mt-8">
           <Title>Datos Bancarios</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
             <div>
               <Label htmlFor="titular_cuenta">Titular de la Cuenta</Label>
               <Select
@@ -1450,6 +1490,7 @@ export function FormularioIngreso() {
                 <option value="Mi Banco">Mi Banco</option>
               </Select>
             </div>
+
             <div>
               <Label htmlFor="numero_cuenta">Número de Cuenta</Label>
               <Input
@@ -1460,6 +1501,18 @@ export function FormularioIngreso() {
               {errors.numero_cuenta && (
                 <p className="text-red-500">{errors.numero_cuenta}</p>
               )}
+            </div>
+            <div>
+              <Label htmlFor="tipo_cuenta">Tpo de Cuenta</Label>
+              <Select
+                id="tipo_cuenta"
+                name="tipo_cuenta"
+                defaultValue={datosIngreso.tipo_cuenta}
+                onChange={handleValidate}
+              >
+                <option value="Ahorro">Ahorro</option>
+                <option value="Corriente">Corriente</option>
+              </Select>
             </div>
           </div>
           {datosIngreso.titular_cuenta === "Tercero" && (
@@ -1536,15 +1589,15 @@ export function FormularioIngreso() {
         {/* ESPACIO PARA EL DEPARTAMENTO DE TALENTO HUMANO */}
 
         <div className="mt-8">
-          <Title>Ingreso</Title>
+          <Title>Espacio para talento humano</Title>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
-              <Label htmlFor="empresa">Empresa</Label>
+              <Label htmlFor="empresa_id">Empresa</Label>
               {/* if superadmin = select, if admin = disabled="true" */}
               {empleado.Role.nombre !== "admin" ? (
                 <Input
-                  id="empresa"
-                  name="empresa"
+                  id="empresa_id"
+                  name="empresa_id"
                   readOnly
                   value={
                     empleado?.Cargos_Niveles[0]?.Cargo.Departamento.Empresa

@@ -13,8 +13,6 @@ export const postFichaIngreso = (token, datosIngreso) => {
 
   return async () => {
     try {
-      //   const datosPersonales = datosIngreso;
-
       const { data } = await axios.post(`${URL_POST_EMPLEADO}`, datosIngreso, {
         headers: { authorization: `Bearer ${token}` },
       });
