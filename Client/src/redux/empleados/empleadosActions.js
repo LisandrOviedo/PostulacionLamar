@@ -70,11 +70,8 @@ export const getEmpleadoExistencia = async (
     const { data } = await axios(URL_EMPLEADO_EXISTENCIA, {
       headers: { authorization: `Bearer ${token}` },
     });
-    console.log(await data);
-    {
-      /* BORRAR LOG*/
-    }
-    if (data.empleado_id && data.activo === true) {
+
+    if (data.empleado_id) {
       return Swal.fire({
         title: "Oops...",
         text: "Este empleado ya existe",

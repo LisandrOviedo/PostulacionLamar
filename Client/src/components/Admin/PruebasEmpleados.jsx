@@ -96,13 +96,24 @@ export function PruebasEmpleados() {
   };
 
   const handleResetFilters = () => {
-    dispatch(deleteFiltros()).then(function () {
-      window.location.reload();
+    setFilters({
+      numero_identificacion: "",
+      apellidos: "",
+      prueba: "",
+      orden_campo: "",
+      orden_por: "",
     });
+
+    const buscarPor = document.getElementById("buscar_por");
+    const inputSearch = document.getElementById("input_search");
+
+    buscarPor.selectedIndex = 0;
+    inputSearch.value = "";
+
+    dispatch(deleteFiltros());
   };
 
-  const handleFind = (e) => {
-    e.preventDefault();
+  const handleFind = () => {
     dispatch(postPaginaActual(1)).then(() => {
       dispatch(postFiltros(filters));
     });
@@ -164,8 +175,7 @@ export function PruebasEmpleados() {
     }
   };
 
-  const paginaAnterior = (e) => {
-    e.preventDefault();
+  const paginaAnterior = () => {
     if (paginaActual > 1) {
       dispatch(postPaginaActual(paginaActual - 1)).then(() => {
         tableRef.current.scrollIntoView({ behavior: "smooth" });
@@ -173,8 +183,7 @@ export function PruebasEmpleados() {
     }
   };
 
-  const paginaSiguiente = (e) => {
-    e.preventDefault();
+  const paginaSiguiente = () => {
     if (paginaActual < pruebas_empleados.cantidadPaginas) {
       dispatch(postPaginaActual(paginaActual + 1)).then(() => {
         tableRef.current.scrollIntoView({ behavior: "smooth" });

@@ -104,13 +104,26 @@ export function Postulaciones() {
   };
 
   const handleResetFilters = () => {
-    dispatch(deleteFiltros()).then(function () {
-      window.location.reload();
+    setFilters({
+      numero_identificacion: "",
+      apellidos: "",
+      area_interes_id: "",
+      estado: "",
+      idioma_id: "",
+      orden_campo: "",
+      orden_por: "",
     });
+
+    const buscarPor = document.getElementById("buscar_por");
+    const inputSearch = document.getElementById("input_search");
+
+    buscarPor.selectedIndex = 0;
+    inputSearch.value = "";
+
+    dispatch(deleteFiltros());
   };
 
-  const handleFind = (e) => {
-    e.preventDefault();
+  const handleFind = () => {
     dispatch(postPaginaActual(1)).then(() => {
       dispatch(postFiltros(filters));
     });
@@ -192,8 +205,7 @@ export function Postulaciones() {
     }
   };
 
-  const paginaAnterior = (e) => {
-    e.preventDefault();
+  const paginaAnterior = () => {
     if (paginaActual > 1) {
       dispatch(postPaginaActual(paginaActual - 1)).then(() => {
         tableRef.current.scrollIntoView({ behavior: "smooth" });
@@ -201,8 +213,7 @@ export function Postulaciones() {
     }
   };
 
-  const paginaSiguiente = (e) => {
-    e.preventDefault();
+  const paginaSiguiente = () => {
     if (paginaActual < curriculos.cantidadPaginas) {
       dispatch(postPaginaActual(paginaActual + 1)).then(() => {
         tableRef.current.scrollIntoView({ behavior: "smooth" });
