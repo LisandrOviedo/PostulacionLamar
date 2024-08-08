@@ -1,9 +1,8 @@
 const { Router } = require("express");
 const {
-  getFichasIngresos,
-  getFichasIngresosActivas,
-  getFichaIngreso,
+  getFichasIngresosEmpleado,
   getFichaIngresoEmpleado,
+  getFichaIngreso,
   postFichaIngreso,
   putFichaIngreso,
   deleteFichaIngreso,
@@ -13,17 +12,20 @@ const { authenticateToken } = require("../auth/index");
 
 const fichas_ingresos = Router();
 
-fichas_ingresos.get("/", authenticateToken, getFichasIngresos);
-fichas_ingresos.get("/activos", authenticateToken, getFichasIngresosActivas);
+fichas_ingresos.get(
+  "/:empleado_id",
+  authenticateToken,
+  getFichasIngresosEmpleado
+);
+fichas_ingresos.get(
+  "/empleado/:empleado_id",
+  authenticateToken,
+  getFichaIngresoEmpleado
+);
 fichas_ingresos.get(
   "/detalle/:ficha_ingreso_id",
   authenticateToken,
   getFichaIngreso
-);
-fichas_ingresos.get(
-  "/detalleEmpleado/:empleado_id",
-  authenticateToken,
-  getFichaIngresoEmpleado
 );
 
 fichas_ingresos.post("/", authenticateToken, postFichaIngreso);

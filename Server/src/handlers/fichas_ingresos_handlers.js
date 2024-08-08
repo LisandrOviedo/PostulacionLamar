@@ -1,38 +1,17 @@
 const {
   todasLasFichasIngresos,
-  todasLasFichasIngresosActivas,
-  traerFichaIngreso,
   traerFichaIngresoEmpleado,
+  traerFichaIngreso,
   crearFichaIngreso,
   modificarFichaIngreso,
   inactivarFichaIngreso,
 } = require("../controllers/fichas_ingresos_controllers");
 
-const getFichasIngresos = async (req, res) => {
-  try {
-    const response = await todasLasFichasIngresos();
-
-    return res.json(response);
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
-  }
-};
-
-const getFichasIngresosActivas = async (req, res) => {
-  try {
-    const response = await todasLasFichasIngresosActivas();
-
-    return res.json(response);
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
-  }
-};
-
-const getFichaIngreso = async (req, res) => {
-  const { ficha_ingreso_id } = req.params;
+const getFichasIngresosEmpleado = async (req, res) => {
+  const { empleado_id } = req.params;
 
   try {
-    const response = await traerFichaIngreso(ficha_ingreso_id);
+    const response = await todasLasFichasIngresos(empleado_id);
 
     return res.json(response);
   } catch (error) {
@@ -52,25 +31,23 @@ const getFichaIngresoEmpleado = async (req, res) => {
   }
 };
 
-const postFichaIngreso = async (req, res) => {
-  const {
-    revision_ficha_ingreso_id,
-    empleado_id,
-    cargo_id,
-    salario,
-    fecha_ingreso,
-    observaciones,
-  } = req.body;
+const getFichaIngreso = async (req, res) => {
+  const { ficha_ingreso_id } = req.params;
 
   try {
-    const response = await crearFichaIngreso(
-      revision_ficha_ingreso_id,
-      empleado_id,
-      cargo_id,
-      salario,
-      fecha_ingreso,
-      observaciones
-    );
+    const response = await traerFichaIngreso(ficha_ingreso_id);
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const postFichaIngreso = async (req, res) => {
+  const { empleado_id, datosIngreso } = req.body;
+
+  try {
+    const response = await crearFichaIngreso(empleado_id, datosIngreso);
 
     return res.status(201).json(response);
   } catch (error) {
@@ -81,8 +58,7 @@ const postFichaIngreso = async (req, res) => {
 const putFichaIngreso = async (req, res) => {
   const {
     ficha_ingreso_id,
-    revision_ficha_ingreso_id,
-    cargo_id,
+    cargo_nivel_id,
     salario,
     fecha_ingreso,
     observaciones,
@@ -91,8 +67,7 @@ const putFichaIngreso = async (req, res) => {
   try {
     const response = await modificarFichaIngreso(
       ficha_ingreso_id,
-      revision_ficha_ingreso_id,
-      cargo_id,
+      cargo_nivel_id,
       salario,
       fecha_ingreso,
       observaciones
@@ -117,10 +92,9 @@ const deleteFichaIngreso = async (req, res) => {
 };
 
 module.exports = {
-  getFichasIngresos,
-  getFichasIngresosActivas,
-  getFichaIngreso,
+  getFichasIngresosEmpleado,
   getFichaIngresoEmpleado,
+  getFichaIngreso,
   postFichaIngreso,
   putFichaIngreso,
   deleteFichaIngreso,

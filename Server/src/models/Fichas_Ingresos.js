@@ -27,7 +27,7 @@ module.exports = (sequelize) => {
     },
     observaciones: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,
