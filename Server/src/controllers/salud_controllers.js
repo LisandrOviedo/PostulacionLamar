@@ -58,22 +58,16 @@ const traerSalud = async (salud_id) => {
 
 const crearSalud = async (
   empleado_id,
-  alergia_medicamentos,
-  alergia_alimentos,
-  alergia_otros,
-  alergia_especifique,
-  fuma,
-  cicatriz_especifique
+  {
+    alergia_medicamentos,
+    alergia_alimentos,
+    alergia_otros,
+    alergia_especifique,
+    fuma,
+    cicatriz_especifique,
+  }
 ) => {
-  if (
-    !empleado_id ||
-    !alergia_medicamentos ||
-    !alergia_alimentos ||
-    !alergia_otros ||
-    !alergia_especifique ||
-    !fuma ||
-    !cicatriz_especifique
-  ) {
+  if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -91,9 +85,9 @@ const crearSalud = async (
         alergia_medicamentos: alergia_medicamentos,
         alergia_alimentos: alergia_alimentos,
         alergia_otros: alergia_otros,
-        alergia_especifique: alergia_especifique,
+        alergia_especifique: alergia_especifique || null,
         fuma: fuma,
-        cicatriz_especifique: cicatriz_especifique,
+        cicatriz_especifique: cicatriz_especifique || null,
       },
       transaction: t,
     });
