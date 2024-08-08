@@ -322,8 +322,7 @@ const cargarEmpleados = async () => {
   }
 };
 
-const crearEmpleado = async ({
-  rol_id,
+const crearEmpleado = async (
   nombres,
   apellidos,
   tipo_identificacion,
@@ -350,15 +349,14 @@ const crearEmpleado = async ({
   talla_calzado,
   trabajo_anteriormente_especifique,
   motivo_retiro,
-  posee_parientes_empresa,
-}) => {
+  posee_parientes_empresa
+) => {
   if (
     !nombres ||
     !apellidos ||
     !tipo_identificacion ||
     !numero_identificacion ||
     !estado_civil ||
-    !etnia_id ||
     !mano_dominante ||
     !sexo ||
     !cantidad_hijos ||
@@ -369,8 +367,7 @@ const crearEmpleado = async ({
     !nacimiento_pais_id ||
     !talla_camisa ||
     !talla_pantalon ||
-    !talla_calzado ||
-    !posee_parientes_empresa
+    !talla_calzado
   ) {
     throw new Error(`Datos faltantes`);
   }
@@ -382,47 +379,57 @@ const crearEmpleado = async ({
 
     const claveCifrada = await bcrypt.hash("1234", 10);
 
-    const [empleado, created] = await Empleados.findOrCreate(
-      {
-        where: {
-          tipo_identificacion: tipo_identificacion,
-          numero_identificacion: numero_identificacion,
-        },
-        defaults: {
-          rol_id: rol_id,
-          nombres: nombres,
-          apellidos: apellidos,
-          tipo_identificacion: tipo_identificacion,
-          numero_identificacion: numero_identificacion,
-          clave: claveCifrada,
-          estado_civil: estado_civil,
-          rif: rif || null,
-          telefono: telefono || null,
-          correo: correo || null,
-          etnia_id: etnia_id || null,
-          mano_dominante: mano_dominante,
-          sexo: sexo,
-          factor_grupo_sanguineo: factor_grupo_sanguineo || null,
-          cantidad_hijos: cantidad_hijos,
-          carga_familiar: carga_familiar,
-          fecha_nacimiento: fecha_nacimiento,
-          nacimiento_lugar: nacimiento_lugar,
-          nacimiento_estado_id: nacimiento_estado_id,
-          nacimiento_pais_id: nacimiento_pais_id,
-          licencia_conducir_grado: licencia_conducir_grado || null,
-          licencia_conducir_vencimiento: licencia_conducir_vencimiento || null,
-          carta_medica_vencimiento: carta_medica_vencimiento || null,
-          talla_camisa: talla_camisa,
-          talla_pantalon: talla_pantalon,
-          talla_calzado: talla_calzado,
-          trabajo_anteriormente_especifique:
-            trabajo_anteriormente_especifique || null,
-          motivo_retiro: motivo_retiro || null,
-          posee_parientes_empresa: posee_parientes_empresa,
-        },
+    const rol = await Roles.findOne({
+      where: {
+        nombre: "empleado",
       },
-      { transaction: t }
-    );
+    });
+
+    const [empleado, created] = await Empleados.findOrCreate({
+      where: {
+        tipo_identificacion: tipo_identificacion,
+        numero_identificacion: numero_identificacion,
+      },
+      defaults: {
+        rol_id: rol.rol_id,
+        nombres: nombres,
+        apellidos: apellidos,
+        tipo_identificacion: tipo_identificacion,
+        numero_identificacion: numero_identificacion,
+        clave: claveCifrada,
+        estado_civil: estado_civil,
+        rif: rif || null,
+        telefono: telefono || null,
+        correo: correo || null,
+        etnia_id: etnia_id && etnia_id !== "Ninguna" ? etnia_id : null,
+        mano_dominante: mano_dominante,
+        sexo: sexo,
+        factor_grupo_sanguineo:
+          factor_grupo_sanguineo && factor_grupo_sanguineo !== "Seleccione"
+            ? factor_grupo_sanguineo
+            : null,
+        cantidad_hijos: cantidad_hijos,
+        carga_familiar: carga_familiar,
+        fecha_nacimiento: fecha_nacimiento,
+        nacimiento_lugar: nacimiento_lugar,
+        nacimiento_estado_id: nacimiento_estado_id,
+        nacimiento_pais_id: nacimiento_pais_id,
+        licencia_conducir_grado: licencia_conducir_grado || null,
+        licencia_conducir_vencimiento:
+          licencia_conducir_grado && licencia_conducir_vencimiento
+            ? licencia_conducir_vencimiento
+            : null,
+        carta_medica_vencimiento: carta_medica_vencimiento || null,
+        talla_camisa: talla_camisa,
+        talla_pantalon: talla_pantalon,
+        talla_calzado: talla_calzado,
+        trabajo_anteriormente_especifique:
+          trabajo_anteriormente_especifique || null,
+        motivo_retiro: motivo_retiro || null,
+        posee_parientes_empresa: posee_parientes_empresa,
+      },
+      transaction: t,
+    });
 
     await t.commit();
 
