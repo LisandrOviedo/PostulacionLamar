@@ -44,10 +44,10 @@ const getDatoBancario = async (req, res) => {
 };
 
 const postDatoBancario = async (req, res) => {
-  const { empleado_id, datos_bancarios } = req.body;
+  const { empleado_id, datosIngreso } = req.body;
 
   try {
-    const response = await crearDatoBancario(empleado_id, datos_bancarios);
+    const response = await crearDatoBancario(empleado_id, datosIngreso);
 
     return res.status(201).json(response);
   } catch (error) {

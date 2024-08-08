@@ -44,10 +44,10 @@ const getDireccion = async (req, res) => {
 };
 
 const postDireccion = async (req, res) => {
-  const { empleado_id, direccion } = req.body;
+  const { empleado_id, datosIngreso } = req.body;
 
   try {
-    const response = await crearDireccion(empleado_id, direccion);
+    const response = await crearDireccion(empleado_id, datosIngreso);
 
     return res.status(201).json(response);
   } catch (error) {
