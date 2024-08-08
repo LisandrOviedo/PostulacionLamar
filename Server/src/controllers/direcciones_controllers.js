@@ -58,8 +58,31 @@ const traerDireccion = async (direccion_id) => {
   }
 };
 
-const crearDireccion = async (empleado_id, direccion) => {
-  if (!empleado_id || !direccion) {
+const crearDireccion = async (
+  empleado_id,
+  {
+    calle_avenida,
+    parroquia_id,
+    municipio_id,
+    tipo_vivienda,
+    numero_casa,
+    piso,
+    apartamento,
+    urbanizacion_sector,
+    estado_id,
+    pais_id,
+  }
+) => {
+  if (
+    !empleado_id ||
+    !calle_avenida ||
+    !parroquia_id ||
+    !municipio_id ||
+    !tipo_vivienda ||
+    !urbanizacion_sector ||
+    !estado_id ||
+    !pais_id
+  ) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -71,20 +94,26 @@ const crearDireccion = async (empleado_id, direccion) => {
     const [crearDireccion, created] = await Direcciones.findOrCreate({
       where: {
         empleado_id: empleado_id,
-        numero_casa: direccion.numero_casa,
+        calle_avenida: calle_avenida,
+        parroquia_id: parroquia_id,
+        municipio_id: municipio_id,
+        tipo_vivienda: tipo_vivienda,
+        urbanizacion_sector: urbanizacion_sector,
+        estado_id: estado_id,
+        pais_id: pais_id,
       },
       defaults: {
         empleado_id: empleado_id,
-        calle_avenida: direccion.calle_avenida,
-        parroquia_id: direccion.parroquia_id,
-        municipio_id: direccion.municipio_id,
-        tipo_vivienda: direccion.tipo_vivienda,
-        numero_casa: direccion.numero_casa,
-        piso: direccion.piso,
-        apartamento: direccion.apartamento,
-        urbanizacion_sector: direccion.urbanizacion_sector,
-        estado_id: direccion.estado_id,
-        pais_id: direccion.pais_id,
+        calle_avenida: calle_avenida,
+        parroquia_id: parroquia_id,
+        municipio_id: municipio_id,
+        tipo_vivienda: tipo_vivienda,
+        numero_casa: numero_casa || null,
+        piso: piso || null,
+        apartamento: apartamento || null,
+        urbanizacion_sector: urbanizacion_sector,
+        estado_id: estado_id,
+        pais_id: pais_id,
       },
       transaction: t,
     });
