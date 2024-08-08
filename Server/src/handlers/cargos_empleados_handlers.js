@@ -44,15 +44,10 @@ const getCargoEmpleado = async (req, res) => {
 };
 
 const postCargoEmpleado = async (req, res) => {
-  const { cargo_nivel_id, empleado_id, salario, fecha_ingreso } = req.body;
+  const { empleado_id, datosIngreso } = req.body;
 
   try {
-    const response = await crearCargoEmpleado(
-      cargo_nivel_id,
-      empleado_id,
-      salario,
-      fecha_ingreso
-    );
+    const response = await crearCargoEmpleado(empleado_id, datosIngreso);
 
     return res.status(201).json(response);
   } catch (error) {
