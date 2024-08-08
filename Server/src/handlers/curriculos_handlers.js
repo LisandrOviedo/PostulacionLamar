@@ -49,7 +49,7 @@ const getCurriculo = async (req, res) => {
 };
 
 const getCurriculoPDF = async (req, res) => {
-  const { empleado_id, cedula } = req.body;
+  const { empleado_id, identificacion } = req.body;
   const filename = "Perfil Profesional.pdf";
 
   try {
@@ -63,14 +63,14 @@ const getCurriculoPDF = async (req, res) => {
 
     const dest_path = path.join(
       __dirname,
-      `../../public/documentosEmpleados/${cedula}`
+      `../../public/documentosEmpleados/${identificacion}`
     );
 
     crearCarpetaSiNoExiste(dest_path);
 
     const pdf_path = path.join(
       __dirname,
-      `../../public/documentosEmpleados/${cedula}/${filename}`
+      `../../public/documentosEmpleados/${identificacion}/${filename}`
     );
 
     doc.pipe(fs.createWriteStream(pdf_path));
@@ -242,8 +242,8 @@ const getCurriculoPDF = async (req, res) => {
 };
 
 const getCurriculoPDFAnexos = async (req, res) => {
-  const { empleado_id, cedula } = req.body;
-  const filename = `Anexos ${cedula}.zip`;
+  const { empleado_id, identificacion } = req.body;
+  const filename = `Anexos ${identificacion}.zip`;
 
   try {
     const anexos = await traerCurriculoPDFAnexos(empleado_id);
@@ -252,7 +252,7 @@ const getCurriculoPDFAnexos = async (req, res) => {
 
     const carpetaDestino = path.join(
       __dirname,
-      `../../public/documentosEmpleados/${cedula}/`
+      `../../public/documentosEmpleados/${identificacion}/`
     );
 
     crearCarpetaSiNoExiste(carpetaDestino);
