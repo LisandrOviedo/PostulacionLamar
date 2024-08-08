@@ -1,35 +1,45 @@
 const { conn, Fichas_Ingresos, Empleados } = require("../db");
 
-const todasLasFichasIngresos = async () => {
+const todasLasFichasIngresos = async (empleado_id) => {
+  if (!empleado_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
   try {
-    const fichas_ingresos = await Fichas_Ingresos.findAll();
+    const fichas_ingresos = await Fichas_Ingresos.findAll({
+      where: { empleado_id: empleado_id },
+    });
 
     if (!fichas_ingresos.length) {
-      throw new Error(`No existen fichas_ingresos`);
+      throw new Error(`No existen fichas de ingresos de ese empleado`);
     }
 
     return fichas_ingresos;
   } catch (error) {
     throw new Error(
-      `Error al traer todas las fichas_ingresos: ${error.message}`
+      `Error al traer todas las fichas de ingresos de ese empleado: ${error.message}`
     );
   }
 };
 
-const todasLasFichasIngresosActivas = async () => {
+const traerFichaIngresoEmpleado = async (empleado_id) => {
+  if (!empleado_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
   try {
-    const fichas_ingresos = await Fichas_Ingresos.findAll({
-      where: { activo: true },
+    const ficha_ingreso = await Fichas_Ingresos.findOne({
+      where: { empleado_id: empleado_id, activo: true },
     });
 
-    if (!fichas_ingresos.length) {
-      throw new Error(`No existen fichas de ingresos`);
+    if (!ficha_ingreso) {
+      throw new Error(`No existe ficha de ingreso para ese empleado`);
     }
 
-    return fichas_ingresos;
+    return ficha_ingreso;
   } catch (error) {
     throw new Error(
-      `Error al traer todas las fichas de ingresos: ${error.message}`
+      `Error al traer la ficha de ingreso de ese empleado: ${error.message}`
     );
   }
 };
@@ -52,43 +62,11 @@ const traerFichaIngreso = async (ficha_ingreso_id) => {
   }
 };
 
-const traerFichaIngresoEmpleado = async (empleado_id) => {
-  if (!empleado_id) {
-    throw new Error(`Datos faltantes`);
-  }
-
-  try {
-    const ficha_ingreso = await Fichas_Ingresos.findOne({
-      where: { empleado_id: empleado_id, activo: true },
-      include: [{ model: Empleados }],
-    });
-
-    if (!ficha_ingreso) {
-      throw new Error(`No existe esa ficha de ingreso`);
-    }
-
-    return ficha_ingreso;
-  } catch (error) {
-    throw new Error(`Error al traer la ficha de ingreso: ${error.message}`);
-  }
-};
-
 const crearFichaIngreso = async (
-  revision_ficha_ingreso_id,
   empleado_id,
-  cargo_id,
-  salario,
-  fecha_ingreso,
-  observaciones
+  { cargo_nivel_id, salario, fecha_ingreso, observaciones }
 ) => {
-  if (
-    !revision_ficha_ingreso_id ||
-    !empleado_id ||
-    !cargo_id ||
-    !salario ||
-    !fecha_ingreso ||
-    !observaciones
-  ) {
+  if (!empleado_id || !cargo_nivel_id || !salario || !fecha_ingreso) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -99,18 +77,17 @@ const crearFichaIngreso = async (
 
     const [crearDireccion, created] = await Fichas_Ingresos.findOrCreate({
       where: {
-        revision_ficha_ingreso_id: revision_ficha_ingreso_id,
         empleado_id: empleado_id,
-        cargo_id: cargo_id,
-        salario: salario,
-      },
-      defaults: {
-        revision_ficha_ingreso_id: revision_ficha_ingreso_id,
-        empleado_id: empleado_id,
-        cargo_id: cargo_id,
+        cargo_nivel_id: cargo_nivel_id,
         salario: salario,
         fecha_ingreso: fecha_ingreso,
-        observaciones: observaciones,
+      },
+      defaults: {
+        empleado_id: empleado_id,
+        cargo_nivel_id: cargo_nivel_id,
+        salario: salario,
+        fecha_ingreso: fecha_ingreso,
+        observaciones: observaciones || null,
       },
       transaction: t,
     });
@@ -127,20 +104,12 @@ const crearFichaIngreso = async (
 
 const modificarFichaIngreso = async (
   ficha_ingreso_id,
-  revision_ficha_ingreso_id,
-  cargo_id,
+  cargo_nivel_id,
   salario,
   fecha_ingreso,
   observaciones
 ) => {
-  if (
-    !ficha_ingreso_id ||
-    !revision_ficha_ingreso_id ||
-    !cargo_id ||
-    !salario ||
-    !fecha_ingreso ||
-    !observaciones
-  ) {
+  if (!ficha_ingreso_id || !cargo_nivel_id || !salario || !fecha_ingreso) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -153,11 +122,10 @@ const modificarFichaIngreso = async (
 
     await Fichas_Ingresos.update(
       {
-        revision_ficha_ingreso_id: revision_ficha_ingreso_id,
-        cargo_id: cargo_id,
+        cargo_nivel_id: cargo_nivel_id,
         salario: salario,
         fecha_ingreso: fecha_ingreso,
-        observaciones: observaciones,
+        observaciones: observaciones || null,
       },
       {
         where: {
@@ -213,7 +181,6 @@ const inactivarFichaIngreso = async (ficha_ingreso_id) => {
 
 module.exports = {
   todasLasFichasIngresos,
-  todasLasFichasIngresosActivas,
   traerFichaIngreso,
   traerFichaIngresoEmpleado,
   crearFichaIngreso,
