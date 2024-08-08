@@ -26,7 +26,7 @@ module.exports = (sequelize) => {
     },
     alergia_especifique: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     fuma: {
       type: DataTypes.BOOLEAN,
@@ -34,7 +34,7 @@ module.exports = (sequelize) => {
     },
     cicatriz_especifique: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,
