@@ -72,10 +72,66 @@ const getLogin = async (req, res) => {
 };
 
 const postEmpleado = async (req, res) => {
-  const { datosPersonales } = req.body;
+  const {
+    nombres,
+    apellidos,
+    tipo_identificacion,
+    numero_identificacion,
+    estado_civil,
+    rif,
+    telefono,
+    correo,
+    etnia_id,
+    mano_dominante,
+    sexo,
+    factor_grupo_sanguineo,
+    cantidad_hijos,
+    carga_familiar,
+    fecha_nacimiento,
+    nacimiento_lugar,
+    nacimiento_estado_id,
+    nacimiento_pais_id,
+    licencia_conducir_grado,
+    licencia_conducir_vencimiento,
+    carta_medica_vencimiento,
+    talla_camisa,
+    talla_pantalon,
+    talla_calzado,
+    trabajo_anteriormente_especifique,
+    motivo_retiro,
+    posee_parientes_empresa,
+  } = req.body;
 
   try {
-    const response = await crearEmpleado(datosPersonales);
+    const response = await crearEmpleado(
+      nombres,
+      apellidos,
+      tipo_identificacion,
+      numero_identificacion,
+      estado_civil,
+      rif,
+      telefono,
+      correo,
+      etnia_id,
+      mano_dominante,
+      sexo,
+      factor_grupo_sanguineo,
+      cantidad_hijos,
+      carga_familiar,
+      fecha_nacimiento,
+      nacimiento_lugar,
+      nacimiento_estado_id,
+      nacimiento_pais_id,
+      licencia_conducir_grado,
+      licencia_conducir_vencimiento,
+      carta_medica_vencimiento,
+      talla_camisa,
+      talla_pantalon,
+      talla_calzado,
+      trabajo_anteriormente_especifique,
+      motivo_retiro,
+      posee_parientes_empresa
+    );
 
     return res.status(201).json(response);
   } catch (error) {

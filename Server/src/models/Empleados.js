@@ -131,7 +131,7 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
     posee_parientes_empresa: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.INTEGER(2),
       allowNull: true,
     },
     foto_perfil_nombre: {

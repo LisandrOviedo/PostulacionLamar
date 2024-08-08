@@ -44,26 +44,10 @@ const getSalud = async (req, res) => {
 };
 
 const postSalud = async (req, res) => {
-  const {
-    empleado_id,
-    alergia_medicamentos,
-    alergia_alimentos,
-    alergia_otros,
-    alergia_especifique,
-    fuma,
-    cicatriz_especifique,
-  } = req.body;
+  const { empleado_id, datosIngreso } = req.body;
 
   try {
-    const response = await crearSalud(
-      empleado_id,
-      alergia_medicamentos,
-      alergia_alimentos,
-      alergia_otros,
-      alergia_especifique,
-      fuma,
-      cicatriz_especifique
-    );
+    const response = await crearSalud(empleado_id, datosIngreso);
 
     return res.status(201).json(response);
   } catch (error) {
