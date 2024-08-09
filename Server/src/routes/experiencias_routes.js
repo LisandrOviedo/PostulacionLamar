@@ -5,7 +5,6 @@ const {
   postExperiencia,
   putExperiencia,
   deleteExperiencia,
-  deleteExperienciasCurriculo,
 } = require("../handlers/experiencias_handlers");
 
 const { authenticateToken } = require("../auth/index");
@@ -23,11 +22,5 @@ experiencias.post("/", authenticateToken, postExperiencia);
 
 experiencias.put("/modificar", authenticateToken, putExperiencia);
 experiencias.put("/inactivar", authenticateToken, deleteExperiencia);
-
-experiencias.delete(
-  "/eliminarExperiencias/:empleado_id",
-  authenticateToken,
-  deleteExperienciasCurriculo
-);
 
 module.exports = experiencias;

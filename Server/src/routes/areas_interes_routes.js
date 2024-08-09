@@ -7,7 +7,6 @@ const {
   postAreasInteresCurriculo,
   putAreaInteres,
   deleteAreaInteres,
-  deleteAreasInteresCurriculo,
 } = require("../handlers/areas_interes_handlers");
 
 const { authenticateToken } = require("../auth/index");
@@ -31,11 +30,5 @@ areas_interes.post(
 
 areas_interes.put("/modificar", authenticateToken, putAreaInteres);
 areas_interes.put("/inactivar", authenticateToken, deleteAreaInteres);
-
-areas_interes.delete(
-  "/eliminarAreas/:curriculo_id",
-  authenticateToken,
-  deleteAreasInteresCurriculo
-);
 
 module.exports = areas_interes;

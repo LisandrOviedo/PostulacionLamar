@@ -6,7 +6,6 @@ const {
   modificarIdioma,
   inactivarIdioma,
   agregarIdiomasCurriculo,
-  eliminarIdiomasCurriculo,
 } = require("../controllers/idiomas_controllers");
 
 const getIdiomas = async (req, res) => {
@@ -89,18 +88,6 @@ const postIdiomasCurriculo = async (req, res) => {
   }
 };
 
-const deleteIdiomasCurriculo = async (req, res) => {
-  const { curriculo_id } = req.params;
-
-  try {
-    const response = await eliminarIdiomasCurriculo(curriculo_id);
-
-    return res.status(201).json(response);
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
-  }
-};
-
 module.exports = {
   getIdiomas,
   getIdioma,
@@ -109,5 +96,4 @@ module.exports = {
   putIdioma,
   deleteIdioma,
   postIdiomasCurriculo,
-  deleteIdiomasCurriculo,
 };

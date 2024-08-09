@@ -226,13 +226,8 @@ export const putCurriculo = (token, datosCurriculo) => {
 
 const putAreasInteres = async (token, curriculo_id, areas_interes) => {
   const URL_ADD_AREASINTERES = `${URL_SERVER}/areas_interes/agregarArea`;
-  const URL_DELETE_AREASINTERES = `${URL_SERVER}/areas_interes/eliminarAreas/${curriculo_id}`;
 
   try {
-    await axios.delete(URL_DELETE_AREASINTERES, {
-      headers: { authorization: `Bearer ${token}` },
-    });
-
     await axios.post(
       `${URL_ADD_AREASINTERES}`,
       {
@@ -252,13 +247,8 @@ const putAreasInteres = async (token, curriculo_id, areas_interes) => {
 
 const putTitulosObtenidos = async (token, empleado_id, titulos_obtenidos) => {
   const URL_ADD_TITULOSOBTENIDOS = `${URL_SERVER}/titulos_obtenidos`;
-  const URL_DELETE_TITULOSOBTENIDOS = `${URL_SERVER}/titulos_obtenidos/eliminarTitulos/${empleado_id}`;
 
   try {
-    await axios.delete(URL_DELETE_TITULOSOBTENIDOS, {
-      headers: { authorization: `Bearer ${token}` },
-    });
-
     await axios.post(
       `${URL_ADD_TITULOSOBTENIDOS}`,
       {
@@ -278,13 +268,8 @@ const putTitulosObtenidos = async (token, empleado_id, titulos_obtenidos) => {
 
 const putExperiencias = async (token, empleado_id, experiencias) => {
   const URL_ADD_EXPERIENCIAS = `${URL_SERVER}/experiencias`;
-  const URL_DELETE_EXPERIENCIAS = `${URL_SERVER}/experiencias/eliminarExperiencias/${empleado_id}`;
 
   try {
-    await axios.delete(URL_DELETE_EXPERIENCIAS, {
-      headers: { authorization: `Bearer ${token}` },
-    });
-
     await axios.post(
       `${URL_ADD_EXPERIENCIAS}`,
       {
@@ -304,13 +289,8 @@ const putExperiencias = async (token, empleado_id, experiencias) => {
 
 const putIdiomas = async (token, curriculo_id, idiomas) => {
   const URL_ADD_IDIOMAS = `${URL_SERVER}/idiomas/agregarIdioma`;
-  const URL_DELETE_IDIOMAS = `${URL_SERVER}/idiomas/eliminarIdiomas/${curriculo_id}`;
 
   try {
-    await axios.delete(URL_DELETE_IDIOMAS, {
-      headers: { authorization: `Bearer ${token}` },
-    });
-
     await axios.post(
       `${URL_ADD_IDIOMAS}`,
       {

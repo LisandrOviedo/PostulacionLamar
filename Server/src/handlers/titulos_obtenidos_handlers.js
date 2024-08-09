@@ -4,7 +4,6 @@ const {
   crearTitulosObtenidos,
   modificarTitulosObtenidos,
   inactivarTituloObtenido,
-  eliminarTitulosEmpleado,
 } = require("../controllers/titulos_obtenidos_controllers");
 
 const getTitulosObtenidos = async (req, res) => {
@@ -73,23 +72,10 @@ const deleteTituloObtenido = async (req, res) => {
   }
 };
 
-const deleteTitulosEmpleado = async (req, res) => {
-  const { empleado_id } = req.params;
-
-  try {
-    const response = await eliminarTitulosEmpleado(empleado_id);
-
-    return res.status(201).json(response);
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
-  }
-};
-
 module.exports = {
   getTitulosObtenidos,
   getTituloObtenido,
   postTitulosObtenidos,
   putTituloObtenido,
   deleteTituloObtenido,
-  deleteTitulosEmpleado,
 };
