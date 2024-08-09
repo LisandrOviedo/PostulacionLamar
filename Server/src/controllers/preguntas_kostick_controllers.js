@@ -12,7 +12,7 @@ const todasLasPreguntasKostick = async () => {
     });
 
     if (!preguntas_kostick.length) {
-      throw new Error("No existen preguntas kostick");
+      throw new Error(`No existen preguntas kostick`);
     }
 
     let preguntasOrdenadas = [];
@@ -24,7 +24,7 @@ const todasLasPreguntasKostick = async () => {
     return preguntasOrdenadas;
   } catch (error) {
     throw new Error(
-      "Error al traer todas las preguntas kostick: " + error.message
+      `Error al traer todas las preguntas kostick: ${error.message}`
     );
   }
 };
@@ -33,29 +33,34 @@ const cargarPreguntasKostick = async () => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     for (const respuestaObjeto of pruebaKostick) {
-      const [resp, created] = await Preguntas_Kostick.findOrCreate({
+      const respuesta = await Preguntas_Kostick.findOne({
         where: {
           numero_pregunta: respuestaObjeto.pregunta,
           respuesta: respuestaObjeto.respuesta,
         },
-        defaults: {
-          numero_pregunta: respuestaObjeto.pregunta,
-          respuesta: respuestaObjeto.respuesta,
-        },
-        transaction: t,
       });
-    }
 
-    await t.commit();
+      if (!respuesta) {
+        t = await conn.transaction();
+
+        await Preguntas_Kostick.create(
+          {
+            numero_pregunta: respuestaObjeto.pregunta,
+            respuesta: respuestaObjeto.respuesta,
+          },
+          { transaction: t }
+        );
+
+        await t.commit();
+      }
+    }
   } catch (error) {
-    if (!t.finished) {
+    if (t && !t.finished) {
       await t.rollback();
     }
 
-    throw new Error("Error al crear las preguntas kostick: " + error.message);
+    throw new Error(`Error al crear las preguntas kostick: ${error.message}`);
   }
 };
 

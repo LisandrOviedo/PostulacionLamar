@@ -1,12 +1,11 @@
-const { DataTypes, UUIDV4 } = require("sequelize");
+const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
   sequelize.define("Preguntas_Kostick", {
     pregunta_kostick_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
-      allowNull: false,
-      defaultValue: UUIDV4,
     },
     numero_pregunta: {
       type: DataTypes.INTEGER(2),
@@ -19,7 +18,6 @@ module.exports = (sequelize) => {
     activo: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
-      allowNull: false,
     },
   });
 };

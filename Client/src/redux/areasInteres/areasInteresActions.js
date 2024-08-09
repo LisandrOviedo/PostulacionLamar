@@ -9,11 +9,11 @@ import { alertError } from "../../utils/sweetAlert2";
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
 export const getAllAreasInteresActivas = (token) => {
-  const URL_ALL_AREAS_ACTIVAS = `${URL_SERVER}/areasinteres/activas`;
+  const URL_ALL_AREAS_ACTIVAS = `${URL_SERVER}/areas_interes/activas`;
 
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(URL_ALL_AREAS_ACTIVAS, {
+      const { data } = await axios(URL_ALL_AREAS_ACTIVAS, {
         headers: { authorization: `Bearer ${token}` },
       });
 

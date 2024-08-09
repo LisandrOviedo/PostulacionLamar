@@ -1,6 +1,7 @@
 const {
   todosLosEmpleados,
   traerEmpleado,
+  traerEmpleadoExistencia,
   login,
   crearEmpleado,
   actualizarClaveTemporalEmpleado,
@@ -39,11 +40,30 @@ const getEmpleado = async (req, res) => {
   }
 };
 
-const getLogin = async (req, res) => {
-  const { cedula, clave } = req.query;
+const getEmpleadoExistencia = async (req, res) => {
+  const { tipo_identificacion, numero_identificacion } = req.query;
 
   try {
-    const response = await login(cedula, clave);
+    const response = await traerEmpleadoExistencia(
+      tipo_identificacion,
+      numero_identificacion
+    );
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const getLogin = async (req, res) => {
+  const { tipo_identificacion, numero_identificacion, clave } = req.query;
+
+  try {
+    const response = await login(
+      tipo_identificacion,
+      numero_identificacion,
+      clave
+    );
 
     return res.json(response);
   } catch (error) {
@@ -53,32 +73,64 @@ const getLogin = async (req, res) => {
 
 const postEmpleado = async (req, res) => {
   const {
-    rol_id,
-    cedula,
     nombres,
     apellidos,
-    fecha_nacimiento,
-    genero,
-    etnia_id,
+    tipo_identificacion,
+    numero_identificacion,
+    estado_civil,
+    rif,
     telefono,
     correo,
-    direccion,
+    etnia_id,
+    mano_dominante,
+    sexo,
+    factor_grupo_sanguineo,
     cantidad_hijos,
+    carga_familiar,
+    fecha_nacimiento,
+    nacimiento_lugar,
+    nacimiento_estado_id,
+    nacimiento_pais_id,
+    licencia_conducir_grado,
+    licencia_conducir_vencimiento,
+    carta_medica_vencimiento,
+    talla_camisa,
+    talla_pantalon,
+    talla_calzado,
+    trabajo_anteriormente_especifique,
+    motivo_retiro,
+    posee_parientes_empresa,
   } = req.body;
 
   try {
     const response = await crearEmpleado(
-      rol_id,
-      cedula,
       nombres,
       apellidos,
-      fecha_nacimiento,
-      genero,
-      etnia_id,
+      tipo_identificacion,
+      numero_identificacion,
+      estado_civil,
+      rif,
       telefono,
       correo,
-      direccion,
-      cantidad_hijos
+      etnia_id,
+      mano_dominante,
+      sexo,
+      factor_grupo_sanguineo,
+      cantidad_hijos,
+      carga_familiar,
+      fecha_nacimiento,
+      nacimiento_lugar,
+      nacimiento_estado_id,
+      nacimiento_pais_id,
+      licencia_conducir_grado,
+      licencia_conducir_vencimiento,
+      carta_medica_vencimiento,
+      talla_camisa,
+      talla_pantalon,
+      talla_calzado,
+      trabajo_anteriormente_especifique,
+      motivo_retiro,
+      posee_parientes_empresa
     );
 
     return res.status(201).json(response);
@@ -100,38 +152,10 @@ const putClaveTemporalEmpleado = async (req, res) => {
 };
 
 const putEmpleado = async (req, res) => {
-  const {
-    empleado_id,
-    rol_id,
-    cedula,
-    nombres,
-    apellidos,
-    fecha_nacimiento,
-    genero,
-    etnia_id,
-    telefono,
-    correo,
-    direccion,
-    cantidad_hijos,
-    activo,
-  } = req.body;
+  const { datosPersonales } = req.body;
 
   try {
-    const response = await modificarEmpleado(
-      empleado_id,
-      rol_id,
-      cedula,
-      nombres,
-      apellidos,
-      fecha_nacimiento,
-      genero,
-      etnia_id,
-      telefono,
-      correo,
-      direccion,
-      cantidad_hijos,
-      activo
-    );
+    const response = await modificarEmpleado(datosPersonales);
 
     return res.json(response);
   } catch (error) {
@@ -195,6 +219,7 @@ const deleteEmpleado = async (req, res) => {
 module.exports = {
   getEmpleados,
   getEmpleado,
+  getEmpleadoExistencia,
   getLogin,
   postEmpleado,
   putClaveTemporalEmpleado,

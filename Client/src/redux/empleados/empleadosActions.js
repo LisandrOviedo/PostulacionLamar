@@ -19,8 +19,8 @@ import {
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-export const getLogin = (cedula, clave) => {
-  const URL_LOGIN = `${URL_SERVER}/empleados/login?cedula=${cedula}&clave=${clave}`;
+export const getLogin = (tipo_identificacion, numero_identificacion, clave) => {
+  const URL_LOGIN = `${URL_SERVER}/empleados/login?tipo_identificacion=${tipo_identificacion}&numero_identificacion=${numero_identificacion}&clave=${clave}`;
 
   return async (dispatch) => {
     try {
@@ -57,6 +57,34 @@ export const getEmpleadoDetail = (token, empleado_id) => {
       throw new Error();
     }
   };
+};
+
+export const getEmpleadoExistencia = async (
+  token,
+  tipo_identificacion,
+  numero_identificacion
+) => {
+  const URL_EMPLEADO_EXISTENCIA = `${URL_SERVER}/empleados/empleadoExistencia?tipo_identificacion=${tipo_identificacion}&numero_identificacion=${numero_identificacion}`;
+
+  try {
+    const { data } = await axios(URL_EMPLEADO_EXISTENCIA, {
+      headers: { authorization: `Bearer ${token}` },
+    });
+
+    if (data.empleado_id) {
+      return Swal.fire({
+        title: "Oops...",
+        text: "Este empleado ya existe",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
 };
 
 export const putPassword = async (token, body) => {
@@ -109,6 +137,8 @@ export const resetPassword = async (token, empleado_id) => {
       }
     );
 
+    await putCerrarSesion(token, empleado_id);
+
     return Swal.fire({
       text: `Su contraseña ha sido reiniciada exitosamente a "1234"`,
       icon: "success",
@@ -148,8 +178,8 @@ export const postDocumentos = async (token, formData) => {
       icon: "success",
     });
 
-    window.location.reload();
     window.scroll(0, 0);
+    window.location.reload();
     return;
   } catch (error) {
     alertError(error);
@@ -163,7 +193,7 @@ export const getDocumentos = (token, empleado_id) => {
 
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(URL_GET_DOCUMENTOS, {
+      const { data } = await axios(URL_GET_DOCUMENTOS, {
         headers: { authorization: `Bearer ${token}` },
       });
 
@@ -214,6 +244,8 @@ export const putActivo = async (token, empleado_id) => {
       }
     );
 
+    await putCerrarSesion(token, empleado_id);
+
     return Swal.fire({
       text: "¡Empleado actualizado exitosamente!",
       icon: "success",
@@ -221,6 +253,24 @@ export const putActivo = async (token, empleado_id) => {
       timer: 1000,
       width: "20em",
     });
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
+
+const putCerrarSesion = async (token, empleado_id) => {
+  const URL_CERRAR_SESION = `${URL_SERVER}/sesiones/inactivar`;
+
+  try {
+    await axios.put(
+      URL_CERRAR_SESION,
+      { empleado_id },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
   } catch (error) {
     alertError(error);
 
@@ -299,6 +349,39 @@ export const deleteFiltros = () => {
   return async (dispatch) => {
     try {
       return dispatch(resetFilters());
+    } catch (error) {
+      alertError(error);
+
+      throw new Error();
+    }
+  };
+};
+
+export const putEmpleado = (token, datosPersonales) => {
+  const URL_PUT_EMPLEADO = `${URL_SERVER}/empleados/modificar`;
+
+  return async (dispatch) => {
+    try {
+      const { data } = await axios.put(
+        URL_PUT_EMPLEADO,
+        { datosPersonales },
+        {
+          headers: { authorization: `Bearer ${token}` },
+        }
+      );
+
+      dispatch(empleadoLogin(data));
+
+      await Swal.fire({
+        text: `Sus datos han sido actualizados exitosamente`,
+        icon: "success",
+        showConfirmButton: false,
+        timer: 3000,
+        width: "20em",
+      });
+
+      window.location.reload();
+      return;
     } catch (error) {
       alertError(error);
 

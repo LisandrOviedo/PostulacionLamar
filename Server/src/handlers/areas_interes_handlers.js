@@ -54,14 +54,10 @@ const postAreaInteres = async (req, res) => {
 };
 
 const putAreaInteres = async (req, res) => {
-  const { area_interes_id, nombre, activo } = req.body;
+  const { area_interes_id, nombre } = req.body;
 
   try {
-    const response = await modificarAreaInteres(
-      area_interes_id,
-      nombre,
-      activo
-    );
+    const response = await modificarAreaInteres(area_interes_id, nombre);
 
     return res.json(response);
   } catch (error) {

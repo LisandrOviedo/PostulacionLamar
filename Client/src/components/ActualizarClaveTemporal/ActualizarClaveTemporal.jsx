@@ -135,6 +135,14 @@ export function ActualizarClaveTemporal() {
       >
         Continuar
       </Button>
+      <Button
+        onClick={() => {
+          navigate("/");
+        }}
+        className={clsx("w-auto bg-red-600 hover:bg-red-700")}
+      >
+        Cancelar
+      </Button>
     </div>
   );
 }

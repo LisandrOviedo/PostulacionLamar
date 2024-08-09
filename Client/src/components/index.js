@@ -4,7 +4,6 @@ import { ActualizarClaveTemporal } from "./ActualizarClaveTemporal/ActualizarCla
 import { BarraNavegacion } from "./BarraNavegacion/BarraNavegacion";
 import { CrearCurriculo } from "./CrearCurriculo/CrearCurriculo";
 import { DatosPersonales } from "./DatosPersonales/DatosPersonales";
-import { DetalleCurriculo } from "./DetalleCurriculo/DetalleCurriculo";
 import { InfoCurriculo } from "./InfoCurriculo/InfoCurriculo";
 import { Inicio } from "./Inicio/Inicio";
 import { PaginaNoEncontrada } from "./PaginaNoEncontrada/PaginaNoEncontrada";
@@ -17,6 +16,8 @@ import { Empleados } from "./Admin/Empleados";
 import { PanelAdmin } from "./Admin/PanelAdmin";
 import { Postulaciones } from "./Admin/Postulaciones";
 import { PruebasEmpleados } from "./Admin/PruebasEmpleados";
+import { FormularioIngreso } from "./Admin/FormularioIngreso";
+import { Movimientos } from "./Admin/Movimientos";
 
 export {
   AccesoEmpleado,
@@ -25,7 +26,6 @@ export {
   BarraNavegacion,
   CrearCurriculo,
   DatosPersonales,
-  DetalleCurriculo,
   InfoCurriculo,
   Inicio,
   PaginaNoEncontrada,
@@ -37,4 +37,6 @@ export {
   PanelAdmin,
   Postulaciones,
   PruebasEmpleados,
+  FormularioIngreso,
+  Movimientos,
 };

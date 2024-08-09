@@ -13,7 +13,7 @@ export const getAllIdiomasActivos = (token) => {
 
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(URL_ALL_IDIOMAS_ACTIVOS, {
+      const { data } = await axios(URL_ALL_IDIOMAS_ACTIVOS, {
         headers: { authorization: `Bearer ${token}` },
       });
 

@@ -29,7 +29,7 @@ export const infoPaginador = (
   totalRegistros
 ) => {
   return (
-    <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+    <span className="text-sm font-normal text-black dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
       Mostrando{" "}
       <span className="font-semibold text-gray-900 dark:text-white">
         {paginaActual * limitePorPagina - limitePorPagina}-
@@ -41,7 +41,10 @@ export const infoPaginador = (
       <span className="font-semibold text-gray-900 dark:text-white">
         {totalRegistros}
       </span>{" "}
-      registros. Página actual: {paginaActual}
+      registros. Página actual:{" "}
+      <span className="font-semibold text-gray-900 dark:text-white">
+        {paginaActual}
+      </span>
     </span>
   );
 };

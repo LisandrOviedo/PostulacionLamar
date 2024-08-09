@@ -44,7 +44,7 @@ export function BarraNavegacion() {
     setIsHovered(!isHovered);
   };
 
-  const logout = (rol) => {
+  const logout = () => {
     Swal.fire({
       text: "¿Seguro que deseas salir?",
       icon: "warning",
@@ -59,16 +59,15 @@ export function BarraNavegacion() {
 
         dispatch(resetAreasInteres());
         dispatch(resetCurriculos());
-        dispatch(resetEmpleados());
         dispatch(resetIdiomas());
         dispatch(resetPruebas());
+        dispatch(resetEmpleados());
 
-        if (rol === "empleado") {
+        if (empleado.Role.nombre === "admin") {
+          navigate("/admin/acceso");
+        } else {
           navigate("/");
-          return;
         }
-        navigate("/admin/acceso");
-        return;
       }
     });
   };
@@ -78,7 +77,7 @@ export function BarraNavegacion() {
   const asideRef = useRef(null);
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
-  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${empleado.foto_perfil_nombre}`;
+  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${empleado.foto_perfil_nombre}`;
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -112,7 +111,7 @@ export function BarraNavegacion() {
           />
           <img
             onClick={toggleMenuBurger}
-            src="/Menu.svg"
+            src="./Menu.svg"
             alt="Menu"
             className="w-6 cursor-pointer sm:hover:opacity-80"
           />
@@ -127,7 +126,7 @@ export function BarraNavegacion() {
             />
           ) : (
             <img
-              src="/Person.svg"
+              src="./Person.svg"
               alt="Icono de Perfil"
               className="inline-block h-6 w-6 sm:h-8 sm:w-8 rounded-full ring-2 ring-[#F0C95C]"
             />
@@ -149,7 +148,7 @@ export function BarraNavegacion() {
             onMouseLeave={toggleHover}
           >
             <img
-              src={isHovered ? "/CloseYellow.svg" : "/Close.svg"}
+              src={isHovered ? "./CloseYellow.svg" : "./Close.svg"}
               alt="Cerrar Menú"
               className="h-7 m-2 mx-auto"
             />
@@ -231,7 +230,7 @@ export function BarraNavegacion() {
                           className="block text-white hover:text-[#F0C95C] text-sm text-center"
                           onClick={toggleMenuBurger}
                         >
-                          Crear / Modificar
+                          Actualizar Perfil
                         </Link>
                       </li>
                       <li>
@@ -254,16 +253,14 @@ export function BarraNavegacion() {
                       </li>
                     </ul>
                   </li>
-                  <li>
-                    <span
-                      onClick={() => logout("empleado")}
-                      className="block text-white hover:text-[#F0C95C]"
-                    >
-                      <div className="flex items-center justify-between p-2">
-                        <div className="mx-auto">Cerrar Sesión</div>
-                      </div>
-                    </span>
-                  </li>
+                  <Link
+                    className="block text-white hover:text-[#F0C95C] text-center"
+                    onClick={logout}
+                  >
+                    <div className="flex items-center justify-between p-2">
+                      <div className="mx-auto">Cerrar Sesión</div>
+                    </div>
+                  </Link>
                 </>
               )}
               {pathname.startsWith("/admin/") && (
@@ -361,14 +358,42 @@ export function BarraNavegacion() {
                     </Link>
                   </li>
                   <li>
-                    <span
-                      onClick={() => logout("admin")}
+                    <Link
+                      to="/admin/formularioIngreso"
                       className="block text-white hover:text-[#F0C95C]"
+                      onClick={() => {
+                        toggleMenuBurger();
+                        toggleMenu({});
+                      }}
+                    >
+                      <div className="flex items-center justify-between p-2">
+                        <div className="mx-auto">Ingreso</div>
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/admin/movimientos"
+                      className="block text-white hover:text-[#F0C95C]"
+                      onClick={() => {
+                        toggleMenuBurger();
+                        toggleMenu({});
+                      }}
+                    >
+                      <div className="flex items-center justify-between p-2">
+                        <div className="mx-auto">Movimientos</div>
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      className="block text-white hover:text-[#F0C95C] text-center"
+                      onClick={logout}
                     >
                       <div className="flex items-center justify-between p-2">
                         <div className="mx-auto">Cerrar Sesión</div>
                       </div>
-                    </span>
+                    </Link>
                   </li>
                 </>
               )}

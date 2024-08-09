@@ -5,7 +5,6 @@ const {
   traerCurriculoPDFAnexos,
   cambiarEstadoRevisado,
   traerCurriculoEmpleado,
-  crearCurriculo,
   modificarCurriculo,
   inactivarCurriculo,
 } = require("../controllers/curriculos_controllers");
@@ -13,8 +12,6 @@ const {
 const {
   crearCurriculoPDF,
 } = require("../controllers/documentos_empleados_controllers");
-
-const { DDMMYYYYHHMM } = require("../utils/formatearFecha");
 
 const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
 
@@ -52,8 +49,8 @@ const getCurriculo = async (req, res) => {
 };
 
 const getCurriculoPDF = async (req, res) => {
-  const { empleado_id, cedula } = req.body;
-  const filename = `${DDMMYYYYHHMM()} - CV.pdf`;
+  const { empleado_id, identificacion } = req.body;
+  const filename = "Perfil Profesional.pdf";
 
   try {
     const doc = new PDFDocument({
@@ -66,14 +63,14 @@ const getCurriculoPDF = async (req, res) => {
 
     const dest_path = path.join(
       __dirname,
-      `../../public/documentosEmpleados/${cedula}`
+      `../../public/documentosEmpleados/${identificacion}`
     );
 
     crearCarpetaSiNoExiste(dest_path);
 
     const pdf_path = path.join(
       __dirname,
-      `../../public/documentosEmpleados/${cedula}/${filename}`
+      `../../public/documentosEmpleados/${identificacion}/${filename}`
     );
 
     doc.pipe(fs.createWriteStream(pdf_path));
@@ -105,14 +102,18 @@ const getCurriculoPDF = async (req, res) => {
       for (const campo of seccion.contenido) {
         if (campo.titulo_campo === "Experiencias") {
           if (!campo.descripcion_campo.length) {
-            doc.fontSize(11).font("Helvetica").text("No posee", { indent: 20 });
+            doc
+              .fontSize(11)
+              .font("Helvetica")
+              .text("No tiene experencia previa", { indent: 20 });
           } else {
             (async function createTable() {
               const table = {
                 headers: [
                   "Tipo",
                   "Cargo / Título",
-                  "Duración",
+                  "Desde",
+                  "Hasta",
                   "Empresa / Centro Educativo",
                 ],
                 rows: [],
@@ -121,13 +122,51 @@ const getCurriculoPDF = async (req, res) => {
                 const row = [
                   experiencia.tipo,
                   experiencia.cargo_titulo,
-                  experiencia.duracion,
+                  experiencia.fecha_desde,
+                  experiencia.fecha_hasta,
                   experiencia.empresa_centro_educativo,
                 ];
                 table.rows.push(row);
               }
               await doc.table(table, {
-                columnsSize: [50, 160, 90, 170],
+                columnsSize: [50, 130, 70, 70, 160],
+                prepareHeader: () => doc.fontSize(11).font("Helvetica-Bold"),
+                prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+                  doc.fontSize(10).font("Helvetica");
+                },
+              });
+            })();
+          }
+        } else if (campo.titulo_campo === "Títulos Obtenidos") {
+          if (!campo.descripcion_campo.length) {
+            doc
+              .fontSize(11)
+              .font("Helvetica")
+              .text("No tiene títulos", { indent: 20 });
+          } else {
+            (async function createTable2() {
+              const table = {
+                headers: [
+                  "Grado Instrucción",
+                  "Desde",
+                  "Hasta",
+                  "Nombre Instituto",
+                  "Título Obtenido",
+                ],
+                rows: [],
+              };
+              for (const titulo of campo.descripcion_campo) {
+                const row = [
+                  titulo.grado_instruccion,
+                  titulo.fecha_desde,
+                  titulo.fecha_hasta,
+                  titulo.nombre_instituto,
+                  titulo.titulo_obtenido,
+                ];
+                table.rows.push(row);
+              }
+              await doc.table(table, {
+                columnsSize: [110, 70, 70, 115, 115],
                 prepareHeader: () => doc.fontSize(11).font("Helvetica-Bold"),
                 prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
                   doc.fontSize(10).font("Helvetica");
@@ -137,7 +176,10 @@ const getCurriculoPDF = async (req, res) => {
           }
         } else if (campo.titulo_campo === "Idiomas") {
           if (!campo.descripcion_campo.length) {
-            doc.fontSize(11).font("Helvetica").text("No posee", { indent: 20 });
+            doc
+              .fontSize(11)
+              .font("Helvetica")
+              .text("No tiene conocimientos", { indent: 20 });
           } else {
             (async function createTable() {
               const table = {
@@ -167,7 +209,7 @@ const getCurriculoPDF = async (req, res) => {
               doc
                 .fontSize(11)
                 .font("Helvetica")
-                .text("No posee", { indent: 20 });
+                .text("Sin registrar / No posee", { indent: 20 });
             } else {
               doc.fontSize(11).font("Helvetica").text(campo.descripcion_campo);
             }
@@ -176,7 +218,7 @@ const getCurriculoPDF = async (req, res) => {
               doc
                 .fontSize(11)
                 .font("Helvetica")
-                .text("No posee", { indent: 20 });
+                .text("Sin registrar / No posee", { indent: 20 });
             } else {
               doc
                 .fontSize(11)
@@ -191,8 +233,6 @@ const getCurriculoPDF = async (req, res) => {
 
     doc.end();
 
-    await cambiarEstadoRevisado(empleado_id);
-
     await crearCurriculoPDF(empleado_id, filename, pdf_path);
 
     return res.status(201).json(filename);
@@ -202,8 +242,8 @@ const getCurriculoPDF = async (req, res) => {
 };
 
 const getCurriculoPDFAnexos = async (req, res) => {
-  const { empleado_id, cedula } = req.body;
-  const filename = `Anexos ${cedula}.zip`;
+  const { empleado_id, identificacion } = req.body;
+  const filename = `Anexos ${identificacion}.zip`;
 
   try {
     const anexos = await traerCurriculoPDFAnexos(empleado_id);
@@ -212,7 +252,7 @@ const getCurriculoPDFAnexos = async (req, res) => {
 
     const carpetaDestino = path.join(
       __dirname,
-      `../../public/documentosEmpleados/${cedula}/`
+      `../../public/documentosEmpleados/${identificacion}/`
     );
 
     crearCarpetaSiNoExiste(carpetaDestino);
@@ -252,47 +292,21 @@ const getCurriculoEmpleado = async (req, res) => {
   }
 };
 
-const postCurriculo = async (req, res) => {
-  const {
-    empleado_id,
-    grado_instruccion,
-    disponibilidad_viajar,
-    disponibilidad_cambio_residencia,
-    habilidades_tecnicas,
-  } = req.body;
-
-  try {
-    const response = await crearCurriculo(
-      empleado_id,
-      grado_instruccion,
-      disponibilidad_viajar,
-      disponibilidad_cambio_residencia,
-      habilidades_tecnicas
-    );
-
-    return res.status(201).json(response);
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
-  }
-};
-
 const putCurriculo = async (req, res) => {
   const {
+    empleado_id,
     curriculo_id,
-    grado_instruccion,
     disponibilidad_viajar,
     disponibilidad_cambio_residencia,
-    cantidad_hijos,
     habilidades_tecnicas,
   } = req.body;
 
   try {
     const response = await modificarCurriculo(
+      empleado_id,
       curriculo_id,
-      grado_instruccion,
       disponibilidad_viajar,
       disponibilidad_cambio_residencia,
-      cantidad_hijos,
       habilidades_tecnicas
     );
 
@@ -320,7 +334,6 @@ module.exports = {
   getCurriculoPDF,
   getCurriculoPDFAnexos,
   getCurriculoEmpleado,
-  postCurriculo,
   putCurriculo,
   deleteCurriculo,
 };

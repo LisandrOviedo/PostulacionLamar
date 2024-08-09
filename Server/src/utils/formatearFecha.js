@@ -23,6 +23,12 @@ const DDMMYYYY = (fecha) => {
   return formattedDate;
 };
 
+const YYYYMMDD = (fecha) => {
+  const date = new Date(fecha);
+
+  return date.toISOString().slice(0, 10);
+};
+
 const calcularEdad = (edad) => {
   const today = new Date();
   const birthDate = new Date(edad);
@@ -40,8 +46,14 @@ const calcularEdad = (edad) => {
   return age;
 };
 
+const fechaHoraActual = () => {
+  return `[${new Date().toLocaleString()}]`;
+};
+
 module.exports = {
   DDMMYYYYHHMM,
   DDMMYYYY,
+  YYYYMMDD,
   calcularEdad,
+  fechaHoraActual,
 };

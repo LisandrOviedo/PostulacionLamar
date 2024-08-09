@@ -12,26 +12,30 @@ const {
 
 const { authenticateToken } = require("../auth/index");
 
-const areasinteres = Router();
+const areas_interes = Router();
 
-areasinteres.get("/", authenticateToken, getAreasInteres);
-areasinteres.get("/activas", authenticateToken, getAreasInteresActivas);
-areasinteres.get(
+areas_interes.get("/", authenticateToken, getAreasInteres);
+areas_interes.get("/activas", authenticateToken, getAreasInteresActivas);
+areas_interes.get(
   "/detalle/:area_interes_id",
   authenticateToken,
   getAreaInteres
 );
 
-areasinteres.post("/", authenticateToken, postAreaInteres);
-areasinteres.post("/agregarArea", authenticateToken, postAreasInteresCurriculo);
+areas_interes.post("/", authenticateToken, postAreaInteres);
+areas_interes.post(
+  "/agregarArea",
+  authenticateToken,
+  postAreasInteresCurriculo
+);
 
-areasinteres.put("/modificar", authenticateToken, putAreaInteres);
-areasinteres.put("/inactivar", authenticateToken, deleteAreaInteres);
+areas_interes.put("/modificar", authenticateToken, putAreaInteres);
+areas_interes.put("/inactivar", authenticateToken, deleteAreaInteres);
 
-areasinteres.delete(
+areas_interes.delete(
   "/eliminarAreas/:curriculo_id",
   authenticateToken,
   deleteAreasInteresCurriculo
 );
 
-module.exports = areasinteres;
+module.exports = areas_interes;

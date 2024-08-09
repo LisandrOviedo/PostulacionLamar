@@ -3,7 +3,7 @@ const roles = [
     nombre: "admin",
     descripcion: "Administrador",
   },
-  { nombre: "empleado", descripcion: "Empleado Común" },
+  { nombre: "empleado", descripcion: "Empleado" },
 ];
 
 module.exports = {

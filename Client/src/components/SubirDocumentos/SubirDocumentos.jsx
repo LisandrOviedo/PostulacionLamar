@@ -218,7 +218,10 @@ export function SubirDocumentos() {
     ) {
       const formData = new FormData();
       formData.append("empleado_id", empleado.empleado_id);
-      formData.append("cedula", empleado.cedula);
+      formData.append(
+        "cedula",
+        `${empleado.tipo_identificacion}${empleado.numero_identificacion}`
+      );
 
       if (foto_carnet.value) {
         formData.append("foto_carnet", foto_carnet_file);
@@ -271,7 +274,7 @@ export function SubirDocumentos() {
   };
 
   const handleOpenDocument = async (filename) => {
-    const URL_GET_DOCUMENTOS = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${filename}`;
+    const URL_GET_DOCUMENTOS = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${filename}`;
 
     try {
       await axios.get(URL_GET_DOCUMENTOS);
@@ -338,7 +341,7 @@ export function SubirDocumentos() {
                   </>
                 )}
                 <td className="px-4 py-4">
-                  <Link to="/curriculo/info">
+                  <Link to="/perfilProfesional/info">
                     <Button className="m-0 w-auto">Cargar / Actualizar</Button>
                   </Link>
                 </td>

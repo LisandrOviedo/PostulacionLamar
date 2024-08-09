@@ -17,42 +17,24 @@ export function InfoCurriculo() {
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const curriculoEmpleado = useSelector(
-    (state) => state.curriculos.curriculoEmpleado
-  );
-
   useEffect(() => {
     window.scroll(0, 0);
 
     dispatch(getCurriculoEmpleado(token, empleado.empleado_id));
 
-    document.title = "Grupo Lamar - Registrar Perfil Profesional";
+    document.title = "Grupo Lamar - Perfil Profesional";
 
     return () => {
       document.title = "Grupo Lamar";
     };
   }, []);
 
-  const handleContinuar = async (event) => {
-    event.preventDefault();
-
-    if (curriculoEmpleado && curriculoEmpleado.curriculo_id) {
-      await Swal.fire({
-        title: "¡Atención!",
-        text: "Ya tienes datos registrados, serás redireccionado a sus detalles",
-        icon: "info",
-      });
-
-      return navigate(
-        `/perfilProfesional/detalle/${curriculoEmpleado.curriculo_id}`
-      );
-    }
-
+  const handleContinuar = async () => {
     navigate("/perfilProfesional/registro");
 
     return Swal.fire({
-      title: "Creación del perfil profesional",
-      text: "Llena los datos y presiona continuar",
+      title: "Perfil Profesional",
+      text: `Actualiza tus datos y presiona el botón "Guardar Cambios" al final de la página`,
       icon: "info",
       showConfirmButton: false,
       timer: 3000,
@@ -83,7 +65,7 @@ export function InfoCurriculo() {
         </li>
         <li>
           Anexar resumen curricular en formato PDF{" "}
-          <img className="w-[1.2rem] inline" src="/PDF.svg" alt="PDF Icon" />{" "}
+          <img className="w-[1.2rem] inline" src="./PDF.svg" alt="PDF Icon" />{" "}
           Además, anexar también el resto de documentos requeridos en el menú
           Perfil Profesional / Anexar documentos.
         </li>

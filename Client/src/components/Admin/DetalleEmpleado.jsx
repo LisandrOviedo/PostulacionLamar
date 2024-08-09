@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 import { useSelector } from "react-redux";
 
-import { Button, Hr, Label, Title } from "../UI";
+import { Button, Hr, Title } from "../UI";
+
+import { calcularEdad } from "../../utils/formatearFecha";
 
 export function DetalleEmpleado() {
   const empleado = useSelector((state) => state.empleados.empleadoDetail);
@@ -11,7 +13,7 @@ export function DetalleEmpleado() {
   const navigate = useNavigate();
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
-  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.cedula}/${empleado.foto_perfil_nombre}`;
+  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.numero_identificacion}${empleado.tipo_identificacion}/${empleado.foto_perfil_nombre}`;
 
   useEffect(() => {
     window.scroll(0, 0);
@@ -54,55 +56,100 @@ export function DetalleEmpleado() {
                       {empleado.nombres} {empleado.apellidos}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
-                      Número de cédula
+                      Nacionalidad
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.cedula}
+                      {empleado.tipo_identificacion === "V"
+                        ? "Venezolano"
+                        : "Extranjero"}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
-                      Género
+                      Número de identificación
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.genero}
+                      {empleado.numero_identificacion}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
-                      Etnia
+                      Fecha nacimiento
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.etnia || "No posee"}
+                      {empleado.fecha_nacimiento}
+                      {" ("}
+                      {calcularEdad(empleado.fecha_nacimiento)}
+                      {" años)"}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Estado civil
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.estado_civil || "Sin registrar"}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      RIF
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.rif || "Sin registrar"}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
                       Número de contacto
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.telefono}
+                      {empleado.telefono || "Sin registrar"}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
                       Correo electrónico
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.correo || "No posee"}
+                      {empleado.correo || "Sin registrar"}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
-                      Dirección
+                      Etnia
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.direccion}
+                      {empleado.Etnia?.nombre || "Sin registrar"}
                     </dd>
                   </div>
-                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Mano dominante
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.mano_dominante || "Sin registrar"}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Sexo
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.sexo || "Sin registrar"}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
+                    <dt className="text-sm font-bold leading-6 text-gray-900">
+                      Factor grupo sanguíneo
+                    </dt>
+                    <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                      {empleado.factor_grupo_sanguineo || "Sin registrar"}
+                    </dd>
+                  </div>
+                  <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
                       Cantidad de hijos
                     </dt>
@@ -137,12 +184,11 @@ export function DetalleEmpleado() {
         </div>
         <div className="flex flex-col items-center gap-2 mb-2">
           <img
-            id="foto_perfil"
-            src={empleado.foto_perfil_nombre ? FOTO_PERFIL : "/Person.svg"}
+            src={empleado.foto_perfil_nombre ? FOTO_PERFIL : "./Person.svg"}
             alt="Imgen del perfil"
             className="w-40 h-40 border border-[#002846] bg-gray-400 rounded-full ring-2 ring-[#F0C95C]"
           />
-          <Label htmlFor="foto_perfil">Imagen del perfil</Label>
+          <span className="text-sm">Imagen del perfil</span>
         </div>
       </div>
       <div className="grid gap-6 md:grid-cols-3 mt-5 mb-5">

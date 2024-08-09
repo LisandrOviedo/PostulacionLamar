@@ -10,7 +10,6 @@ import {
   BarraNavegacion,
   CrearCurriculo,
   DatosPersonales,
-  DetalleCurriculo,
   InfoCurriculo,
   Inicio,
   PaginaNoEncontrada,
@@ -22,6 +21,8 @@ import {
   PanelAdmin,
   Postulaciones,
   PruebasEmpleados,
+  FormularioIngreso,
+  Movimientos,
 } from "./components/";
 
 import {
@@ -42,7 +43,7 @@ function App() {
         {pathname.toLowerCase() !== "/" &&
           pathname.toLowerCase() !== "/admin/acceso" &&
           pathname.toLocaleLowerCase() !==
-            "/miPerfil/actualizarclavetemporal" &&
+            "/miperfil/actualizarclavetemporal" &&
           userState.empleado_id && <BarraNavegacion />}
         <Routes>
           <Route path="*" element={<PaginaNoEncontrada />} />
@@ -71,10 +72,6 @@ function App() {
             <Route
               path="/perfilProfesional/registro"
               element={<CrearCurriculo />}
-            />
-            <Route
-              path="/perfilProfesional/detalle/:curriculo_id"
-              element={<DetalleCurriculo />}
             />
             <Route
               path="/perfilProfesional/misDocumentos"
@@ -107,6 +104,12 @@ function App() {
               path="/admin/pruebasEmpleados"
               element={<PruebasEmpleados />}
             />
+            <Route
+              path="/admin/formularioIngreso"
+              element={<FormularioIngreso />}
+            />
+
+            <Route path="/admin/movimientos" element={<Movimientos />} />
           </Route>
         </Routes>
       </Suspense>

@@ -6,7 +6,6 @@ import { alertError } from "../../utils/sweetAlert2";
 
 import {
   allCurriculos,
-  createCurriculo,
   curriculoEmpleado,
   paginaActual,
   limitePorPagina,
@@ -96,7 +95,7 @@ export const deleteFiltros = () => {
   };
 };
 
-export const postCurriculoPDF = (token, empleado_id, cedula) => {
+export const postCurriculoPDF = (token, empleado_id, identificacion) => {
   const URL_CURRICULO = `${URL_SERVER}/curriculos/detalle`;
 
   return async () => {
@@ -105,7 +104,7 @@ export const postCurriculoPDF = (token, empleado_id, cedula) => {
         URL_CURRICULO,
         {
           empleado_id: empleado_id,
-          cedula: cedula,
+          identificacion: identificacion,
         },
         {
           headers: { authorization: `Bearer ${token}` },
@@ -121,7 +120,7 @@ export const postCurriculoPDF = (token, empleado_id, cedula) => {
   };
 };
 
-export const getCurriculoPDFAnexos = (token, empleado_id, cedula) => {
+export const getCurriculoPDFAnexos = (token, empleado_id, identificacion) => {
   const URL_CURRICULO = `${URL_SERVER}/curriculos/detalleAnexos`;
 
   return async () => {
@@ -130,7 +129,7 @@ export const getCurriculoPDFAnexos = (token, empleado_id, cedula) => {
         URL_CURRICULO,
         {
           empleado_id: empleado_id,
-          cedula: cedula,
+          identificacion: identificacion,
         },
         {
           headers: { authorization: `Bearer ${token}` },
@@ -149,7 +148,7 @@ export const getCurriculoEmpleado = (token, empleado_id) => {
 
   return async (dispatch) => {
     try {
-      const { data } = await axios.get(URL_CURRICULO_DETAIL, {
+      const { data } = await axios(URL_CURRICULO_DETAIL, {
         headers: { authorization: `Bearer ${token}` },
       });
 
@@ -161,149 +160,6 @@ export const getCurriculoEmpleado = (token, empleado_id) => {
     }
   };
 };
-
-// POST CURRICULO
-
-export const postCurriculo = (token, datosCurriculo) => {
-  const URL_CREATE_CURRICULO = `${URL_SERVER}/curriculos`;
-
-  return async (dispatch) => {
-    try {
-      const { data } = await axios.post(
-        `${URL_CREATE_CURRICULO}`,
-        datosCurriculo,
-        {
-          headers: { authorization: `Bearer ${token}` },
-        }
-      );
-
-      dispatch(createCurriculo(data));
-
-      await postAreasInteres(
-        token,
-        data.curriculo_id,
-        datosCurriculo.areas_interes
-      );
-
-      if (datosCurriculo.titulos_obtenidos.length) {
-        await postTitulosObtenidos(
-          token,
-          data.curriculo_id,
-          datosCurriculo.titulos_obtenidos
-        );
-      }
-
-      if (datosCurriculo.experiencias.length) {
-        await postExperiencias(
-          token,
-          data.curriculo_id,
-          datosCurriculo.experiencias
-        );
-      }
-
-      if (datosCurriculo.idiomas.length) {
-        await postIdiomas(token, data.curriculo_id, datosCurriculo.idiomas);
-      }
-
-      return Swal.fire({
-        text: "¡Perfil profesional guardado exitosamente!",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 4000,
-      });
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-const postAreasInteres = async (token, curriculo_id, areas_interes) => {
-  const URL_ADD_AREASINTERES = `${URL_SERVER}/areasinteres/agregarArea`;
-
-  try {
-    await axios.post(
-      `${URL_ADD_AREASINTERES}`,
-      {
-        curriculo_id,
-        areas_interes,
-      },
-      {
-        headers: { authorization: `Bearer ${token}` },
-      }
-    );
-  } catch (error) {
-    alertError(error);
-
-    throw new Error();
-  }
-};
-
-const postTitulosObtenidos = async (token, curriculo_id, titulos_obtenidos) => {
-  const URL_ADD_TITULOSOBTENIDOS = `${URL_SERVER}/titulosobtenidos`;
-
-  try {
-    await axios.post(
-      `${URL_ADD_TITULOSOBTENIDOS}`,
-      {
-        curriculo_id,
-        titulos_obtenidos,
-      },
-      {
-        headers: { authorization: `Bearer ${token}` },
-      }
-    );
-  } catch (error) {
-    alertError(error);
-
-    throw new Error();
-  }
-};
-
-const postExperiencias = async (token, curriculo_id, experiencias) => {
-  const URL_ADD_EXPERIENCIAS = `${URL_SERVER}/experiencias`;
-
-  try {
-    await axios.post(
-      `${URL_ADD_EXPERIENCIAS}`,
-      {
-        curriculo_id,
-        experiencias,
-      },
-      {
-        headers: { authorization: `Bearer ${token}` },
-      }
-    );
-  } catch (error) {
-    alertError(error);
-
-    throw new Error();
-  }
-};
-
-const postIdiomas = async (token, curriculo_id, idiomas) => {
-  const URL_ADD_IDIOMAS = `${URL_SERVER}/idiomas/agregarIdioma`;
-
-  try {
-    await axios.post(
-      `${URL_ADD_IDIOMAS}`,
-      {
-        curriculo_id,
-        idiomas,
-      },
-      {
-        headers: { authorization: `Bearer ${token}` },
-      }
-    );
-  } catch (error) {
-    alertError(error);
-
-    throw new Error();
-  }
-};
-
-// FIN POST CURRICULO
 
 export const resetCurriculos = () => {
   return async (dispatch) => {
@@ -337,7 +193,7 @@ export const putCurriculo = (token, datosCurriculo) => {
       if (datosCurriculo.titulos_obtenidos.length) {
         await putTitulosObtenidos(
           token,
-          data.curriculo_id,
+          datosCurriculo.empleado_id,
           datosCurriculo.titulos_obtenidos
         );
       }
@@ -345,7 +201,7 @@ export const putCurriculo = (token, datosCurriculo) => {
       if (datosCurriculo.experiencias.length) {
         await putExperiencias(
           token,
-          data.curriculo_id,
+          datosCurriculo.empleado_id,
           datosCurriculo.experiencias
         );
       }
@@ -369,8 +225,8 @@ export const putCurriculo = (token, datosCurriculo) => {
 };
 
 const putAreasInteres = async (token, curriculo_id, areas_interes) => {
-  const URL_ADD_AREASINTERES = `${URL_SERVER}/areasinteres/agregarArea`;
-  const URL_DELETE_AREASINTERES = `${URL_SERVER}/areasinteres/eliminarAreas/${curriculo_id}`;
+  const URL_ADD_AREASINTERES = `${URL_SERVER}/areas_interes/agregarArea`;
+  const URL_DELETE_AREASINTERES = `${URL_SERVER}/areas_interes/eliminarAreas/${curriculo_id}`;
 
   try {
     await axios.delete(URL_DELETE_AREASINTERES, {
@@ -394,9 +250,9 @@ const putAreasInteres = async (token, curriculo_id, areas_interes) => {
   }
 };
 
-const putTitulosObtenidos = async (token, curriculo_id, titulos_obtenidos) => {
-  const URL_ADD_TITULOSOBTENIDOS = `${URL_SERVER}/titulosobtenidos`;
-  const URL_DELETE_TITULOSOBTENIDOS = `${URL_SERVER}/titulosobtenidos/eliminarTitulos/${curriculo_id}`;
+const putTitulosObtenidos = async (token, empleado_id, titulos_obtenidos) => {
+  const URL_ADD_TITULOSOBTENIDOS = `${URL_SERVER}/titulos_obtenidos`;
+  const URL_DELETE_TITULOSOBTENIDOS = `${URL_SERVER}/titulos_obtenidos/eliminarTitulos/${empleado_id}`;
 
   try {
     await axios.delete(URL_DELETE_TITULOSOBTENIDOS, {
@@ -406,7 +262,7 @@ const putTitulosObtenidos = async (token, curriculo_id, titulos_obtenidos) => {
     await axios.post(
       `${URL_ADD_TITULOSOBTENIDOS}`,
       {
-        curriculo_id,
+        empleado_id,
         titulos_obtenidos,
       },
       {
@@ -420,9 +276,9 @@ const putTitulosObtenidos = async (token, curriculo_id, titulos_obtenidos) => {
   }
 };
 
-const putExperiencias = async (token, curriculo_id, experiencias) => {
+const putExperiencias = async (token, empleado_id, experiencias) => {
   const URL_ADD_EXPERIENCIAS = `${URL_SERVER}/experiencias`;
-  const URL_DELETE_EXPERIENCIAS = `${URL_SERVER}/experiencias/eliminarExperiencias/${curriculo_id}`;
+  const URL_DELETE_EXPERIENCIAS = `${URL_SERVER}/experiencias/eliminarExperiencias/${empleado_id}`;
 
   try {
     await axios.delete(URL_DELETE_EXPERIENCIAS, {
@@ -432,7 +288,7 @@ const putExperiencias = async (token, curriculo_id, experiencias) => {
     await axios.post(
       `${URL_ADD_EXPERIENCIAS}`,
       {
-        curriculo_id,
+        empleado_id,
         experiencias,
       },
       {

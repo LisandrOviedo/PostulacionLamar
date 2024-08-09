@@ -25,7 +25,7 @@ experiencias.put("/modificar", authenticateToken, putExperiencia);
 experiencias.put("/inactivar", authenticateToken, deleteExperiencia);
 
 experiencias.delete(
-  "/eliminarExperiencias/:curriculo_id",
+  "/eliminarExperiencias/:empleado_id",
   authenticateToken,
   deleteExperienciasCurriculo
 );

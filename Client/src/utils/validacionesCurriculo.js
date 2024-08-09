@@ -4,6 +4,10 @@ const regexLetrasComasPuntos = /^[a-zA-Z,'.\s]+$/;
 export default function validations(inputs) {
   const errors = {};
 
+  if (inputs.nombre_instituto && !regexLetras.test(inputs.nombre_instituto)) {
+    errors.nombre_instituto = "Solo está permitido escribir letras sin acentos";
+  }
+
   if (inputs.titulo_obtenido && !regexLetras.test(inputs.titulo_obtenido)) {
     errors.titulo_obtenido = "Solo está permitido escribir letras sin acentos";
   }

@@ -2,11 +2,12 @@ const {
   conn,
   Preguntas_Kostick,
   Respuestas_Kostick,
-  Pruebas_Empleado,
+  Pruebas_Empleados,
+  Titulos_Obtenidos,
 } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
-const { traerCurriculoEmpleado } = require("./curriculos_controllers");
+const { todosLosTitulosObtenidos } = require("./titulos_obtenidos_controllers");
 
 const XlsxPopulate = require("xlsx-populate");
 const path = require("path");
@@ -17,7 +18,7 @@ const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
 
 const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
   if (!empleado_id || !prueba_id || !prueba) {
-    throw new Error("Datos faltantes");
+    throw new Error(`Datos faltantes`);
   }
 
   let t, t2;
@@ -28,7 +29,7 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
 
     const empleado = await traerEmpleado(empleado_id);
 
-    const curriculo = await traerCurriculoEmpleado(empleado_id);
+    const titulos_obtenidos = await todosLosTitulosObtenidos(empleado_id);
 
     for (const respuesta in prueba) {
       const [respuesta_kostick, created] =
@@ -47,7 +48,7 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
 
     await t.commit();
 
-    const respuestas_kostick = await Pruebas_Empleado.findOne({
+    const respuestas_kostick = await Pruebas_Empleados.findOne({
       attributes: ["createdAt"],
       include: [
         {
@@ -66,7 +67,7 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
 
     const destPath = path.join(
       __dirname,
-      `../../public/documentosEmpleados/${empleado.cedula}`
+      `../../public/documentosEmpleados/${empleado.tipo_identificacion}${empleado.numero_identificacion}`
     );
 
     crearCarpetaSiNoExiste(destPath);
@@ -84,17 +85,37 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
       .value(`${empleado.nombres} ${empleado.apellidos}`);
 
     // Cedula
-    workbook.sheet(0).cell("B6").value(empleado.cedula);
+    workbook
+      .sheet(0)
+      .cell("B6")
+      .value(
+        `${empleado.tipo_identificacion}${empleado.numero_identificacion}`
+      );
 
     // Sexo
-    workbook.sheet(0).cell("B7").value(empleado.genero);
+    workbook.sheet(0).cell("B7").value(empleado.sexo);
 
     // Edad
     workbook.sheet(0).cell("B8").value(edad);
 
     // Grado Instruccion
-    if (curriculo) {
-      workbook.sheet(0).cell("B9").value(curriculo.grado_instruccion);
+    if (titulos_obtenidos) {
+      const statusEnum =
+        Titulos_Obtenidos.rawAttributes.grado_instruccion.values;
+
+      let grado_nivel = 0;
+
+      for (const titulo of titulos_obtenidos) {
+        const selectedStatusIndex = statusEnum.indexOf(
+          titulo.grado_instruccion
+        );
+
+        if (selectedStatusIndex > grado_nivel) {
+          workbook.sheet(0).cell("B9").value(titulo.grado_instruccion);
+
+          grado_nivel = selectedStatusIndex;
+        }
+      }
     } else {
       workbook.sheet(0).cell("B9").value("");
     }
@@ -115,7 +136,7 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
       `${destPath}/${DDMMYYYY(respuestas_kostick.createdAt)} - Kostick.xlsx`
     );
 
-    await Pruebas_Empleado.update(
+    await Pruebas_Empleados.update(
       {
         nombre: `${DDMMYYYY(respuestas_kostick.createdAt)} - Kostick.xlsx`,
         ruta: `${destPath}/${DDMMYYYY(
@@ -137,7 +158,7 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
     }
 
     throw new Error(
-      "Error al crear las respuestas de la prueba kostick: " + error.message
+      `Error al crear las respuestas de la prueba kostick: ${error.message}`
     );
   }
 };

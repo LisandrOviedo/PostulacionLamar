@@ -2,14 +2,18 @@ const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
 
-const { DB, USER, PASSWORD, HOST, DIALECT, PORT_DB } = process.env;
+const { DB, USERDB, PASSWORD, HOST, DIALECT, PORT_DB } = process.env;
 
-const sequelize = new Sequelize(DB, USER, PASSWORD, {
+const sequelize = new Sequelize(DB, USERDB, PASSWORD, {
   host: HOST,
   dialect: DIALECT,
   port: PORT_DB,
   logging: false,
   native: false,
+  timezone: "-04:00",
+  define: {
+    freezeTableName: true,
+  },
 });
 
 const basename = path.basename(__filename);
@@ -35,274 +39,442 @@ let capsEntries = entries.map((entry) => [
 sequelize.models = Object.fromEntries(capsEntries);
 
 const {
-  Area_Interes_Curriculo,
+  Areas_Interes_Curriculos,
   Areas_Interes,
-  Cargo_Empleado,
-  Cargo,
-  Curriculo,
-  Documentos_Empleado,
-  Empleado,
-  Empresa,
-  Etnia,
-  Experiencia,
-  Idioma,
-  Menu,
-  Idiomas_Curriculo,
+  Cargos_Empleados,
+  Cargos_Niveles,
+  Cargos,
+  Contactos_Emergencia,
+  Curriculos,
+  Datos_Bancarios,
+  Departamentos,
+  Direcciones,
+  Documentos_Empleados,
+  Empleados,
+  Empresas,
+  Estados,
+  Etnias,
+  Experiencias,
+  Fichas_Ingresos,
+  Idiomas_Curriculos,
+  Idiomas,
+  Menus,
+  Municipios,
+  Paises,
+  Parroquias,
   Preguntas_Kostick,
-  Pruebas_Empleado,
+  Pruebas_Empleados,
+  Referencias_Personales,
   Respuestas_Kostick,
   Roles,
+  Salud,
   Sesiones,
-  Titulo_Obtenido,
+  Titulos_Obtenidos,
 } = sequelize.models;
 
 // RELACIONES DE MODELOS (TABLAS)
-// Roles 1:1 Empleado
-Empleado.belongsTo(Roles, {
+// Roles 1:M Empleados
+Roles.hasMany(Empleados, {
   foreignKey: {
-    allowNull: false,
     name: "rol_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
-Roles.hasOne(Empleado, {
+Empleados.belongsTo(Roles, {
   foreignKey: {
-    allowNull: false,
     name: "rol_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
-// Empleado 1:1 Curriculo
-Curriculo.belongsTo(Empleado, {
+// Curriculos 1:1 Empleados
+Curriculos.belongsTo(Empleados, {
   foreignKey: {
-    allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
-Empleado.hasOne(Curriculo, {
+Empleados.hasOne(Curriculos, {
   foreignKey: {
-    allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
-// Areas_Interes M:M Curriculo
-Areas_Interes.belongsToMany(Curriculo, {
-  through: "Area_Interes_Curriculo",
+// Areas_Interes M:M Curriculos
+Areas_Interes.belongsToMany(Curriculos, {
+  through: "Areas_Interes_Curriculos",
   foreignKey: {
-    allowNull: false,
     name: "area_interes_id",
   },
 });
-Curriculo.belongsToMany(Areas_Interes, {
-  through: "Area_Interes_Curriculo",
+Curriculos.belongsToMany(Areas_Interes, {
+  through: "Areas_Interes_Curriculos",
   foreignKey: {
-    allowNull: false,
     name: "curriculo_id",
   },
 });
 
-// Empleado M:M Cargo
-Empleado.belongsToMany(Cargo, {
-  through: "Cargo_Empleado",
+// Empleados 1:M Titulos_Obtenidos
+Empleados.hasMany(Titulos_Obtenidos, {
   foreignKey: {
-    allowNull: false,
     name: "empleado_id",
   },
 });
-Cargo.belongsToMany(Empleado, {
-  through: "Cargo_Empleado",
+Titulos_Obtenidos.belongsTo(Empleados, {
   foreignKey: {
-    allowNull: false,
-    name: "cargo_id",
-  },
-});
-
-// Empresa 1:M Cargo
-Empresa.hasMany(Cargo, {
-  foreignKey: {
-    allowNull: false,
-    name: "empresa_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  },
-});
-Cargo.belongsTo(Empresa, {
-  foreignKey: {
-    allowNull: false,
-    name: "empresa_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  },
-});
-
-// Curriculo 1:M Titulo_Obtenido
-Curriculo.hasMany(Titulo_Obtenido, {
-  foreignKey: {
-    allowNull: false,
-    name: "curriculo_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  },
-});
-Titulo_Obtenido.belongsTo(Curriculo, {
-  foreignKey: {
-    allowNull: false,
-    name: "curriculo_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  },
-});
-
-// Curriculo 1:M Experiencia
-Curriculo.hasMany(Experiencia, {
-  foreignKey: {
-    allowNull: false,
-    name: "curriculo_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  },
-});
-Experiencia.belongsTo(Curriculo, {
-  foreignKey: {
-    allowNull: false,
-    name: "curriculo_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  },
-});
-
-// Empleado 1:M Documentos_Empleado
-Empleado.hasMany(Documentos_Empleado, {
-  foreignKey: {
-    allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
-  },
-});
-Documentos_Empleado.belongsTo(Empleado, {
-  foreignKey: {
-    allowNull: false,
-    name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
-// Empleado 1:M Pruebas_Empleado
-Empleado.hasMany(Pruebas_Empleado, {
+// Empleados 1:M Experiencias
+Empleados.hasMany(Experiencias, {
   foreignKey: {
-    allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
-Pruebas_Empleado.belongsTo(Empleado, {
+Experiencias.belongsTo(Empleados, {
   foreignKey: {
-    allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
-// Pruebas_Empleado M:M Preguntas_Kostick
-Pruebas_Empleado.belongsToMany(Preguntas_Kostick, {
+// Empleados 1:M Documentos_Empleados
+Empleados.hasMany(Documentos_Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Documentos_Empleados.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Empleados 1:M Pruebas_Empleados
+Empleados.hasMany(Pruebas_Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Pruebas_Empleados.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Pruebas_Empleados M:M Preguntas_Kostick
+Pruebas_Empleados.belongsToMany(Preguntas_Kostick, {
   through: "Respuestas_Kostick",
   foreignKey: {
-    allowNull: false,
     name: "prueba_id",
   },
 });
-Preguntas_Kostick.belongsToMany(Pruebas_Empleado, {
+Preguntas_Kostick.belongsToMany(Pruebas_Empleados, {
   through: "Respuestas_Kostick",
   foreignKey: {
-    allowNull: false,
     name: "pregunta_kostick_id",
   },
 });
 
-// Empleado M:M Respuesta
-Curriculo.belongsToMany(Idioma, {
-  through: "Idiomas_Curriculo",
+// Curriculos M:M Idiomas
+Curriculos.belongsToMany(Idiomas, {
+  through: "Idiomas_Curriculos",
   foreignKey: {
-    allowNull: false,
     name: "curriculo_id",
   },
 });
-Idioma.belongsToMany(Curriculo, {
-  through: "Idiomas_Curriculo",
+Idiomas.belongsToMany(Curriculos, {
+  through: "Idiomas_Curriculos",
   foreignKey: {
-    allowNull: false,
     name: "idioma_id",
   },
 });
 
-// Empleado 1:1 Curriculo
-Sesiones.belongsTo(Empleado, {
+// Sesiones 1:1 Empleados
+Sesiones.belongsTo(Empleados, {
   foreignKey: {
-    allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
-Empleado.hasOne(Sesiones, {
+Empleados.hasOne(Sesiones, {
   foreignKey: {
-    allowNull: false,
     name: "empleado_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
 
-// Etnia 1:M Empleado
-Etnia.hasMany(Empleado, {
+// Etnias 1:M Empleados
+Etnias.hasMany(Empleados, {
   foreignKey: {
-    allowNull: false,
     name: "etnia_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
   },
 });
-Empleado.belongsTo(Etnia, {
+Empleados.belongsTo(Etnias, {
   foreignKey: {
-    allowNull: false,
     name: "etnia_id",
-    onDelete: "RESTRICT",
-    onUpdate: "RESTRICT",
+  },
+});
+
+// Paises 1:M Estados
+Paises.hasMany(Estados, {
+  foreignKey: {
+    name: "pais_id",
+  },
+});
+Estados.belongsTo(Paises, {
+  foreignKey: {
+    name: "pais_id",
+  },
+});
+
+// Estados 1:M Municipios
+Estados.hasMany(Municipios, {
+  foreignKey: {
+    name: "estado_id",
+  },
+});
+Municipios.belongsTo(Estados, {
+  foreignKey: {
+    name: "estado_id",
+  },
+});
+
+// Municipios 1:M Parroquias
+Municipios.hasMany(Parroquias, {
+  foreignKey: {
+    name: "municipio_id",
+  },
+});
+Parroquias.belongsTo(Municipios, {
+  foreignKey: {
+    name: "municipio_id",
+  },
+});
+
+// Estados 1:M Empleados
+Estados.hasMany(Empleados, {
+  foreignKey: {
+    name: "nacimiento_estado_id",
+  },
+});
+Empleados.belongsTo(Estados, {
+  foreignKey: {
+    name: "nacimiento_estado_id",
+  },
+});
+
+// Paises 1:M Empleados
+Paises.hasMany(Empleados, {
+  foreignKey: {
+    name: "nacimiento_pais_id",
+  },
+});
+Empleados.belongsTo(Paises, {
+  foreignKey: {
+    name: "nacimiento_pais_id",
+  },
+});
+
+// Parroquias 1:M Direcciones
+Parroquias.hasMany(Direcciones, {
+  foreignKey: {
+    name: "parroquia_id",
+  },
+});
+Direcciones.belongsTo(Parroquias, {
+  foreignKey: {
+    name: "parroquia_id",
+  },
+});
+
+// Municipios 1:M Direcciones
+Municipios.hasMany(Direcciones, {
+  foreignKey: {
+    name: "municipio_id",
+  },
+});
+Direcciones.belongsTo(Municipios, {
+  foreignKey: {
+    name: "municipio_id",
+  },
+});
+
+// Estados 1:M Direcciones
+Estados.hasMany(Direcciones, {
+  foreignKey: {
+    name: "estado_id",
+  },
+});
+Direcciones.belongsTo(Estados, {
+  foreignKey: {
+    name: "estado_id",
+  },
+});
+
+// Paises 1:M Direcciones
+Paises.hasMany(Direcciones, {
+  foreignKey: {
+    name: "pais_id",
+  },
+});
+Direcciones.belongsTo(Paises, {
+  foreignKey: {
+    name: "pais_id",
+  },
+});
+
+// Empleados 1:M Salud
+Empleados.hasMany(Salud, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Salud.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Empleados 1:M Contactos_Emergencia
+Empleados.hasMany(Contactos_Emergencia, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Contactos_Emergencia.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Empleados 1:M Referencias_Personales
+Empleados.hasMany(Referencias_Personales, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Referencias_Personales.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Empleados 1:M Datos_Bancarios
+Empleados.hasMany(Datos_Bancarios, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Datos_Bancarios.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Empleados 1:M Direcciones
+Empleados.hasMany(Direcciones, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Direcciones.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Empresas 1:M Departamentos
+Empresas.hasMany(Departamentos, {
+  foreignKey: {
+    name: "empresa_id",
+  },
+});
+Departamentos.belongsTo(Empresas, {
+  foreignKey: {
+    name: "empresa_id",
+  },
+});
+
+// Departamentos 1:M Cargos
+Departamentos.hasMany(Cargos, {
+  foreignKey: {
+    name: "departamento_id",
+  },
+});
+Cargos.belongsTo(Departamentos, {
+  foreignKey: {
+    name: "departamento_id",
+  },
+});
+
+// Cargos 1:M Cargos_Niveles
+Cargos.hasMany(Cargos_Niveles, {
+  foreignKey: {
+    name: "cargo_id",
+  },
+});
+Cargos_Niveles.belongsTo(Cargos, {
+  foreignKey: {
+    name: "cargo_id",
+  },
+});
+
+// Empleados M:M Cargos_Niveles
+Empleados.belongsToMany(Cargos_Niveles, {
+  through: "Cargos_Empleados",
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Cargos_Niveles.belongsToMany(Empleados, {
+  through: "Cargos_Empleados",
+  foreignKey: {
+    name: "cargo_nivel_id",
+  },
+});
+
+// Empleados M:M Cargos_Niveles
+Empleados.belongsToMany(Cargos_Niveles, {
+  through: "Fichas_Ingresos",
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Cargos_Niveles.belongsToMany(Empleados, {
+  through: "Fichas_Ingresos",
+  foreignKey: {
+    name: "cargo_nivel_id",
   },
 });
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
-  Area_Interes_Curriculo,
+  Areas_Interes_Curriculos,
   Areas_Interes,
-  Cargo_Empleado,
-  Cargo,
-  Curriculo,
-  Documentos_Empleado,
-  Empleado,
-  Empresa,
-  Etnia,
-  Experiencia,
-  Idioma,
-  Menu,
-  Idiomas_Curriculo,
+  Cargos_Empleados,
+  Cargos_Niveles,
+  Cargos,
+  Contactos_Emergencia,
+  Curriculos,
+  Datos_Bancarios,
+  Departamentos,
+  Direcciones,
+  Documentos_Empleados,
+  Empleados,
+  Empresas,
+  Estados,
+  Etnias,
+  Experiencias,
+  Fichas_Ingresos,
+  Idiomas_Curriculos,
+  Idiomas,
+  Menus,
+  Municipios,
+  Paises,
+  Parroquias,
   Preguntas_Kostick,
-  Pruebas_Empleado,
+  Pruebas_Empleados,
+  Referencias_Personales,
   Respuestas_Kostick,
   Roles,
+  Salud,
   Sesiones,
-  Titulo_Obtenido,
+  Titulos_Obtenidos,
 };

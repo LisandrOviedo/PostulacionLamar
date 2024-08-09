@@ -2,7 +2,9 @@ require("dotenv").config();
 
 const server = require("./src/server.js");
 const { conn } = require("./src/db.js");
-const PORT = process.env.PORT_SERVER || 3001;
+const PORT = process.env.PORT_SERVER || 4055;
+
+const { fechaHoraActual } = require("./src/utils/formatearFecha.js");
 
 const {
   cargarPreguntasKostick,
@@ -24,32 +26,54 @@ const { cerrarSesiones } = require("./src/controllers/sesiones_controllers.js");
 
 const { cargarEtnias } = require("./src/controllers/etnias_controllers.js");
 
+const { cargarPaises } = require("./src/controllers/paises_controllers.js");
+
+const { cargarEstados } = require("./src/controllers/estados_controllers.js");
+
+const {
+  cargarMunicipios,
+} = require("./src/controllers/municipios_controllers.js");
+
+const { cargarEmpresas } = require("./src/controllers/empresas_controllers.js");
+
 conn
-  .sync({ alter: true })
+  .sync()
   .then(() => {
-    server.listen(PORT, () => {
-      console.log(`Server listening on port ${PORT}`);
+    server.listen(PORT, async () => {
+      console.log(`${fechaHoraActual()} - Server listening on port ${PORT}`);
 
       // Cerrar sesiones en la BD
-      cerrarSesiones();
+      // await cerrarSesiones();
 
       // Registrar preguntas del test kostick en la BD
-      cargarPreguntasKostick();
+      // await cargarPreguntasKostick();
 
       // Registrar áreas de interés principales en la BD
-      cargarAreaInteres();
+      // await cargarAreaInteres();
 
       // Registrar idiomas principales en la BD
-      cargarIdiomas();
+      // await cargarIdiomas();
 
       // Registrar roles principales en la BD
-      cargarRoles();
+      // await cargarRoles();
 
       // Registrar etnias principales en la BD
-      cargarEtnias();
+      // await cargarEtnias();
 
-      // Registrar roles principales en la BD
-      cargarEmpleados();
+      // Registrar países principales en la BD
+      // await cargarPaises();
+
+      // Registrar estados principales en la BD
+      // await cargarEstados();
+
+      // Registrar municipios principales en la BD
+      // await cargarMunicipios();
+
+      // Registrar empresas principales en la BD
+      // await cargarEmpresas();
+
+      // Registrar empleados en la BD
+      // await cargarEmpleados();
     });
   })
   .catch((error) => console.error(error));
