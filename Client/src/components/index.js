@@ -16,6 +16,8 @@ import { Empleados } from "./Admin/Empleados";
 import { PanelAdmin } from "./Admin/PanelAdmin";
 import { Postulaciones } from "./Admin/Postulaciones";
 import { PruebasEmpleados } from "./Admin/PruebasEmpleados";
+import { FormularioIngreso } from "./Admin/FormularioIngreso";
+import { Movimientos } from "./Admin/Movimientos";
 
 export {
   AccesoEmpleado,
@@ -35,4 +37,6 @@ export {
   PanelAdmin,
   Postulaciones,
   PruebasEmpleados,
+  FormularioIngreso,
+  Movimientos,
 };
