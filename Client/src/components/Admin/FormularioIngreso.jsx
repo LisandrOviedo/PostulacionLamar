@@ -31,10 +31,10 @@ import {
   resetCargos,
 } from "../../redux/cargos/cargosActions";
 import { saveFichaIngreso } from "../../redux/fichasIngresos/fichasIngresosActions";
-import validations from "../../utils/validacionesAcceso";
 import { Button, Input, Label, Select, Title, Hr } from "../UI";
 import { FaFloppyDisk, FaCircleInfo } from "react-icons/fa6";
 import { YYYYMMDD } from "../../utils/formatearFecha";
+import validations from "../../utils/validacionesAcceso";
 
 import Swal from "sweetalert2";
 
@@ -86,6 +86,7 @@ export function FormularioIngreso() {
     grado_instruccion: "Primaria",
     titulos_obtenidos: [],
     experiencias: [],
+    referencias_personales: [],
     posee_parientes_empresa: "0",
     contactos_emergencia: [],
     alergia_alimentos: false,
@@ -111,7 +112,6 @@ export function FormularioIngreso() {
     };
   }, []);
 
-  // geo useEffect
   useEffect(() => {
     if (
       datosIngreso.nacimiento_pais_id &&
@@ -261,11 +261,21 @@ export function FormularioIngreso() {
     setDatosIngreso({ ...datosIngreso, titulos_obtenidos: newTitulo });
   };
 
-  const hanndleRemoveTrabajosAnteriores = (index) => {
+  const handleRemoveTrabajosAnteriores = (index) => {
     const newTrabajoAnterior = datosIngreso.experiencias.filter(
       (_, i) => i !== index
     );
     setDatosIngreso({ ...datosIngreso, experiencias: newTrabajoAnterior });
+  };
+
+  const handleRemoveReferenciaPersonal = (index) => {
+    const newReferenciaPersonal = datosIngreso.referencias_personales.filter(
+      (_, i) => i !== index
+    );
+    setDatosIngreso({
+      ...datosIngreso,
+      referencias_personales: newReferenciaPersonal,
+    });
   };
 
   const handleRemoveContactoEmergencia = (index) => {
@@ -412,6 +422,62 @@ export function FormularioIngreso() {
     fecha_hasta_experiencia.value = null;
   };
 
+  const handleAddReferenciaPersonal = () => {
+    const nombre_apellido = document.getElementById("nombre_apellido");
+    const direccion = document.getElementById("direccion");
+    const telefono = document.getElementById("telefono_referencia");
+    const ocupacion = document.getElementById("ocupacion");
+
+    if (
+      !nombre_apellido.value ||
+      !direccion.value ||
+      !telefono.value ||
+      !ocupacion.value
+    ) {
+      Swal.fire({
+        title: "Oops...",
+        text: "Faltan campos por llenar para añadir tu referencia personal",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      return;
+    }
+
+    const refValidatorInclude = datosIngreso.referencias_personales.some(
+      (referencia) => referencia.telefono === telefono.value.toLowerCase()
+    );
+
+    if (refValidatorInclude) {
+      Swal.fire({
+        title: "Oops...",
+        text: "Ya has agregado esa referencia personal",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      return;
+    }
+
+    setDatosIngreso({
+      ...datosIngreso,
+      referencias_personales: [
+        ...datosIngreso.referencias_personales,
+        {
+          nombre_apellido: nombre_apellido.value,
+          direccion: direccion.value,
+          telefono: telefono.value,
+          ocupacion: ocupacion.value,
+        },
+      ],
+    });
+
+    nombre_apellido.value = null;
+    direccion.value = null;
+    telefono.value = null;
+    ocupacion.value = null;
+  };
+
   const handleAddContactoEmergencia = () => {
     const input_nombre_apellido = document.getElementById("nombre_apellido");
     const input_parentesco_contacto_emergencia = document.getElementById(
@@ -420,7 +486,9 @@ export function FormularioIngreso() {
     const input_telefono_contacto_emergencia = document.getElementById(
       "telefono_contacto_emergencia"
     );
-    const input_direccion = document.getElementById("direccion");
+    const input_direccion = document.getElementById(
+      "direccion_contacto_emergencia"
+    );
 
     if (
       !input_nombre_apellido.value ||
@@ -474,28 +542,121 @@ export function FormularioIngreso() {
     input_direccion.value = null;
   };
 
-  // const handleEmpleadoExiste = (e) => {
-  //   console.log("exist?");
-  //   e.preventDefault();
-  //   const { value } = e.target;
-  //   if (value) {
-  //     getEmpleadoExistencia(
-  //       token,
-  //       datosIngreso.tipo_identificacion,
-  //       datosIngreso.numero_identificacion
-  //     ).then((data) => {
-  //       if (data) {
-  //         const numero_identificacion = document.getElementById(
-  //           "numero_identificacion"
-  //         );
-  //         numero_identificacion.value = null;
-  //       }
-  //     });
-  //   }
-  // };
+  const handleEmpleadoExiste = (e) => {
+    e.preventDefault();
+    const { value } = e.target;
+    if (value) {
+      getEmpleadoExistencia(
+        token,
+        datosIngreso.tipo_identificacion,
+        datosIngreso.numero_identificacion
+      ).then((data) => {
+        if (data) {
+          const numero_identificacion = document.getElementById(
+            "numero_identificacion"
+          );
+          numero_identificacion.value = null;
+        }
+      });
+    }
+  };
 
-  const handleSubmit = () => {
-    dispatch(saveFichaIngreso(token, datosIngreso));
+  const handleSaveFicha = () => {
+    const numero_identificacion = document.getElementById(
+      "numero_identificacion"
+    );
+    const nombres = document.getElementById("nombres");
+    const apellidos = document.getElementById("apellidos");
+    const estado_civil = document.getElementById("estado_civil");
+    const rif = document.getElementById("rif");
+    const telefono = document.getElementById("telefono");
+    const correo = document.getElementById("correo");
+    const fecha_nacimiento = document.getElementById("fecha_nacimiento");
+    const nacimiento_lugar = document.getElementById("nacimiento_lugar");
+    const nacimiento_pais_id = document.getElementById("nacimiento_pais_id");
+    const nacimiento_estado_id = document.getElementById(
+      "nacimiento_estado_id"
+    );
+    const pais_id = document.getElementById("pais_id");
+    const estado_id = document.getElementById("estado_id");
+    const municipio_id = document.getElementById("municipio_id");
+    const parroquia_id = document.getElementById("parroquia_id");
+    const urbanizacion_sector = document.getElementById("urbanizacion_sector");
+    const calle_avenida = document.getElementById("calle_avenida");
+    const talla_camisa = document.getElementById("talla_camisa");
+    const talla_pantalon = document.getElementById("talla_pantalon");
+    const talla_calzado = document.getElementById("talla_calzado");
+    const numero_cuenta = document.getElementById("numero_cuenta");
+    const empresa_id = document.getElementById("empresa_id");
+    const departamento_id = document.getElementById("departamento_id");
+    const cargo_id = document.getElementById("cargo_id");
+    const cargo_nivel_id = document.getElementById("cargo_nivel_id");
+    const salario = document.getElementById("salario");
+    const numero_identificacion_tercero = document.getElementById(
+      "numero_identificacion_tercero"
+    );
+    const nombre_apellido_tercero = document.getElementById(
+      "nombre_apellido_tercero"
+    );
+
+    if (
+      !numero_identificacion.value ||
+      !nombres.value ||
+      !apellidos.value ||
+      !estado_civil.value ||
+      !rif.value ||
+      !telefono.value ||
+      !correo.value ||
+      !fecha_nacimiento.value ||
+      !nacimiento_lugar.value ||
+      !nacimiento_pais_id.value ||
+      nacimiento_pais_id.value === "Seleccione" ||
+      !nacimiento_estado_id.value ||
+      nacimiento_estado_id.value === "Seleccione" ||
+      !pais_id.value ||
+      pais_id.value === "Seleccione" ||
+      !estado_id.value ||
+      estado_id.value === "Seleccione" ||
+      !municipio_id.value ||
+      municipio_id.value === "Seleccione" ||
+      !parroquia_id.value ||
+      parroquia_id.value === "Seleccione" ||
+      !urbanizacion_sector.value ||
+      !calle_avenida.value ||
+      !talla_camisa.value ||
+      !talla_pantalon.value ||
+      !talla_calzado.value ||
+      !numero_cuenta.value ||
+      !empresa_id.value ||
+      empresa_id.value === "Seleccione" ||
+      !departamento_id.value ||
+      departamento_id.value === "Seleccione" ||
+      !cargo_id.value ||
+      cargo_id.value === "Seleccione" ||
+      !cargo_nivel_id.value ||
+      cargo_nivel_id.value === "Seleccione" ||
+      !salario.value ||
+      !datosIngreso.referencias_personales.length ||
+      !datosIngreso.contactos_emergencia.length ||
+      (datosIngreso.titular_cuenta === "Tercero" &&
+        (!numero_identificacion_tercero.value ||
+          !nombre_apellido_tercero.value))
+    ) {
+      Swal.fire({
+        title: "Oops...",
+        text: "Datos Faltantes",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+
+      return;
+    }
+
+    dispatch(saveFichaIngreso(token, datosIngreso)).then(() => {
+      window.scroll(0, 0);
+      window.location.reload();
+    });
   };
 
   return (
@@ -506,7 +667,7 @@ export function FormularioIngreso() {
       <br />
       <Hr />
       <br />
-      <div className="sm:w-full sm:max-w-7xl">
+      <div className="w-full">
         {/* Información Personal */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
@@ -526,6 +687,7 @@ export function FormularioIngreso() {
                   id="numero_identificacion"
                   name="numero_identificacion"
                   onChange={handleValidate}
+                  onBlur={handleEmpleadoExiste}
                 />
               </div>
             </div>
@@ -926,14 +1088,14 @@ export function FormularioIngreso() {
           {datosIngreso.tipo_vivienda === "Edificio" && (
             <div className="grid grid-cols-2">
               <div className="mr-2">
-                <Label htmlFor="piso">piso</Label>
+                <Label htmlFor="piso">Piso</Label>
                 <Input name="piso" id="piso" onChange={handleValidate} />
                 {errors.tallaCalzado && (
                   <p className="text-red-500">{errors.tallaCalzado}</p>
                 )}
               </div>
               <div className="ml-2">
-                <Label htmlFor="apartamento">apartamento</Label>
+                <Label htmlFor="apartamento">Apartamento</Label>
                 <Input
                   name="apartamento"
                   id="apartamento"
@@ -1219,7 +1381,7 @@ export function FormularioIngreso() {
                     <td className="px-4 py-4">
                       <span
                         className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
-                        onClick={() => hanndleRemoveTrabajosAnteriores(i)}
+                        onClick={() => handleRemoveTrabajosAnteriores(i)}
                       >
                         Borrar
                       </span>
@@ -1266,6 +1428,87 @@ export function FormularioIngreso() {
                 name="posee_parientes_empresa"
               />
             </div>
+          </div>
+        </div>
+
+        {/* Referencias Personales */}
+        <div className="mt-8 ">
+          <Title>Referencias Personales</Title>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+            <div>
+              <Label htmlFor="nombre_apellido">Nombres y Apellidos</Label>
+              <Input id="nombre_apellido" name="nombre_apellido" />
+            </div>
+            <div>
+              <Label htmlFor="direccion">Direccion</Label>
+              <Input id="direccion" name="direccion" />
+            </div>
+            <div>
+              <Label htmlFor="telefono_referencia">Telefono</Label>
+              <Input id="telefono_referencia" name="telefono" />
+            </div>
+            <div>
+              <Label htmlFor="ocupacion">Ocupacion</Label>
+              <Input id="ocupacion" name="ocupacion" />
+            </div>
+
+            <div className="sm:col-span-2 md:col-span-1">
+              <Button
+                type="button"
+                onClick={handleAddReferenciaPersonal}
+                className="w-full flex mt-7 items-center justify-center space-x-2"
+              >
+                Agregar Referencia Personal
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8">
+          <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg mt-8">
+            <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
+              <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
+                <tr className="text-black">
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Nombres Y Apellidos</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Direccion</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Telefono</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Ocupacion</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Acciones</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {datosIngreso.referencias_personales.map((referencia, i) => (
+                  <tr
+                    key={i}
+                    className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <td className="px-4 py-4">{referencia.nombre_apellido}</td>
+                    <td className="px-4 py-4">{referencia.direccion}</td>
+                    <td className="px-4 py-4">{referencia.telefono}</td>
+                    <td className="px-4 py-4">{referencia.ocupacion}</td>
+                    <td className="px-4 py-4">
+                      <span
+                        className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
+                        onClick={() => handleRemoveReferenciaPersonal(i)}
+                      >
+                        Borrar
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -1384,8 +1627,8 @@ export function FormularioIngreso() {
               />
             </div>
             <div className="md:col-span-2">
-              <Label htmlFor="direccion">Direccion</Label>
-              <Input id="direccion" name="direccion" />
+              <Label htmlFor="direccion_contacto_emergencia">Direccion</Label>
+              <Input id="direccion_contacto_emergencia" name="direccion" />
             </div>
 
             <div>
@@ -1766,7 +2009,7 @@ export function FormularioIngreso() {
         <div className="mt-8 flex justify-center">
           <Button
             className="sm:w-full md:w-auto flex items-center justify-center space-x-2"
-            onClick={handleSubmit}
+            onClick={handleSaveFicha}
           >
             <FaFloppyDisk />
             <span>Guardar</span>
