@@ -1445,11 +1445,11 @@ export function FormularioIngreso() {
               <Input id="direccion" name="direccion" />
             </div>
             <div>
-              <Label htmlFor="telefono_referencia">telefono</Label>
+              <Label htmlFor="telefono_referencia">Telefono</Label>
               <Input id="telefono_referencia" name="telefono" />
             </div>
             <div>
-              <Label htmlFor="ocupacion">ocupacion</Label>
+              <Label htmlFor="ocupacion">Ocupacion</Label>
               <Input id="ocupacion" name="ocupacion" />
             </div>
 
