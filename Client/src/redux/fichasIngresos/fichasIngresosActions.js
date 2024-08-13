@@ -35,6 +35,14 @@ export const saveFichaIngreso = (token, datosIngreso) => {
         );
       }
 
+      if (datosIngreso.referencias_personales.length) {
+        await postReferenciasPersonales(
+          token,
+          data.empleado_id,
+          datosIngreso.referencias_personales
+        );
+      }
+
       await postSalud(token, data.empleado_id, datosIngreso);
 
       await postContactosEmergencia(
@@ -114,6 +122,31 @@ const postExperiencias = async (token, empleado_id, experiencias) => {
       {
         empleado_id,
         experiencias,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
+
+const postReferenciasPersonales = async (
+  token,
+  empleado_id,
+  referencias_personales
+) => {
+  const URL_ADD_REFERENCIAS_PERSONALES = `${URL_SERVER}/referencias_personales`;
+
+  try {
+    await axios.post(
+      `${URL_ADD_REFERENCIAS_PERSONALES}`,
+      {
+        empleado_id,
+        referencias_personales,
       },
       {
         headers: { authorization: `Bearer ${token}` },

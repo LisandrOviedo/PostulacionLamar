@@ -87,6 +87,8 @@ export const getEmpleadoExistencia = async (
   }
 };
 
+export const getEmpleadoToGenPDF = async () => {};
+
 export const putPassword = async (token, body) => {
   const URL_PUT_PASSWORD = `${URL_SERVER}/empleados/modificarClave`;
 

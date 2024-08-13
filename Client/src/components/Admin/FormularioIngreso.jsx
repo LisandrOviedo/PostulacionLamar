@@ -31,10 +31,10 @@ import {
   resetCargos,
 } from "../../redux/cargos/cargosActions";
 import { saveFichaIngreso } from "../../redux/fichasIngresos/fichasIngresosActions";
-import validations from "../../utils/validacionesAcceso";
 import { Button, Input, Label, Select, Title, Hr } from "../UI";
 import { FaFloppyDisk, FaCircleInfo } from "react-icons/fa6";
 import { YYYYMMDD } from "../../utils/formatearFecha";
+import validations from "../../utils/validacionesAcceso";
 
 import Swal from "sweetalert2";
 
@@ -86,6 +86,7 @@ export function FormularioIngreso() {
     grado_instruccion: "Primaria",
     titulos_obtenidos: [],
     experiencias: [],
+    referencias_personales: [],
     posee_parientes_empresa: "0",
     contactos_emergencia: [],
     alergia_alimentos: false,
@@ -261,11 +262,21 @@ export function FormularioIngreso() {
     setDatosIngreso({ ...datosIngreso, titulos_obtenidos: newTitulo });
   };
 
-  const hanndleRemoveTrabajosAnteriores = (index) => {
+  const handleRemoveTrabajosAnteriores = (index) => {
     const newTrabajoAnterior = datosIngreso.experiencias.filter(
       (_, i) => i !== index
     );
     setDatosIngreso({ ...datosIngreso, experiencias: newTrabajoAnterior });
+  };
+
+  const handleRemoveReferenciaPersonal = (index) => {
+    const newReferenciaPersonal = datosIngreso.referencias_personales.filter(
+      (_, i) => i !== index
+    );
+    setDatosIngreso({
+      ...datosIngreso,
+      referencias_personales: newReferenciaPersonal,
+    });
   };
 
   const handleRemoveContactoEmergencia = (index) => {
@@ -412,6 +423,65 @@ export function FormularioIngreso() {
     fecha_hasta_experiencia.value = null;
   };
 
+  const handleAddReferenciaPersonal = () => {
+    const nombres_apellidos = document.getElementById("nombres_apellidos");
+    const direccion = document.getElementById("direccion");
+    const telefono = document.getElementById("telefono_referencia");
+    const ocupacion = document.getElementById("ocupacion");
+
+    if (
+      !nombres_apellidos.value ||
+      !direccion.value ||
+      !telefono.value ||
+      !ocupacion.value
+    ) {
+      Swal.fire({
+        title: "Oops...",
+        text: "Faltan campos por llenar para añadir tu referencia personal",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      return;
+    }
+
+    const refValidatorInclude = datosIngreso.referencias_personales.some(
+      (referencia) =>
+        referencia.nombres_apellidos.toLowerCase() ===
+          nombres_apellidos.value.toLowerCase() &&
+        referencia.telefono === telefono.value.toLowerCase()
+    );
+
+    if (refValidatorInclude) {
+      Swal.fire({
+        title: "Oops...",
+        text: "Ya has agregado esareferencia personal",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      return;
+    }
+
+    setDatosIngreso({
+      ...datosIngreso,
+      referencias_personales: [
+        ...datosIngreso.referencias_personales,
+        {
+          nombres_apellidos: nombres_apellidos.value,
+          direccion: direccion.value,
+          telefono: telefono.value,
+          ocupacion: ocupacion.value,
+        },
+      ],
+    });
+
+    nombres_apellidos.value = null;
+    direccion.value = null;
+    telefono.value = null;
+    ocupacion.value = null;
+  };
+
   const handleAddContactoEmergencia = () => {
     const input_nombre_apellido = document.getElementById("nombre_apellido");
     const input_parentesco_contacto_emergencia = document.getElementById(
@@ -474,25 +544,24 @@ export function FormularioIngreso() {
     input_direccion.value = null;
   };
 
-  // const handleEmpleadoExiste = (e) => {
-  //   console.log("exist?");
-  //   e.preventDefault();
-  //   const { value } = e.target;
-  //   if (value) {
-  //     getEmpleadoExistencia(
-  //       token,
-  //       datosIngreso.tipo_identificacion,
-  //       datosIngreso.numero_identificacion
-  //     ).then((data) => {
-  //       if (data) {
-  //         const numero_identificacion = document.getElementById(
-  //           "numero_identificacion"
-  //         );
-  //         numero_identificacion.value = null;
-  //       }
-  //     });
-  //   }
-  // };
+  const handleEmpleadoExiste = (e) => {
+    e.preventDefault();
+    const { value } = e.target;
+    if (value) {
+      getEmpleadoExistencia(
+        token,
+        datosIngreso.tipo_identificacion,
+        datosIngreso.numero_identificacion
+      ).then((data) => {
+        if (data) {
+          const numero_identificacion = document.getElementById(
+            "numero_identificacion"
+          );
+          numero_identificacion.value = null;
+        }
+      });
+    }
+  };
 
   const handleSubmit = () => {
     dispatch(saveFichaIngreso(token, datosIngreso));
@@ -526,6 +595,7 @@ export function FormularioIngreso() {
                   id="numero_identificacion"
                   name="numero_identificacion"
                   onChange={handleValidate}
+                  onBlur={handleEmpleadoExiste}
                 />
               </div>
             </div>
@@ -1219,7 +1289,7 @@ export function FormularioIngreso() {
                     <td className="px-4 py-4">
                       <span
                         className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
-                        onClick={() => hanndleRemoveTrabajosAnteriores(i)}
+                        onClick={() => handleRemoveTrabajosAnteriores(i)}
                       >
                         Borrar
                       </span>
@@ -1266,6 +1336,89 @@ export function FormularioIngreso() {
                 name="posee_parientes_empresa"
               />
             </div>
+          </div>
+        </div>
+
+        {/* Referencias Personales */}
+        <div className="mt-8 ">
+          <Title>Referencias Personales</Title>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+            <div>
+              <Label htmlFor="nombres_apellidos">Nombres y Apellidos</Label>
+              <Input id="nombres_apellidos" name="nombres_apellidos" />
+            </div>
+            <div>
+              <Label htmlFor="direccion">Direccion</Label>
+              <Input id="direccion" name="direccion" />
+            </div>
+            <div>
+              <Label htmlFor="telefono_referencia">telefono</Label>
+              <Input id="telefono_referencia" name="telefono_referencia" />
+            </div>
+            <div>
+              <Label htmlFor="ocupacion">ocupacion</Label>
+              <Input id="ocupacion" name="ocupacion" />
+            </div>
+
+            <div className="sm:col-span-2 md:col-span-1">
+              <Button
+                type="button"
+                onClick={handleAddReferenciaPersonal}
+                className="w-full flex mt-7 items-center justify-center space-x-2"
+              >
+                Agregar Referencia Personal
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8">
+          <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg mt-8">
+            <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
+              <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
+                <tr className="text-black">
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Nombres Y Apellidos</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Direccion</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Telefono</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Ocupacion</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Acciones</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {datosIngreso.referencias_personales.map((referencia, i) => (
+                  <tr
+                    key={i}
+                    className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
+                  >
+                    <td className="px-4 py-4">
+                      {referencia.nombres_apellidos}
+                    </td>
+                    <td className="px-4 py-4">{referencia.direccion}</td>
+                    <td className="px-4 py-4">{referencia.telefono}</td>
+                    <td className="px-4 py-4">{referencia.ocupacion}</td>
+                    <td className="px-4 py-4">
+                      <span
+                        className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
+                        onClick={() => handleRemoveReferenciaPersonal(i)}
+                      >
+                        Borrar
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
 
