@@ -7,7 +7,6 @@ const {
   putIdioma,
   deleteIdioma,
   postIdiomasCurriculo,
-  deleteIdiomasCurriculo,
 } = require("../handlers/idiomas_handlers");
 
 const { authenticateToken } = require("../auth/index");
@@ -23,11 +22,5 @@ idiomas.post("/agregarIdioma", authenticateToken, postIdiomasCurriculo);
 
 idiomas.put("/modificar", authenticateToken, putIdioma);
 idiomas.put("/inactivar", authenticateToken, deleteIdioma);
-
-idiomas.delete(
-  "/eliminarIdiomas/:curriculo_id",
-  authenticateToken,
-  deleteIdiomasCurriculo
-);
 
 module.exports = idiomas;

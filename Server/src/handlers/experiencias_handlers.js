@@ -4,7 +4,6 @@ const {
   crearExperiencia,
   modificarExperiencia,
   inactivarExperiencia,
-  eliminarExperienciasCurriculo,
 } = require("../controllers/experiencias_controllers");
 
 const getExperiencias = async (req, res) => {
@@ -65,23 +64,10 @@ const deleteExperiencia = async (req, res) => {
   }
 };
 
-const deleteExperienciasCurriculo = async (req, res) => {
-  const { empleado_id } = req.params;
-
-  try {
-    const response = await eliminarExperienciasCurriculo(empleado_id);
-
-    return res.status(201).json(response);
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
-  }
-};
-
 module.exports = {
   getExperiencias,
   getExperiencia,
   postExperiencia,
   putExperiencia,
   deleteExperiencia,
-  deleteExperienciasCurriculo,
 };

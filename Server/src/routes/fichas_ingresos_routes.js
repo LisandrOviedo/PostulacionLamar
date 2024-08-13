@@ -3,6 +3,7 @@ const {
   getFichasIngresosEmpleado,
   getFichaIngresoEmpleado,
   getFichaIngreso,
+  getFichaIngresoPDF,
   postFichaIngreso,
   putFichaIngreso,
   deleteFichaIngreso,
@@ -29,6 +30,7 @@ fichas_ingresos.get(
 );
 
 fichas_ingresos.post("/", authenticateToken, postFichaIngreso);
+fichas_ingresos.post("/detalle", authenticateToken, getFichaIngresoPDF);
 
 fichas_ingresos.put("/modificar", authenticateToken, putFichaIngreso);
 fichas_ingresos.put("/inactivar", authenticateToken, deleteFichaIngreso);

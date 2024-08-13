@@ -48,11 +48,13 @@ const crearTitulosObtenidos = async (empleado_id, titulos_obtenidos) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     await traerEmpleado(empleado_id);
 
+    await eliminarTitulosEmpleado(empleado_id);
+
     for (const titulo of titulos_obtenidos) {
+      t = await conn.transaction();
+
       const [titulo_obtenido, created] = await Titulos_Obtenidos.findOrCreate({
         where: {
           empleado_id: empleado_id,
@@ -69,9 +71,9 @@ const crearTitulosObtenidos = async (empleado_id, titulos_obtenidos) => {
         },
         transaction: t,
       });
-    }
 
-    await t.commit();
+      await t.commit();
+    }
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -105,9 +107,9 @@ const modificarTitulosObtenidos = async (
   let t;
 
   try {
-    t = await conn.transaction();
-
     await traerTituloObtenido(titulo_obtenido_id);
+
+    t = await conn.transaction();
 
     await Titulos_Obtenidos.update(
       {
@@ -145,9 +147,9 @@ const inactivarTituloObtenido = async (titulo_obtenido_id) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     const titulo_obtenido = await traerTituloObtenido(titulo_obtenido_id);
+
+    t = await conn.transaction();
 
     await Titulos_Obtenidos.update(
       { activo: !titulo_obtenido.activo },
@@ -177,9 +179,9 @@ const eliminarTitulosEmpleado = async (empleado_id) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     await traerEmpleado(empleado_id);
+
+    t = await conn.transaction();
 
     await Titulos_Obtenidos.destroy({
       where: {
@@ -206,5 +208,4 @@ module.exports = {
   crearTitulosObtenidos,
   modificarTitulosObtenidos,
   inactivarTituloObtenido,
-  eliminarTitulosEmpleado,
 };
