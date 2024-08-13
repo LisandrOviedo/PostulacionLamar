@@ -1451,11 +1451,11 @@ export function FormularioIngreso() {
               <Input id="direccion" name="direccion" />
             </div>
             <div>
-              <Label htmlFor="telefono_referencia">Telefono</Label>
+              <Label htmlFor="telefono_referencia">Teléfono</Label>
               <Input id="telefono_referencia" name="telefono" />
             </div>
             <div>
-              <Label htmlFor="ocupacion">Ocupacion</Label>
+              <Label htmlFor="ocupacion">Ocupación</Label>
               <Input id="ocupacion" name="ocupacion" />
             </div>
 
@@ -1483,7 +1483,7 @@ export function FormularioIngreso() {
                     <div className="flex items-center">Direccion</div>
                   </th>
                   <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Telefono</div>
+                    <div className="flex items-center">Teléfono</div>
                   </th>
                   <th scope="col" className="px-4 py-3">
                     <div className="flex items-center">Ocupacion</div>
@@ -1630,7 +1630,7 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="telefono_contacto_emergencia">Telefono</Label>
+              <Label htmlFor="telefono_contacto_emergencia">Teléfono</Label>
               <Input
                 id="telefono_contacto_emergencia"
                 name="telefono"
@@ -1666,7 +1666,7 @@ export function FormularioIngreso() {
                     <div className="flex items-center">Parentesco</div>
                   </th>
                   <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Telefono</div>
+                    <div className="flex items-center">Teléfono</div>
                   </th>
                   <th scope="col" className="px-4 py-3">
                     <div className="flex items-center">Direccion</div>
