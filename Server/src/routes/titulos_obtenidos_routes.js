@@ -5,7 +5,6 @@ const {
   postTitulosObtenidos,
   putTituloObtenido,
   deleteTituloObtenido,
-  deleteTitulosEmpleado,
 } = require("../handlers/titulos_obtenidos_handlers");
 
 const { authenticateToken } = require("../auth/index");
@@ -27,11 +26,5 @@ titulos_obtenidos.post("/", authenticateToken, postTitulosObtenidos);
 
 titulos_obtenidos.put("/modificar", authenticateToken, putTituloObtenido);
 titulos_obtenidos.put("/inactivar", authenticateToken, deleteTituloObtenido);
-
-titulos_obtenidos.delete(
-  "/eliminarTitulos/:empleado_id",
-  authenticateToken,
-  deleteTitulosEmpleado
-);
 
 module.exports = titulos_obtenidos;

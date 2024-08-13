@@ -131,9 +131,9 @@ const modificarAreaInteres = async (area_interes_id, nombre) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     await traerAreaInteres(area_interes_id);
+
+    t = await conn.transaction();
 
     await Areas_Interes.update(
       {
@@ -167,9 +167,9 @@ const inactivarAreaInteres = async (area_interes_id) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     const area_interes = await traerAreaInteres(area_interes_id);
+
+    t = await conn.transaction();
 
     await Areas_Interes.update(
       { activo: !area_interes.activo },
@@ -199,11 +199,13 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     await traerCurriculo(curriculo_id);
 
+    await eliminarAreasInteresCurriculo(curriculo_id);
+
     for (const area of areas_interes) {
+      t = await conn.transaction();
+
       const [area_interes, created] =
         await Areas_Interes_Curriculos.findOrCreate({
           where: {
@@ -216,9 +218,9 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
           },
           transaction: t,
         });
-    }
 
-    await t.commit();
+      await t.commit();
+    }
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -238,9 +240,9 @@ const eliminarAreasInteresCurriculo = async (curriculo_id) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     await traerCurriculo(curriculo_id);
+
+    t = await conn.transaction();
 
     await Areas_Interes_Curriculos.destroy({
       where: {
@@ -268,5 +270,4 @@ module.exports = {
   modificarAreaInteres,
   inactivarAreaInteres,
   agregarAreasInteresCurriculo,
-  eliminarAreasInteresCurriculo,
 };

@@ -44,9 +44,11 @@ const crearExperiencia = async (empleado_id, experiencias) => {
   try {
     await traerEmpleado(empleado_id);
 
-    t = await conn.transaction();
+    await eliminarExperienciasEmpleado(empleado_id);
 
     for (const exp of experiencias) {
+      t = await conn.transaction();
+
       const [experiencia, created] = await Experiencias.findOrCreate({
         where: {
           empleado_id: empleado_id,
@@ -66,9 +68,9 @@ const crearExperiencia = async (empleado_id, experiencias) => {
         },
         transaction: t,
       });
-    }
 
-    await t.commit();
+      await t.commit();
+    }
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -102,9 +104,9 @@ const modificarExperiencia = async (
   let t;
 
   try {
-    t = await conn.transaction();
-
     await traerExperiencia(experiencia_id);
+
+    t = await conn.transaction();
 
     await Experiencias.update(
       {
@@ -143,9 +145,9 @@ const inactivarExperiencia = async (experiencia_id) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     const experiencia = await traerExperiencia(experiencia_id);
+
+    t = await conn.transaction();
 
     await Experiencias.update(
       { activo: !experiencia.activo },
@@ -167,7 +169,7 @@ const inactivarExperiencia = async (experiencia_id) => {
   }
 };
 
-const eliminarExperienciasCurriculo = async (empleado_id) => {
+const eliminarExperienciasEmpleado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -175,9 +177,9 @@ const eliminarExperienciasCurriculo = async (empleado_id) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     await traerEmpleado(empleado_id);
+
+    t = await conn.transaction();
 
     await Experiencias.destroy({
       where: {
@@ -202,5 +204,4 @@ module.exports = {
   crearExperiencia,
   modificarExperiencia,
   inactivarExperiencia,
-  eliminarExperienciasCurriculo,
 };

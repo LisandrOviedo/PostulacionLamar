@@ -132,9 +132,9 @@ const modificarIdioma = async (idioma_id, nombre) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     await traerIdioma(idioma_id);
+
+    t = await conn.transaction();
 
     await Idiomas.update(
       {
@@ -168,9 +168,9 @@ const inactivarIdioma = async (idioma_id) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     const idioma = await traerIdioma(idioma_id);
+
+    t = await conn.transaction();
 
     await Idiomas.update(
       { activo: !idioma.activo },
@@ -200,11 +200,13 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     await traerCurriculo(curriculo_id);
 
+    await eliminarIdiomasCurriculo(curriculo_id);
+
     for (const idioma of idiomas) {
+      t = await conn.transaction();
+
       const [crearIdioma, created] = await Idiomas_Curriculos.findOrCreate({
         where: {
           curriculo_id: curriculo_id,
@@ -217,9 +219,9 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
         },
         transaction: t,
       });
-    }
 
-    await t.commit();
+      await t.commit();
+    }
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -239,9 +241,9 @@ const eliminarIdiomasCurriculo = async (curriculo_id) => {
   let t;
 
   try {
-    t = await conn.transaction();
-
     await traerCurriculo(curriculo_id);
+
+    t = await conn.transaction();
 
     await Idiomas_Curriculos.destroy({
       where: {
@@ -269,5 +271,4 @@ module.exports = {
   modificarIdioma,
   inactivarIdioma,
   agregarIdiomasCurriculo,
-  eliminarIdiomasCurriculo,
 };
