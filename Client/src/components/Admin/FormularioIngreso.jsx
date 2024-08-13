@@ -423,7 +423,9 @@ export function FormularioIngreso() {
   };
 
   const handleAddReferenciaPersonal = () => {
-    const nombre_apellido = document.getElementById("nombre_apellido");
+    const nombre_apellido = document.getElementById(
+      "nombre_apellido_referencia"
+    );
     const direccion = document.getElementById("direccion");
     const telefono = document.getElementById("telefono_referencia");
     const ocupacion = document.getElementById("ocupacion");
@@ -479,7 +481,9 @@ export function FormularioIngreso() {
   };
 
   const handleAddContactoEmergencia = () => {
-    const input_nombre_apellido = document.getElementById("nombre_apellido");
+    const input_nombre_apellido = document.getElementById(
+      "nombre_apellido_contacto_emergencia"
+    );
     const input_parentesco_contacto_emergencia = document.getElementById(
       "parentesco_contacto_emergencia"
     );
@@ -1437,8 +1441,10 @@ export function FormularioIngreso() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
             <div>
-              <Label htmlFor="nombre_apellido">Nombres y Apellidos</Label>
-              <Input id="nombre_apellido" name="nombre_apellido" />
+              <Label htmlFor="nombre_apellido_referencia">
+                Nombres y Apellidos
+              </Label>
+              <Input id="nombre_apellido_referencia" name="nombre_apellido" />
             </div>
             <div>
               <Label htmlFor="direccion">Direccion</Label>
@@ -1596,8 +1602,13 @@ export function FormularioIngreso() {
           <Title>Contactos de Emergencia</Title>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Label htmlFor="nombre_apellido">Nombre y Apellido</Label>
-              <Input id="nombre_apellido" name="nombre_apellido" />
+              <Label htmlFor="nombre_apellido_contacto_emergencia">
+                Nombre y Apellido
+              </Label>
+              <Input
+                id="nombre_apellido_contacto_emergencia"
+                name="nombre_apellido"
+              />
               {errors.nombre_apellido && (
                 <p className="text-red-500">{errors.nombre_apellido}</p>
               )}
