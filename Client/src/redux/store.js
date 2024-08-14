@@ -51,6 +51,7 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false,
     }),
+  devTools: process.env.NODE_ENV === "production" ? false : true,
 });
 
 // Configuración del persistor de Redux Persist
