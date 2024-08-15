@@ -31,10 +31,18 @@ ${valores
   `;
 };
 
-const reporteFichaIngreso = (content) => {
+const reporteFichaIngreso = (content, foto_empleado) => {
   const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
 
   const logo = fs.readFileSync(logoPath).toString("base64");
+
+  let fotoEmpleado;
+
+  if (foto_empleado.foto_perfil_ruta) {
+    fotoEmpleado = fs
+      .readFileSync(foto_empleado.foto_perfil_ruta)
+      .toString("base64");
+  }
 
   return `
 <!DOCTYPE html>
@@ -71,9 +79,15 @@ height: 1px;
 background: black;
 }
 
-.cuadro{
+.pulgares{
 height: 100px;
 width: 80px;
+border: 1px solid #000;
+}
+
+.foto{
+height: 100px;
+width: 100px;
 border: 1px solid #000;
 }
 </style>
@@ -191,11 +205,19 @@ border: 1px solid #000;
     <br><br><br>
     <div style="display: flex; justify-content: space-evenly; text-align: center;">
     <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
-    <div class="cuadro"></div>
+    ${
+      foto_empleado.foto_perfil_ruta
+        ? `<img style="width: 100px; height: 100px; object-fit: cover;" src="data:image/png;base64,${fotoEmpleado}" alt="Foto Empleado" />`
+        : `<div class="foto"></div>`
+    }
+    <span style="font-size: 12px;">Foto reciente</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+    <div class="pulgares"></div>
     <span style="font-size: 12px;">Pulgar izquierdo</span>
     </div>
     <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
-    <div class="cuadro"></div>
+    <div class="pulgares"></div>
     <span style="font-size: 12px;">Pulgar derecho</span>
     </div>
     </div>
