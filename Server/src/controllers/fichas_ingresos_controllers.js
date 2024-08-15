@@ -563,8 +563,7 @@ const traerFichaIngresoPDF = async (empleado_id) => {
         },
         {
           titulo_campo: "Salario: ",
-          descripcion_campo:
-            ficha_ingreso.Cargos_Niveles[0].Fichas_Ingresos.salario,
+          descripcion_campo: `${ficha_ingreso.Cargos_Niveles[0].Fichas_Ingresos.salario} Bs.`,
         },
         {
           titulo_campo: "Fecha de ingreso: ",
