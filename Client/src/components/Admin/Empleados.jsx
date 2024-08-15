@@ -13,6 +13,8 @@ import {
   resetPassword,
 } from "../../redux/empleados/empleadosActions";
 
+import { postFichaIngresoPDF } from "../../redux/fichasIngresos/fichasIngresosActions";
+
 import { Button, Input, Label, Select, Title } from "../UI";
 
 import {
@@ -29,6 +31,8 @@ export function Empleados() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const token = useSelector((state) => state.empleados.token);
 
@@ -135,6 +139,27 @@ export function Empleados() {
   useEffect(() => {
     dispatch(getAllEmpleados(token, filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
+
+  const handleVerFicha = (empleado_id, identificacion) => {
+    dispatch(postFichaIngresoPDF(token, empleado_id, identificacion)).then(
+      (response) => {
+        Swal.fire({
+          text: `Ficha de ingreso del empleado ${identificacion} generada ¿Deseas abrirla?`,
+          icon: "info",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Si",
+          cancelButtonText: "No",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${response.data}`;
+            window.open(URL_GET_PDF, "_blank");
+          }
+        });
+      }
+    );
+  };
 
   const handleVerDetalles = (empleado_id) => {
     dispatch(getEmpleadoDetail(token, empleado_id))
@@ -448,14 +473,29 @@ export function Empleados() {
                       {DDMMYYYY(empleado.updatedAt)}
                     </td>
                     <td className="px-4 py-4 flex gap-2">
+                      {empleado.Cargos_Niveles[0]?.Fichas_Ingresos
+                        .ficha_ingreso_id && (
+                        <Button
+                          className="m-0 w-auto text-xs"
+                          onClick={() =>
+                            handleVerFicha(
+                              empleado.empleado_id,
+                              `${empleado.tipo_identificacion}${empleado.numero_identificacion}`
+                            )
+                          }
+                        >
+                          Ver Ficha
+                        </Button>
+                      )}
+
                       <Button
-                        className="m-0 w-auto"
+                        className="m-0 w-auto text-xs"
                         onClick={() => handleVerDetalles(empleado.empleado_id)}
                       >
                         Detalles
                       </Button>
                       <Button
-                        className="m-0 w-auto bg-yellow-400 hover:bg-yellow-500"
+                        className="m-0 w-auto text-xs bg-yellow-400 hover:bg-yellow-500"
                         onClick={() =>
                           handleReiniciarClave(empleado.empleado_id)
                         }
@@ -463,7 +503,7 @@ export function Empleados() {
                         Reiniciar Clave
                       </Button>
                       <Button
-                        className={`m-0 w-auto ${
+                        className={`m-0 w-auto text-xs ${
                           empleado.activo
                             ? "bg-red-500 hover:bg-red-600 "
                             : "bg-green-500 hover:bg-green-600"
