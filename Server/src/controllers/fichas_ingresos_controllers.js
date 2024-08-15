@@ -305,7 +305,7 @@ const traerFichaIngresoPDF = async (empleado_id) => {
             ficha_ingreso.licencia_conducir_vencimiento || "No posee",
         },
         {
-          titulo_campo: "Carta médica: ",
+          titulo_campo: "Fecha de vencimiento de carta médica: ",
           descripcion_campo:
             ficha_ingreso.carta_medica_vencimiento || "No posee",
         },
