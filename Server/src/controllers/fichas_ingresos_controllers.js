@@ -300,12 +300,12 @@ const traerFichaIngresoPDF = async (empleado_id) => {
             : "No posee",
         },
         {
-          titulo_campo: "Fecha de vencimiento de licencia: ",
+          titulo_campo: "Fecha de vencimiento de licencia de conducir: ",
           descripcion_campo:
             ficha_ingreso.licencia_conducir_vencimiento || "No posee",
         },
         {
-          titulo_campo: "Carta médica: ",
+          titulo_campo: "Fecha de vencimiento de carta médica: ",
           descripcion_campo:
             ficha_ingreso.carta_medica_vencimiento || "No posee",
         },
@@ -383,51 +383,51 @@ const traerFichaIngresoPDF = async (empleado_id) => {
       ],
     });
 
-    // let titulos_obtenidos = [];
+    let titulos_obtenidos = [];
 
-    // ficha_ingreso.Titulos_Obtenidos.forEach((titulo_obtenido) => {
-    //   titulos_obtenidos.push({
-    //     grado_instruccion: titulo_obtenido.grado_instruccion,
-    //     fecha_desde: titulo_obtenido.fecha_desde,
-    //     fecha_hasta: titulo_obtenido.fecha_hasta,
-    //     nombre_instituto: titulo_obtenido.nombre_instituto,
-    //     titulo_obtenido: titulo_obtenido.titulo_obtenido,
-    //   });
-    // });
+    ficha_ingreso.Titulos_Obtenidos.forEach((titulo_obtenido) => {
+      titulos_obtenidos.push({
+        grado_instruccion: titulo_obtenido.grado_instruccion,
+        fecha_desde: titulo_obtenido.fecha_desde,
+        fecha_hasta: titulo_obtenido.fecha_hasta,
+        nombre_instituto: titulo_obtenido.nombre_instituto,
+        titulo_obtenido: titulo_obtenido.titulo_obtenido,
+      });
+    });
 
-    // content.push({
-    //   titulo: "EDUCACIÓN",
-    //   contenido: [
-    //     {
-    //       titulo_campo: "Títulos Obtenidos",
-    //       descripcion_campo: titulos_obtenidos,
-    //     },
-    //   ],
-    // });
+    content.push({
+      titulo: "EDUCACIÓN",
+      contenido: [
+        {
+          titulo_campo: "Títulos Obtenidos",
+          descripcion_campo: titulos_obtenidos,
+        },
+      ],
+    });
 
-    // let experiencias = [];
+    let experiencias = [];
 
-    // ficha_ingreso.Experiencias.forEach((experiencia) => {
-    //   if (experiencia.tipo === "Laboral") {
-    //     experiencias.push({
-    //       tipo: experiencia.tipo,
-    //       cargo_titulo: experiencia.cargo_titulo,
-    //       fecha_desde: experiencia.fecha_desde,
-    //       fecha_hasta: experiencia.fecha_hasta,
-    //       empresa_centro_educativo: experiencia.empresa_centro_educativo,
-    //     });
-    //   }
-    // });
+    ficha_ingreso.Experiencias.forEach((experiencia) => {
+      if (experiencia.tipo === "Laboral") {
+        experiencias.push({
+          tipo: experiencia.tipo,
+          cargo_titulo: experiencia.cargo_titulo,
+          fecha_desde: experiencia.fecha_desde,
+          fecha_hasta: experiencia.fecha_hasta,
+          empresa_centro_educativo: experiencia.empresa_centro_educativo,
+        });
+      }
+    });
 
-    // content.push({
-    //   titulo: "TRABAJOS ANTERIORES",
-    //   contenido: [
-    //     {
-    //       titulo_campo: "Experiencias",
-    //       descripcion_campo: experiencias,
-    //     },
-    //   ],
-    // });
+    content.push({
+      titulo: "TRABAJOS ANTERIORES",
+      contenido: [
+        {
+          titulo_campo: "Experiencias",
+          descripcion_campo: experiencias,
+        },
+      ],
+    });
 
     content.push({
       titulo: "SALUD",
@@ -466,47 +466,47 @@ const traerFichaIngresoPDF = async (empleado_id) => {
       ],
     });
 
-    // let contactos_emergencia = [];
+    let contactos_emergencia = [];
 
-    // ficha_ingreso.Contactos_Emergencia.forEach((contacto) => {
-    //   contactos_emergencia.push({
-    //     nombre_apellido: contacto.nombre_apellido,
-    //     parentesco: contacto.parentesco,
-    //     telefono: contacto.telefono,
-    //     direccion: contacto.direccion,
-    //   });
-    // });
+    ficha_ingreso.Contactos_Emergencia.forEach((contacto) => {
+      contactos_emergencia.push({
+        nombre_apellido: contacto.nombre_apellido,
+        parentesco: contacto.parentesco,
+        telefono: contacto.telefono,
+        direccion: contacto.direccion,
+      });
+    });
 
-    // content.push({
-    //   titulo: "EN CASO DE EMERGENCIA",
-    //   contenido: [
-    //     {
-    //       titulo_campo: "Contactos de Emergencia",
-    //       descripcion_campo: contactos_emergencia,
-    //     },
-    //   ],
-    // });
+    content.push({
+      titulo: "EN CASO DE EMERGENCIA",
+      contenido: [
+        {
+          titulo_campo: "Contactos de Emergencia",
+          descripcion_campo: contactos_emergencia,
+        },
+      ],
+    });
 
-    // let referencias_personales = [];
+    let referencias_personales = [];
 
-    // ficha_ingreso.Referencias_Personales.forEach((referencia) => {
-    //   referencias_personales.push({
-    //     nombre_apellido: referencia.nombre_apellido,
-    //     direccion: referencia.direccion,
-    //     telefono: referencia.telefono,
-    //     ocupacion: referencia.ocupacion,
-    //   });
-    // });
+    ficha_ingreso.Referencias_Personales.forEach((referencia) => {
+      referencias_personales.push({
+        nombre_apellido: referencia.nombre_apellido,
+        direccion: referencia.direccion,
+        telefono: referencia.telefono,
+        ocupacion: referencia.ocupacion,
+      });
+    });
 
-    // content.push({
-    //   titulo: "REFERENCIAS PERSONALES (NO FAMILIARES)",
-    //   contenido: [
-    //     {
-    //       titulo_campo: "Referencias Personales",
-    //       descripcion_campo: referencias_personales,
-    //     },
-    //   ],
-    // });
+    content.push({
+      titulo: "REFERENCIAS PERSONALES (NO FAMILIARES)",
+      contenido: [
+        {
+          titulo_campo: "Referencias Personales",
+          descripcion_campo: referencias_personales,
+        },
+      ],
+    });
 
     content.push({
       titulo: "DATOS BANCARIOS",
@@ -527,26 +527,26 @@ const traerFichaIngresoPDF = async (empleado_id) => {
           titulo_campo: "Tipo de cuenta: ",
           descripcion_campo: ficha_ingreso.Datos_Bancarios[0].tipo_cuenta,
         },
-        // ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero
-        //   ? {
-        //       titulo_campo: "Nombre del titular (tercero): ",
-        //       descripcion_campo:
-        //         ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero,
-        //     }
-        //   : null,
-        // ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero
-        //   ? {
-        //       titulo_campo: "Número de identificación (tercero): ",
-        //       descripcion_campo: `${ficha_ingreso.Datos_Bancarios[0].tipo_identificacion_tercero}${ficha_ingreso.Datos_Bancarios[0].numero_identificacion_tercero}`,
-        //     }
-        //   : null,
-        // ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero
-        //   ? {
-        //       titulo_campo: "Parentesco (tercero): ",
-        //       descripcion_campo:
-        //         ficha_ingreso.Datos_Bancarios[0].parentesco_tercero,
-        //     }
-        //   : null,
+        ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero
+          ? {
+              titulo_campo: "Nombre del titular (tercero): ",
+              descripcion_campo:
+                ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero,
+            }
+          : {},
+        ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero
+          ? {
+              titulo_campo: "Número de identificación (tercero): ",
+              descripcion_campo: `${ficha_ingreso.Datos_Bancarios[0].tipo_identificacion_tercero}${ficha_ingreso.Datos_Bancarios[0].numero_identificacion_tercero}`,
+            }
+          : {},
+        ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero
+          ? {
+              titulo_campo: "Parentesco (tercero): ",
+              descripcion_campo:
+                ficha_ingreso.Datos_Bancarios[0].parentesco_tercero,
+            }
+          : {},
       ],
     });
 
@@ -563,8 +563,7 @@ const traerFichaIngresoPDF = async (empleado_id) => {
         },
         {
           titulo_campo: "Salario: ",
-          descripcion_campo:
-            ficha_ingreso.Cargos_Niveles[0].Fichas_Ingresos.salario,
+          descripcion_campo: `${ficha_ingreso.Cargos_Niveles[0].Fichas_Ingresos.salario} Bs.`,
         },
         {
           titulo_campo: "Fecha de ingreso: ",
@@ -574,8 +573,7 @@ const traerFichaIngresoPDF = async (empleado_id) => {
         {
           titulo_campo: "Observaciones: ",
           descripcion_campo:
-            ficha_ingreso.Cargos_Niveles[0].Fichas_Ingresos.observaciones ||
-            "",
+            ficha_ingreso.Cargos_Niveles[0].Fichas_Ingresos.observaciones || "",
         },
       ],
     });
