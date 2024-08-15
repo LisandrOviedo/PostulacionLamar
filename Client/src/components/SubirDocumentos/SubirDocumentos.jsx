@@ -219,7 +219,7 @@ export function SubirDocumentos() {
       const formData = new FormData();
       formData.append("empleado_id", empleado.empleado_id);
       formData.append(
-        "cedula",
+        "identificacion",
         `${empleado.tipo_identificacion}${empleado.numero_identificacion}`
       );
 
