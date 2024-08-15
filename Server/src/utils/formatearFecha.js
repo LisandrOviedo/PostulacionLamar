@@ -12,6 +12,20 @@ const DDMMYYYYHHMM = () => {
   return fechaHoraFormateada;
 };
 
+const DDMMYYYYHHMM2 = () => {
+  const fechaHoraActual = new Date();
+  const dia = String(fechaHoraActual.getDate()).padStart(2, "0");
+  const mes = String(fechaHoraActual.getMonth() + 1).padStart(2, "0");
+  const año = fechaHoraActual.getFullYear();
+  const hora = String(fechaHoraActual.getHours()).padStart(2, "0");
+  const minutos = String(fechaHoraActual.getMinutes()).padStart(2, "0");
+  const segundos = String(fechaHoraActual.getSeconds()).padStart(2, "0");
+
+  const fechaHoraFormateada = `${dia}-${mes}-${año} ${hora}:${minutos}:${segundos}`;
+
+  return fechaHoraFormateada;
+};
+
 const DDMMYYYY = (fecha) => {
   const isoDateString = fecha;
   const isoDate = new Date(isoDateString);
@@ -52,6 +66,7 @@ const fechaHoraActual = () => {
 
 module.exports = {
   DDMMYYYYHHMM,
+  DDMMYYYYHHMM2,
   DDMMYYYY,
   YYYYMMDD,
   calcularEdad,
