@@ -24,7 +24,7 @@ export function DatosPersonales() {
   const etnias_activas = useSelector((state) => state.etnias.etnias_activas);
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
-  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.numero_identificacion}/${empleado.foto_perfil_nombre}`;
+  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${empleado.foto_perfil_nombre}`;
 
   const [imagen, setImagen] = useState(
     empleado.foto_perfil_nombre ? FOTO_PERFIL : "./Person.svg"
