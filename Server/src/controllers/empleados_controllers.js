@@ -15,6 +15,7 @@ const {
   Etnias,
   Cargos,
   Cargos_Empleados,
+  Fichas_Ingresos,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
@@ -40,6 +41,19 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
         attributes: {
           exclude: ["rol_id", "clave"],
         },
+        include: [
+          {
+            model: Cargos_Niveles,
+            attributes: ["cargo_nivel_id"],
+            through: {
+              model: Fichas_Ingresos,
+              attributes: ["ficha_ingreso_id"],
+              where: {
+                activo: true,
+              },
+            },
+          },
+        ],
         where: {
           [Op.and]: [
             filtros.numero_identificacion
@@ -161,6 +175,25 @@ const traerEmpleadoExistencia = async (
     if (empleado) {
       return { empleado_id: empleado.empleado_id };
     }
+  } catch (error) {
+    throw new Error(`Error al traer el empleado: ${error.message}`);
+  }
+};
+
+const traerFotoEmpleado = async (empleado_id) => {
+  if (!empleado_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  try {
+    const foto_empleado = await Empleados.findOne({
+      attributes: ["foto_perfil_ruta"],
+      where: {
+        empleado_id: empleado_id,
+      },
+    });
+
+    return foto_empleado;
   } catch (error) {
     throw new Error(`Error al traer el empleado: ${error.message}`);
   }
@@ -814,6 +847,7 @@ module.exports = {
   todosLosEmpleados,
   traerEmpleado,
   traerEmpleadoExistencia,
+  traerFotoEmpleado,
   login,
   cargarEmpleados,
   crearEmpleado,
