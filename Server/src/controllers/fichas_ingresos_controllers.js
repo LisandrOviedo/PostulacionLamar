@@ -527,26 +527,26 @@ const traerFichaIngresoPDF = async (empleado_id) => {
           titulo_campo: "Tipo de cuenta: ",
           descripcion_campo: ficha_ingreso.Datos_Bancarios[0].tipo_cuenta,
         },
-        // ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero
-        //   ? {
-        //       titulo_campo: "Nombre del titular (tercero): ",
-        //       descripcion_campo:
-        //         ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero,
-        //     }
-        //   : null,
-        // ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero
-        //   ? {
-        //       titulo_campo: "Número de identificación (tercero): ",
-        //       descripcion_campo: `${ficha_ingreso.Datos_Bancarios[0].tipo_identificacion_tercero}${ficha_ingreso.Datos_Bancarios[0].numero_identificacion_tercero}`,
-        //     }
-        //   : null,
-        // ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero
-        //   ? {
-        //       titulo_campo: "Parentesco (tercero): ",
-        //       descripcion_campo:
-        //         ficha_ingreso.Datos_Bancarios[0].parentesco_tercero,
-        //     }
-        //   : null,
+        ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero
+          ? {
+              titulo_campo: "Nombre del titular (tercero): ",
+              descripcion_campo:
+                ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero,
+            }
+          : {},
+        ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero
+          ? {
+              titulo_campo: "Número de identificación (tercero): ",
+              descripcion_campo: `${ficha_ingreso.Datos_Bancarios[0].tipo_identificacion_tercero}${ficha_ingreso.Datos_Bancarios[0].numero_identificacion_tercero}`,
+            }
+          : {},
+        ficha_ingreso.Datos_Bancarios[0].nombre_apellido_tercero
+          ? {
+              titulo_campo: "Parentesco (tercero): ",
+              descripcion_campo:
+                ficha_ingreso.Datos_Bancarios[0].parentesco_tercero,
+            }
+          : {},
       ],
     });
 

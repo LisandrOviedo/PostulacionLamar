@@ -103,6 +103,9 @@ const getFichaIngresoPDF = async (req, res) => {
           bottom: "30px",
           left: "50px",
         },
+        displayHeaderFooter: true,
+        footerTemplate:
+          '<div style="text-align: right; width: 297mm; font-size: 10px;"><span style="margin-right: 1cm;"><span class="pageNumber"></span> de <span class="totalPages"></span></span></div>',
       });
     })();
 

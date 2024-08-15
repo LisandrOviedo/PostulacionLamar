@@ -1,6 +1,8 @@
 const path = require("path");
 const fs = require("fs");
 
+const { DDMMYYYYHHMM2 } = require("./formatearFecha");
+
 const crearTabla = (valores, propiedades, encabezados) => {
   return `${
     !valores.length
@@ -63,14 +65,33 @@ h3{
 margin: 0;
 padding: 0;
 }
+
+.linea{
+height: 1px;
+background: black;
+}
+
+.cuadro{
+height: 100px;
+width: 80px;
+border: 1px solid #000;
+}
 </style>
   </head>
 
   <body>
     <div style="display: flex; flex-direction: column;">
-      <img src="data:image/png;base64,${logo}" alt="Logo LAMAR" width="100px" />
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+    <img src="data:image/png;base64,${logo}" alt="Logo LAMAR" width="100px" />
+    <div style="display: flex; flex-direction: column; align-items: center; font-size: 12px;">
+    <span>GRL-TH-F-001</span>
+    <span>F. Rev.: 17-05-2024</span>
+    <span>Revisión No.: 1</span>
+    <span>${DDMMYYYYHHMM2()}</span>
+    </div>
+      </div>
       <div style="display: flex; justify-content: center">
-        <h3>FICHA INGRESO</h3>
+        <h3>FICHA DE INGRESO</h3>
       </div>
       ${content
         .map(
@@ -81,7 +102,7 @@ padding: 0;
         ${seccion.contenido
           .map(
             (contenido) => `
-<span>${contenido.titulo_campo}${
+<span>${contenido.titulo_campo || ""}${
               contenido.titulo_campo === "Títulos Obtenidos"
                 ? crearTabla(
                     contenido.descripcion_campo,
@@ -146,6 +167,39 @@ padding: 0;
         .join("")}
         <br>
         <p style="font-size: 12px;"><b>NOTA IMPORTANTE:</b> En caso de cambios en los datos suministrados favor notificar a la Gerencia de Talento Humano.</p>
+    <br><br><br>
+    <div style="display: flex; justify-content: space-evenly; align-items: end; text-align: center;">
+    <div style="display: flex; flex-direction: column; width: 150px; gap: 5px;">
+    <span>${content[0].contenido[0].descripcion_campo}</span>
+    <div class="linea"></div>
+    <span style="font-size: 12px;">Nombre Completo</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px;">
+    <span>${content[0].contenido[1].descripcion_campo}</span>
+    <div class="linea"></div>
+    <span style="font-size: 12px;">Número de identificación</span>
+    </div>
+    <div style="display: flex; flex-direction: column; width: 100px; gap: 5px;">
+    <div class="linea"></div>
+    <span style="font-size: 12px;">Fecha</span>
+    </div>
+    <div style="display: flex; flex-direction: column; width: 150px; gap: 5px;">
+    <div class="linea"></div>
+    <span style="font-size: 12px;">Firma</span>
+    </div>
+    </div>
+    <br><br><br>
+    <div style="display: flex; justify-content: space-evenly; text-align: center;">
+    <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+    <div class="cuadro"></div>
+    <span style="font-size: 12px;">Pulgar izquierdo</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+    <div class="cuadro"></div>
+    <span style="font-size: 12px;">Pulgar derecho</span>
+    </div>
+    </div>
+    
     </div>
   </body>
 
