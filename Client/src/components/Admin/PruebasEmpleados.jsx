@@ -299,7 +299,7 @@ export function PruebasEmpleados() {
                             : filters.orden_campo === "apellidos" &&
                               filters.orden_por === "DESC"
                             ? "./SortZA.svg"
-                            : "./Sort.svg"
+                            : "./SortDefault.svg"
                         }
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
@@ -336,7 +336,7 @@ export function PruebasEmpleados() {
                             : filters.orden_campo === "prueba" &&
                               filters.orden_por === "DESC"
                             ? "./SortZA.svg"
-                            : "./Sort.svg"
+                            : "./SortDefault.svg"
                         }
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
@@ -362,7 +362,7 @@ export function PruebasEmpleados() {
                             : filters.orden_campo === "createdAt" &&
                               filters.orden_por === "DESC"
                             ? "./SortZA.svg"
-                            : "./Sort.svg"
+                            : "./SortDefault.svg"
                         }
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
