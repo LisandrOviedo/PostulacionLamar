@@ -3,8 +3,8 @@ module.exports = {
     {
       name: "tthh",
       script: "index.js",
-      watch: ".",
-      ignore_watch: ["node_modules"],
+      watch: false,
+      ignore_watch: ["node_modules", "public"],
       restart_delay: 1000,
       time: true,
       max_memory_restart: "500M",
