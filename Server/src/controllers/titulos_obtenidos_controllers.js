@@ -8,11 +8,9 @@ const todosLosTitulosObtenidos = async (empleado_id) => {
       where: { empleado_id: empleado_id },
     });
 
-    if (!titulos_obtenidos.length) {
-      throw new Error(`No existen títulos obtenidos`);
+    if (titulos_obtenidos) {
+      return titulos_obtenidos;
     }
-
-    return titulos_obtenidos;
   } catch (error) {
     throw new Error(
       `Error al traer todos los títulos obtenidos: ${error.message}`
