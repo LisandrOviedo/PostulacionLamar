@@ -68,6 +68,7 @@ const {
   Respuestas_Kostick,
   Roles,
   Salud,
+  Sedes,
   Sesiones,
   Titulos_Obtenidos,
 } = sequelize.models;
@@ -443,6 +444,18 @@ Cargos_Niveles.belongsToMany(Empleados, {
   },
 });
 
+// Empresas 1:M Sedes
+Empresas.hasMany(Sedes, {
+  foreignKey: {
+    name: "empresa_id",
+  },
+});
+Sedes.belongsTo(Empresas, {
+  foreignKey: {
+    name: "empresa_id",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -475,6 +488,7 @@ module.exports = {
   Respuestas_Kostick,
   Roles,
   Salud,
+  Sedes,
   Sesiones,
   Titulos_Obtenidos,
 };

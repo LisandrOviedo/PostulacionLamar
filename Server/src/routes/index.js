@@ -26,6 +26,7 @@ const referencias_personales = require("./referencias_personales_routes");
 const respuestas_kostick = require("./respuestas_kostick_routes");
 const roles = require("./roles_routes");
 const salud = require("./salud_routes");
+const sedes = require("./sedes_routes");
 const sesiones = require("./sesiones_routes");
 const titulos_obtenidos = require("./titulos_obtenidos_routes");
 
@@ -57,6 +58,7 @@ router.use("/tthh/referencias_personales", referencias_personales);
 router.use("/tthh/respuestas_kostick", respuestas_kostick);
 router.use("/tthh/roles", roles);
 router.use("/tthh/salud", salud);
+router.use("/tthh/sedes", sedes);
 router.use("/tthh/sesiones", sesiones);
 router.use("/tthh/titulos_obtenidos", titulos_obtenidos);
 
