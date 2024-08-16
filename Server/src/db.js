@@ -70,6 +70,7 @@ const {
   Salud,
   Sedes,
   Sesiones,
+  Tipos_Movimientos,
   Titulos_Obtenidos,
 } = sequelize.models;
 
@@ -490,5 +491,6 @@ module.exports = {
   Salud,
   Sedes,
   Sesiones,
+  Tipos_Movimientos,
   Titulos_Obtenidos,
 };
