@@ -59,6 +59,7 @@ const {
   Idiomas_Curriculos,
   Idiomas,
   Menus,
+  Movimientos,
   Municipios,
   Paises,
   Parroquias,
@@ -457,6 +458,26 @@ Sedes.belongsTo(Empresas, {
   },
 });
 
+// Empleados M:M Tipos_Movimientos
+Empleados.belongsToMany(Tipos_Movimientos, {
+  through: "Movimientos",
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Tipos_Movimientos.belongsToMany(Empleados, {
+  through: "Movimientos",
+  foreignKey: {
+    name: "tipo_movimiento_id",
+  },
+});
+
+Movimientos.belongsTo(Empleados, { foreignKey: "empleado_supervisor_id" });
+Movimientos.belongsTo(Empleados, { foreignKey: "empleado_solicitante_id" });
+Movimientos.belongsTo(Empleados, { foreignKey: "empleado_rrhh_id" });
+Movimientos.belongsTo(Empleados, { foreignKey: "empleado_aprueba_id" });
+Movimientos.belongsTo(Cargos_Niveles, { foreignKey: "cargo_nivel_id" });
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -480,6 +501,7 @@ module.exports = {
   Idiomas_Curriculos,
   Idiomas,
   Menus,
+  Movimientos,
   Municipios,
   Paises,
   Parroquias,
