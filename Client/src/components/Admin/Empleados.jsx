@@ -129,7 +129,7 @@ export function Empleados() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    document.title = "Grupo Lamar - Postulaciones (Admin)";
+    document.title = "Grupo Lamar - Empleados (Admin)";
 
     return () => {
       document.title = "Grupo Lamar";
