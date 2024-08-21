@@ -1,7 +1,7 @@
 const {
   todosLosIdiomas,
-  traerIdioma,
   todosLosIdiomasActivos,
+  traerIdioma,
   crearIdioma,
   modificarIdioma,
   inactivarIdioma,
@@ -18,11 +18,9 @@ const getIdiomas = async (req, res) => {
   }
 };
 
-const getIdioma = async (req, res) => {
-  const { idioma_id } = req.params;
-
+const getIdiomasActivos = async (req, res) => {
   try {
-    const response = await traerIdioma(idioma_id);
+    const response = await todosLosIdiomasActivos();
 
     return res.json(response);
   } catch (error) {
@@ -30,9 +28,11 @@ const getIdioma = async (req, res) => {
   }
 };
 
-const getIdiomasActivos = async (req, res) => {
+const getIdioma = async (req, res) => {
+  const { idioma_id } = req.params;
+
   try {
-    const response = await todosLosIdiomasActivos();
+    const response = await traerIdioma(idioma_id);
 
     return res.json(response);
   } catch (error) {
@@ -90,8 +90,8 @@ const postIdiomasCurriculo = async (req, res) => {
 
 module.exports = {
   getIdiomas,
-  getIdioma,
   getIdiomasActivos,
+  getIdioma,
   postIdioma,
   putIdioma,
   deleteIdioma,
