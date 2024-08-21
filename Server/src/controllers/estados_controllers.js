@@ -201,7 +201,7 @@ const inactivarEstado = async (estado_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al inactivar la estado: ${error.message}`);
+    throw new Error(`Error al inactivar el estado: ${error.message}`);
   }
 };
 
