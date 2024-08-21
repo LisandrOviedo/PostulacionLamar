@@ -71,7 +71,10 @@ const {
   Salud,
   Sedes,
   Sesiones,
+  Sugerencias_Pred,
+  Sugerencias,
   Tipos_Movimientos,
+  Tipos_Sugerencias,
   Titulos_Obtenidos,
 } = sequelize.models;
 
@@ -478,6 +481,54 @@ Movimientos.belongsTo(Empleados, { foreignKey: "empleado_rrhh_id" });
 Movimientos.belongsTo(Empleados, { foreignKey: "empleado_aprueba_id" });
 Movimientos.belongsTo(Cargos_Niveles, { foreignKey: "cargo_nivel_id" });
 
+// Tipos_Sugerencias 1:M Sugerencias_Pred
+Tipos_Sugerencias.hasMany(Sugerencias_Pred, {
+  foreignKey: {
+    name: "tipo_sugerencia_id",
+  },
+});
+Sugerencias_Pred.belongsTo(Tipos_Sugerencias, {
+  foreignKey: {
+    name: "tipo_sugerencia_id",
+  },
+});
+
+// Sugerencias_Pred 1:M Sugerencias
+Sugerencias_Pred.hasMany(Sugerencias, {
+  foreignKey: {
+    name: "sugerencia_pred_id",
+  },
+});
+Sugerencias.belongsTo(Sugerencias_Pred, {
+  foreignKey: {
+    name: "sugerencia_pred_id",
+  },
+});
+
+// Empleados 1:M Sugerencias
+Empleados.hasMany(Sugerencias, {
+  foreignKey: {
+    name: "revisado_por_id",
+  },
+});
+Sugerencias.belongsTo(Empleados, {
+  foreignKey: {
+    name: "revisado_por_id",
+  },
+});
+
+// Sedes 1:M Sugerencias
+Sedes.hasMany(Sugerencias, {
+  foreignKey: {
+    name: "sede_id",
+  },
+});
+Sugerencias.belongsTo(Sedes, {
+  foreignKey: {
+    name: "sede_id",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -513,6 +564,9 @@ module.exports = {
   Salud,
   Sedes,
   Sesiones,
+  Sugerencias_Pred,
+  Sugerencias,
   Tipos_Movimientos,
+  Tipos_Sugerencias,
   Titulos_Obtenidos,
 };
