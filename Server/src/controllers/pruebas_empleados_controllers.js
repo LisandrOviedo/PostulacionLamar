@@ -28,10 +28,14 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
                   numero_identificacion: {
                     [Op.like]: `%${filtros.numero_identificacion}%`,
                   },
+                  empresa_id: filtros.empresa_id,
                 }
               : filtros.apellidos
-              ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
-              : {},
+              ? {
+                  apellidos: { [Op.like]: `%${filtros.apellidos}%` },
+                  empresa_id: filtros.empresa_id,
+                }
+              : { empresa_id: filtros.empresa_id },
           },
         ],
         where: filtros.prueba ? { prueba: filtros.prueba } : {},
