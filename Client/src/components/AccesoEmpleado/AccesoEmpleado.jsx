@@ -28,6 +28,8 @@ export function AccesoEmpleado() {
   const [primerUseEffectCompletado, setPrimerUseEffectCompletado] =
     useState(false);
 
+  const URL_INTRANET = import.meta.env.VITE_URL_INTRANET;
+
   const handleLogin = () => {
     const { tipo_identificacion, numero_identificacion, clave } = data;
 
@@ -106,11 +108,7 @@ export function AccesoEmpleado() {
     <div className="flex mt-14 sm:mt-0 sm:h-screen flex-col items-center justify-center">
       <div className="flex flex-col items-center justify-center">
         <div>
-          <Link
-            to="https://grupo-lamar.com/es/"
-            target="_blank"
-            className="hover:opacity-70"
-          >
+          <Link to={URL_INTRANET} className="hover:opacity-70">
             <img src="./LogoAzul.png" alt="Logo Grupo Lamar" className="w-32" />
           </Link>
         </div>
