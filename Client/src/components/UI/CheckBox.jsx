@@ -1,19 +1,19 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export const InputFile = ({ className, ...props }) => {
+export const CheckBox = ({ className, ...props }) => {
   return (
     <input
+      type="checkbox"
       className={twMerge(
         clsx(
-          "w-auto text-xs border-2 border-gray-300 rounded-lg cursor-pointer bg-gray-50",
+          "w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500",
           className
         )
       )}
-      type="file"
       {...props}
     />
   );
 };
 
-export default InputFile;
+export default CheckBox;

@@ -3,38 +3,48 @@ import { useDispatch, useSelector } from "react-redux";
 import Webcam from "react-webcam";
 
 import { getAllEtniasActivas } from "../../redux/etnias/etniasActions";
+
 import { getAllPaisesActivos } from "../../redux/paises/paisesActions";
+
 import {
   getAllEstadosResidencia,
   getAllEstadosNacimiento,
   resetEstadosNacimiento,
   resetEstadosResidencia,
 } from "../../redux/estados/estadosActions";
+
 import {
   getAllMunicipiosActivos,
   resetMunicipios,
 } from "../../redux/municipios/municipiosActions";
+
 import {
   getAllParroquiasActivas,
   resetParroquias,
 } from "../../redux/parroquias/parroquiasActions";
+
 import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
+
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
+
 import {
   getAllDepartamentosActivos,
   resetDepartamentos,
 } from "../../redux/departamentos/departamentosActions";
+
 import {
   getAllCargosNivelesActivos,
   resetCargosNiveles,
 } from "../../redux/cargosNiveles/cargosNivelesActions";
+
 import {
   getAllCargosActivos,
   resetCargos,
 } from "../../redux/cargos/cargosActions";
+
 import { saveFichaIngreso } from "../../redux/fichasIngresos/fichasIngresosActions";
 
-import { Button, Input, Label, Select, Title, Hr } from "../UI";
+import { Button, CheckBox, Input, Label, Select, Title, Hr } from "../UI";
 
 import { FaFloppyDisk, FaCircleInfo } from "react-icons/fa6";
 
@@ -110,7 +120,7 @@ export function FormularioIngreso() {
 
     dispatch(getAllEtniasActivas(token));
     dispatch(getAllPaisesActivos(token));
-    dispatch(getAllEmpresasActivas(token));
+    dispatch(getAllEmpresasActivas());
 
     return () => {
       document.title = "Grupo Lamar";
@@ -1489,39 +1499,33 @@ export function FormularioIngreso() {
           <Title>Salud</Title>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
             <div className="flex gap-2">
-              <input
+              <CheckBox
                 name="alergia_alimentos"
                 id="alergia_alimentos"
-                type="checkbox"
                 checked={datosIngreso.alergia_alimentos}
                 onChange={handleChecked}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
               <Label htmlFor="alergia_alimentos">
                 ¿Es alérgico a algún alimento?
               </Label>
             </div>
             <div className="flex gap-2">
-              <input
+              <CheckBox
                 name="alergia_medicamentos"
                 id="alergia_medicamentos"
-                type="checkbox"
                 checked={datosIngreso.alergia_medicamentos}
                 onChange={handleChecked}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
               <Label htmlFor="alergia_medicamentos">
                 ¿Es alérgico a algún medicamento?
               </Label>
             </div>
             <div className="flex gap-2">
-              <input
+              <CheckBox
                 name="alergia_otros"
                 id="alergia_otros"
-                type="checkbox"
                 checked={datosIngreso.alergia_otros}
                 onChange={handleChecked}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
               <Label htmlFor="alergia_otros">
                 ¿Es alérgico a alguna otra cosa?
@@ -1529,13 +1533,11 @@ export function FormularioIngreso() {
             </div>
 
             <div className="flex gap-2">
-              <input
+              <CheckBox
                 name="fuma"
                 id="fuma"
-                type="checkbox"
                 checked={datosIngreso.fuma}
                 onChange={handleChecked}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
               <Label htmlFor="fuma">¿Fuma?</Label>
             </div>
@@ -1973,7 +1975,9 @@ export function FormularioIngreso() {
             </div>
 
             <div className="col-span-1 sm:col-span-2 md:col-span-3">
-              <Label htmlFor="foto_empleado">Foto empleado</Label>
+              <span className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Foto empleado
+              </span>
               <Webcam className="sm:w-2/4 md:w-1/4 mx-auto" />
             </div>
           </div>

@@ -11,7 +11,17 @@ import {
   getCurriculoEmpleado,
 } from "../../redux/curriculos/curriculosActions";
 
-import { Button, Date, Hr, Input, Label, Select, Title } from "../UI";
+import {
+  Button,
+  CheckBox,
+  Date,
+  Hr,
+  Input,
+  Label,
+  Select,
+  TextArea,
+  Title,
+} from "../UI";
 
 import { YYYYMMDD } from "../../utils/formatearFecha";
 
@@ -687,26 +697,22 @@ export function CrearCurriculo() {
           </div>
         </div>
         <div className="flex items-center justify-center gap-2">
-          <input
+          <CheckBox
             id="disponibilidad_viajar"
             name="disponibilidad_viajar"
-            type="checkbox"
             checked={datosCurriculo.disponibilidad_viajar}
             onChange={handleCheckedChangeCurriculo}
-            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <Label htmlFor="disponibilidad_viajar">
             ¿Posees disponibilidad para viajar?
           </Label>
         </div>
         <div className="flex items-center justify-center gap-2">
-          <input
+          <CheckBox
             id="disponibilidad_cambio_residencia"
             name="disponibilidad_cambio_residencia"
-            type="checkbox"
             checked={datosCurriculo.disponibilidad_cambio_residencia}
             onChange={handleCheckedChangeCurriculo}
-            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
           />
           <Label htmlFor="disponibilidad_cambio_residencia">
             ¿Posees disponibilidad para cambio de residencia?
@@ -969,15 +975,14 @@ export function CrearCurriculo() {
         <div className="md:col-span-3 flex flex-col place-content-between">
           <Label htmlFor="habilidades_tecnicas">Habilidades técnicas</Label>
           <div className="mt-2">
-            <textarea
+            <TextArea
               id="habilidades_tecnicas"
               name="habilidades_tecnicas"
               rows="3"
-              className="text-sm resize-none block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               placeholder="Escribe tus habilidades técnicas"
               onChange={handleInputChangeCurriculo}
               value={datosCurriculo.habilidades_tecnicas}
-            ></textarea>
+            />
             {errors.habilidades_tecnicas && (
               <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
                 {errors.habilidades_tecnicas}
