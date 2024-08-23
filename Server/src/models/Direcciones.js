@@ -45,14 +45,8 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(50),
       allowNull: true,
     },
-    estado_id: {
-      // Campo relacionado
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    pais_id: {
-      // Campo relacionado
-      type: DataTypes.INTEGER,
+    descripcion: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     activo: {
