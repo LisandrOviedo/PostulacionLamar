@@ -8,8 +8,10 @@ const {
 } = require("../controllers/sugerencias_pred_controllers");
 
 const getSugerenciasPred = async (req, res) => {
+  const { tipo_sugerencia_id } = req.params;
+
   try {
-    const response = await todasLosSugerenciasPred();
+    const response = await todasLosSugerenciasPred(tipo_sugerencia_id);
 
     return res.json(response);
   } catch (error) {
@@ -18,8 +20,10 @@ const getSugerenciasPred = async (req, res) => {
 };
 
 const getSugerenciasPredActivas = async (req, res) => {
+  const { tipo_sugerencia_id } = req.params;
+
   try {
-    const response = await todasLosSugerenciasPredActivas();
+    const response = await todasLosSugerenciasPredActivas(tipo_sugerencia_id);
 
     return res.json(response);
   } catch (error) {

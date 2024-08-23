@@ -6,18 +6,14 @@ const {
   postTipoSugerencia,
   putTipoSugerencia,
   deleteTipoSugerencia,
-} = require("../handlers/sugerencias_pred_handlers");
+} = require("../handlers/tipos_sugerencias_handlers");
 
 const { authenticateToken } = require("../auth/index");
 
 const tipos_sugerencias = Router();
 
 tipos_sugerencias.get("/", authenticateToken, getTiposSugerencias);
-tipos_sugerencias.get(
-  "/activos",
-  authenticateToken,
-  getTiposSugerenciasActivas
-);
+tipos_sugerencias.get("/activas", getTiposSugerenciasActivas);
 tipos_sugerencias.get(
   "/detalle/:tipo_sugerencia_id",
   authenticateToken,

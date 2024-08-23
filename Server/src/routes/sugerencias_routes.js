@@ -15,7 +15,7 @@ sugerencias.get("/", authenticateToken, getSugerencias);
 sugerencias.get("/activos", authenticateToken, getSugerenciasActivas);
 
 sugerencias.post("/detalle", authenticateToken, getSugerencia);
-sugerencias.post("/", authenticateToken, postSugerencia);
+sugerencias.post("/", postSugerencia);
 
 sugerencias.put("/inactivar", authenticateToken, deleteSugerencia);
 

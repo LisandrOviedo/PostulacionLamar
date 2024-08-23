@@ -12,8 +12,12 @@ const { authenticateToken } = require("../auth/index");
 
 const sugerencias_pred = Router();
 
-sugerencias_pred.get("/", authenticateToken, getSugerenciasPred);
-sugerencias_pred.get("/activos", authenticateToken, getSugerenciasPredActivas);
+sugerencias_pred.get(
+  "/:tipo_sugerencia_id",
+  authenticateToken,
+  getSugerenciasPred
+);
+sugerencias_pred.get("/activas/:tipo_sugerencia_id", getSugerenciasPredActivas);
 sugerencias_pred.get(
   "/detalle/:sugerencia_pred_id",
   authenticateToken,

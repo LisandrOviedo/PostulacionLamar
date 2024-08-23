@@ -1,8 +1,16 @@
 const { conn, Sugerencias_Pred } = require("../db");
 
-const todasLosSugerenciasPred = async () => {
+const todasLosSugerenciasPred = async (tipo_sugerencia_id) => {
+  if (!tipo_sugerencia_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
   try {
-    const sugerencias_pred = await Sugerencias_Pred.findAll();
+    const sugerencias_pred = await Sugerencias_Pred.findAll({
+      where: {
+        tipo_sugerencia_id: tipo_sugerencia_id,
+      },
+    });
 
     return sugerencias_pred;
   } catch (error) {
@@ -12,10 +20,14 @@ const todasLosSugerenciasPred = async () => {
   }
 };
 
-const todasLosSugerenciasPredActivas = async () => {
+const todasLosSugerenciasPredActivas = async (tipo_sugerencia_id) => {
+  if (!tipo_sugerencia_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
   try {
     const sugerencias_pred = await Sugerencias_Pred.findAll({
-      where: { activo: true },
+      where: { tipo_sugerencia_id: tipo_sugerencia_id, activo: true },
     });
 
     return sugerencias_pred;
