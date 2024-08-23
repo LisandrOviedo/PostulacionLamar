@@ -1,11 +1,8 @@
 const axios = require("axios");
 
-const { conn, Empresas } = require("../db");
+const { conn, Empresas, Sedes } = require("../db");
 
-const {
-  ordenarNombresAPI,
-  ordenarDireccionesAPI,
-} = require("../utils/formatearTexto");
+const { sanarTextoAPI } = require("../utils/formatearTexto");
 
 const { fechaHoraActual } = require("../utils/formatearFecha");
 
@@ -27,6 +24,7 @@ const todasLasEmpresasActivas = async () => {
   try {
     const empresas = await Empresas.findAll({
       where: { activo: true },
+      order: [["nombre", "ASC"]],
     });
 
     return empresas;
@@ -74,20 +72,32 @@ const cargarEmpresas = async () => {
       const empresa = await Empresas.findOne({
         where: {
           codigo_empresa: empresaAPI.codigo_empresa,
-          nombre: ordenarNombresAPI(empresaAPI.descripcion_empresa),
+          nombre: sanarTextoAPI(empresaAPI.descripcion_empresa),
         },
       });
 
       if (!empresa) {
         t = await conn.transaction();
 
-        await Empresas.create(
+        const crearEmpresa = await Empresas.create(
           {
             codigo_empresa: empresaAPI.codigo_empresa,
-            nombre: ordenarNombresAPI(empresaAPI.descripcion_empresa),
-            direccion:
-              ordenarDireccionesAPI(empresaAPI.direccion_empresa) || null,
+            nombre: sanarTextoAPI(empresaAPI.descripcion_empresa),
+            direccion: sanarTextoAPI(empresaAPI.direccion_empresa) || null,
             rif: empresaAPI.rif_empresa || null,
+          },
+          { transaction: t }
+        );
+
+        await t.commit();
+
+        t = await conn.transaction();
+
+        await Sedes.create(
+          {
+            empresa_id: crearEmpresa.empresa_id,
+            nombre: "Principal",
+            direccion: sanarTextoAPI(empresaAPI.direccion_empresa) || null,
           },
           { transaction: t }
         );
@@ -97,23 +107,37 @@ const cargarEmpresas = async () => {
     }
 
     for (const empresa_faltante of empresas_faltantes) {
-      const empresa2 = await Empresas.findOne({
+      const empresa = await Empresas.findOne({
         where: {
           codigo_empresa: empresa_faltante.codigo_empresa,
-          nombre: ordenarNombresAPI(empresa_faltante.descripcion_empresa),
+          nombre: sanarTextoAPI(empresa_faltante.descripcion_empresa),
         },
       });
 
-      if (!empresa2) {
+      if (!empresa) {
         t = await conn.transaction();
 
-        await Empresas.create(
+        const crearEmpresa = await Empresas.create(
           {
             codigo_empresa: empresa_faltante.codigo_empresa,
-            nombre: ordenarNombresAPI(empresa_faltante.descripcion_empresa),
+            nombre: sanarTextoAPI(empresa_faltante.descripcion_empresa),
             direccion:
-              ordenarDireccionesAPI(empresa_faltante.direccion_empresa) || null,
+              sanarTextoAPI(empresa_faltante.direccion_empresa) || null,
             rif: empresa_faltante.rif_empresa || null,
+          },
+          { transaction: t }
+        );
+
+        await t.commit();
+
+        t = await conn.transaction();
+
+        await Sedes.create(
+          {
+            empresa_id: crearEmpresa.empresa_id,
+            nombre: "Principal",
+            direccion:
+              sanarTextoAPI(empresa_faltante.direccion_empresa) || null,
           },
           { transaction: t }
         );

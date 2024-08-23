@@ -18,11 +18,11 @@ module.exports = (sequelize) => {
     },
     tipo: {
       type: DataTypes.ENUM("Casa", "Edificio", "Finca", "Procesadora"),
-      allowNull: false,
+      allowNull: true,
     },
     direccion: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     latitud: {
       type: DataTypes.STRING(100),

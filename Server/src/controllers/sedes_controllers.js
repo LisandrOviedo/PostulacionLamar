@@ -60,7 +60,7 @@ const crearSede = async (
   latitud,
   longitud
 ) => {
-  if (!empresa_id || !nombre || !tipo || !direccion) {
+  if (!empresa_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -74,8 +74,8 @@ const crearSede = async (
       defaults: {
         empresa_id: empresa_id,
         nombre: nombre,
-        tipo: tipo,
-        direccion: direccion,
+        tipo: tipo || null,
+        direccion: direccion || null,
         latitud: latitud || null,
         longitud: longitud || null,
       },
