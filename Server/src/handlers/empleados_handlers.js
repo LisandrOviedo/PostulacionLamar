@@ -73,6 +73,7 @@ const getLogin = async (req, res) => {
 
 const postEmpleado = async (req, res) => {
   const {
+    empresa_id,
     nombres,
     apellidos,
     tipo_identificacion,
@@ -104,6 +105,7 @@ const postEmpleado = async (req, res) => {
 
   try {
     const response = await crearEmpleado(
+      empresa_id,
       nombres,
       apellidos,
       tipo_identificacion,

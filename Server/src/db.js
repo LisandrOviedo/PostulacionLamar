@@ -265,18 +265,6 @@ Empleados.belongsTo(Estados, {
   },
 });
 
-// Paises 1:M Empleados
-Paises.hasMany(Empleados, {
-  foreignKey: {
-    name: "nacimiento_pais_id",
-  },
-});
-Empleados.belongsTo(Paises, {
-  foreignKey: {
-    name: "nacimiento_pais_id",
-  },
-});
-
 // Parroquias 1:M Direcciones
 Parroquias.hasMany(Direcciones, {
   foreignKey: {
@@ -298,30 +286,6 @@ Municipios.hasMany(Direcciones, {
 Direcciones.belongsTo(Municipios, {
   foreignKey: {
     name: "municipio_id",
-  },
-});
-
-// Estados 1:M Direcciones
-Estados.hasMany(Direcciones, {
-  foreignKey: {
-    name: "estado_id",
-  },
-});
-Direcciones.belongsTo(Estados, {
-  foreignKey: {
-    name: "estado_id",
-  },
-});
-
-// Paises 1:M Direcciones
-Paises.hasMany(Direcciones, {
-  foreignKey: {
-    name: "pais_id",
-  },
-});
-Direcciones.belongsTo(Paises, {
-  foreignKey: {
-    name: "pais_id",
   },
 });
 
@@ -526,6 +490,18 @@ Sedes.hasMany(Sugerencias, {
 Sugerencias.belongsTo(Sedes, {
   foreignKey: {
     name: "sede_id",
+  },
+});
+
+// Empresas 1:M Empleados
+Empresas.hasMany(Empleados, {
+  foreignKey: {
+    name: "empresa_id",
+  },
+});
+Empleados.belongsTo(Empresas, {
+  foreignKey: {
+    name: "empresa_id",
   },
 });
 

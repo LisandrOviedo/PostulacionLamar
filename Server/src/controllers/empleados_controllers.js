@@ -16,13 +16,15 @@ const {
   Cargos,
   Cargos_Empleados,
   Fichas_Ingresos,
+  Direcciones,
+  Municipios,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
 
 const { YYYYMMDD, fechaHoraActual } = require("../utils/formatearFecha");
 
-const { ordenarNombresAPI } = require("../utils/formatearTexto");
+const { sanarTextoAPI } = require("../utils/formatearTexto");
 
 const { crearSesion, traerSesion } = require("./sesiones_controllers");
 
@@ -55,6 +57,7 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
           },
         ],
         where: {
+          empresa_id: filtros.empresa_id,
           [Op.and]: [
             filtros.numero_identificacion
               ? {
@@ -108,6 +111,10 @@ const traerEmpleado = async (empleado_id) => {
         {
           model: Roles,
           attributes: ["nombre", "descripcion"],
+        },
+        {
+          model: Empresas,
+          attributes: ["empresa_id", "nombre"],
         },
         {
           model: Etnias,
@@ -301,7 +308,7 @@ const cargarEmpleados = async () => {
       console.log(`${fechaHoraActual()} - Hizo la consulta de empleados`);
 
       for (const empleadoAPI of data) {
-        const empleado = await Empleados.findOne({
+        const empleadoExiste = await Empleados.findOne({
           where: {
             tipo_identificacion:
               empleadoAPI.nacionalidad === "Venezolano"
@@ -313,32 +320,113 @@ const cargarEmpleados = async () => {
           },
         });
 
-        if (!empleado) {
-          t = await conn.transaction();
-
-          await Empleados.create(
-            {
-              rol_id: rolEmpleado.rol_id,
-              nombres: ordenarNombresAPI(empleadoAPI.nombres),
-              apellidos: ordenarNombresAPI(empleadoAPI.apellidos),
-              tipo_identificacion:
-                empleadoAPI.nacionalidad === "Venezolano"
-                  ? "V"
-                  : empleadoAPI.nacionalidad === "Extranjero"
-                  ? "E"
-                  : null,
-              numero_identificacion: empleadoAPI.cedula,
-              fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
-              nacimiento_pais_id:
-                empleadoAPI.nacionalidad === "Venezolano"
-                  ? nacionalidad_venezolana.pais_id
-                  : null,
-              // direccion: ordenarDireccionesAPI(empleadoAPI.direccion) || null,
+        if (!empleadoExiste) {
+          const municipio = await Municipios.findOne({
+            where: {
+              nombre: empleadoAPI.municipio_empleado.trim(),
             },
-            { transaction: t }
-          );
+          });
 
-          await t.commit();
+          if (
+            empleadoAPI.codigo_tipo_nomina.toUpperCase() === "N8" &&
+            empleadoAPI.descripcion_empresa
+              .toLowerCase()
+              .includes("marinas del lago")
+          ) {
+            const empresa_corporativo = await Empresas.findOne({
+              where: {
+                nombre: "Corporativo",
+              },
+            });
+
+            if (empresa_corporativo) {
+              t = await conn.transaction();
+
+              const empleado = await Empleados.create(
+                {
+                  rol_id: rolEmpleado.rol_id,
+                  empresa_id: empresa_corporativo.empresa_id,
+                  nombres: sanarTextoAPI(empleadoAPI.nombres),
+                  apellidos: sanarTextoAPI(empleadoAPI.apellidos),
+                  tipo_identificacion:
+                    empleadoAPI.nacionalidad === "Venezolano"
+                      ? "V"
+                      : empleadoAPI.nacionalidad === "Extranjero"
+                      ? "E"
+                      : null,
+                  numero_identificacion: empleadoAPI.cedula,
+                  fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
+                  nacimiento_pais_id:
+                    empleadoAPI.nacionalidad === "Venezolano"
+                      ? nacionalidad_venezolana.pais_id
+                      : null,
+                },
+                { transaction: t }
+              );
+
+              await t.commit();
+
+              t = await conn.transaction();
+
+              await Direcciones.create(
+                {
+                  empleado_id: empleado.empleado_id,
+                  municipio_id: municipio.municipio_id || null,
+                  descripcion: sanarTextoAPI(empleadoAPI.direccion) || null,
+                },
+                { transaction: t }
+              );
+
+              await t.commit();
+            }
+          } else {
+            const empresa = await Empresas.findOne({
+              where: {
+                codigo_empresa: empleadoAPI.codigo_empresa,
+              },
+            });
+
+            if (empresa) {
+              t = await conn.transaction();
+
+              const empleado = await Empleados.create(
+                {
+                  rol_id: rolEmpleado.rol_id,
+                  empresa_id: empresa.empresa_id,
+                  nombres: sanarTextoAPI(empleadoAPI.nombres),
+                  apellidos: sanarTextoAPI(empleadoAPI.apellidos),
+                  tipo_identificacion:
+                    empleadoAPI.nacionalidad === "Venezolano"
+                      ? "V"
+                      : empleadoAPI.nacionalidad === "Extranjero"
+                      ? "E"
+                      : null,
+                  numero_identificacion: empleadoAPI.cedula,
+                  fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
+                  nacimiento_pais_id:
+                    empleadoAPI.nacionalidad === "Venezolano"
+                      ? nacionalidad_venezolana.pais_id
+                      : null,
+                },
+                { transaction: t }
+              );
+
+              await t.commit();
+
+              t = await conn.transaction();
+
+              await Direcciones.create(
+                {
+                  empleado_id: empleado.empleado_id,
+                  municipio_id: municipio.municipio_id || null,
+                  descripcion: sanarTextoAPI(empleadoAPI.direccion) || null,
+                },
+                { transaction: t }
+              );
+
+              await t.commit();
+            }
+          }
         }
       }
 
@@ -356,6 +444,7 @@ const cargarEmpleados = async () => {
 };
 
 const crearEmpleado = async (
+  empresa_id,
   nombres,
   apellidos,
   tipo_identificacion,
@@ -385,6 +474,7 @@ const crearEmpleado = async (
   posee_parientes_empresa
 ) => {
   if (
+    !empresa_id ||
     !nombres ||
     !apellidos ||
     !tipo_identificacion ||
@@ -425,6 +515,7 @@ const crearEmpleado = async (
       },
       defaults: {
         rol_id: rol.rol_id,
+        empresa_id: empresa_id,
         nombres: nombres,
         apellidos: apellidos,
         tipo_identificacion: tipo_identificacion,

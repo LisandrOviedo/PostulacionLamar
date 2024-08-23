@@ -12,6 +12,11 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    empresa_id: {
+      // Campo relacionado
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     nombres: {
       type: DataTypes.STRING(100),
       allowNull: false,
@@ -89,11 +94,6 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
     nacimiento_estado_id: {
-      // Campo relacionado
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    nacimiento_pais_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: true,
