@@ -48,7 +48,6 @@ function App() {
           pathname.toLocaleLowerCase() !== "/sugerencias" &&
           userState.empleado_id && <BarraNavegacion />}
         <Routes>
-          <Route path="*" element={<PaginaNoEncontrada />} />
           <Route path="/" element={<AccesoEmpleado />} />
           <Route path="/admin/acceso" element={<AccesoAdmin />} />
           <Route path="/sugerencias" element={<Sugerencias />} />
@@ -114,6 +113,8 @@ function App() {
 
             <Route path="/admin/movimientos" element={<Movimientos />} />
           </Route>
+
+          <Route path="*" element={<PaginaNoEncontrada />} />
         </Routes>
       </Suspense>
     </div>

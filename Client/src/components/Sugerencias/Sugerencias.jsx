@@ -12,10 +12,10 @@ import {
 
 import { getAllTiposSugerenciasActivas } from "../../redux/tiposSugerencias/tiposSugerenciasActions";
 
-import {
-  getAllSugerenciasPredActivas,
-  resetSugerenciasPredActivas,
-} from "../../redux/sugerenciasPred/sugerenciasPredActions";
+// import {
+//   getAllSugerenciasPredActivas,
+//   resetSugerenciasPredActivas,
+// } from "../../redux/sugerenciasPred/sugerenciasPredActions";
 
 import { postSugerencia } from "../../redux/sugerencias/sugerenciasActions";
 
