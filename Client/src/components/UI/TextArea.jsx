@@ -11,6 +11,7 @@ export const TextArea = ({ className, ...props }) => {
         )
       )}
       autoComplete="off"
+      maxLength="255"
       {...props}
     />
   );
