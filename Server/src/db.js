@@ -445,27 +445,15 @@ Movimientos.belongsTo(Empleados, { foreignKey: "empleado_rrhh_id" });
 Movimientos.belongsTo(Empleados, { foreignKey: "empleado_aprueba_id" });
 Movimientos.belongsTo(Cargos_Niveles, { foreignKey: "cargo_nivel_id" });
 
-// Tipos_Sugerencias 1:M Sugerencias_Pred
-Tipos_Sugerencias.hasMany(Sugerencias_Pred, {
+// Tipos_Sugerencias 1:M Sugerencias
+Tipos_Sugerencias.hasMany(Sugerencias, {
   foreignKey: {
     name: "tipo_sugerencia_id",
   },
 });
-Sugerencias_Pred.belongsTo(Tipos_Sugerencias, {
+Sugerencias.belongsTo(Tipos_Sugerencias, {
   foreignKey: {
     name: "tipo_sugerencia_id",
-  },
-});
-
-// Sugerencias_Pred 1:M Sugerencias
-Sugerencias_Pred.hasMany(Sugerencias, {
-  foreignKey: {
-    name: "sugerencia_pred_id",
-  },
-});
-Sugerencias.belongsTo(Sugerencias_Pred, {
-  foreignKey: {
-    name: "sugerencia_pred_id",
   },
 });
 

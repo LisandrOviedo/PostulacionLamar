@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    sugerencia_pred_id: {
+    tipo_sugerencia_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: false,

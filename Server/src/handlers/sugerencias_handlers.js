@@ -39,12 +39,12 @@ const getSugerencia = async (req, res) => {
 };
 
 const postSugerencia = async (req, res) => {
-  const { sede_id, sugerencia_pred_id, descripcion } = req.body;
+  const { sede_id, tipo_sugerencia_id, descripcion } = req.body;
 
   try {
     const response = await crearSugerencia(
       sede_id,
-      sugerencia_pred_id,
+      tipo_sugerencia_id,
       descripcion
     );
 

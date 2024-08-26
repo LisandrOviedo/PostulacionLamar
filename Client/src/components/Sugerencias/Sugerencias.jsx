@@ -36,9 +36,9 @@ export function Sugerencias() {
     (state) => state.tipos_sugerencias.tipos_sugerencias_activas
   );
 
-  const sugerencias_pred_activas = useSelector(
-    (state) => state.sugerencias_pred.sugerencias_pred_activas
-  );
+  // const sugerencias_pred_activas = useSelector(
+  //   (state) => state.sugerencias_pred.sugerencias_pred_activas
+  // );
 
   const URL_INTRANET = import.meta.env.VITE_URL_INTRANET;
 
@@ -67,18 +67,18 @@ export function Sugerencias() {
     }
   }, [sugerencia.empresa_id]);
 
-  useEffect(() => {
-    if (
-      sugerencia.tipo_sugerencia_id &&
-      sugerencia.tipo_sugerencia_id !== "Seleccione"
-    ) {
-      setSugerencia({ ...sugerencia, sugerencia_pred_id: "Seleccione" });
-      dispatch(getAllSugerenciasPredActivas(sugerencia.tipo_sugerencia_id));
-    } else {
-      dispatch(resetSugerenciasPredActivas());
-      setSugerencia({ ...sugerencia, sugerencia_pred_id: "Seleccione" });
-    }
-  }, [sugerencia.tipo_sugerencia_id]);
+  // useEffect(() => {
+  //   if (
+  //     sugerencia.tipo_sugerencia_id &&
+  //     sugerencia.tipo_sugerencia_id !== "Seleccione"
+  //   ) {
+  //     setSugerencia({ ...sugerencia, sugerencia_pred_id: "Seleccione" });
+  //     dispatch(getAllSugerenciasPredActivas(sugerencia.tipo_sugerencia_id));
+  //   } else {
+  //     dispatch(resetSugerenciasPredActivas());
+  //     setSugerencia({ ...sugerencia, sugerencia_pred_id: "Seleccione" });
+  //   }
+  // }, [sugerencia.tipo_sugerencia_id]);
 
   const handleValidate = (event) => {
     const { name, value } = event.target;
@@ -90,8 +90,8 @@ export function Sugerencias() {
     if (
       sugerencia.sede_id &&
       sugerencia.sede_id !== "Seleccione" &&
-      sugerencia.sugerencia_pred_id &&
-      sugerencia.sugerencia_pred_id !== "Seleccione" &&
+      sugerencia.tipo_sugerencia_id &&
+      sugerencia.tipo_sugerencia_id !== "Seleccione" &&
       sugerencia.descripcion
     ) {
       dispatch(postSugerencia(sugerencia)).then(() => {
@@ -188,7 +188,7 @@ export function Sugerencias() {
           </Select>
         </div>
 
-        <div>
+        {/* <div>
           <Label htmlFor="sugerencia_pred_id">Sugerencia</Label>
 
           <Select
@@ -210,7 +210,7 @@ export function Sugerencias() {
                 ))
               : null}
           </Select>
-        </div>
+        </div> */}
 
         <div className="col-span-1 sm:col-span-2 md:col-span-3">
           <Label htmlFor="descripcion">

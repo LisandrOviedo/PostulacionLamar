@@ -79,8 +79,8 @@ const traerSugerencia = async (sugerencia_id, empleado_id) => {
   }
 };
 
-const crearSugerencia = async (sede_id, sugerencia_pred_id, descripcion) => {
-  if (!sede_id || !sugerencia_pred_id || !descripcion) {
+const crearSugerencia = async (sede_id, tipo_sugerencia_id, descripcion) => {
+  if (!sede_id || !tipo_sugerencia_id || !descripcion) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -92,7 +92,7 @@ const crearSugerencia = async (sede_id, sugerencia_pred_id, descripcion) => {
     const sugerencia = await Sugerencias.create(
       {
         sede_id: sede_id,
-        sugerencia_pred_id: sugerencia_pred_id,
+        tipo_sugerencia_id: tipo_sugerencia_id,
         descripcion: descripcion,
       },
       { transaction: t }
