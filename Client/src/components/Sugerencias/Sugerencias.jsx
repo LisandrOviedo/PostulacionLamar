@@ -91,7 +91,8 @@ export function Sugerencias() {
       sugerencia.sede_id &&
       sugerencia.sede_id !== "Seleccione" &&
       sugerencia.sugerencia_pred_id &&
-      sugerencia.sugerencia_pred_id !== "Seleccione"
+      sugerencia.sugerencia_pred_id !== "Seleccione" &&
+      sugerencia.descripcion
     ) {
       dispatch(postSugerencia(sugerencia)).then(() => {
         window.location.href = URL_INTRANET;
@@ -99,7 +100,7 @@ export function Sugerencias() {
     } else {
       Swal.fire({
         title: "Oops...",
-        text: "Debes seleccionar una sede y un tipo de sugerencia",
+        text: "Debes seleccionar una sede, una sugerencia y escribir una descripción detallada de tu sugerencia",
         icon: "error",
         showConfirmButton: false,
         timer: 3000,

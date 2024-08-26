@@ -75,8 +75,7 @@ export const postSugerencia = (sugerencia) => {
       return Swal.fire({
         text: "¡Sugerencia enviada exitosamente!",
         icon: "success",
-        showConfirmButton: false,
-        timer: 3000,
+        showConfirmButton: true,
       });
     } catch (error) {
       alertError(error);
