@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import {
   getAllEmpleados,
   postFiltros,
   deleteFiltros,
 } from "../../redux/empleados/empleadosActions";
-import { Button, Input, Label, Select, Title, Hr } from "../UI";
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
 import {
   getAllDepartamentosActivos,
@@ -19,8 +19,12 @@ import {
   getAllCargosActivos,
   resetCargos,
 } from "../../redux/cargos/cargosActions";
-import { FaMagnifyingGlass, FaFloppyDisk } from "react-icons/fa6";
+
+import { Button, Input, Label, Select, Title, Hr } from "../UI";
+
 import { YYYYMMDD } from "../../utils/formatearFecha";
+
+import { FaMagnifyingGlass, FaFloppyDisk } from "react-icons/fa6";
 
 export function Movimientos() {
   const dispatch = useDispatch();
@@ -52,7 +56,7 @@ export function Movimientos() {
 
   useEffect(() => {
     window.scroll(0, 0);
-    document.title = "Grupo Lamar - Movimientos";
+    document.title = "Grupo Lamar - Movimientos (Admin)";
 
     dispatch(getAllEmpresasActivas(token));
 

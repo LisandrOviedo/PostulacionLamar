@@ -7,6 +7,14 @@ import {
   AccesoEmpleado,
   ActualizarClave,
   ActualizarClaveTemporal,
+  AccesoAdmin,
+  DetalleEmpleado,
+  Empleados,
+  FormularioIngreso,
+  Movimientos,
+  PanelAdmin,
+  Postulaciones,
+  PruebasEmpleados,
   BarraNavegacion,
   CrearCurriculo,
   DatosPersonales,
@@ -15,14 +23,7 @@ import {
   PaginaNoEncontrada,
   PruebaKostick,
   SubirDocumentos,
-  AccesoAdmin,
-  DetalleEmpleado,
-  Empleados,
-  PanelAdmin,
-  Postulaciones,
-  PruebasEmpleados,
-  FormularioIngreso,
-  Movimientos,
+  Sugerencias,
 } from "./components/";
 
 import {
@@ -44,11 +45,13 @@ function App() {
           pathname.toLowerCase() !== "/admin/acceso" &&
           pathname.toLocaleLowerCase() !==
             "/miperfil/actualizarclavetemporal" &&
+          pathname.toLocaleLowerCase() !== "/sugerencias" &&
           userState.empleado_id && <BarraNavegacion />}
         <Routes>
           <Route path="*" element={<PaginaNoEncontrada />} />
           <Route path="/" element={<AccesoEmpleado />} />
           <Route path="/admin/acceso" element={<AccesoAdmin />} />
+          <Route path="/sugerencias" element={<Sugerencias />} />
 
           <Route element={<ProteccionActualizarClave />}>
             <Route

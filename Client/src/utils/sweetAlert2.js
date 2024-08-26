@@ -23,9 +23,7 @@ export const alertError = (error) => {
         store.dispatch(resetCurriculos());
         store.dispatch(resetIdiomas());
         store.dispatch(resetPruebas());
-        store.dispatch(resetEmpleados()).then(() => {
-          window.location.href = "/";
-        });
+        store.dispatch(resetEmpleados());
       }
     });
   } else if (error.response.status === 404) {

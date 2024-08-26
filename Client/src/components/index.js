@@ -9,6 +9,7 @@ import { Inicio } from "./Inicio/Inicio";
 import { PaginaNoEncontrada } from "./PaginaNoEncontrada/PaginaNoEncontrada";
 import { PruebaKostick } from "./PruebaKostick/PruebaKostick";
 import { SubirDocumentos } from "./SubirDocumentos/SubirDocumentos";
+import { Sugerencias } from "./Sugerencias/Sugerencias";
 
 import { AccesoAdmin } from "./Admin/AccesoAdmin";
 import { DetalleEmpleado } from "./Admin/DetalleEmpleado";
@@ -31,6 +32,7 @@ export {
   PaginaNoEncontrada,
   PruebaKostick,
   SubirDocumentos,
+  Sugerencias,
   AccesoAdmin,
   DetalleEmpleado,
   Empleados,

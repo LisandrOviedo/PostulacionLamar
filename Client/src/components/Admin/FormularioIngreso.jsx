@@ -1,38 +1,53 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Webcam from "react-webcam";
+
 import { getAllEtniasActivas } from "../../redux/etnias/etniasActions";
+
 import { getAllPaisesActivos } from "../../redux/paises/paisesActions";
+
 import {
   getAllEstadosResidencia,
   getAllEstadosNacimiento,
   resetEstadosNacimiento,
   resetEstadosResidencia,
 } from "../../redux/estados/estadosActions";
+
 import {
   getAllMunicipiosActivos,
   resetMunicipios,
 } from "../../redux/municipios/municipiosActions";
+
 import {
   getAllParroquiasActivas,
   resetParroquias,
 } from "../../redux/parroquias/parroquiasActions";
+
 import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
+
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
+
 import {
   getAllDepartamentosActivos,
   resetDepartamentos,
 } from "../../redux/departamentos/departamentosActions";
+
 import {
   getAllCargosNivelesActivos,
   resetCargosNiveles,
 } from "../../redux/cargosNiveles/cargosNivelesActions";
+
 import {
   getAllCargosActivos,
   resetCargos,
 } from "../../redux/cargos/cargosActions";
+
 import { saveFichaIngreso } from "../../redux/fichasIngresos/fichasIngresosActions";
-import { Button, Input, Label, Select, Title, Hr } from "../UI";
+
+import { Button, CheckBox, Input, Label, Select, Title, Hr } from "../UI";
+
 import { FaFloppyDisk, FaCircleInfo } from "react-icons/fa6";
+
 import { YYYYMMDD } from "../../utils/formatearFecha";
 import validations from "../../utils/validacionesAcceso";
 
@@ -101,11 +116,11 @@ export function FormularioIngreso() {
 
   useEffect(() => {
     window.scroll(0, 0);
-    document.title = "Grupo Lamar - Formulario de ingreso (Admin)";
+    document.title = "Grupo Lamar - Formulario de Ingreso (Admin)";
 
     dispatch(getAllEtniasActivas(token));
     dispatch(getAllPaisesActivos(token));
-    dispatch(getAllEmpresasActivas(token));
+    dispatch(getAllEmpresasActivas());
 
     return () => {
       document.title = "Grupo Lamar";
@@ -211,8 +226,6 @@ export function FormularioIngreso() {
 
   const handleValidate = (e) => {
     const { name, value } = e.target;
-
-    document.getElementById("fecha_nacimiento").placeholder = "";
 
     if (name === "tipo_vivienda" && value === "Casa") {
       setDatosIngreso((prevState) => {
@@ -673,11 +686,14 @@ export function FormularioIngreso() {
       <br />
       <div className="w-full">
         {/* Información Personal */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end ">
           <div>
-            <Label htmlFor="numero_identificacion">Identificación</Label>
-            <div className="grid grid-cols-4">
+            <Label htmlFor="numero_identificacion">
+              Número de identificación
+            </Label>
+            <div className="flex justify-between gap-2">
               <Select
+                className="w-auto"
                 name="tipo_identificacion"
                 defaultValue={datosIngreso.tipo_identificacion}
                 onChange={handleValidate}
@@ -686,14 +702,14 @@ export function FormularioIngreso() {
                 <option value="E">E</option>
               </Select>
 
-              <div className="col-span-3 pl-3">
-                <Input
-                  id="numero_identificacion"
-                  name="numero_identificacion"
-                  onChange={handleValidate}
-                  onBlur={handleEmpleadoExiste}
-                />
-              </div>
+              <Input
+                id="numero_identificacion"
+                name="numero_identificacion"
+                type="number"
+                min="0"
+                onChange={handleValidate}
+                onBlur={handleEmpleadoExiste}
+              />
             </div>
             {errors.numero_identificacion && (
               <p className="text-red-500">{errors.numero_identificacion}</p>
@@ -712,7 +728,7 @@ export function FormularioIngreso() {
             )}
           </div>
           <div>
-            <Label htmlFor="estado_civil">Estado Civil</Label>
+            <Label htmlFor="estado_civil">Estado civil</Label>
             <Select
               id="estado_civil"
               name="estado_civil"
@@ -727,12 +743,12 @@ export function FormularioIngreso() {
             </Select>
           </div>
           <div>
-            <Label htmlFor="rif">Registro de Información Fiscal (RIF)</Label>
+            <Label htmlFor="rif">Registro de información fiscal (RIF)</Label>
             <Input id="rif" name="rif" onChange={handleValidate} />
             {errors.rif && <p className="text-red-500">{errors.rif}</p>}
           </div>
           <div>
-            <Label htmlFor="telefono">Teléfono Móvil</Label>
+            <Label htmlFor="telefono">Teléfono</Label>
             <Input
               id="telefono"
               type="tel"
@@ -744,7 +760,7 @@ export function FormularioIngreso() {
             )}
           </div>
           <div>
-            <Label htmlFor="correo">Correo Electrónico</Label>
+            <Label htmlFor="correo">Correo electrónico</Label>
             <Input
               id="correo"
               type="email"
@@ -756,7 +772,6 @@ export function FormularioIngreso() {
           <div>
             <Label htmlFor="etnia_id">Etnia</Label>
             <Select
-              className="w-full"
               id="etnia_id"
               name="etnia_id"
               value={datosIngreso.etnia_id}
@@ -780,7 +795,7 @@ export function FormularioIngreso() {
             </Select>
           </div>
           <div>
-            <Label htmlFor="mano_dominante">Mano Dominante</Label>
+            <Label htmlFor="mano_dominante">Mano dominante</Label>
             <Select
               id="mano_dominante"
               name="mano_dominante"
@@ -791,9 +806,7 @@ export function FormularioIngreso() {
               <option value="Izquierda">Izquierda</option>
             </Select>
           </div>
-        </div>
 
-        <div className="pt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
           <div>
             <Label htmlFor="sexo">Sexo</Label>
             <Select
@@ -808,7 +821,9 @@ export function FormularioIngreso() {
           </div>
 
           <div>
-            <Label htmlFor="factor_grupo_sanguineo">Grupo Sanguineo</Label>
+            <Label htmlFor="factor_grupo_sanguineo">
+              Factor grupo sanguíneo
+            </Label>
             <Select
               id="factor_grupo_sanguineo"
               name="factor_grupo_sanguineo"
@@ -825,12 +840,9 @@ export function FormularioIngreso() {
               <option value="AB-">AB-</option>
               <option value="O-">O-</option>
             </Select>
-            {errors.grupoSanguineo && (
-              <p className="text-red-500">{errors.grupoSanguineo}</p>
-            )}
           </div>
           <div>
-            <Label htmlFor="cantidad_hijos">Cantidad de Hijos</Label>
+            <Label htmlFor="cantidad_hijos">Cantidad de hijos</Label>
             <Input
               type="number"
               name="cantidad_hijos"
@@ -840,12 +852,9 @@ export function FormularioIngreso() {
               max="15"
               onChange={handleValidate}
             />
-            {errors.numeroHijos && (
-              <p className="text-red-500">{errors.numeroHijos}</p>
-            )}
           </div>
           <div>
-            <Label htmlFor="carga_familiar">Carga Familiar</Label>
+            <Label htmlFor="carga_familiar">Carga familiar</Label>
             <Input
               type="number"
               name="carga_familiar"
@@ -854,15 +863,10 @@ export function FormularioIngreso() {
               min="0"
               onChange={handleValidate}
             />
-            {errors.numeroHijos && (
-              <p className="text-red-500">{errors.numeroHijos}</p>
-            )}
           </div>
-        </div>
 
-        <div className="pt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
           <div>
-            <Label htmlFor="fecha_nacimiento">Fecha de Nacimiento</Label>
+            <Label htmlFor="fecha_nacimiento">Fecha de nacimiento</Label>
             <Input
               type="date"
               id="fecha_nacimiento"
@@ -870,12 +874,9 @@ export function FormularioIngreso() {
               max={YYYYMMDD()}
               onChange={handleValidate}
             />
-            {errors.fecha_nacimiento && (
-              <p className="text-red-500">{errors.fecha_nacimiento}</p>
-            )}
           </div>
           <div>
-            <Label htmlFor="nacimiento_lugar">Lugar de Nacimiento</Label>
+            <Label htmlFor="nacimiento_lugar">Lugar de nacimiento</Label>
             <Input
               id="nacimiento_lugar"
               name="nacimiento_lugar"
@@ -888,7 +889,6 @@ export function FormularioIngreso() {
           <div>
             <Label htmlFor="nacimiento_pais_id">Nacionalidad</Label>
             <Select
-              className="w-full"
               id="nacimiento_pais_id"
               name="nacimiento_pais_id"
               defaultValue="Seleccione"
@@ -906,14 +906,10 @@ export function FormularioIngreso() {
                   )
                 : null}
             </Select>
-            {errors.nacimiento_pais_id && (
-              <p className="text-red-500">{errors.nacimiento_pais_id}</p>
-            )}
           </div>
           <div>
-            <Label htmlFor="nacimiento_estado_id">Estado de Nacimiento</Label>
+            <Label htmlFor="nacimiento_estado_id">Estado de nacimiento</Label>
             <Select
-              className="w-full"
               id="nacimiento_estado_id"
               name="nacimiento_estado_id"
               value={datosIngreso.nacimiento_estado_id}
@@ -935,15 +931,11 @@ export function FormularioIngreso() {
                   )
                 : null}
             </Select>
-            {errors.nacimiento_estado_id && (
-              <p className="text-red-500">{errors.nacimiento_estado_id}</p>
-            )}
           </div>
 
           <div>
-            <Label htmlFor="pais_id">Pais de Residencia</Label>
+            <Label htmlFor="pais_id">País de residencia</Label>
             <Select
-              className="w-full"
               id="pais_id"
               name="pais_id"
               defaultValue="Seleccione"
@@ -961,12 +953,10 @@ export function FormularioIngreso() {
                   )
                 : null}
             </Select>
-            {errors.pais_id && <p className="text-red-500">{errors.pais_id}</p>}
           </div>
           <div>
-            <Label htmlFor="estado_id">Estado de Residencia</Label>
+            <Label htmlFor="estado_id">Estado de residencia</Label>
             <Select
-              className="w-full"
               id="estado_id"
               name="estado_id"
               value={datosIngreso.estado_id}
@@ -992,7 +982,6 @@ export function FormularioIngreso() {
           <div>
             <Label htmlFor="municipio_id">Municipio</Label>
             <Select
-              className="w-full"
               id="municipio_id"
               name="municipio_id"
               value={datosIngreso.municipio_id}
@@ -1018,7 +1007,6 @@ export function FormularioIngreso() {
           <div>
             <Label htmlFor="parroquia_id">Parroquia</Label>
             <Select
-              className="w-full"
               id="parroquia_id"
               name="parroquia_id"
               value={datosIngreso.parroquia_id}
@@ -1042,7 +1030,7 @@ export function FormularioIngreso() {
             </Select>
           </div>
           <div>
-            <Label htmlFor="urbanizacion_sector">Urbanizacion / Sector</Label>
+            <Label htmlFor="urbanizacion_sector">Urbanización / Sector</Label>
             <Input
               id="urbanizacion_sector"
               name="urbanizacion_sector"
@@ -1059,12 +1047,12 @@ export function FormularioIngreso() {
               name="calle_avenida"
               onChange={handleValidate}
             />
-            {errors.direccion && (
-              <p className="text-red-500">{errors.direccion}</p>
+            {errors.calle_avenida && (
+              <p className="text-red-500">{errors.calle_avenida}</p>
             )}
           </div>
           <div>
-            <Label htmlFor="tipo_vivienda">Tipo de Vivienda</Label>
+            <Label htmlFor="tipo_vivienda">Tipo de vivienda</Label>
             <Select
               id="tipo_vivienda"
               name="tipo_vivienda"
@@ -1078,45 +1066,43 @@ export function FormularioIngreso() {
 
           {datosIngreso.tipo_vivienda === "Casa" && (
             <div>
-              <Label htmlFor="numero_casa">Numero de Casa</Label>
+              <Label htmlFor="numero_casa">Numero de casa</Label>
               <Input
                 name="numero_casa"
                 id="numero_casa"
                 onChange={handleValidate}
               />
-              {errors.tallaCalzado && (
-                <p className="text-red-500">{errors.tallaCalzado}</p>
-              )}
             </div>
           )}
           {datosIngreso.tipo_vivienda === "Edificio" && (
-            <div className="grid grid-cols-2">
-              <div className="mr-2">
+            <>
+              <div>
                 <Label htmlFor="piso">Piso</Label>
-                <Input name="piso" id="piso" onChange={handleValidate} />
-                {errors.tallaCalzado && (
-                  <p className="text-red-500">{errors.tallaCalzado}</p>
-                )}
+                <Input
+                  name="piso"
+                  id="piso"
+                  onChange={handleValidate}
+                  type="number"
+                  min="0"
+                />
               </div>
-              <div className="ml-2">
+              <div>
                 <Label htmlFor="apartamento">Apartamento</Label>
                 <Input
                   name="apartamento"
                   id="apartamento"
                   onChange={handleValidate}
                 />
-                {errors.tallaCalzado && (
-                  <p className="text-red-500">{errors.tallaCalzado}</p>
+                {errors.apartamento && (
+                  <p className="text-red-500">{errors.apartamento}</p>
                 )}
               </div>
-            </div>
+            </>
           )}
-        </div>
 
-        <div className="pt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 items-end">
           <div>
             <Label htmlFor="licencia_conducir_grado">
-              ¿Posee Licencia de Conducir? Especifique el grado
+              ¿Posee licencia de conducir? Especifique el grado más alto
             </Label>
             <Input
               type="number"
@@ -1126,11 +1112,10 @@ export function FormularioIngreso() {
               min="0"
               onChange={handleValidate}
             />
-            {errors.grado && <p className="text-red-500">{errors.grado}</p>}
           </div>
           <div>
             <Label htmlFor="licencia_conducir_vencimiento">
-              Fecha de Vencimiento Licencia de Conducir
+              Fecha de vencimiento de licencia de conducir
             </Label>
             <Input
               type="date"
@@ -1143,7 +1128,7 @@ export function FormularioIngreso() {
 
           <div>
             <Label htmlFor="carta_medica_vencimiento">
-              ¿Posee Carta Médica? Indique la fecha de vencimiento
+              ¿Posee carta médica? Indique la fecha de su vencimiento
             </Label>
             <Input
               type="date"
@@ -1155,7 +1140,7 @@ export function FormularioIngreso() {
           </div>
 
           <div>
-            <Label htmlFor="talla_camisa">Talla Camisa</Label>
+            <Label htmlFor="talla_camisa">Talla camisa</Label>
             <Input
               name="talla_camisa"
               id="talla_camisa"
@@ -1166,7 +1151,7 @@ export function FormularioIngreso() {
             )}
           </div>
           <div>
-            <Label htmlFor="talla_pantalon">Talla Pantalon</Label>
+            <Label htmlFor="talla_pantalon">Talla pantalón</Label>
             <Input
               name="talla_pantalon"
               id="talla_pantalon"
@@ -1177,7 +1162,7 @@ export function FormularioIngreso() {
             )}
           </div>
           <div>
-            <Label htmlFor="talla_calzado">Talla Calzado</Label>
+            <Label htmlFor="talla_calzado">Talla calzado</Label>
             <Input
               name="talla_calzado"
               id="talla_calzado"
@@ -1190,9 +1175,9 @@ export function FormularioIngreso() {
         </div>
 
         {/* Educación */}
-        <div className="mt-8 ">
+        <div className="mt-6">
           <Title>Educación</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
             <div>
               <Label htmlFor="grado_instruccion">Grado de instrucción</Label>
               <Select
@@ -1208,11 +1193,11 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="nombre_instituto">Nombre del Instituto</Label>
+              <Label htmlFor="nombre_instituto">Nombre del instituto</Label>
               <Input id="nombre_instituto" name="nombre_instituto" />
             </div>
             <div>
-              <Label htmlFor="titulo_obtenido">Titulo Obtenido</Label>
+              <Label htmlFor="titulo_obtenido">Titulo obtenido</Label>
               <Input id="titulo_obtenido" name="titulo_obtenido" />
             </div>
             <div>
@@ -1234,18 +1219,14 @@ export function FormularioIngreso() {
               />
             </div>
             <div>
-              <Button
-                type="button"
-                onClick={handleAddTituloObtenido}
-                className="w-full flex mt-7 items-center justify-center space-x-2"
-              >
+              <Button onClick={handleAddTituloObtenido} className="m-0 w-full">
                 Agregar Título
               </Button>
             </div>
           </div>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-6">
           <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg mt-8">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
               <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
@@ -1261,7 +1242,7 @@ export function FormularioIngreso() {
                     </div>
                   </th>
                   <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Titulo Obtenido</div>
+                    <div className="flex items-center">Título Obtenido</div>
                   </th>
                   <th scope="col" className="px-4 py-3">
                     <div className="flex items-center">Fecha Desde</div>
@@ -1304,7 +1285,7 @@ export function FormularioIngreso() {
         <div className="mt-8 ">
           <Title>Trabajos Anteriores</Title>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
             <div>
               <Label htmlFor="empresa_centro_educativo">
                 Nombre de la empresa
@@ -1315,7 +1296,7 @@ export function FormularioIngreso() {
               />
             </div>
             <div>
-              <Label htmlFor="cargo_titulo">Cargo</Label>
+              <Label htmlFor="cargo_titulo">Cargo ejercido</Label>
               <Input id="cargo_titulo" name="cargo_titulo" />
             </div>
             <div>
@@ -1336,19 +1317,15 @@ export function FormularioIngreso() {
                 max={YYYYMMDD()}
               />
             </div>
-            <div className="sm:col-span-2 md:col-span-1">
-              <Button
-                type="button"
-                onClick={handleAddExperiencia}
-                className="w-full flex mt-7 items-center justify-center space-x-2"
-              >
+            <div>
+              <Button onClick={handleAddExperiencia} className="m-0 w-full">
                 Agregar Trabajo Anterior
               </Button>
             </div>
           </div>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-6">
           <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg mt-8">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
               <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
@@ -1398,10 +1375,10 @@ export function FormularioIngreso() {
         </div>
 
         <div className="mt-8">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 items-end md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
             <div>
               <Label htmlFor="trabajo_anteriormente_especifique">
-                ¿Trabajo Anteriormente en esta empresa? Especifique
+                ¿Ha trabajado anteriormente en esta empresa? Especifique
               </Label>
               <Input
                 id="trabajo_anteriormente_especifique"
@@ -1410,7 +1387,7 @@ export function FormularioIngreso() {
               />
             </div>
             <div>
-              <Label htmlFor="motivo_retiro">Motivo del Retiro</Label>
+              <Label htmlFor="motivo_retiro">Motivo del retiro</Label>
               <Input
                 id="motivo_retiro"
                 name="motivo_retiro"
@@ -1425,7 +1402,7 @@ export function FormularioIngreso() {
               <Input
                 type="number"
                 min="0"
-                max="30"
+                max="20"
                 defaultValue={datosIngreso.posee_parientes_empresa}
                 onChange={handleValidate}
                 id="posee_parientes_empresa"
@@ -1436,18 +1413,18 @@ export function FormularioIngreso() {
         </div>
 
         {/* Referencias Personales */}
-        <div className="mt-8 ">
+        <div className="mt-6">
           <Title>Referencias Personales</Title>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
             <div>
               <Label htmlFor="nombre_apellido_referencia">
-                Nombres y Apellidos
+                Nombres y apellidos
               </Label>
               <Input id="nombre_apellido_referencia" name="nombre_apellido" />
             </div>
             <div>
-              <Label htmlFor="direccion">Direccion</Label>
+              <Label htmlFor="direccion">Dirección</Label>
               <Input id="direccion" name="direccion" />
             </div>
             <div>
@@ -1459,11 +1436,10 @@ export function FormularioIngreso() {
               <Input id="ocupacion" name="ocupacion" />
             </div>
 
-            <div className="sm:col-span-2 md:col-span-1">
+            <div>
               <Button
-                type="button"
                 onClick={handleAddReferenciaPersonal}
-                className="w-full flex mt-7 items-center justify-center space-x-2"
+                className="m-0 w-full"
               >
                 Agregar Referencia Personal
               </Button>
@@ -1471,25 +1447,25 @@ export function FormularioIngreso() {
           </div>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-6">
           <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg mt-8">
             <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
               <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
                 <tr className="text-black">
                   <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Nombres Y Apellidos</div>
+                    <div className="flex items-center">Nombres y Apellidos</div>
                   </th>
                   <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Direccion</div>
+                    <div className="flex items-center">Dirección</div>
                   </th>
                   <th scope="col" className="px-4 py-3">
                     <div className="flex items-center">Teléfono</div>
                   </th>
                   <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Ocupacion</div>
+                    <div className="flex items-center">Ocupación</div>
                   </th>
                   <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Acciones</div>
+                    <div className="flex items-center">Acción</div>
                   </th>
                 </tr>
               </thead>
@@ -1519,64 +1495,57 @@ export function FormularioIngreso() {
         </div>
 
         {/* Salud */}
-        <div className="mt-8">
+        <div className="mt-6">
           <Title>Salud</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="flex flex-col gap-4">
-              <span className="font-semibold">Alergias</span>
-              <div className="flex flex-wrap gap-4">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="alergia_alimentos">Alimentos</Label>
-                  <input
-                    name="alergia_alimentos"
-                    id="alergia_alimentos"
-                    type="checkbox"
-                    checked={datosIngreso.alergia_alimentos}
-                    onChange={handleChecked}
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="alergia_medicamentos">Medicamentos</Label>
-                  <input
-                    name="alergia_medicamentos"
-                    id="alergia_medicamentos"
-                    type="checkbox"
-                    checked={datosIngreso.alergia_medicamentos}
-                    onChange={handleChecked}
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="alergia_otros">Otros</Label>
-                  <input
-                    name="alergia_otros"
-                    id="alergia_otros"
-                    type="checkbox"
-                    checked={datosIngreso.alergia_otros}
-                    onChange={handleChecked}
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                </div>
-              </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
+            <div className="flex gap-2">
+              <CheckBox
+                name="alergia_alimentos"
+                id="alergia_alimentos"
+                checked={datosIngreso.alergia_alimentos}
+                onChange={handleChecked}
+              />
+              <Label htmlFor="alergia_alimentos">
+                ¿Es alérgico a algún alimento?
+              </Label>
+            </div>
+            <div className="flex gap-2">
+              <CheckBox
+                name="alergia_medicamentos"
+                id="alergia_medicamentos"
+                checked={datosIngreso.alergia_medicamentos}
+                onChange={handleChecked}
+              />
+              <Label htmlFor="alergia_medicamentos">
+                ¿Es alérgico a algún medicamento?
+              </Label>
+            </div>
+            <div className="flex gap-2">
+              <CheckBox
+                name="alergia_otros"
+                id="alergia_otros"
+                checked={datosIngreso.alergia_otros}
+                onChange={handleChecked}
+              />
+              <Label htmlFor="alergia_otros">
+                ¿Es alérgico a alguna otra cosa?
+              </Label>
             </div>
 
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center mt-10 gap-2">
-                <Label htmlFor="fuma">Fuma?</Label>
-                <input
-                  name="fuma"
-                  id="fuma"
-                  type="checkbox"
-                  checked={datosIngreso.fuma}
-                  onChange={handleChecked}
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-              </div>
+            <div className="flex gap-2">
+              <CheckBox
+                name="fuma"
+                id="fuma"
+                checked={datosIngreso.fuma}
+                onChange={handleChecked}
+              />
+              <Label htmlFor="fuma">¿Fuma?</Label>
             </div>
 
             <div>
-              <Label htmlFor="alergia_especifique">Especifique Alergia</Label>
+              <Label htmlFor="alergia_especifique">
+                Especifique sus alergias
+              </Label>
               <Input
                 name="alergia_especifique"
                 id="alergia_especifique"
@@ -1586,7 +1555,7 @@ export function FormularioIngreso() {
 
             <div>
               <Label htmlFor="cicatriz_especifique">
-                Tiene usted Alguna Cicatriz? Especifique
+                ¿Posee alguna cicatriz? Especifique
               </Label>
               <Input
                 name="cicatriz_especifique"
@@ -1598,12 +1567,12 @@ export function FormularioIngreso() {
         </div>
 
         {/* Contacto de Emergencia */}
-        <div className="mt-8">
+        <div className="mt-6">
           <Title>Contactos de Emergencia</Title>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
             <div>
               <Label htmlFor="nombre_apellido_contacto_emergencia">
-                Nombre y Apellido
+                Nombre y apellido
               </Label>
               <Input
                 id="nombre_apellido_contacto_emergencia"
@@ -1637,16 +1606,15 @@ export function FormularioIngreso() {
                 type="tel"
               />
             </div>
-            <div className="md:col-span-2">
-              <Label htmlFor="direccion_contacto_emergencia">Direccion</Label>
+            <div>
+              <Label htmlFor="direccion_contacto_emergencia">Dirección</Label>
               <Input id="direccion_contacto_emergencia" name="direccion" />
             </div>
 
             <div>
               <Button
-                type="button"
                 onClick={handleAddContactoEmergencia}
-                className="w-full flex mt-7 items-center justify-center space-x-2"
+                className="m-0 w-full"
               >
                 Agregar Contacto Emergencia
               </Button>
@@ -1669,7 +1637,7 @@ export function FormularioIngreso() {
                     <div className="flex items-center">Teléfono</div>
                   </th>
                   <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Direccion</div>
+                    <div className="flex items-center">Dirección</div>
                   </th>
 
                   <th scope="col" className="px-4 py-3">
@@ -1703,11 +1671,11 @@ export function FormularioIngreso() {
         </div>
 
         {/* Datos Bancarios */}
-        <div className="mt-8">
+        <div className="mt-6">
           <Title>Datos Bancarios</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
             <div>
-              <Label htmlFor="titular_cuenta">Titular de la Cuenta</Label>
+              <Label htmlFor="titular_cuenta">Titular de la cuenta</Label>
               <Select
                 id="titular_cuenta"
                 name="titular_cuenta"
@@ -1719,7 +1687,7 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="entidad_bancaria">Entidad Bancaria</Label>
+              <Label htmlFor="entidad_bancaria">Entidad bancaria</Label>
               <Select
                 id="entidad_bancaria"
                 name="entidad_bancaria"
@@ -1762,7 +1730,7 @@ export function FormularioIngreso() {
             </div>
 
             <div>
-              <Label htmlFor="numero_cuenta">Número de Cuenta</Label>
+              <Label htmlFor="numero_cuenta">Número de cuenta</Label>
               <Input
                 id="numero_cuenta"
                 name="numero_cuenta"
@@ -1773,7 +1741,7 @@ export function FormularioIngreso() {
               )}
             </div>
             <div>
-              <Label htmlFor="tipo_cuenta">Tpo de Cuenta</Label>
+              <Label htmlFor="tipo_cuenta">Tipo de Cuenta</Label>
               <Select
                 id="tipo_cuenta"
                 name="tipo_cuenta"
@@ -1784,86 +1752,87 @@ export function FormularioIngreso() {
                 <option value="Corriente">Corriente</option>
               </Select>
             </div>
-          </div>
-          {datosIngreso.titular_cuenta === "Tercero" && (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <div>
-                <Label htmlFor="numero_identificacion_tercero">
-                  Identificación del Titular
-                </Label>
-                <div className="grid grid-cols-4">
-                  <Select
-                    name="tipo_identificacion_tercero"
-                    defaultValue={datosIngreso.tipo_identificacion_tercero}
-                    onChange={handleValidate}
-                  >
-                    <option value="V">V</option>
-                    <option value="E">E</option>
-                  </Select>
 
-                  <div className="col-span-3 pl-3">
+            {datosIngreso.titular_cuenta === "Tercero" && (
+              <>
+                <div>
+                  <Label htmlFor="numero_identificacion_tercero">
+                    Número de identificación del titular
+                  </Label>
+                  <div className="flex justify-between gap-2">
+                    <Select
+                      className="w-auto"
+                      name="tipo_identificacion_tercero"
+                      defaultValue={
+                        datosIngreso.tipo_identificacion_tercero || "V"
+                      }
+                      onChange={handleValidate}
+                    >
+                      <option value="V">V</option>
+                      <option value="E">E</option>
+                    </Select>
+
                     <Input
                       id="numero_identificacion_tercero"
                       name="numero_identificacion_tercero"
                       onChange={handleValidate}
+                      type="number"
+                      min="0"
                     />
-                    {errors.cedula && (
-                      <p className="text-red-500">{errors.cedula}</p>
-                    )}
                   </div>
                 </div>
-              </div>
-              <div>
-                <Label htmlFor="nombre_apellido_tercero">
-                  Nombre y Apellido del Titular
-                </Label>
-                <Input
-                  id="nombre_apellido_tercero"
-                  name="nombre_apellido_tercero"
-                  onChange={handleValidate}
-                />
-                {errors.nombre_apellido_tercero && (
-                  <p className="text-red-500">
-                    {errors.nombre_apellido_tercero}
-                  </p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="parentesco_tercero">Parentesco</Label>
-                <Select
-                  id="parentesco_tercero"
-                  name="parentesco_tercero"
-                  defaultValue={datosIngreso.parentesco_tercero}
-                  onChange={handleValidate}
-                >
-                  <option value="Abuelo(a)">Abuelo(a)</option>
-                  <option value="Amigo(a)">Amigo(a)</option>
-                  <option value="Conyuge">Conyuge</option>
-                  <option value="Hermano(a)">Hermano(a)</option>
-                  <option value="Hijo(a)">Hijo(a)</option>
-                  <option value="Madre">Madre</option>
-                  <option value="Nieto(a)">Nieto(a)</option>
-                  <option value="Padre">Padre</option>
-                  <option value="Primo(a)">Primo(a)</option>
-                  <option value="Sobrino(a)">Sobrino(a)</option>
-                  <option value="Tio(a)">Tio(a)</option>
-                </Select>
-                {errors.parentesco_tercero && (
-                  <p className="text-red-500">{errors.parentesco_tercero}</p>
-                )}
-              </div>
-            </div>
-          )}
+                <div>
+                  <Label htmlFor="nombre_apellido_tercero">
+                    Nombre y apellido del titular
+                  </Label>
+                  <Input
+                    id="nombre_apellido_tercero"
+                    name="nombre_apellido_tercero"
+                    onChange={handleValidate}
+                  />
+                  {errors.nombre_apellido_tercero && (
+                    <p className="text-red-500">
+                      {errors.nombre_apellido_tercero}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="parentesco_tercero">Parentesco</Label>
+                  <Select
+                    id="parentesco_tercero"
+                    name="parentesco_tercero"
+                    defaultValue={datosIngreso.parentesco_tercero}
+                    onChange={handleValidate}
+                  >
+                    <option value="Abuelo(a)">Abuelo(a)</option>
+                    <option value="Amigo(a)">Amigo(a)</option>
+                    <option value="Conyuge">Conyuge</option>
+                    <option value="Hermano(a)">Hermano(a)</option>
+                    <option value="Hijo(a)">Hijo(a)</option>
+                    <option value="Madre">Madre</option>
+                    <option value="Nieto(a)">Nieto(a)</option>
+                    <option value="Padre">Padre</option>
+                    <option value="Primo(a)">Primo(a)</option>
+                    <option value="Sobrino(a)">Sobrino(a)</option>
+                    <option value="Tio(a)">Tio(a)</option>
+                  </Select>
+                  {errors.parentesco_tercero && (
+                    <p className="text-red-500">{errors.parentesco_tercero}</p>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         {/* ESPACIO PARA EL DEPARTAMENTO DE TALENTO HUMANO */}
 
-        <div className="mt-8">
-          <Title>Espacio para talento humano</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="mt-6">
+          <Title>Espacio para el departamento de talento humano</Title>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
             <div>
               <Label htmlFor="empresa_id">Empresa</Label>
-              {/* if superadmin = select, if admin = disabled="true" */}
+
               {empleado.Role.nombre !== "admin" ? (
                 <Input
                   id="empresa_id"
@@ -1876,7 +1845,6 @@ export function FormularioIngreso() {
                 />
               ) : (
                 <Select
-                  className="w-full"
                   id="empresa_id"
                   name="empresa_id"
                   defaultValue="Seleccione"
@@ -1904,7 +1872,6 @@ export function FormularioIngreso() {
             <div>
               <Label htmlFor="departamento_id">Departamento</Label>
               <Select
-                className="w-full"
                 id="departamento_id"
                 name="departamento_id"
                 defaultValue="Seleccione"
@@ -1930,7 +1897,6 @@ export function FormularioIngreso() {
             <div>
               <Label htmlFor="cargo_id">Cargo</Label>
               <Select
-                className="w-full"
                 id="cargo_id"
                 name="cargo_id"
                 defaultValue="Seleccione"
@@ -1954,9 +1920,8 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="cargo_nivel_id">Nivel</Label>
+              <Label htmlFor="cargo_nivel_id">Nivel del cargo</Label>
               <Select
-                className="w-full"
                 id="cargo_nivel_id"
                 name="cargo_nivel_id"
                 defaultValue="Seleccione"
@@ -1985,12 +1950,9 @@ export function FormularioIngreso() {
               </Label>
               {/* rango_salario se asignara al min y max del input, ademas debe mostrarse al administrador */}
               <Input id="salario" name="salario" onChange={handleValidate} />
-              {errors.numero_cuenta && (
-                <p className="text-red-500">{errors.salario}</p>
-              )}
             </div>
             <div>
-              <Label htmlFor="fecha_ingreso">Fecha de Ingreso</Label>
+              <Label htmlFor="fecha_ingreso">Fecha de ingreso</Label>
               <Input
                 id="fecha_ingreso"
                 name="fecha_ingreso"
@@ -1998,28 +1960,32 @@ export function FormularioIngreso() {
                 defaultValue={datosIngreso.fecha_ingreso}
                 onChange={handleValidate}
               />
-              {errors.fecha_ingreso && (
-                <p className="text-red-500">{errors.fecha_ingreso}</p>
-              )}
+            </div>
+            <div className="col-span-1 sm:col-span-2 md:col-span-3">
+              <Label htmlFor="observaciones">Observaciones</Label>
+              <textarea
+                id="observaciones"
+                name="observaciones"
+                className="bg-gray-50 border border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-[#002846] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                type="textarea"
+                rows="3"
+                maxLength="255"
+                onChange={handleValidate}
+              />
+            </div>
+
+            <div className="col-span-1 sm:col-span-2 md:col-span-3">
+              <span className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Foto empleado
+              </span>
+              <Webcam className="sm:w-2/4 md:w-1/4 mx-auto" />
             </div>
           </div>
         </div>
-        <div className="mt-4">
-          <Label htmlFor="observaciones">Observaciones</Label>
-          <textarea
-            id="observaciones"
-            name="observaciones"
-            className="bg-gray-50 border border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-[#002846] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            type="textarea"
-            rows="3"
-            maxLength="255"
-            onChange={handleValidate}
-          />
-        </div>
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-2 flex justify-center">
           <Button
-            className="sm:w-full md:w-auto flex items-center justify-center space-x-2"
+            className="w-auto flex items-center justify-center gap-2"
             onClick={handleSaveFicha}
           >
             <FaFloppyDisk />

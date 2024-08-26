@@ -59,6 +59,7 @@ const {
   Idiomas_Curriculos,
   Idiomas,
   Menus,
+  Movimientos,
   Municipios,
   Paises,
   Parroquias,
@@ -68,7 +69,12 @@ const {
   Respuestas_Kostick,
   Roles,
   Salud,
+  Sedes,
   Sesiones,
+  Sugerencias_Pred,
+  Sugerencias,
+  Tipos_Movimientos,
+  Tipos_Sugerencias,
   Titulos_Obtenidos,
 } = sequelize.models;
 
@@ -259,18 +265,6 @@ Empleados.belongsTo(Estados, {
   },
 });
 
-// Paises 1:M Empleados
-Paises.hasMany(Empleados, {
-  foreignKey: {
-    name: "nacimiento_pais_id",
-  },
-});
-Empleados.belongsTo(Paises, {
-  foreignKey: {
-    name: "nacimiento_pais_id",
-  },
-});
-
 // Parroquias 1:M Direcciones
 Parroquias.hasMany(Direcciones, {
   foreignKey: {
@@ -292,30 +286,6 @@ Municipios.hasMany(Direcciones, {
 Direcciones.belongsTo(Municipios, {
   foreignKey: {
     name: "municipio_id",
-  },
-});
-
-// Estados 1:M Direcciones
-Estados.hasMany(Direcciones, {
-  foreignKey: {
-    name: "estado_id",
-  },
-});
-Direcciones.belongsTo(Estados, {
-  foreignKey: {
-    name: "estado_id",
-  },
-});
-
-// Paises 1:M Direcciones
-Paises.hasMany(Direcciones, {
-  foreignKey: {
-    name: "pais_id",
-  },
-});
-Direcciones.belongsTo(Paises, {
-  foreignKey: {
-    name: "pais_id",
   },
 });
 
@@ -443,6 +413,86 @@ Cargos_Niveles.belongsToMany(Empleados, {
   },
 });
 
+// Empresas 1:M Sedes
+Empresas.hasMany(Sedes, {
+  foreignKey: {
+    name: "empresa_id",
+  },
+});
+Sedes.belongsTo(Empresas, {
+  foreignKey: {
+    name: "empresa_id",
+  },
+});
+
+// Empleados M:M Tipos_Movimientos
+Empleados.belongsToMany(Tipos_Movimientos, {
+  through: "Movimientos",
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Tipos_Movimientos.belongsToMany(Empleados, {
+  through: "Movimientos",
+  foreignKey: {
+    name: "tipo_movimiento_id",
+  },
+});
+
+Movimientos.belongsTo(Empleados, { foreignKey: "empleado_supervisor_id" });
+Movimientos.belongsTo(Empleados, { foreignKey: "empleado_solicitante_id" });
+Movimientos.belongsTo(Empleados, { foreignKey: "empleado_rrhh_id" });
+Movimientos.belongsTo(Empleados, { foreignKey: "empleado_aprueba_id" });
+Movimientos.belongsTo(Cargos_Niveles, { foreignKey: "cargo_nivel_id" });
+
+// Tipos_Sugerencias 1:M Sugerencias
+Tipos_Sugerencias.hasMany(Sugerencias, {
+  foreignKey: {
+    name: "tipo_sugerencia_id",
+  },
+});
+Sugerencias.belongsTo(Tipos_Sugerencias, {
+  foreignKey: {
+    name: "tipo_sugerencia_id",
+  },
+});
+
+// Empleados 1:M Sugerencias
+Empleados.hasMany(Sugerencias, {
+  foreignKey: {
+    name: "revisado_por_id",
+  },
+});
+Sugerencias.belongsTo(Empleados, {
+  foreignKey: {
+    name: "revisado_por_id",
+  },
+});
+
+// Sedes 1:M Sugerencias
+Sedes.hasMany(Sugerencias, {
+  foreignKey: {
+    name: "sede_id",
+  },
+});
+Sugerencias.belongsTo(Sedes, {
+  foreignKey: {
+    name: "sede_id",
+  },
+});
+
+// Empresas 1:M Empleados
+Empresas.hasMany(Empleados, {
+  foreignKey: {
+    name: "empresa_id",
+  },
+});
+Empleados.belongsTo(Empresas, {
+  foreignKey: {
+    name: "empresa_id",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -466,6 +516,7 @@ module.exports = {
   Idiomas_Curriculos,
   Idiomas,
   Menus,
+  Movimientos,
   Municipios,
   Paises,
   Parroquias,
@@ -475,6 +526,11 @@ module.exports = {
   Respuestas_Kostick,
   Roles,
   Salud,
+  Sedes,
   Sesiones,
+  Sugerencias_Pred,
+  Sugerencias,
+  Tipos_Movimientos,
+  Tipos_Sugerencias,
   Titulos_Obtenidos,
 };

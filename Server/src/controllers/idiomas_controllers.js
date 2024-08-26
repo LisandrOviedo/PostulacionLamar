@@ -264,8 +264,8 @@ const eliminarIdiomasCurriculo = async (curriculo_id) => {
 
 module.exports = {
   todosLosIdiomas,
-  traerIdioma,
   todosLosIdiomasActivos,
+  traerIdioma,
   cargarIdiomas,
   crearIdioma,
   modificarIdioma,
