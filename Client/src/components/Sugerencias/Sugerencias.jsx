@@ -119,7 +119,7 @@ export function Sugerencias() {
       <br />
       <Hr />
       <br />
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 mb-5">
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 my-5 mx-[10%]">
         <div>
           <Label htmlFor="empresa_id">Empresa</Label>
 
