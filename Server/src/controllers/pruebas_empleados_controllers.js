@@ -23,19 +23,22 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
               "telefono",
               "correo",
             ],
-            where: filtros.numero_identificacion
-              ? {
-                  numero_identificacion: {
-                    [Op.like]: `%${filtros.numero_identificacion}%`,
-                  },
-                  empresa_id: filtros.empresa_id,
-                }
-              : filtros.apellidos
-              ? {
-                  apellidos: { [Op.like]: `%${filtros.apellidos}%` },
-                  empresa_id: filtros.empresa_id,
-                }
-              : { empresa_id: filtros.empresa_id },
+            where: {
+              empresa_id: filtros.empresa_id,
+              [Op.and]: [
+                filtros.numero_identificacion
+                  ? {
+                      numero_identificacion: {
+                        [Op.like]: `%${filtros.numero_identificacion}%`,
+                      },
+                    }
+                  : filtros.apellidos
+                  ? {
+                      apellidos: { [Op.like]: `%${filtros.apellidos}%` },
+                    }
+                  : {},
+              ],
+            },
           },
         ],
         where: filtros.prueba ? { prueba: filtros.prueba } : {},

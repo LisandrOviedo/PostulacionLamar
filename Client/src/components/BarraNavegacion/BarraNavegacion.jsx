@@ -1,4 +1,4 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -15,7 +15,6 @@ import { Logo } from "../UI";
 import Swal from "sweetalert2";
 
 export function BarraNavegacion() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState({});
   const [isOpenBurger, setIsOpenBurger] = useState(false);
@@ -62,12 +61,6 @@ export function BarraNavegacion() {
         dispatch(resetIdiomas());
         dispatch(resetPruebas());
         dispatch(resetEmpleados());
-
-        if (empleado.Role.nombre === "admin") {
-          navigate("/admin/acceso");
-        } else {
-          navigate("/");
-        }
       }
     });
   };

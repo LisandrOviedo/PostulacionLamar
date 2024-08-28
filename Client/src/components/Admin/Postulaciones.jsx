@@ -31,6 +31,8 @@ export function Postulaciones() {
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
+  const empleado = useSelector((state) => state.empleados.empleado);
+
   const curriculos = useSelector((state) => state.curriculos.curriculos);
 
   const paginaActual = useSelector((state) => state.curriculos.paginaActual);
@@ -55,6 +57,7 @@ export function Postulaciones() {
     idioma_id: filtros.idioma_id || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
+    empresa_id: empleado.empresa_id,
   });
 
   const handleChangePagination = (e) => {
@@ -112,6 +115,7 @@ export function Postulaciones() {
       idioma_id: "",
       orden_campo: "",
       orden_por: "",
+      empresa_id: empleado.empresa_id,
     });
 
     const buscarPor = document.getElementById("buscar_por");
@@ -135,6 +139,8 @@ export function Postulaciones() {
     dispatch(getAllAreasInteresActivas(token));
 
     dispatch(getAllIdiomasActivos(token));
+
+    handleFind();
 
     document.title = "Grupo Lamar - Postulaciones (Admin)";
 

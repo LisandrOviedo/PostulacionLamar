@@ -27,6 +27,8 @@ export function PruebasEmpleados() {
 
   const token = useSelector((state) => state.empleados.token);
 
+  const empleado = useSelector((state) => state.empleados.empleado);
+
   const pruebas_empleados = useSelector(
     (state) => state.pruebas_empleados.pruebas_empleados
   );
@@ -47,6 +49,7 @@ export function PruebasEmpleados() {
     prueba: filtros.prueba || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
+    empresa_id: empleado.empresa_id,
   });
 
   const handleChangePagination = (e) => {
@@ -102,6 +105,7 @@ export function PruebasEmpleados() {
       prueba: "",
       orden_campo: "",
       orden_por: "",
+      empresa_id: empleado.empresa_id,
     });
 
     const buscarPor = document.getElementById("buscar_por");
@@ -121,6 +125,8 @@ export function PruebasEmpleados() {
 
   useEffect(() => {
     window.scroll(0, 0);
+
+    handleFind();
 
     document.title = "Grupo Lamar - Pruebas Empleados (Admin)";
 

@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import validations from "../../utils/validacionesAcceso";
@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 export function AccesoAdmin() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
@@ -61,7 +62,7 @@ export function AccesoAdmin() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    if (empleado.activo && empleado.Role.nombre === "admin") {
+    if (empleado.activo && empleado.Role?.nombre === "admin") {
       return navigate("/admin/panel");
     }
 
@@ -94,7 +95,12 @@ export function AccesoAdmin() {
         timer: 1500,
         width: "20em",
       });
-      return navigate("/admin/panel");
+
+      if (location.state?.from) {
+        return navigate(location.state.from);
+      } else {
+        return navigate("/admin/panel");
+      }
     }
   }, [empleado]);
 

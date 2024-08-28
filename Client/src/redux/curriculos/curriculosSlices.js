@@ -13,6 +13,7 @@ const initialState = {
     idioma_id: "",
     orden_campo: "",
     orden_por: "",
+    empresa_id: "",
   },
 };
 
@@ -45,6 +46,7 @@ export const curriculoSlice = createSlice({
         area_interes_id: "",
         estado: "",
         idioma_id: "",
+        empresa_id: state.filtros.empresa_id,
       };
     },
     resetState: () => {

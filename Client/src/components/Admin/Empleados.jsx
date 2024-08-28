@@ -36,6 +36,8 @@ export function Empleados() {
 
   const token = useSelector((state) => state.empleados.token);
 
+  const empleado = useSelector((state) => state.empleados.empleado);
+
   const empleados = useSelector((state) => state.empleados.empleados);
 
   const paginaActual = useSelector((state) => state.empleados.paginaActual);
@@ -52,6 +54,7 @@ export function Empleados() {
     activo: filtros.activo || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
+    empresa_id: empleado.empresa_id,
   });
 
   const handleChangePagination = (e) => {
@@ -107,6 +110,7 @@ export function Empleados() {
       activo: "",
       orden_campo: "",
       orden_por: "",
+      empresa_id: empleado.empresa_id,
     });
 
     const buscarPor = document.getElementById("buscar_por");
@@ -128,6 +132,8 @@ export function Empleados() {
 
   useEffect(() => {
     window.scroll(0, 0);
+
+    handleFind();
 
     document.title = "Grupo Lamar - Empleados (Admin)";
 

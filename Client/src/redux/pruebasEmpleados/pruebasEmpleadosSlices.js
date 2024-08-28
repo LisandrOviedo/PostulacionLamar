@@ -11,6 +11,7 @@ const initialState = {
     prueba: "",
     orden_campo: "",
     orden_por: "",
+    empresa_id: "",
   },
 };
 
@@ -40,6 +41,7 @@ export const pruebasEmpleadosSlice = createSlice({
         prueba: "",
         orden_campo: "",
         orden_por: "",
+        empresa_id: state.filtros.empresa_id,
       };
     },
     resetState: () => {
