@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import validations from "../../utils/validacionesAcceso";
@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 export function AccesoEmpleado() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
@@ -61,7 +62,7 @@ export function AccesoEmpleado() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    if (empleado.activo && empleado.Role.nombre) {
+    if (empleado.activo && empleado.Role?.nombre) {
       return navigate("/inicio");
     }
 
@@ -80,10 +81,7 @@ export function AccesoEmpleado() {
 
     if (empleado?.changePassword) {
       return navigate("/miPerfil/actualizarClaveTemporal");
-    } else if (
-      (empleado.activo && empleado.Role?.nombre === "empleado") ||
-      empleado.Role?.nombre === "admin"
-    ) {
+    } else if (empleado.activo && empleado.Role?.nombre) {
       Swal.fire({
         title: "¡Bienvenido!",
         text: "Sesión iniciada correctamente",
@@ -92,7 +90,12 @@ export function AccesoEmpleado() {
         timer: 1500,
         width: "20em",
       });
-      return navigate("/inicio");
+
+      if (location.state?.from) {
+        return navigate(location.state.from);
+      } else {
+        return navigate("/inicio");
+      }
     }
   }, [empleado]);
 
