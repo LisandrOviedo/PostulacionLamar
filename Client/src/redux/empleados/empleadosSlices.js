@@ -14,6 +14,7 @@ const initialState = {
     activo: "",
     orden_campo: "",
     orden_por: "",
+    empresa_id: "",
   },
 };
 
@@ -52,6 +53,7 @@ export const empleadoSlice = createSlice({
         activo: "",
         orden_campo: "",
         orden_por: "",
+        empresa_id: state.filtros.empresa_id,
       };
     },
     resetState: () => {

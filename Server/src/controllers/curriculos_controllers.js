@@ -52,11 +52,22 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
                 },
               },
             ],
-            where: filtros.cedula
-              ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
-              : filtros.apellidos
-              ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
-              : {},
+            where: {
+              empresa_id: filtros.empresa_id,
+              [Op.and]: [
+                filtros.numero_identificacion
+                  ? {
+                      numero_identificacion: {
+                        [Op.like]: `%${filtros.numero_identificacion}%`,
+                      },
+                    }
+                  : filtros.apellidos
+                  ? {
+                      apellidos: { [Op.like]: `%${filtros.apellidos}%` },
+                    }
+                  : {},
+              ],
+            },
           },
           {
             model: Areas_Interes,
