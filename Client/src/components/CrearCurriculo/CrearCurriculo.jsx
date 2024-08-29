@@ -93,7 +93,7 @@ export function CrearCurriculo() {
     if (
       areas_interes_activas?.length &&
       searchParams.get("areaInteres") &&
-      typeof searchParams.get("areaInteres") === "number"
+      parseInt(searchParams.get("areaInteres"))
     ) {
       const select = document.getElementById("area_interes_id");
 
