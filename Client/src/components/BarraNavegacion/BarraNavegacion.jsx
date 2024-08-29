@@ -134,93 +134,102 @@ export function BarraNavegacion() {
         }`}
       >
         <div className="h-full overflow-y-auto scroll-smooth pb-[20vh]">
-          <div
-            onClick={toggleMenuBurger}
-            className="cursor-pointer"
-            onMouseEnter={toggleHover}
-            onMouseLeave={toggleHover}
-          >
-            <img
-              src={isHovered ? "./CloseYellow.svg" : "./Close.svg"}
-              alt="Cerrar Menú"
-              className="h-7 m-2 mx-auto"
-            />
-          </div>
           <nav>
-            <ul className="space-y-2 cursor-pointer">
-              {!pathname.startsWith("/admin/") && (
+            <ul className="space-y-2 cursor-pointer flex flex-col gap-2 text-center">
+              <li>
+                <div
+                  onClick={toggleMenuBurger}
+                  className="cursor-pointer flex justify-center"
+                  onMouseEnter={toggleHover}
+                  onMouseLeave={toggleHover}
+                >
+                  <img
+                    src={isHovered ? "./CloseYellow.svg" : "./Close.svg"}
+                    alt="Cerrar Menú"
+                    className="h-7"
+                  />
+                </div>
+              </li>
+
+              <li>
+                <Link
+                  to={
+                    !pathname.startsWith("/admin/") ? "/inicio" : "/admin/panel"
+                  }
+                  className="text-white hover:text-[#F0C95C]"
+                  onClick={() => {
+                    toggleMenuBurger();
+                    toggleMenu({});
+                  }}
+                >
+                  Inicio
+                </Link>
+              </li>
+              <li>
+                <div
+                  onClick={() => toggleMenu(0)}
+                  data-index={0}
+                  className="hover:text-[#F0C95C]"
+                >
+                  <span>Mi Perfil</span>
+                </div>
+                <ul
+                  className={
+                    isOpen[0]
+                      ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
+                      : "hidden"
+                  }
+                >
+                  <li>
+                    <Link
+                      to={
+                        !pathname.startsWith("/admin/")
+                          ? "/miPerfil/datosPersonales"
+                          : "/admin/miPerfil/datosPersonales"
+                      }
+                      className="text-white hover:text-[#F0C95C] text-sm"
+                      onClick={toggleMenuBurger}
+                    >
+                      Datos personales
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={
+                        !pathname.startsWith("/admin/")
+                          ? "/miPerfil/actualizarClave"
+                          : "/admin/miPerfil/actualizarClave"
+                      }
+                      className="text-white hover:text-[#F0C95C] text-sm"
+                      onClick={toggleMenuBurger}
+                    >
+                      Actualizar contraseña
+                    </Link>
+                  </li>
+                </ul>
+              </li>
+              {!pathname.startsWith("/admin/") ? (
                 // EMPLEADOS
                 <>
-                  <Link
-                    to="/inicio"
-                    className="block text-white hover:text-[#F0C95C]"
-                    onClick={() => {
-                      toggleMenuBurger();
-                      toggleMenu({});
-                    }}
-                  >
-                    <div className="flex items-center justify-between p-2">
-                      <div className="mx-auto">Inicio</div>
-                    </div>
-                  </Link>
-                  <li>
-                    <div
-                      onClick={() => toggleMenu(0)}
-                      data-index={0}
-                      className="flex items-center justify-between p-2 hover:text-[#F0C95C]"
-                    >
-                      <div className="mx-auto">
-                        <span>Mi Perfil</span>
-                      </div>
-                    </div>
-                    <ul
-                      className={
-                        isOpen[0]
-                          ? "flex flex-col gap-3 my-3 p-2 border bg-sky-950"
-                          : "hidden"
-                      }
-                    >
-                      <li>
-                        <Link
-                          to="/miPerfil/datosPersonales"
-                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
-                          onClick={toggleMenuBurger}
-                        >
-                          Datos personales
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/miPerfil/actualizarClave"
-                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
-                          onClick={toggleMenuBurger}
-                        >
-                          Actualizar contraseña
-                        </Link>
-                      </li>
-                    </ul>
-                  </li>
                   <li>
                     <div
                       onClick={() => toggleMenu(1)}
                       data-index={1}
-                      className="flex items-center justify-between p-2 hover:text-[#F0C95C]"
+                      className="hover:text-[#F0C95C]"
                     >
-                      <div className="mx-auto">
-                        <span>Perfil Profesional</span>
-                      </div>
+                      <span>Perfil Profesional</span>
                     </div>
                     <ul
                       className={
                         isOpen[1]
-                          ? "flex flex-col gap-3 my-3 p-2 border bg-sky-950"
+                          ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
                           : "hidden"
                       }
                     >
                       <li>
                         <Link
                           to="/perfilProfesional/info"
-                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                          className="text-white hover:text-[#F0C95C] text-sm"
                           onClick={toggleMenuBurger}
                         >
                           Actualizar Perfil
@@ -229,7 +238,7 @@ export function BarraNavegacion() {
                       <li>
                         <Link
                           to="/perfilProfesional/misDocumentos"
-                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                          className="text-white hover:text-[#F0C95C] text-sm"
                           onClick={toggleMenuBurger}
                         >
                           Anexar documentos
@@ -238,7 +247,7 @@ export function BarraNavegacion() {
                       <li>
                         <Link
                           to="/perfilProfesional/pruebaKostick"
-                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
+                          className="text-white hover:text-[#F0C95C] text-sm"
                           onClick={toggleMenuBurger}
                         >
                           Aplicar Test de Valoración Actitudinal
@@ -246,150 +255,81 @@ export function BarraNavegacion() {
                       </li>
                     </ul>
                   </li>
-                  <Link
-                    className="block text-white hover:text-[#F0C95C] text-center"
-                    onClick={logout}
-                  >
-                    <div className="flex items-center justify-between p-2">
-                      <div className="mx-auto">Cerrar Sesión</div>
-                    </div>
-                  </Link>
                 </>
-              )}
-              {pathname.startsWith("/admin/") && (
+              ) : (
                 // ADMINISTRADORES
                 <>
-                  <Link
-                    to="/admin/panel"
-                    className="block text-white hover:text-[#F0C95C]"
-                    onClick={() => {
-                      toggleMenuBurger();
-                      toggleMenu({});
-                    }}
-                  >
-                    <div className="flex items-center justify-between p-2">
-                      <div className="mx-auto">Inicio</div>
-                    </div>
-                  </Link>
-                  <li>
-                    <div
-                      onClick={() => toggleMenu(0)}
-                      data-index={0}
-                      className="flex items-center justify-between p-2 hover:text-[#F0C95C]"
-                    >
-                      <div className="mx-auto">
-                        <span>Mi Perfil</span>
-                      </div>
-                    </div>
-                    <ul
-                      className={
-                        isOpen[0]
-                          ? "flex flex-col gap-3 my-3 p-2 border bg-sky-950"
-                          : "hidden"
-                      }
-                    >
-                      <li>
-                        <Link
-                          to="/admin/miPerfil/datosPersonales"
-                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
-                          onClick={toggleMenuBurger}
-                        >
-                          Datos personales
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/admin/miPerfil/actualizarClave"
-                          className="block text-white hover:text-[#F0C95C] text-sm text-center"
-                          onClick={toggleMenuBurger}
-                        >
-                          Actualizar contraseña
-                        </Link>
-                      </li>
-                    </ul>
-                  </li>
                   <li>
                     <Link
                       to="/admin/empleados"
-                      className="block text-white hover:text-[#F0C95C]"
+                      className="text-white hover:text-[#F0C95C]"
                       onClick={() => {
                         toggleMenuBurger();
                         toggleMenu({});
                       }}
                     >
-                      <div className="flex items-center justify-between p-2">
-                        <div className="mx-auto">Empleados</div>
-                      </div>
+                      Empleados
                     </Link>
                   </li>
                   <li>
                     <Link
                       to="/admin/postulaciones"
-                      className="block text-white hover:text-[#F0C95C]"
+                      className="text-white hover:text-[#F0C95C]"
                       onClick={() => {
                         toggleMenuBurger();
                         toggleMenu({});
                       }}
                     >
-                      <div className="flex items-center justify-between p-2">
-                        <div className="mx-auto">Postulaciones</div>
-                      </div>
+                      Postulaciones
                     </Link>
                   </li>
                   <li>
                     <Link
                       to="/admin/pruebasEmpleados"
-                      className="block text-white hover:text-[#F0C95C]"
+                      className="text-white hover:text-[#F0C95C]"
                       onClick={() => {
                         toggleMenuBurger();
                         toggleMenu({});
                       }}
                     >
-                      <div className="flex items-center justify-between p-2">
-                        <div className="mx-auto">Pruebas de Empleados</div>
-                      </div>
+                      Pruebas de Empleados
                     </Link>
                   </li>
                   <li>
                     <Link
                       to="/admin/formularioIngreso"
-                      className="block text-white hover:text-[#F0C95C]"
+                      className="text-white hover:text-[#F0C95C]"
                       onClick={() => {
                         toggleMenuBurger();
                         toggleMenu({});
                       }}
                     >
-                      <div className="flex items-center justify-between p-2">
-                        <div className="mx-auto">Ingreso</div>
-                      </div>
+                      Ingreso
                     </Link>
                   </li>
                   <li>
                     <Link
                       to="/admin/movimientos"
-                      className="block text-white hover:text-[#F0C95C]"
+                      className="text-white hover:text-[#F0C95C]"
                       onClick={() => {
                         toggleMenuBurger();
                         toggleMenu({});
                       }}
                     >
-                      <div className="flex items-center justify-between p-2">
-                        <div className="mx-auto">Movimientos</div>
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      className="block text-white hover:text-[#F0C95C] text-center"
-                      onClick={logout}
-                    >
-                      <div className="flex items-center justify-between p-2">
-                        <div className="mx-auto">Cerrar Sesión</div>
-                      </div>
+                      Movimientos
                     </Link>
                   </li>
                 </>
               )}
+
+              <li>
+                <Link
+                  className="text-white hover:text-[#F0C95C]"
+                  onClick={logout}
+                >
+                  Cerrar Sesión
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>
