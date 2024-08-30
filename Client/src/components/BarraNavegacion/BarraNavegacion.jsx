@@ -9,6 +9,7 @@ import { resetCurriculos } from "../../redux/curriculos/curriculosActions";
 import { resetEmpleados } from "../../redux/empleados/empleadosActions";
 import { resetIdiomas } from "../../redux/idiomas/idiomasActions";
 import { resetPruebas } from "../../redux/pruebasEmpleados/pruebasEmpleadosActions";
+import { getSugerenciasActivasNoRevisadas } from "../../redux/sugerencias/sugerenciasActions";
 
 import { Logo } from "../UI";
 
@@ -18,6 +19,7 @@ export function BarraNavegacion() {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState({});
   const [isOpenBurger, setIsOpenBurger] = useState(false);
+  const [isOpenNotif, setIsOpenNotif] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   const token = useSelector((state) => state.empleados.token);
@@ -37,6 +39,10 @@ export function BarraNavegacion() {
 
   const toggleMenuBurger = () => {
     setIsOpenBurger(!isOpenBurger);
+  };
+
+  const toggleNotif = () => {
+    setIsOpenNotif(!isOpenNotif);
   };
 
   const toggleHover = () => {
@@ -72,6 +78,18 @@ export function BarraNavegacion() {
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
   const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${empleado.foto_perfil_nombre}`;
 
+  const [notificaciones, setNotificaciones] = useState({});
+
+  useEffect(() => {
+    if (pathname.startsWith("/admin/")) {
+      dispatch(getSugerenciasActivasNoRevisadas()).then((data) => {
+        if (data > 0) {
+          setNotificaciones({ ...notificaciones, sugerencias: data });
+        }
+      });
+    }
+  }, [pathname]);
+
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (
@@ -79,7 +97,7 @@ export function BarraNavegacion() {
         asideRef.current &&
         !asideRef.current.contains(event.target)
       ) {
-        setIsOpenBurger(false);
+        setIsOpenNotif(false);
       }
     };
 
@@ -109,7 +127,44 @@ export function BarraNavegacion() {
             className="w-6 cursor-pointer sm:hover:opacity-80"
           />
         </div>
+
         <div className="flex items-center space-x-4 mr-6">
+          <div ref={asideRef} className="static">
+            <span onClick={toggleNotif} className="cursor-pointer">
+              <img
+                src={
+                  Object.keys(notificaciones).length
+                    ? "./newNotification.svg"
+                    : "./notification.svg"
+                }
+                alt="Notificaciones"
+                className={Object.keys(notificaciones).length ? "h-7" : "h-6"}
+              />
+            </span>
+
+            <ul
+              className={
+                isOpenNotif
+                  ? "flex flex-col gap-1 my-3 p-2 border bg-sky-950 absolute"
+                  : "hidden"
+              }
+            >
+              <li>
+                <Link
+                  to="/admin/sugerencias"
+                  className="text-white hover:text-[#F0C95C] text-sm"
+                >
+                  <span className="text-xs">
+                    {notificaciones.sugerencias
+                      ? notificaciones.sugerencias
+                      : 0}{" "}
+                    sugerencias por revisar
+                  </span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+
           <span className="text-white text-sm md:text-base">Bienvenido/a</span>
           {empleado.foto_perfil_nombre ? (
             <img
@@ -127,8 +182,6 @@ export function BarraNavegacion() {
         </div>
       </nav>
       <aside
-        ref={asideRef}
-        id="sidebar"
         className={`bg-[#002846] text-white w-full sm:w-56 p-4 h-screen ${
           isOpenBurger ? "block" : "hidden"
         }`}
