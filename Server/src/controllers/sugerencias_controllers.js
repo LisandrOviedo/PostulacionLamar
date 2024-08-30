@@ -41,6 +41,19 @@ const todasLasSugerenciasActivas = async () => {
   }
 };
 
+const todasLasSugerenciasActivasNoRevisadas = async () => {
+  try {
+    const { count: totalRegistros, rows: dataSugerencias } =
+      await Sugerencias.findAndCountAll({
+        where: { revisado_por_id: null, activo: true },
+      });
+
+    return totalRegistros;
+  } catch (error) {
+    throw new Error(`Error al traer todas las sugerencias: ${error.message}`);
+  }
+};
+
 const traerSugerencia = async (sugerencia_id, empleado_id) => {
   if (!sugerencia_id) {
     throw new Error(`Datos faltantes`);
@@ -145,6 +158,7 @@ const inactivarSugerencia = async (sugerencia_id) => {
 module.exports = {
   todasLasSugerencias,
   todasLasSugerenciasActivas,
+  todasLasSugerenciasActivasNoRevisadas,
   traerSugerencia,
   crearSugerencia,
   inactivarSugerencia,

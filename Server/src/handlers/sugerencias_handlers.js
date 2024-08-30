@@ -1,6 +1,7 @@
 const {
   todasLasSugerencias,
   todasLasSugerenciasActivas,
+  todasLasSugerenciasActivasNoRevisadas,
   traerSugerencia,
   crearSugerencia,
   inactivarSugerencia,
@@ -19,6 +20,16 @@ const getSugerencias = async (req, res) => {
 const getSugerenciasActivas = async (req, res) => {
   try {
     const response = await todasLasSugerenciasActivas();
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const getSugerenciasActivasNoRevisadas = async (req, res) => {
+  try {
+    const response = await todasLasSugerenciasActivasNoRevisadas();
 
     return res.json(response);
   } catch (error) {
@@ -69,6 +80,7 @@ const deleteSugerencia = async (req, res) => {
 module.exports = {
   getSugerencias,
   getSugerenciasActivas,
+  getSugerenciasActivasNoRevisadas,
   getSugerencia,
   postSugerencia,
   deleteSugerencia,

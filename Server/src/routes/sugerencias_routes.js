@@ -2,6 +2,7 @@ const { Router } = require("express");
 const {
   getSugerencias,
   getSugerenciasActivas,
+  getSugerenciasActivasNoRevisadas,
   getSugerencia,
   postSugerencia,
   deleteSugerencia,
@@ -12,7 +13,8 @@ const { authenticateToken } = require("../auth/index");
 const sugerencias = Router();
 
 sugerencias.get("/", authenticateToken, getSugerencias);
-sugerencias.get("/activos", authenticateToken, getSugerenciasActivas);
+sugerencias.get("/activas", authenticateToken, getSugerenciasActivas);
+sugerencias.get("/activasNoRevisadas", getSugerenciasActivasNoRevisadas);
 
 sugerencias.post("/detalle", authenticateToken, getSugerencia);
 sugerencias.post("/", postSugerencia);
