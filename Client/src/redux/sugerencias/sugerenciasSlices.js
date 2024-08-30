@@ -8,7 +8,8 @@ const initialState = {
   filtros: {
     empresa_id: "",
     sede_id: "",
-    estado: "",
+    tipo_sugerencia_id: "",
+    revisado_por: "",
     orden_campo: "",
     orden_por: "",
   },
@@ -37,7 +38,8 @@ export const sugerenciasSlice = createSlice({
       state.filtros = {
         empresa_id: "",
         sede_id: "",
-        estado: "",
+        tipo_sugerencia_id: "",
+        revisado_por: "",
         orden_campo: "",
         orden_por: "",
       };
