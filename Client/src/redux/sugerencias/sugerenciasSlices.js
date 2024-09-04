@@ -9,7 +9,6 @@ const initialState = {
     empresa_id: "",
     sede_id: "",
     tipo_sugerencia_id: "",
-    revisado_por: "",
     orden_campo: "",
     orden_por: "",
   },
@@ -39,7 +38,6 @@ export const sugerenciasSlice = createSlice({
         empresa_id: "",
         sede_id: "",
         tipo_sugerencia_id: "",
-        revisado_por: "",
         orden_campo: "",
         orden_por: "",
       };
