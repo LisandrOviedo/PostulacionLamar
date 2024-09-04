@@ -17,6 +17,7 @@ import paises from "./paises/paisesSlices";
 import parroquias from "./parroquias/parroquiasSlices";
 import pruebas_empleados from "./pruebasEmpleados/pruebasEmpleadosSlices";
 import sedes from "./sedes/sedesSlices";
+import sugerencias from "./sugerencias/sugerenciasSlices";
 import sugerencias_pred from "./sugerenciasPred/sugerenciasPredSlices";
 import tipos_sugerencias from "./tiposSugerencias/tiposSugerenciasSlices";
 
@@ -44,6 +45,7 @@ const rootReducer = combineReducers({
   parroquias: parroquias,
   pruebas_empleados: pruebas_empleados,
   sedes: sedes,
+  sugerencias: sugerencias,
   sugerencias_pred: sugerencias_pred,
   tipos_sugerencias: tipos_sugerencias,
 });

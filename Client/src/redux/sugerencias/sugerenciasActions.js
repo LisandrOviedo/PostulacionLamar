@@ -47,14 +47,34 @@ export const getAllSugerencias = (
   };
 };
 
-export const getSugerencia = (token, sugerencia_id) => {
-  const URL_SUGERENCIA_DETALLE = `${URL_SERVER}/sugerencias/detalle/${sugerencia_id}`;
+export const getSugerenciasActivasNoRevisadas = () => {
+  const URL_SUGERENCIAS_ACTIVAS_NO_REVISADAS = `${URL_SERVER}/sugerencias/activasNoRevisadas`;
+
+  return async () => {
+    try {
+      const { data } = await axios(URL_SUGERENCIAS_ACTIVAS_NO_REVISADAS);
+
+      return data;
+    } catch (error) {
+      alertError(error);
+
+      throw new Error();
+    }
+  };
+};
+
+export const getSugerencia = (token, sugerencia_id, empleado_id) => {
+  const URL_SUGERENCIA_DETALLE = `${URL_SERVER}/sugerencias/detalle`;
 
   return async (dispatch) => {
     try {
-      const { data } = await axios(URL_SUGERENCIA_DETALLE, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+      const { data } = await axios.post(
+        URL_SUGERENCIA_DETALLE,
+        { sugerencia_id, empleado_id },
+        {
+          headers: { authorization: `Bearer ${token}` },
+        }
+      );
 
       return dispatch(sugerenciaDetail(data));
     } catch (error) {

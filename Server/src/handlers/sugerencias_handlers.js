@@ -1,14 +1,21 @@
 const {
   todasLasSugerencias,
   todasLasSugerenciasActivas,
+  todasLasSugerenciasActivasNoRevisadas,
   traerSugerencia,
   crearSugerencia,
   inactivarSugerencia,
 } = require("../controllers/sugerencias_controllers");
 
 const getSugerencias = async (req, res) => {
+  const { filtros, paginaActual, limitePorPagina } = req.body;
+
   try {
-    const response = await todasLasSugerencias();
+    const response = await todasLasSugerencias(
+      filtros,
+      paginaActual,
+      limitePorPagina
+    );
 
     return res.json(response);
   } catch (error) {
@@ -19,6 +26,16 @@ const getSugerencias = async (req, res) => {
 const getSugerenciasActivas = async (req, res) => {
   try {
     const response = await todasLasSugerenciasActivas();
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const getSugerenciasActivasNoRevisadas = async (req, res) => {
+  try {
+    const response = await todasLasSugerenciasActivasNoRevisadas();
 
     return res.json(response);
   } catch (error) {
@@ -69,6 +86,7 @@ const deleteSugerencia = async (req, res) => {
 module.exports = {
   getSugerencias,
   getSugerenciasActivas,
+  getSugerenciasActivasNoRevisadas,
   getSugerencia,
   postSugerencia,
   deleteSugerencia,

@@ -23,7 +23,7 @@ import { Button, Hr, Label, Select, TextArea, Title } from "../UI";
 
 import Swal from "sweetalert2";
 
-export function Sugerencias() {
+export function EnviarSugerencia() {
   const dispatch = useDispatch();
 
   const empresas_activas = useSelector(

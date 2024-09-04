@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -32,6 +32,8 @@ import Swal from "sweetalert2";
 export function CrearCurriculo() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
@@ -86,6 +88,18 @@ export function CrearCurriculo() {
       document.title = "Grupo Lamar";
     };
   }, [curriculoEmpleado]);
+
+  useEffect(() => {
+    if (
+      areas_interes_activas?.length &&
+      searchParams.get("areaInteres") &&
+      parseInt(searchParams.get("areaInteres"))
+    ) {
+      const select = document.getElementById("area_interes_id");
+
+      select.value = searchParams.get("areaInteres");
+    }
+  }, [areas_interes_activas]);
 
   const handleInputChangeCurriculo = (event) => {
     const { name, value } = event.target;

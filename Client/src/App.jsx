@@ -7,6 +7,15 @@ import {
   AccesoEmpleado,
   ActualizarClave,
   ActualizarClaveTemporal,
+  BarraNavegacion,
+  CrearCurriculo,
+  DatosPersonales,
+  EnviarSugerencia,
+  InfoCurriculo,
+  Inicio,
+  PaginaNoEncontrada,
+  PruebaKostick,
+  SubirDocumentos,
   AccesoAdmin,
   DetalleEmpleado,
   Empleados,
@@ -15,14 +24,6 @@ import {
   PanelAdmin,
   Postulaciones,
   PruebasEmpleados,
-  BarraNavegacion,
-  CrearCurriculo,
-  DatosPersonales,
-  InfoCurriculo,
-  Inicio,
-  PaginaNoEncontrada,
-  PruebaKostick,
-  SubirDocumentos,
   Sugerencias,
 } from "./components/";
 
@@ -50,7 +51,7 @@ function App() {
         <Routes>
           <Route path="/" element={<AccesoEmpleado />} />
           <Route path="/admin/acceso" element={<AccesoAdmin />} />
-          <Route path="/sugerencias" element={<Sugerencias />} />
+          <Route path="/sugerencias" element={<EnviarSugerencia />} />
 
           <Route element={<ProteccionActualizarClave />}>
             <Route
@@ -110,8 +111,8 @@ function App() {
               path="/admin/formularioIngreso"
               element={<FormularioIngreso />}
             />
-
             <Route path="/admin/movimientos" element={<Movimientos />} />
+            <Route path="/admin/sugerencias" element={<Sugerencias />} />
           </Route>
 
           <Route path="*" element={<PaginaNoEncontrada />} />
