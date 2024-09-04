@@ -8,8 +8,14 @@ const {
 } = require("../controllers/sugerencias_controllers");
 
 const getSugerencias = async (req, res) => {
+  const { filtros, paginaActual, limitePorPagina } = req.body;
+
   try {
-    const response = await todasLasSugerencias();
+    const response = await todasLasSugerencias(
+      filtros,
+      paginaActual,
+      limitePorPagina
+    );
 
     return res.json(response);
   } catch (error) {

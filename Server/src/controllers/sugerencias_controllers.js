@@ -1,4 +1,11 @@
-const { conn, Sugerencias } = require("../db");
+const {
+  conn,
+  Sugerencias,
+  Tipos_Sugerencias,
+  Empleados,
+  Sedes,
+  Empresas,
+} = require("../db");
 
 const todasLasSugerencias = async (filtros, paginaActual, limitePorPagina) => {
   if (!paginaActual || !limitePorPagina) {
@@ -8,8 +15,49 @@ const todasLasSugerencias = async (filtros, paginaActual, limitePorPagina) => {
   try {
     const { count: totalRegistros, rows: dataSugerencias } =
       await Sugerencias.findAndCountAll({
-        include: { all: true },
-        where: filtros.estado ? { estado: filtros.estado } : {},
+        attributes: {
+          exclude: ["sede_id", "tipo_sugerencia_id"],
+        },
+        include: [
+          {
+            model: Tipos_Sugerencias,
+            where:
+              filtros.tipo_sugerencia_id &&
+              filtros.tipo_sugerencia_id !== "Seleccione"
+                ? { tipo_sugerencia_id: filtros.tipo_sugerencia_id }
+                : {},
+          },
+          {
+            model: Empleados,
+            attributes: [
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
+          },
+          {
+            model: Sedes,
+            attributes: ["sede_id", "nombre"],
+            where:
+              filtros.sede_id && filtros.sede_id !== "Seleccione"
+                ? { sede_id: filtros.sede_id }
+                : {},
+            include: {
+              model: Empresas,
+              attributes: ["empresa_id", "nombre"],
+              where:
+                filtros.empresa_id && filtros.empresa_id !== "Seleccione"
+                  ? { empresa_id: filtros.empresa_id }
+                  : {},
+              order: [
+                filtros.orden_campo === "nombre_empresa"
+                  ? ["nombre", filtros.orden_por]
+                  : null,
+              ].filter(Boolean),
+            },
+          },
+        ],
         distinct: true,
       });
 
@@ -55,26 +103,54 @@ const todasLasSugerenciasActivasNoRevisadas = async () => {
 };
 
 const traerSugerencia = async (sugerencia_id, empleado_id) => {
-  if (!sugerencia_id) {
+  if (!sugerencia_id || !empleado_id) {
     throw new Error(`Datos faltantes`);
   }
 
   let t;
 
   try {
-    const sugerencia = await Sugerencias.findByPk(sugerencia_id);
+    const sugerencia = await Sugerencias.findByPk(sugerencia_id, {
+      include: [
+        {
+          model: Tipos_Sugerencias,
+        },
+        {
+          model: Empleados,
+          attributes: [
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+        },
+        {
+          model: Sedes,
+          attributes: ["sede_id", "nombre"],
+          include: {
+            model: Empresas,
+            attributes: ["empresa_id", "nombre"],
+          },
+        },
+      ],
+    });
 
     if (!sugerencia) {
       throw new Error(`No existe esa sugerencia`);
     }
 
-    if (empleado_id && sugerencia.revisado_por_id === null) {
+    if (!sugerencia.revisado_por_id) {
       t = await conn.transaction();
 
       await Sugerencias.update(
         {
           revisado_por_id: empleado_id,
           fecha_revision: new Date(),
+        },
+        {
+          where: {
+            sugerencia_id: sugerencia_id,
+          },
         },
         { transaction: t }
       );

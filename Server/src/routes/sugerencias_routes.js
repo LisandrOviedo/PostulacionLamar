@@ -12,12 +12,12 @@ const { authenticateToken } = require("../auth/index");
 
 const sugerencias = Router();
 
-sugerencias.get("/", authenticateToken, getSugerencias);
 sugerencias.get("/activas", authenticateToken, getSugerenciasActivas);
 sugerencias.get("/activasNoRevisadas", getSugerenciasActivasNoRevisadas);
 
 sugerencias.post("/detalle", authenticateToken, getSugerencia);
 sugerencias.post("/", postSugerencia);
+sugerencias.post("/allSugerencias", getSugerencias);
 
 sugerencias.put("/inactivar", authenticateToken, deleteSugerencia);
 
