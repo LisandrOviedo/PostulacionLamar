@@ -474,7 +474,7 @@ export function Sugerencias() {
       >
         <div className="p-4 max-w-2xl max-h-full sm:min-w-[600px]">
           {/* <!-- Modal content --> */}
-          <div className="bg-gray-300 rounded-lg shadow">
+          <div className="bg-[#FBFBFD] rounded-lg shadow border-4">
             {/* <!-- Modal header --> */}
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
               <h3 className="sm:text-lg font-semibold text-gray-900">
@@ -511,8 +511,9 @@ export function Sugerencias() {
               </span>
             </div>
             {/* <!-- Modal footer --> */}
-            <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b">
+            <div className="flex items-center justify-center border-t border-gray-200 rounded-b">
               <Button
+                className="w-auto"
                 onClick={() => {
                   setShowModal(0);
                 }}
