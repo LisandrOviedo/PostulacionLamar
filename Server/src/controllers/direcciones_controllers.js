@@ -69,8 +69,6 @@ const crearDireccion = async (
     piso,
     apartamento,
     urbanizacion_sector,
-    estado_id,
-    pais_id,
   }
 ) => {
   if (
@@ -79,9 +77,7 @@ const crearDireccion = async (
     !parroquia_id ||
     !municipio_id ||
     !tipo_vivienda ||
-    !urbanizacion_sector ||
-    !estado_id ||
-    !pais_id
+    !urbanizacion_sector
   ) {
     throw new Error(`Datos faltantes`);
   }
@@ -99,8 +95,6 @@ const crearDireccion = async (
         municipio_id: municipio_id,
         tipo_vivienda: tipo_vivienda,
         urbanizacion_sector: urbanizacion_sector,
-        estado_id: estado_id,
-        pais_id: pais_id,
       },
       defaults: {
         empleado_id: empleado_id,
@@ -112,8 +106,6 @@ const crearDireccion = async (
         piso: piso || null,
         apartamento: apartamento || null,
         urbanizacion_sector: urbanizacion_sector,
-        estado_id: estado_id,
-        pais_id: pais_id,
       },
       transaction: t,
     });
@@ -138,8 +130,6 @@ const modificarDireccion = async (
   piso,
   apartamento,
   urbanizacion_sector,
-  estado_id,
-  pais_id
 ) => {
   if (
     !direccion_id ||
@@ -150,9 +140,7 @@ const modificarDireccion = async (
     !numero_casa ||
     !piso ||
     !apartamento ||
-    !urbanizacion_sector ||
-    !estado_id ||
-    !pais_id
+    !urbanizacion_sector
   ) {
     throw new Error(`Datos faltantes`);
   }
@@ -174,8 +162,6 @@ const modificarDireccion = async (
         piso: piso,
         apartamento: apartamento,
         urbanizacion_sector: urbanizacion_sector,
-        estado_id: estado_id,
-        pais_id: pais_id,
       },
       {
         where: {

@@ -356,10 +356,6 @@ const cargarEmpleados = async () => {
                       : null,
                   numero_identificacion: empleadoAPI.cedula,
                   fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
-                  nacimiento_pais_id:
-                    empleadoAPI.nacionalidad === "Venezolano"
-                      ? nacionalidad_venezolana.pais_id
-                      : null,
                 },
                 { transaction: t }
               );
@@ -403,10 +399,6 @@ const cargarEmpleados = async () => {
                       : null,
                   numero_identificacion: empleadoAPI.cedula,
                   fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
-                  nacimiento_pais_id:
-                    empleadoAPI.nacionalidad === "Venezolano"
-                      ? nacionalidad_venezolana.pais_id
-                      : null,
                 },
                 { transaction: t }
               );
@@ -462,7 +454,6 @@ const crearEmpleado = async (
   fecha_nacimiento,
   nacimiento_lugar,
   nacimiento_estado_id,
-  nacimiento_pais_id,
   licencia_conducir_grado,
   licencia_conducir_vencimiento,
   carta_medica_vencimiento,
@@ -487,7 +478,6 @@ const crearEmpleado = async (
     !fecha_nacimiento ||
     !nacimiento_lugar ||
     !nacimiento_estado_id ||
-    !nacimiento_pais_id ||
     !talla_camisa ||
     !talla_pantalon ||
     !talla_calzado
@@ -537,7 +527,6 @@ const crearEmpleado = async (
         fecha_nacimiento: fecha_nacimiento,
         nacimiento_lugar: nacimiento_lugar,
         nacimiento_estado_id: nacimiento_estado_id,
-        nacimiento_pais_id: nacimiento_pais_id,
         licencia_conducir_grado: licencia_conducir_grado || null,
         licencia_conducir_vencimiento:
           licencia_conducir_grado && licencia_conducir_vencimiento
@@ -684,10 +673,6 @@ const modificarEmpleado = async (datosPersonales) => {
   if (datosPersonales.nacimiento_estado_id) {
     camposActualizar.nacimiento_estado_id =
       datosPersonales.nacimiento_estado_id;
-  }
-
-  if (datosPersonales.nacimiento_pais_id) {
-    camposActualizar.nacimiento_pais_id = datosPersonales.nacimiento_pais_id;
   }
 
   if (datosPersonales.licencia_conducir_grado) {
