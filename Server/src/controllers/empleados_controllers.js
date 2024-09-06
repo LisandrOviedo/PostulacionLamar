@@ -18,6 +18,12 @@ const {
   Fichas_Ingresos,
   Direcciones,
   Municipios,
+  Titulos_Obtenidos,
+  Experiencias,
+  Referencias_Personales,
+  Salud,
+  Contactos_Emergencia,
+  Datos_Bancarios,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
@@ -173,14 +179,103 @@ const traerEmpleadoExistencia = async (
 
   try {
     const empleado = await Empleados.findOne({
+      attributes: {
+        exclude: ["rol_id", "clave", "createdAt", "updatedAt"],
+      },
       where: {
         tipo_identificacion: tipo_identificacion,
         numero_identificacion: numero_identificacion,
       },
+      include: [
+        {
+          model: Etnias,
+          attributes: ["nombre"],
+        },
+        {
+          model: Direcciones,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Roles,
+          attributes: ["nombre", "descripcion"],
+        },
+        {
+          model: Titulos_Obtenidos,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Experiencias,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Referencias_Personales,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Salud,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Contactos_Emergencia,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Datos_Bancarios,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Empresas,
+          attributes: ["empresa_id", "nombre"],
+        },
+        {
+          model: Cargos_Niveles,
+          attributes: ["cargo_nivel_id", "nivel"],
+          include: [
+            {
+              model: Cargos,
+              attributes: [
+                "cargo_id",
+                "descripcion",
+                "descripcion_cargo_antiguo",
+              ],
+              include: [
+                {
+                  model: Departamentos,
+                  attributes: ["departamento_id", "nombre"],
+                  include: [
+                    {
+                      model: Empresas,
+                      attributes: ["empresa_id", "nombre"],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          through: {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "fecha_ingreso", "fecha_egreso"],
+          },
+        },
+      ],
     });
 
     if (empleado) {
-      return { empleado_id: empleado.empleado_id };
+      return empleado;
     }
   } catch (error) {
     throw new Error(`Error al traer el empleado: ${error.message}`);
