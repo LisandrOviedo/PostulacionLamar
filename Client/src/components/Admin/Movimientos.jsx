@@ -12,15 +12,19 @@ import {
   postFiltros,
   deleteFiltros,
 } from "../../redux/empleados/empleadosActions"; //Actions son un bloque de información que envia datos desde tu aplicación a tu store, store contiene todo el árbol de estado de tu aplicación.
+
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
+
 import {
   getAllDepartamentosActivos,
   resetDepartamentos,
 } from "../../redux/departamentos/departamentosActions";
+
 import {
   getAllCargosNivelesActivos,
   resetCargosNiveles,
 } from "../../redux/cargosNiveles/cargosNivelesActions";
+
 import {
   getAllCargosActivos,
   resetCargos,
@@ -32,65 +36,45 @@ import { YYYYMMDD } from "../../utils/formatearFecha";
 
 import { FaMagnifyingGlass, FaFloppyDisk } from "react-icons/fa6";
 
-// //Manejo de validaciones de nombre apellido
-// //Se usa para declarar una variable de estado llamada datosMovimiento y una función para actualizarla llamada setDatosMovimiento.
-// const [datosMovimiento, setDatosMovimiento] = useState({
-//   nombres: "",
-//   apellidos: ""
-// });
+import validations from "../../utils/validacionesMovimientos";
 
-// const [errors, setErrors] = useState({}); //El estado inicial de errors es un objeto vacío ({})
-// /*La función setErrors actualiza el estado de errores tomando el estado anterior (prevErrors)
-// y devolviendo un nuevo objeto que incluye todos los errores previos,  */
-// const validateInput = (name, value) => {
-//   let error = "";
-//   if (!/^[a-zA-Z\s]*$/.test(value)) {
-//     error = "Solo se permite texto.";
-//   }
-//   setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
-// };
-//Cada vez que el usuario cambia el valor de un campo, handleChange se encarga de validar la entrada y actualizar el estado del formulario.
-const handleChange = (e) => {
-  const { name, value } = e.target;
-  // validateInput(name, value);
-  setDatosMovimiento((prevDatos) => ({
-    //setDatosMovimiento: Función para actualizar el estado datosMovimiento
-    ...prevDatos /*prevDatos es una variable que representa el estado anterior de datosMovimiento antes de que se realice la actualización */,
-    [name]: value,
-  }));
-};
-//finaliza
+import { MdCancel } from "react-icons/md";
 
-//dispatch es esencial para comunicar cambios en el estado de tu aplicación a través de acciones
 export function Movimientos() {
+  //dispatch es esencial para comunicar cambios en el estado de tu aplicación a través de acciones
   const dispatch = useDispatch();
+
   /*En este caso, está accediendo a state.empleados.token, 
   lo que significa que está extrayendo el valor del token del objeto empleados dentro del estado. */
   const token = useSelector((state) => state.empleados.token);
+
   /*Toma todo el estado de Redux como argumento y devuelve la propiedad 
   filtros del slice empleados del estado */
   const filtros = useSelector((state) => state.empleados.filtros);
+
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const empresas_activas = useSelector(
     (state) => state.empresas.empresas_activas
   );
+
   const departamentos_activos = useSelector(
     (state) => state.departamentos.departamentos_activos
   );
+
   const cargos_activos = useSelector((state) => state.cargos.cargos_activos);
+
   const cargos_niveles_activos = useSelector(
     (state) => state.cargos_niveles.cargos_niveles_activos
   );
-  //setErrors es la función que usarás para actualizar este estado.
+
+  //setErrors es la función que usarás para actualizar el estado "errors"
   const [errors, setErrors] = useState({});
 
   const [datosMovimiento, setDatosMovimiento] = useState({
     tipo_identificacion: "V",
     tipo_movimiento: "Temporal",
-
     fecha_ingreso: YYYYMMDD(),
-
     clase_movimiento: "periodo_prueba",
   });
 
@@ -150,163 +134,160 @@ export function Movimientos() {
     }
   }, [datosMovimiento.cargo_id]);
 
+  //Cada vez que el usuario cambia el valor de un campo, handleValidate se encarga de validar la entrada y actualizar el estado del formulario.
   const handleValidate = (e) => {
-    const { name, value } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (input).
-    setDatosMovimiento({ ...datosMovimiento, [name]: value });
+    const { name, value } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (Input).
+
+    setDatosMovimiento({ ...datosMovimiento, [name]: value }); //... y el nombre del estado hace que se mantenga la información del estado
+
+    setErrors(validations({ ...datosMovimiento, [name]: value }));
   };
 
-  const handleResetFilters = () => {
-    setFilters({
-      numero_identificacion: "",
-    });
-    //getElementById Devuelve una referencia al elemento por su ID.
-    const inputSearch = document.getElementById("numero_identificacion");
-    inputSearch.value = "";
-    dispatch(deleteFiltros());
+  const handleConvertirADecimales = (e) => {
+    const { name, value } = e.target;
+
+    const numeroFormateado = Number.parseFloat(value).toFixed(2);
+
+    setDatosMovimiento({ ...datosMovimiento, [name]: numeroFormateado });
+
+    setErrors(validations({ ...datosMovimiento, [name]: numeroFormateado }));
   };
 
   //Este es el código que renderiza un formulario para los movimientos.
   /*En este caso, el return está devolviendo un conjunto de elementos JSX que forman la estructura del formulario para movimientos */
   return (
-    <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8">
-      <Title>Movimientos</Title>
-      <Hr className="w-full my-5" />{" "}
-      {/* Separador horizontal que es un componente */}
-      <div className="w-full">
-        <div className="grid sm:grid-cols-1 md:grid-cols-5 gap-2">
-          <div className="col-span-1">
-            <Label>Tipo de Identificacion</Label>
-            {/* Campo de selección para el tipo de identificación */}
-            <Select
-              name="tipo_identificacion"
-              defaultValue={datosMovimiento.tipo_identificacion}
-              onChange={handleValidate}
-              // onBlur={handleValidate} //es el evento al salir del campo
-            >
-              <option value="V">V</option>
-              <option value="E">E</option>
-            </Select>
-          </div>
-          <div className="sm:col-span-1 md:col-span-3">
-            <Label>Numero de Identificacion</Label>
-            {/* Este es un componente de entrada (input)  */}
-            {/*onChange: Es un evento en React que se dispara cada vez que el valor del input cambia. Es similar al evento */}
-            {/* Esta función se encargará de realizar alguna acción cada vez que el evento onChange se dispare */}
-            <Input
-              id="numero_identificacion"
-              name="numero_identificacion"
-              onChange={handleValidate}
-              className="w-full"
-            />
-          </div>
-          {/*onClick en JavaScript se utiliza para ejecutar una función cuando se hace clic en un elemento HTML */}
-          <div className="col-span-1 mt-2">
-            <Button className="w-full flex items-center justify-center space-x-2">
-              <FaMagnifyingGlass />{" "}
-              {/*Es un ícono de una lupa que proviene de la biblioteca de íconos react icons.  */}
-              <span>Buscar</span>
-            </Button>
+    <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <Title>Movimientos</Title>
+      </div>
+      <Hr />
+
+      <div className="flex gap-2 mt-6 items-end">
+        <div className="flex flex-col place-content-between">
+          <Label
+            htmlFor="numero_identificacion"
+            errors={errors.numero_identificacion}
+          >
+            Número de identificación
+          </Label>
+
+          <div className="flex flex-col justify-between gap-2">
+            <div className="flex gap-2">
+              <Select
+                className="w-auto h-auto"
+                name="tipo_identificacion"
+                defaultValue={datosMovimiento.tipo_identificacion}
+                onChange={handleValidate}
+              >
+                <option value="V">V</option>
+                <option value="E">E</option>
+              </Select>
+
+              <div className="relative w-full">
+                <Input
+                  id="numero_identificacion"
+                  name="numero_identificacion"
+                  onChange={handleValidate}
+                  className="pr-8"
+                />
+                {errors.numero_identificacion && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+            </div>
+            <span className="text-sm text-gray-500">
+              {errors.numero_identificacion}
+            </span>
           </div>
         </div>
 
-        <div className="p-4 border rounded-lg shadow-md">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-            {/* Nombres */}
-            <div>
-              <Label htmlFor="nombres">Nombres</Label>{" "}
-              {/*El componente <Label> en tu código se utiliza para renderizar un componente de etiqueta label asociada a un campo de entrada en un formulario. */}
-              <input
-                type="text"
-                id="nombres"
-                name="nombres"
-                value={datosMovimiento.nombres}
-                onChange={handleChange}
-              />
-              {errors.nombres && (
-                <span className="text-red-500">{errors.nombres}</span>
-              )}
-            </div>
-            {/* Apellidos */}
-            {/* <div>
-              <Label htmlFor="apellidos">Apellidos</Label>
-              <input
-                type="text"
-                id="apellidos"
-                name="apellidos"
-                value="texto"
-                onChange={handleChange}
-              />
-              {errors.apellidos && (
-                <span className="text-red-500">{errors.apellidos}</span>
-              )}
-            </div> */}
-            {/* Fecha de Nacimiento */}
-            <div>
-              <Label htmlFor="fecha_nacimiento">Fecha de Nacimiento</Label>
-              <Input
-                type="text"
-                id="fecha_nacimiento"
-                name="fecha_nacimiento"
-                value={datosMovimiento.fecha_nacimiento}
-                onChange={handleChange}
-              />
-              {errors.fecha_nacimiento && (
-                <span className="text-red-500">{errors.fecha_nacimiento}</span>
-              )}
-            </div>
-          </div>
-
-          {/* Codigo de Nomina */}
-          <div>
-            <Label htmlFor="codigo_nomina">Codigo de Nomina</Label>
-            <div id="codigo_nomina">{datosMovimiento.codigo_nomina || "-"}</div>
-          </div>
-          {/* Cargo Actual */}
-          <div>
-            <Label htmlFor="cargo_actual">Cargo Actual</Label>
-            <div id="cargo_actual">{datosMovimiento.cargo_actual || "-"}</div>
-          </div>
-          {/* Empresa */}
-          <div>
-            <Label htmlFor="empresa">Empresa</Label>
-            <div id="empresa">{datosMovimiento.empresa || "-"}</div>
-          </div>
-          {/* Sueldo Actual */}
-          <div>
-            <Label htmlFor="sueldo_actual">Sueldo Actual</Label>
-            <div id="sueldo_actual">{datosMovimiento.sueldo_actual || "-"}</div>
-          </div>
-          {/* Unidad Organizativa de Adscripción */}
-          <div>
-            <Label htmlFor="unidad_organizativa">Unidad Organizativa</Label>
-            <div id="unidad_organizativa">
-              {datosMovimiento.unidad_organizativa || "-"}
-            </div>
-          </div>
-          {/* Antigüedad */}
-          <div>
-            <Label htmlFor="antiguedad">Antigüedad</Label>
-            <div id="antiguedad">{datosMovimiento.antiguedad || "-"}</div>
-          </div>
-          {/* Fecha de Ingreso */}
-          <div>
-            <Label htmlFor="fecha_ingreso">Fecha de Ingreso</Label>
-            <div id="fecha_ingreso">{datosMovimiento.fecha_ingreso || "-"}</div>
-          </div>
-          {/* Frecuencia de Nómina */}
-          <div>
-            <Label htmlFor="frecuencia_nomina">Frecuencia de Nómina</Label>
-            <div id="frecuencia_nomina">
-              {datosMovimiento.frecuencia_nomina || "-"}
-            </div>
-          </div>
-          {/* Tipo de Nómina */}
-          <div>
-            <Label htmlFor="tipo_nomina">Tipo de Nómina</Label>
-            <div id="tipo_nomina">{datosMovimiento.tipo_nomina || "-"}</div>
-          </div>
+        {/*onClick en JavaScript se utiliza para ejecutar una función cuando se hace clic en un elemento HTML */}
+        <div>
+          {/* flex justify-center sm:justify-start sm:items-end  */}
+          <Button className="w-auto flex gap-2 items-center mb-2">
+            <FaMagnifyingGlass />
+            {/*Es un ícono de una lupa que proviene de la biblioteca de íconos react icons.  */}
+            <span>Buscar</span>
+          </Button>
         </div>
       </div>
+
+      <div className="p-4 border rounded-lg shadow-md w-full">
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
+          {/* Nombres */}
+          <div>
+            <span>Nombres</span>
+            {/*El componente <Label> en tu código se utiliza para renderizar un componente de etiqueta label asociada a un campo de entrada en un formulario. */}
+            <br />
+            <span>{datosMovimiento.nombres || "-"}</span>
+          </div>
+
+          {/* Apellidos */}
+          <div>
+            <span>Apellidos</span>
+            <br />
+            <span>{datosMovimiento.apellidos || "-"}</span>
+          </div>
+          {/* Fecha de Nacimiento */}
+          <div>
+            <span>Fecha Nacimiento</span>
+            <br />
+            <span>{datosMovimiento.apellidos || "-"}</span>
+          </div>
+        </div>
+
+        {/* Codigo de Nomina */}
+        <div>
+          <Label htmlFor="codigo_nomina">Codigo de Nomina</Label>
+          <div id="codigo_nomina">{datosMovimiento.codigo_nomina || "-"}</div>
+        </div>
+        {/* Cargo Actual */}
+        <div>
+          <Label htmlFor="cargo_actual">Cargo Actual</Label>
+          <div id="cargo_actual">{datosMovimiento.cargo_actual || "-"}</div>
+        </div>
+        {/* Empresa */}
+        <div>
+          <Label htmlFor="empresa">Empresa</Label>
+          <div id="empresa">{datosMovimiento.empresa || "-"}</div>
+        </div>
+        {/* Sueldo Actual */}
+        <div className="relative">
+          <Label htmlFor="sueldo_actual">Sueldo Actual</Label>
+          <div id="sueldo_actual">{datosMovimiento.sueldo_actual || "-"}</div>
+        </div>
+
+        {/* Unidad Organizativa de Adscripción */}
+        <div>
+          <Label htmlFor="unidad_organizativa">Unidad Organizativa</Label>
+          <div id="unidad_organizativa">
+            {datosMovimiento.unidad_organizativa || "-"}
+          </div>
+        </div>
+        {/* Antigüedad */}
+        <div>
+          <Label htmlFor="antiguedad">Antigüedad</Label>
+          <div id="antiguedad">{datosMovimiento.antiguedad || "-"}</div>
+        </div>
+        {/* Fecha de Ingreso */}
+        <div>
+          <Label htmlFor="fecha_ingreso">Fecha de Ingreso</Label>
+          <div id="fecha_ingreso">{datosMovimiento.fecha_ingreso || "-"}</div>
+        </div>
+        {/* Frecuencia de Nómina */}
+        <div>
+          <Label htmlFor="frecuencia_nomina">Frecuencia de Nómina</Label>
+          <div id="frecuencia_nomina">
+            {datosMovimiento.frecuencia_nomina || "-"}
+          </div>
+        </div>
+        {/* Tipo de Nómina */}
+        <div>
+          <Label htmlFor="tipo_nomina">Tipo de Nómina</Label>
+          <div id="tipo_nomina">{datosMovimiento.tipo_nomina || "-"}</div>
+        </div>
+      </div>
+
       <br />
       <Title>Detalle del Movimiento Organizativo</Title>
       <Hr className="w-full my-5" />
@@ -361,7 +342,7 @@ export function Movimientos() {
               <Input
                 id="duracion_movimiento_desde"
                 name="duracion_movimiento_desde"
-                type="number"
+                type="date" //se cambia tipo date, numer o text password email
                 min="0"
                 max="90"
                 onChange={handleValidate}
@@ -444,7 +425,6 @@ export function Movimientos() {
             </Select>
           </div>
         )}
-
         <div>
           <Label htmlFor="departamento_id">Departamento</Label>
           <Select
@@ -523,7 +503,6 @@ export function Movimientos() {
               : null}
           </Select>
         </div>
-
         {/* <div>
             <Label htmlFor="nueva_unidad_organizativa">
               Nueva Unidad Organizativa
@@ -535,7 +514,6 @@ export function Movimientos() {
               value={datosMovimiento.nueva_unidad_organizativa}
             />
           </div> */}
-
         <div>
           <Label htmlFor="vigencia_movimiento_desde">
             Vigencia del Movimiento Desde
@@ -560,15 +538,31 @@ export function Movimientos() {
             value={datosMovimiento.vigencia_movimiento_hasta}
           />
         </div>
+
         <div>
-          <Label htmlFor="nuevo_sueldo">Nuevo Sueldo</Label>
-          <Input
-            id="nuevo_sueldo"
-            name="nuevo_sueldo"
-            onChange={handleValidate}
-            value={datosMovimiento.nuevo_sueldo}
-          />
+          <Label htmlFor="nuevo_sueldo" errors={errors.nuevo_sueldo}>
+            Nuevo Sueldo
+          </Label>
+
+          <div className="relative">
+            <Input
+              id="nuevo_sueldo"
+              name="nuevo_sueldo"
+              onChange={handleValidate} // Esta línea llama a tu función de validación
+              onBlur={handleConvertirADecimales}
+              errors={errors.nuevo_sueldo}
+              maxLength="5" //maximo de digitos
+              className="pr-8" // padding a la derecha para que no tenga conflicto con el icono de validacion
+              value={datosMovimiento.nuevo_sueldo}
+              type="number"
+            />
+            {errors.nuevo_sueldo && (
+              <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+            )}
+          </div>
+          <span className="text-sm text-gray-500">{errors.nuevo_sueldo}</span>
         </div>
+
         {/* Frecuencia de Nómina */}
         <div>
           <Label htmlFor="nueva_frecuencia_nomina">
@@ -588,14 +582,29 @@ export function Movimientos() {
             <option value="Contratados">Contratados</option>
           </Select>
         </div>
+
         <div>
-          <Label htmlFor="nuevo_codigo_nomina">Nuevo Codigo de Nomina</Label>
-          <Input
-            id="nuevo_codigo_nomina"
-            name="nuevo_codigo_nomina"
-            onChange={handleValidate}
-            value={datosMovimiento.nuevo_codigo_nomina}
-          />
+          <Label
+            htmlFor="nuevo_codigo_nomina"
+            errors={errors.nuevo_codigo_nomina}
+          >
+            Nuevo Código de Nómina
+          </Label>
+          <div className="relative">
+            <Input
+              id="nuevo_codigo_nomina"
+              name="nuevo_codigo_nomina"
+              onChange={handleValidate}
+              errors={errors.nuevo_codigo_nomina}
+              defaultValue={datosMovimiento.nuevo_codigo_nomina}
+            />
+            {errors.nuevo_codigo_nomina && (
+              <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+            )}
+          </div>
+          <span className="text-sm text-gray-500">
+            {errors.nuevo_codigo_nomina}
+          </span>
         </div>
       </div>
       <div className="grid my-2 grid-cols-1 gap-4 sm:grid-cols-1">
@@ -605,15 +614,12 @@ export function Movimientos() {
             id="observaciones"
             name="observaciones"
             onChange={handleValidate}
-            value={datosMovimiento.justificacion}
+            defaultValue={datosMovimiento.justificacion}
           />
         </div>
       </div>
       <div className="flex justify-center mt-8">
-        <Button
-          onClick={handleResetFilters}
-          className="sm:w-full md:w-auto flex items-center justify-center space-x-2"
-        >
+        <Button className="sm:w-full md:w-auto flex items-center justify-center space-x-2">
           {/*Es un icono de la libreria react icons */}
           <FaFloppyDisk />
           <span>Guardar</span>
