@@ -9,6 +9,11 @@ export default function validations(inputs) {
     numero_identificacion,
     nuevo_sueldo,
     nuevo_codigo_nomina,
+    duracion_movimiento_desde,
+    duracion_movimiento_hasta,
+    vigencia_movimiento_desde,
+    vigencia_movimiento_hasta
+ 
   } = inputs; //debo importar
 
   //Numero de identificación
@@ -42,9 +47,24 @@ export default function validations(inputs) {
   }
   //Finaliza Nuevo Codigo de Nomina
 
-  // if (tipo_identificacion && tipo_identificacion.length > 5) {
-  //   errors.tipo_identificacion = "el mensaje de error";
-  // }
-
+  // Validación de duración del movimiento
+  if (
+    duracion_movimiento_desde &&
+    duracion_movimiento_hasta &&
+    duracion_movimiento_desde >= duracion_movimiento_hasta
+  ) {
+    errors.duracion_movimiento =
+      "La fecha 'Desde' no puede ser mayor o igual que la fecha 'Hasta'.";
+  }
+  
+  if (
+    vigencia_movimiento_desde &&
+    vigencia_movimiento_hasta &&
+    vigencia_movimiento_desde >= vigencia_movimiento_hasta
+  ) {
+    errors.vigencia_movimiento =
+      "La fecha 'Desde' no puede ser mayor o igual que la fecha 'Hasta'.";
+  }
+  
   return errors;
 }

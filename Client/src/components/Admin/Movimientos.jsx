@@ -30,7 +30,7 @@ import {
   resetCargos,
 } from "../../redux/cargos/cargosActions";
 
-import { Button, Input, Label, Select, Title, Hr, TextArea } from "../UI"; //son componentes para reutilizar
+import { Button, Date, Input, Label, Select, Title, Hr, TextArea } from "../UI"; //son componentes para reutilizar
 
 import { YYYYMMDD } from "../../utils/formatearFecha";
 
@@ -73,9 +73,16 @@ export function Movimientos() {
 
   const [datosMovimiento, setDatosMovimiento] = useState({
     tipo_identificacion: "V",
+    numero_identificacion: "",
     tipo_movimiento: "Temporal",
     fecha_ingreso: YYYYMMDD(),
-    clase_movimiento: "periodo_prueba",
+    clase_movimiento: "Seleccione",
+    duracion_movimiento_desde: "",
+    duracion_movimiento_hasta: "",
+    duracion_periodo_prueba: "",
+    vigencia_movimiento_desde: "",
+    vigencia_movimiento_hasta: "",
+    frecuencia_nomina: "",
   });
 
   useEffect(() => {
@@ -189,6 +196,7 @@ export function Movimientos() {
                   name="numero_identificacion"
                   onChange={handleValidate}
                   className="pr-8"
+                  value={datosMovimiento.numero_identificacion}
                 />
                 {errors.numero_identificacion && (
                   <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
@@ -211,9 +219,9 @@ export function Movimientos() {
           </Button>
         </div>
       </div>
-
+      {/*debo revisar */}
       <div className="p-4 border rounded-lg shadow-md w-full">
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
           {/* Nombres */}
           <div>
             <span>Nombres</span>
@@ -234,64 +242,64 @@ export function Movimientos() {
             <br />
             <span>{datosMovimiento.apellidos || "-"}</span>
           </div>
-        </div>
 
-        {/* Codigo de Nomina */}
-        <div>
-          <Label htmlFor="codigo_nomina">Codigo de Nomina</Label>
-          <div id="codigo_nomina">{datosMovimiento.codigo_nomina || "-"}</div>
-        </div>
-        {/* Cargo Actual */}
-        <div>
-          <Label htmlFor="cargo_actual">Cargo Actual</Label>
-          <div id="cargo_actual">{datosMovimiento.cargo_actual || "-"}</div>
-        </div>
-        {/* Empresa */}
-        <div>
-          <Label htmlFor="empresa">Empresa</Label>
-          <div id="empresa">{datosMovimiento.empresa || "-"}</div>
-        </div>
-        {/* Sueldo Actual */}
-        <div className="relative">
-          <Label htmlFor="sueldo_actual">Sueldo Actual</Label>
-          <div id="sueldo_actual">{datosMovimiento.sueldo_actual || "-"}</div>
-        </div>
+          {/* Codigo de Nomina */}
+          <div>
+            <Label htmlFor="codigo_nomina">Codigo de Nomina</Label>
+            <div id="codigo_nomina">{datosMovimiento.codigo_nomina || "-"}</div>
+          </div>
+          {/* Cargo Actual */}
+          <div>
+            <Label htmlFor="cargo_actual">Cargo Actual</Label>
+            <div id="cargo_actual">{datosMovimiento.cargo_actual || "-"}</div>
+          </div>
+          {/* Empresa */}
+          <div>
+            <Label htmlFor="empresa">Empresa</Label>
+            <div id="empresa">{datosMovimiento.empresa || "-"}</div>
+          </div>
+          {/* Sueldo Actual */}
+          <div className="relative">
+            <Label htmlFor="sueldo_actual">Sueldo Actual</Label>
+            <div id="sueldo_actual">{datosMovimiento.sueldo_actual || "-"}</div>
+          </div>
 
-        {/* Unidad Organizativa de Adscripción */}
-        <div>
-          <Label htmlFor="unidad_organizativa">Unidad Organizativa</Label>
-          <div id="unidad_organizativa">
-            {datosMovimiento.unidad_organizativa || "-"}
+          {/* Unidad Organizativa de Adscripción */}
+          <div>
+            <Label htmlFor="unidad_organizativa">Unidad Organizativa</Label>
+            <div id="unidad_organizativa">
+              {datosMovimiento.unidad_organizativa || "-"}
+            </div>
           </div>
-        </div>
-        {/* Antigüedad */}
-        <div>
-          <Label htmlFor="antiguedad">Antigüedad</Label>
-          <div id="antiguedad">{datosMovimiento.antiguedad || "-"}</div>
-        </div>
-        {/* Fecha de Ingreso */}
-        <div>
-          <Label htmlFor="fecha_ingreso">Fecha de Ingreso</Label>
-          <div id="fecha_ingreso">{datosMovimiento.fecha_ingreso || "-"}</div>
-        </div>
-        {/* Frecuencia de Nómina */}
-        <div>
-          <Label htmlFor="frecuencia_nomina">Frecuencia de Nómina</Label>
-          <div id="frecuencia_nomina">
-            {datosMovimiento.frecuencia_nomina || "-"}
+          {/* Antigüedad */}
+          <div>
+            <Label htmlFor="antiguedad">Antigüedad</Label>
+            <div id="antiguedad">{datosMovimiento.antiguedad || "-"}</div>
           </div>
-        </div>
-        {/* Tipo de Nómina */}
-        <div>
-          <Label htmlFor="tipo_nomina">Tipo de Nómina</Label>
-          <div id="tipo_nomina">{datosMovimiento.tipo_nomina || "-"}</div>
+          {/* Fecha de Ingreso */}
+          <div>
+            <Label htmlFor="fecha_ingreso">Fecha de Ingreso</Label>
+            <div id="fecha_ingreso">{datosMovimiento.fecha_ingreso || "-"}</div>
+          </div>
+          {/* Frecuencia de Nómina */}
+          <div>
+            <Label htmlFor="frecuencia_nomina">Frecuencia de Nómina</Label>
+            <div id="frecuencia_nomina">
+              {datosMovimiento.frecuencia_nomina}
+            </div>
+          </div>
+          {/* Tipo de Nómina */}
+          <div>
+            <Label htmlFor="tipo_nomina">Tipo de Nómina</Label>
+            <div id="tipo_nomina">{datosMovimiento.tipo_nomina}</div>
+          </div>
         </div>
       </div>
 
       <br />
       <Title>Detalle del Movimiento Organizativo</Title>
       <Hr className="w-full my-5" />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         {/* Clase de Movimiento */}
         <div>
           <Label htmlFor="clase_movimiento">Clase de Movimiento</Label>
@@ -336,34 +344,34 @@ export function Movimientos() {
           </Select>
         </div>
         {datosMovimiento.tipo_movimiento === "Temporal" && (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <>
             <div>
               <Label htmlFor="duracion_movimiento_desde">Desde</Label>
-              <Input
+              <Date
                 id="duracion_movimiento_desde"
                 name="duracion_movimiento_desde"
                 type="date" //se cambia tipo date, numer o text password email
-                min="0"
-                max="90"
                 onChange={handleValidate}
                 value={datosMovimiento.duracion_movimiento_desde}
+                errors={errors.duracion_movimiento}
               />
             </div>
             <div>
               <Label htmlFor="duracion_movimiento_hasta">Hasta</Label>
-              <Input
+              <Date
                 id="duracion_movimiento_hasta"
                 name="duracion_movimiento_hasta"
-                type="number"
-                min="0"
-                max="90"
+                type="date"
                 onChange={handleValidate}
                 value={datosMovimiento.duracion_movimiento_hasta}
+                errors={errors.duracion_movimiento}
               />
+              <span className="text-sm text-gray-500">
+                {errors.duracion_movimiento}
+              </span>
             </div>
-          </div>
+          </>
         )}
-
         {datosMovimiento.clase_movimiento === "periodo_prueba" && (
           <div>
             <Label htmlFor="duracion_periodo_prueba">
@@ -380,9 +388,7 @@ export function Movimientos() {
             />
           </div>
         )}
-      </div>
-      <div className="grid my-2 grid-cols-1 gap-4 sm:grid-cols-1">
-        <div>
+        <div className="sm:col-span-2 md:col-span-3">
           <Label htmlFor="justificacion">Justificación</Label>
           <TextArea
             id="justificacion"
@@ -392,8 +398,6 @@ export function Movimientos() {
             rows="5"
           />
         </div>
-      </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {/* Nueva Condición Laboral del Trabajador */}
         {(datosMovimiento.clase_movimiento !== "cambio_sede_misma_empresa" ||
           datosMovimiento.clase_movimiento !== "cambio_dpto_misma_empresa") && (
@@ -514,31 +518,59 @@ export function Movimientos() {
               value={datosMovimiento.nueva_unidad_organizativa}
             />
           </div> */}
-        <div>
+       
+        {/* <div>
           <Label htmlFor="vigencia_movimiento_desde">
             Vigencia del Movimiento Desde
           </Label>
-          <Input
+          <Date
             type="date"
             id="vigencia_movimiento_desde"
             name="vigencia_movimiento_desde"
             onChange={handleValidate}
             value={datosMovimiento.vigencia_movimiento_desde}
+            errors={errors.vigencia_movimiento}
           />
         </div>
         <div>
           <Label htmlFor="vigencia_movimiento_hasta">
             Vigencia del Movimiento Hasta
           </Label>
-          <Input
+          <Date
             type="date"
             id="vigencia_movimiento_hasta"
             name="vigencia_movimiento_hasta"
             onChange={handleValidate}
             value={datosMovimiento.vigencia_movimiento_hasta}
+            errors={errors.vigencia_movimiento}
+          />
+        </div> */}
+         <div>
+          <Label htmlFor="vigencia_movimiento_desde">
+            Vigencia del Movimiento Desde
+          </Label>
+          <Date
+            type="date"
+            id="vigencia_movimiento_desde"
+            name="vigencia_movimiento_desde"
+            onChange={handleValidate}
+            value={datosMovimiento.vigencia_movimiento_desde}
+            errors={errors.vigencia_movimiento}
           />
         </div>
-
+        <div>
+          <Label htmlFor="vigencia_movimiento_hasta">
+            Vigencia del Movimiento Hasta
+          </Label>
+          <Date
+            type="date"
+            id="vigencia_movimiento_hasta"
+            name="vigencia_movimiento_hasta"
+            onChange={handleValidate}
+            value={datosMovimiento.vigencia_movimiento_hasta}
+            errors={errors.vigencia_movimiento}
+          />
+        </div>
         <div>
           <Label htmlFor="nuevo_sueldo" errors={errors.nuevo_sueldo}>
             Nuevo Sueldo
@@ -555,6 +587,7 @@ export function Movimientos() {
               className="pr-8" // padding a la derecha para que no tenga conflicto con el icono de validacion
               value={datosMovimiento.nuevo_sueldo}
               type="number"
+              min="0"
             />
             {errors.nuevo_sueldo && (
               <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
@@ -562,7 +595,6 @@ export function Movimientos() {
           </div>
           <span className="text-sm text-gray-500">{errors.nuevo_sueldo}</span>
         </div>
-
         {/* Frecuencia de Nómina */}
         <div>
           <Label htmlFor="nueva_frecuencia_nomina">
@@ -582,7 +614,6 @@ export function Movimientos() {
             <option value="Contratados">Contratados</option>
           </Select>
         </div>
-
         <div>
           <Label
             htmlFor="nuevo_codigo_nomina"
@@ -596,7 +627,7 @@ export function Movimientos() {
               name="nuevo_codigo_nomina"
               onChange={handleValidate}
               errors={errors.nuevo_codigo_nomina}
-              defaultValue={datosMovimiento.nuevo_codigo_nomina}
+              value={datosMovimiento.nuevo_codigo_nomina}
             />
             {errors.nuevo_codigo_nomina && (
               <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
@@ -606,24 +637,23 @@ export function Movimientos() {
             {errors.nuevo_codigo_nomina}
           </span>
         </div>
-      </div>
-      <div className="grid my-2 grid-cols-1 gap-4 sm:grid-cols-1">
-        <div>
+        <div className="sm:col-span-2 md:col-span-3">
           <Label htmlFor="observaciones">Observaciones</Label>
           <TextArea
             id="observaciones"
             name="observaciones"
             onChange={handleValidate}
-            defaultValue={datosMovimiento.justificacion}
+            value={datosMovimiento.observaciones}
+            rows="5"
           />
         </div>
-      </div>
-      <div className="flex justify-center mt-8">
-        <Button className="sm:w-full md:w-auto flex items-center justify-center space-x-2">
-          {/*Es un icono de la libreria react icons */}
-          <FaFloppyDisk />
-          <span>Guardar</span>
-        </Button>
+        <div className="mx-auto sm:col-span-2 md:col-span-3">
+          <Button className="w-auto flex items-center gap-2">
+            {/*Es un icono de la libreria react icons */}
+            <FaFloppyDisk />
+            <span>Guardar</span>
+          </Button>
+        </div>
       </div>
     </div>
   );
