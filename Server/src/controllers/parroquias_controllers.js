@@ -1,4 +1,6 @@
-const { conn, Parroquias } = require("../db");
+const { conn, Parroquias, Paises, Estados, Municipios } = require("../db");
+
+const { parroquias } = require("../utils/parroquias");
 
 const todasLasParroquias = async (municipio_id) => {
   if (!municipio_id) {
@@ -52,31 +54,72 @@ const traerParroquia = async (parroquia_id) => {
   }
 };
 
-// const cargarParroquias = async () => {
-//   let t;
+const cargarParroquias = async () => {
+  let t;
 
-//   try {
-//     t = await conn.transaction();
+  try {
+    for (const estado of parroquias) {
+      const pais = await Paises.findOne({
+        where: {
+          nombre: estado.pais,
+        },
+      });
 
-//     for (const parroquia of parroquias) {
-//       const [crearParroquia, created] = await Parroquias.findOrCreate({
-//         where: { nombre: parroquia },
-//         defaults: {
-//           nombre: parroquia,
-//         },
-//         transaction: t,
-//       });
-//     }
+      const estadoExiste = await Estados.findOne({
+        where: {
+          pais_id: pais.pais_id,
+          nombre: estado.estado,
+        },
+      });
 
-//     await t.commit();
-//   } catch (error) {
-//     if (t && !t.finished) {
-//       await t.rollback();
-//     }
+      if (pais && estadoExiste) {
+        for (const municipio of estado.municipios) {
+          const municipioExiste = await Municipios.findOne({
+            where: {
+              estado_id: estadoExiste.estado_id,
+              nombre: municipio.municipio,
+            },
+          });
 
-//     throw new Error(`Error al crear las parroquias: ${error.message}`);
-//   }
-// };
+          if (municipioExiste) {
+            for (const parroquia of municipio.parroquias) {
+              const parroquiaExiste = await Parroquias.findOne({
+                where: {
+                  municipio_id: municipioExiste.municipio_id,
+                  nombre: parroquia,
+                },
+              });
+
+              if (!parroquiaExiste) {
+                t = await conn.transaction();
+
+                await Parroquias.create(
+                  {
+                    municipio_id: municipioExiste.municipio_id,
+                    nombre: parroquia,
+                  },
+                  { transaction: t }
+                );
+
+                await t.commit();
+              }
+            }
+          }
+        }
+      } else {
+        throw new Error(
+          `No existe el país ${parroquia.pais} o el estado ${parroquia.estado}`
+        );
+      }
+    }
+  } catch (error) {
+    if (t && !t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error(`Error al crear las parroquias: ${error.message}`);
+  }
+};
 
 const crearParroquia = async (municipio_id, nombre) => {
   if (!municipio_id || !nombre) {
@@ -186,6 +229,7 @@ module.exports = {
   todasLasParroquias,
   todasLasParroquiasActivas,
   traerParroquia,
+  cargarParroquias,
   crearParroquia,
   modificarParroquia,
   inactivarParroquia,
