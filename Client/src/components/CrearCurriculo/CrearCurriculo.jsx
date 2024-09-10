@@ -717,7 +717,7 @@ export function CrearCurriculo() {
             checked={datosCurriculo.disponibilidad_viajar}
             onChange={handleCheckedChangeCurriculo}
           />
-          <Label htmlFor="disponibilidad_viajar">
+          <Label className="select-none" htmlFor="disponibilidad_viajar">
             ¿Posees disponibilidad para viajar?
           </Label>
         </div>
@@ -728,7 +728,7 @@ export function CrearCurriculo() {
             checked={datosCurriculo.disponibilidad_cambio_residencia}
             onChange={handleCheckedChangeCurriculo}
           />
-          <Label htmlFor="disponibilidad_cambio_residencia">
+          <Label className="select-none" htmlFor="disponibilidad_cambio_residencia">
             ¿Posees disponibilidad para cambio de residencia?
           </Label>
         </div>
