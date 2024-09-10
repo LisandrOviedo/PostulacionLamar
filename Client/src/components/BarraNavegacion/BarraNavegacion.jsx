@@ -12,6 +12,7 @@ import { resetPruebas } from "../../redux/pruebasEmpleados/pruebasEmpleadosActio
 import { getSugerenciasActivasNoRevisadas } from "../../redux/sugerencias/sugerenciasActions";
 
 import { Logo } from "../UI";
+import { LogoHorizontal } from "../UI";
 
 import Swal from "sweetalert2";
 
@@ -113,57 +114,63 @@ export function BarraNavegacion() {
   }, [empleado]);
 
   return (
-    <div className="w-full fixed top-0 select-none z-50">
+    <div className="w-full fixed top-0 select-none z-[999]">
       <nav className="bg-[#002846] p-1 flex items-center justify-between">
-        <div className="text-white flex items-center">
-          <Logo
+        <div className="text-white flex items-center sm:hover:opacity-80 cursor-pointer gap-1">
+          <LogoHorizontal
             onClick={toggleMenuBurger}
-            className="w-16 sm:w-24 ml-2 sm:hover:opacity-80 cursor-pointer"
+            className="w-20 sm:w-24 ml-2"
           />
           <img
             onClick={toggleMenuBurger}
             src="./Menu.svg"
             alt="Menu"
-            className="w-6 cursor-pointer sm:hover:opacity-80"
+            className="w-6"
           />
         </div>
 
         <div className="flex items-center space-x-4 mr-6">
-          <div ref={asideRef} className="static">
-            <span onClick={toggleNotif} className="cursor-pointer">
-              <img
-                src={
-                  Object.keys(notificaciones).length
-                    ? "./newNotification.svg"
-                    : "./notification.svg"
-                }
-                alt="Notificaciones"
-                className={Object.keys(notificaciones).length ? "h-7" : "h-6"}
-              />
-            </span>
+          {pathname.startsWith("/admin/") ? (
+            <>
+              <div ref={asideRef} className="static">
+                <span onClick={toggleNotif} className="cursor-pointer">
+                  <img
+                    src={
+                      Object.keys(notificaciones).length
+                        ? "./newNotification.svg"
+                        : "./notification.svg"
+                    }
+                    alt="Notificaciones"
+                    className={
+                      Object.keys(notificaciones).length ? "h-6" : "h-5"
+                    }
+                  />
+                </span>
 
-            <ul
-              className={
-                isOpenNotif
-                  ? "flex flex-col gap-1 my-3 p-2 border bg-sky-950 absolute"
-                  : "hidden"
-              }
-            >
-              <li>
-                <Link
-                  to="/admin/sugerencias"
-                  className="text-white hover:text-[#F0C95C] text-sm"
+                <ul
+                  className={
+                    isOpenNotif
+                      ? "flex flex-col gap-1 my-3 p-2 border bg-sky-950 absolute"
+                      : "hidden"
+                  }
                 >
-                  <span className="text-xs">
-                    {notificaciones.sugerencias
-                      ? notificaciones.sugerencias
-                      : 0}{" "}
-                    sugerencias por revisar
-                  </span>
-                </Link>
-              </li>
-            </ul>
-          </div>
+                  <li>
+                    <Link
+                      to="/admin/sugerencias"
+                      className="text-white hover:text-[#F0C95C] text-sm"
+                    >
+                      <span className="text-xs">
+                        {notificaciones.sugerencias
+                          ? notificaciones.sugerencias
+                          : 0}{" "}
+                        sugerencias por revisar
+                      </span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </>
+          ) : null}
 
           <span className="text-white text-sm md:text-base">Bienvenido/a</span>
           {empleado.foto_perfil_nombre ? (

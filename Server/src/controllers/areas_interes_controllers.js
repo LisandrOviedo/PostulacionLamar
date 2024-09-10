@@ -6,7 +6,9 @@ const { areasInteres } = require("../utils/areasInteres");
 
 const todosLosAreaInteres = async () => {
   try {
-    const areas_interes = await Areas_Interes.findAll();
+    const areas_interes = await Areas_Interes.findAll({
+      order: [["nombre", "ASC"]],
+    });
 
     if (!areas_interes.length) {
       throw new Error(`No existen áreas de interés`);
@@ -24,6 +26,7 @@ const todosLosAreaInteresActivas = async () => {
   try {
     const areas_interes = await Areas_Interes.findAll({
       where: { activo: true },
+      order: [["nombre", "ASC"]],
     });
 
     if (!areas_interes.length) {

@@ -10,6 +10,7 @@ const todosLosCargos = async (departamento_id) => {
       where: {
         departamento_id: departamento_id,
       },
+      order: [["descripcion", "ASC"]],
     });
 
     return cargos;
@@ -26,6 +27,7 @@ const todosLosCargosActivos = async (departamento_id) => {
   try {
     const cargos = await Cargos.findAll({
       where: { departamento_id: departamento_id, activo: true },
+      order: [["descripcion", "ASC"]],
     });
 
     return cargos;

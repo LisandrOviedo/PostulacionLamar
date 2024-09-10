@@ -2,33 +2,46 @@ const regexLetras = /^[a-zA-Z\s]+$/;
 const regexLetrasComasPuntos = /^[a-zA-Z,'.\s]+$/;
 
 export default function validations(inputs) {
+  const {
+    nombre_instituto,
+    titulo_obtenido,
+    cargo_titulo,
+    empresa_centro_educativo,
+  } = inputs;
+
   const errors = {};
 
-  if (inputs.nombre_instituto && !regexLetras.test(inputs.nombre_instituto)) {
-    errors.nombre_instituto = "Solo está permitido escribir letras sin acentos";
+  if (nombre_instituto) {
+    if (!regexLetras.test(nombre_instituto)) {
+      errors.nombre_instituto =
+        "Solo está permitido escribir letras sin acentos";
+    }
   }
 
-  if (inputs.titulo_obtenido && !regexLetras.test(inputs.titulo_obtenido)) {
-    errors.titulo_obtenido = "Solo está permitido escribir letras sin acentos";
+  if (titulo_obtenido) {
+    if (!regexLetras.test(titulo_obtenido)) {
+      errors.titulo_obtenido =
+        "Solo está permitido escribir letras sin acentos";
+    }
   }
 
-  if (inputs.cargo_titulo && !regexLetras.test(inputs.cargo_titulo)) {
-    errors.cargo_titulo = "Solo está permitido escribir letras";
+  if (cargo_titulo) {
+    if (!regexLetras.test(cargo_titulo)) {
+      errors.cargo_titulo = "Solo está permitido escribir letras";
+    }
   }
 
-  if (
-    inputs.empresa_centro_educativo &&
-    !regexLetras.test(inputs.empresa_centro_educativo)
-  ) {
-    errors.empresa_centro_educativo = "Solo está permitido escribir letras";
+  if (empresa_centro_educativo) {
+    if (!regexLetras.test(empresa_centro_educativo)) {
+      errors.empresa_centro_educativo = "Solo está permitido escribir letras";
+    }
   }
 
-  if (
-    inputs.habilidades_tecnicas &&
-    !regexLetrasComasPuntos.test(inputs.habilidades_tecnicas)
-  ) {
-    errors.habilidades_tecnicas =
-      "Solo está permitido escribir letras, comas simples y puntos";
+  if (habilidades_tecnicas) {
+    if (!regexLetrasComasPuntos.test(habilidades_tecnicas)) {
+      errors.habilidades_tecnicas =
+        "Solo está permitido escribir letras, comas simples y puntos";
+    }
   }
 
   return errors;

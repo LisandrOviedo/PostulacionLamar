@@ -18,6 +18,12 @@ const {
   Fichas_Ingresos,
   Direcciones,
   Municipios,
+  Titulos_Obtenidos,
+  Experiencias,
+  Referencias_Personales,
+  Salud,
+  Contactos_Emergencia,
+  Datos_Bancarios,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
@@ -173,14 +179,103 @@ const traerEmpleadoExistencia = async (
 
   try {
     const empleado = await Empleados.findOne({
+      attributes: {
+        exclude: ["rol_id", "clave", "createdAt", "updatedAt"],
+      },
       where: {
         tipo_identificacion: tipo_identificacion,
         numero_identificacion: numero_identificacion,
       },
+      include: [
+        {
+          model: Etnias,
+          attributes: ["nombre"],
+        },
+        {
+          model: Direcciones,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Roles,
+          attributes: ["nombre", "descripcion"],
+        },
+        {
+          model: Titulos_Obtenidos,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Experiencias,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Referencias_Personales,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Salud,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Contactos_Emergencia,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Datos_Bancarios,
+          attributes: {
+            exclude: ["empleado_id", "createdAt", "updatedAt"],
+          },
+        },
+        {
+          model: Empresas,
+          attributes: ["empresa_id", "nombre"],
+        },
+        {
+          model: Cargos_Niveles,
+          attributes: ["cargo_nivel_id", "nivel"],
+          include: [
+            {
+              model: Cargos,
+              attributes: [
+                "cargo_id",
+                "descripcion",
+                "descripcion_cargo_antiguo",
+              ],
+              include: [
+                {
+                  model: Departamentos,
+                  attributes: ["departamento_id", "nombre"],
+                  include: [
+                    {
+                      model: Empresas,
+                      attributes: ["empresa_id", "nombre"],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          through: {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "fecha_ingreso", "fecha_egreso"],
+          },
+        },
+      ],
     });
 
     if (empleado) {
-      return { empleado_id: empleado.empleado_id };
+      return empleado;
     }
   } catch (error) {
     throw new Error(`Error al traer el empleado: ${error.message}`);
@@ -356,10 +451,6 @@ const cargarEmpleados = async () => {
                       : null,
                   numero_identificacion: empleadoAPI.cedula,
                   fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
-                  nacimiento_pais_id:
-                    empleadoAPI.nacionalidad === "Venezolano"
-                      ? nacionalidad_venezolana.pais_id
-                      : null,
                 },
                 { transaction: t }
               );
@@ -403,10 +494,6 @@ const cargarEmpleados = async () => {
                       : null,
                   numero_identificacion: empleadoAPI.cedula,
                   fecha_nacimiento: `${YYYYMMDD(empleadoAPI.fecha_nacimiento)}`,
-                  nacimiento_pais_id:
-                    empleadoAPI.nacionalidad === "Venezolano"
-                      ? nacionalidad_venezolana.pais_id
-                      : null,
                 },
                 { transaction: t }
               );
@@ -462,7 +549,6 @@ const crearEmpleado = async (
   fecha_nacimiento,
   nacimiento_lugar,
   nacimiento_estado_id,
-  nacimiento_pais_id,
   licencia_conducir_grado,
   licencia_conducir_vencimiento,
   carta_medica_vencimiento,
@@ -487,7 +573,6 @@ const crearEmpleado = async (
     !fecha_nacimiento ||
     !nacimiento_lugar ||
     !nacimiento_estado_id ||
-    !nacimiento_pais_id ||
     !talla_camisa ||
     !talla_pantalon ||
     !talla_calzado
@@ -537,7 +622,6 @@ const crearEmpleado = async (
         fecha_nacimiento: fecha_nacimiento,
         nacimiento_lugar: nacimiento_lugar,
         nacimiento_estado_id: nacimiento_estado_id,
-        nacimiento_pais_id: nacimiento_pais_id,
         licencia_conducir_grado: licencia_conducir_grado || null,
         licencia_conducir_vencimiento:
           licencia_conducir_grado && licencia_conducir_vencimiento
@@ -684,10 +768,6 @@ const modificarEmpleado = async (datosPersonales) => {
   if (datosPersonales.nacimiento_estado_id) {
     camposActualizar.nacimiento_estado_id =
       datosPersonales.nacimiento_estado_id;
-  }
-
-  if (datosPersonales.nacimiento_pais_id) {
-    camposActualizar.nacimiento_pais_id = datosPersonales.nacimiento_pais_id;
   }
 
   if (datosPersonales.licencia_conducir_grado) {

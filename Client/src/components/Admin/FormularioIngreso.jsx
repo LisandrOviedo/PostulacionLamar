@@ -91,6 +91,7 @@ export function FormularioIngreso() {
 
   const [datosIngreso, setDatosIngreso] = useState({
     tipo_identificacion: "V",
+    numero_identificacion: "",
     estado_civil: "Soltero(a)",
     mano_dominante: "Derecha",
     sexo: "Masculino",
@@ -560,19 +561,32 @@ export function FormularioIngreso() {
   };
 
   const handleEmpleadoExiste = (e) => {
-    e.preventDefault();
     const { value } = e.target;
     if (value) {
-      getEmpleadoExistencia(
-        token,
-        datosIngreso.tipo_identificacion,
-        datosIngreso.numero_identificacion
+      dispatch(
+        getEmpleadoExistencia(
+          token,
+          datosIngreso.tipo_identificacion,
+          datosIngreso.numero_identificacion
+        )
       ).then((data) => {
         if (data) {
           const numero_identificacion = document.getElementById(
             "numero_identificacion"
           );
+
           numero_identificacion.value = null;
+
+          numero_identificacion.focus();
+
+          Swal.fire({
+            title: "Oops...",
+            text: "Ese empleado ya cuenta con ficha de ingreso",
+            icon: "error",
+            showConfirmButton: false,
+            timer: 3000,
+          });
+          return;
         }
       });
     }
@@ -695,7 +709,7 @@ export function FormularioIngreso() {
               <Select
                 className="w-auto"
                 name="tipo_identificacion"
-                defaultValue={datosIngreso.tipo_identificacion}
+                value={datosIngreso.tipo_identificacion}
                 onChange={handleValidate}
               >
                 <option value="V">V</option>
@@ -707,6 +721,7 @@ export function FormularioIngreso() {
                 name="numero_identificacion"
                 type="number"
                 min="0"
+                value={datosIngreso.numero_identificacion}
                 onChange={handleValidate}
                 onBlur={handleEmpleadoExiste}
               />
@@ -732,7 +747,7 @@ export function FormularioIngreso() {
             <Select
               id="estado_civil"
               name="estado_civil"
-              defaultValue={datosIngreso.estado_civil}
+              value={datosIngreso.estado_civil}
               onChange={handleValidate}
             >
               <option value="Soltero(a)">Soltero(a)</option>
@@ -799,7 +814,7 @@ export function FormularioIngreso() {
             <Select
               id="mano_dominante"
               name="mano_dominante"
-              defaultValue={datosIngreso.mano_dominante}
+              value={datosIngreso.mano_dominante}
               onChange={handleValidate}
             >
               <option value="Derecha">Derecha</option>
@@ -811,8 +826,8 @@ export function FormularioIngreso() {
             <Label htmlFor="sexo">Sexo</Label>
             <Select
               id="sexo"
-              defaultValue={datosIngreso.sexo}
               name="sexo"
+              value={datosIngreso.sexo}
               onChange={handleValidate}
             >
               <option value="Masculino">Masculino</option>
@@ -827,7 +842,7 @@ export function FormularioIngreso() {
             <Select
               id="factor_grupo_sanguineo"
               name="factor_grupo_sanguineo"
-              defaultValue={datosIngreso.factor_grupo_sanguineo}
+              value={datosIngreso.factor_grupo_sanguineo}
               onChange={handleValidate}
             >
               <option value="Seleccione">Seleccione</option>
@@ -847,10 +862,10 @@ export function FormularioIngreso() {
               type="number"
               name="cantidad_hijos"
               id="cantidad_hijos"
-              defaultValue={datosIngreso.cantidad_hijos}
+              value={datosIngreso.cantidad_hijos}
+              onChange={handleValidate}
               min="0"
               max="15"
-              onChange={handleValidate}
             />
           </div>
           <div>
@@ -859,9 +874,9 @@ export function FormularioIngreso() {
               type="number"
               name="carga_familiar"
               id="carga_familiar"
-              defaultValue={datosIngreso.carga_familiar}
-              min="0"
+              value={datosIngreso.carga_familiar}
               onChange={handleValidate}
+              min="0"
             />
           </div>
 
@@ -1056,7 +1071,7 @@ export function FormularioIngreso() {
             <Select
               id="tipo_vivienda"
               name="tipo_vivienda"
-              defaultValue={datosIngreso.tipo_vivienda}
+              value={datosIngreso.tipo_vivienda}
               onChange={handleValidate}
             >
               <option value="Casa">Casa</option>
@@ -1403,7 +1418,7 @@ export function FormularioIngreso() {
                 type="number"
                 min="0"
                 max="20"
-                defaultValue={datosIngreso.posee_parientes_empresa}
+                value={datosIngreso.posee_parientes_empresa}
                 onChange={handleValidate}
                 id="posee_parientes_empresa"
                 name="posee_parientes_empresa"
@@ -1505,7 +1520,7 @@ export function FormularioIngreso() {
                 checked={datosIngreso.alergia_alimentos}
                 onChange={handleChecked}
               />
-              <Label htmlFor="alergia_alimentos">
+              <Label className="select-none" htmlFor="alergia_alimentos">
                 ¿Es alérgico a algún alimento?
               </Label>
             </div>
@@ -1516,7 +1531,7 @@ export function FormularioIngreso() {
                 checked={datosIngreso.alergia_medicamentos}
                 onChange={handleChecked}
               />
-              <Label htmlFor="alergia_medicamentos">
+              <Label className="select-none" htmlFor="alergia_medicamentos">
                 ¿Es alérgico a algún medicamento?
               </Label>
             </div>
@@ -1527,7 +1542,7 @@ export function FormularioIngreso() {
                 checked={datosIngreso.alergia_otros}
                 onChange={handleChecked}
               />
-              <Label htmlFor="alergia_otros">
+              <Label className="select-none" htmlFor="alergia_otros">
                 ¿Es alérgico a alguna otra cosa?
               </Label>
             </div>
@@ -1539,7 +1554,9 @@ export function FormularioIngreso() {
                 checked={datosIngreso.fuma}
                 onChange={handleChecked}
               />
-              <Label htmlFor="fuma">¿Fuma?</Label>
+              <Label className="select-none" htmlFor="fuma">
+                ¿Fuma?
+              </Label>
             </div>
 
             <div>
@@ -1679,7 +1696,7 @@ export function FormularioIngreso() {
               <Select
                 id="titular_cuenta"
                 name="titular_cuenta"
-                defaultValue={datosIngreso.titular_cuenta}
+                value={datosIngreso.titular_cuenta}
                 onChange={handleValidate}
               >
                 <option value="Propia">Propia</option>
@@ -1691,7 +1708,7 @@ export function FormularioIngreso() {
               <Select
                 id="entidad_bancaria"
                 name="entidad_bancaria"
-                defaultValue={datosIngreso.entidad_bancaria}
+                value={datosIngreso.entidad_bancaria}
                 onChange={handleValidate}
               >
                 <option value="100% Banco">100% Banco</option>
@@ -1745,7 +1762,7 @@ export function FormularioIngreso() {
               <Select
                 id="tipo_cuenta"
                 name="tipo_cuenta"
-                defaultValue={datosIngreso.tipo_cuenta}
+                value={datosIngreso.tipo_cuenta}
                 onChange={handleValidate}
               >
                 <option value="Ahorro">Ahorro</option>
@@ -1763,9 +1780,7 @@ export function FormularioIngreso() {
                     <Select
                       className="w-auto"
                       name="tipo_identificacion_tercero"
-                      defaultValue={
-                        datosIngreso.tipo_identificacion_tercero || "V"
-                      }
+                      value={datosIngreso.tipo_identificacion_tercero || "V"}
                       onChange={handleValidate}
                     >
                       <option value="V">V</option>
@@ -1801,7 +1816,7 @@ export function FormularioIngreso() {
                   <Select
                     id="parentesco_tercero"
                     name="parentesco_tercero"
-                    defaultValue={datosIngreso.parentesco_tercero}
+                    value={datosIngreso.parentesco_tercero}
                     onChange={handleValidate}
                   >
                     <option value="Abuelo(a)">Abuelo(a)</option>
@@ -1957,7 +1972,7 @@ export function FormularioIngreso() {
                 id="fecha_ingreso"
                 name="fecha_ingreso"
                 type="date"
-                defaultValue={datosIngreso.fecha_ingreso}
+                value={datosIngreso.fecha_ingreso}
                 onChange={handleValidate}
               />
             </div>

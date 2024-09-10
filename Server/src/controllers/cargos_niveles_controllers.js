@@ -10,6 +10,7 @@ const todosLosCargosNiveles = async (cargo_id) => {
       where: {
         cargo_id: cargo_id,
       },
+      order: [["nivel", "ASC"]],
     });
 
     return cargos_niveles;
@@ -28,6 +29,7 @@ const todosLosCargosNivelesActivos = async (cargo_id) => {
   try {
     const cargos_niveles = await Cargos_Niveles.findAll({
       where: { cargo_id: cargo_id, activo: true },
+      order: [["nivel", "ASC"]],
     });
 
     return cargos_niveles;

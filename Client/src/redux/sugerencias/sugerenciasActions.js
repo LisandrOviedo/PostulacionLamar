@@ -63,14 +63,18 @@ export const getSugerenciasActivasNoRevisadas = () => {
   };
 };
 
-export const getSugerencia = (token, sugerencia_id) => {
-  const URL_SUGERENCIA_DETALLE = `${URL_SERVER}/sugerencias/detalle/${sugerencia_id}`;
+export const getSugerencia = (token, sugerencia_id, empleado_id) => {
+  const URL_SUGERENCIA_DETALLE = `${URL_SERVER}/sugerencias/detalle`;
 
   return async (dispatch) => {
     try {
-      const { data } = await axios(URL_SUGERENCIA_DETALLE, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+      const { data } = await axios.post(
+        URL_SUGERENCIA_DETALLE,
+        { sugerencia_id, empleado_id },
+        {
+          headers: { authorization: `Bearer ${token}` },
+        }
+      );
 
       return dispatch(sugerenciaDetail(data));
     } catch (error) {

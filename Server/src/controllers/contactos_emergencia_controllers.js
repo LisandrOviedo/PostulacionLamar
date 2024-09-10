@@ -8,6 +8,7 @@ const todosLosContactosEmergencia = async (empleado_id) => {
   try {
     const contactos_emergencia = await Contactos_Emergencia.findAll({
       where: { empleado_id: empleado_id },
+      order: [["parentesco", "ASC"]],
     });
 
     if (!contactos_emergencia.length) {
@@ -30,6 +31,7 @@ const todosLosContactosEmergenciaActivos = async (empleado_id) => {
   try {
     const contactos_emergencia = await Contactos_Emergencia.findAll({
       where: { empleado_id: empleado_id, activo: true },
+      order: [["parentesco", "ASC"]],
     });
 
     if (!contactos_emergencia.length) {
