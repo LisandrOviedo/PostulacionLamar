@@ -4,7 +4,9 @@ const { roles } = require("../utils/roles");
 
 const todosLosRoles = async () => {
   try {
-    const roles = await Roles.findAll();
+    const roles = await Roles.findAll({
+      order: [["nombre", "ASC"]],
+    });
 
     if (!roles.length) {
       throw new Error(`No existen roles`);

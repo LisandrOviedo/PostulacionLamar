@@ -8,6 +8,7 @@ const todosLosDatosBancarios = async (empleado_id) => {
   try {
     const datos_bancarios = await Datos_Bancarios.findAll({
       where: { empleado_id: empleado_id },
+      order: [["entidad_bancaria", "ASC"]],
     });
 
     if (!datos_bancarios.length) {
@@ -30,6 +31,7 @@ const todosLosDatosBancariosActivos = async (empleado_id) => {
   try {
     const datos_bancarios = await Datos_Bancarios.findAll({
       where: { empleado_id: empleado_id, activo: true },
+      order: [["entidad_bancaria", "ASC"]],
     });
 
     if (!datos_bancarios.length) {

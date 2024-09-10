@@ -12,7 +12,9 @@ const { empresas_faltantes } = require("../utils/empresas");
 
 const todasLasEmpresas = async () => {
   try {
-    const empresas = await Empresas.findAll();
+    const empresas = await Empresas.findAll({
+      order: [["nombre", "ASC"]],
+    });
 
     return empresas;
   } catch (error) {

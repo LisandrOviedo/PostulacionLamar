@@ -2,7 +2,9 @@ const { conn, Tipos_Sugerencias } = require("../db");
 
 const todosLosTiposSugerencias = async () => {
   try {
-    const tipos_sugerencias = await Tipos_Sugerencias.findAll();
+    const tipos_sugerencias = await Tipos_Sugerencias.findAll({
+      order: [["descripcion", "ASC"]],
+    });
 
     return tipos_sugerencias;
   } catch (error) {
@@ -16,6 +18,7 @@ const todosLosTiposSugerenciasActivas = async () => {
   try {
     const tipos_sugerencias = await Tipos_Sugerencias.findAll({
       where: { activo: true },
+      order: [["descripcion", "ASC"]],
     });
 
     return tipos_sugerencias;

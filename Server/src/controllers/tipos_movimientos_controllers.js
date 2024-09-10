@@ -2,7 +2,9 @@ const { conn, Tipos_Movimientos } = require("../db");
 
 const todosLosTiposMovimientos = async () => {
   try {
-    const tipos_movimientos = await Tipos_Movimientos.findAll();
+    const tipos_movimientos = await Tipos_Movimientos.findAll({
+      order: [["descripcion", "ASC"]],
+    });
 
     if (!tipos_movimientos.length) {
       throw new Error(`No existen tipos de movimientos`);
@@ -20,6 +22,7 @@ const todosLosTiposMovimientosActivos = async () => {
   try {
     const tipos_movimientos = await Tipos_Movimientos.findAll({
       where: { activo: true },
+      order: [["descripcion", "ASC"]],
     });
 
     if (!tipos_movimientos.length) {

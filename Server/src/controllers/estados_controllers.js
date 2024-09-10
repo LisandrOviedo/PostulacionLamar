@@ -12,6 +12,7 @@ const todosLosEstados = async (pais_id) => {
       where: {
         pais_id: pais_id,
       },
+      order: [["nombre", "ASC"]],
     });
 
     return estados;
@@ -28,6 +29,7 @@ const todosLosEstadosActivos = async (pais_id) => {
   try {
     const estados = await Estados.findAll({
       where: { pais_id: pais_id, activo: true },
+      order: [["nombre", "ASC"]],
     });
 
     return estados;

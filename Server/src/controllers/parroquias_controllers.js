@@ -12,6 +12,7 @@ const todasLasParroquias = async (municipio_id) => {
       where: {
         municipio_id: municipio_id,
       },
+      order: [["nombre", "ASC"]],
     });
 
     return parroquias;
@@ -28,6 +29,7 @@ const todasLasParroquiasActivas = async (municipio_id) => {
   try {
     const parroquias = await Parroquias.findAll({
       where: { municipio_id: municipio_id, activo: true },
+      order: [["nombre", "ASC"]],
     });
 
     return parroquias;
