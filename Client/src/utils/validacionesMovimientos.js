@@ -7,13 +7,20 @@ export default function validations(inputs) {
   const {
     tipo_identificacion,
     numero_identificacion,
+    numero_identificacion_solicitante,
+    tipo_identificacion_solicitante,
     nuevo_sueldo,
     nuevo_codigo_nomina,
     duracion_movimiento_desde,
     duracion_movimiento_hasta,
     vigencia_movimiento_desde,
-    vigencia_movimiento_hasta
- 
+    vigencia_movimiento_hasta,
+    numero_identificacion_supervisor,
+    tipo_identificacion_supervisor,
+    tipo_identificacion_gerencia,
+    numero_identificacion_gerencia,
+    tipo_identificacion_tthh,
+    numero_identificacion_tthh
   } = inputs; //debo importar
 
   //Numero de identificación
@@ -31,6 +38,86 @@ export default function validations(inputs) {
         "El número de identificación debe contener máximo 20 números";
     }
   }
+  //numero_identificacion_solicitante
+
+  if (tipo_identificacion_solicitante && numero_identificacion_solicitante) {
+    if (
+      tipo_identificacion_solicitante === "V" &&
+      !regexSoloNumeros.test(numero_identificacion_solicitante)
+    ) {
+      // Si es una cedula y contiene letras, marca el error
+      errors.numero_identificacion_solicitante =
+        "El número de identificación debe contener solo números";
+    } else if (numero_identificacion_solicitante.length > 20) {
+      errors.numero_identificacion_solicitante =
+        "El número de identificación debe contener máximo 20 números";
+    }
+  }
+
+  //Supervisor Inmediato
+  if (tipo_identificacion_supervisor && numero_identificacion_supervisor) {
+    if (
+      tipo_identificacion_supervisor === "V" &&
+      !regexSoloNumeros.test(numero_identificacion_supervisor)
+    ) {
+      // Si es una cedula y contiene letras, marca el error
+      errors.numero_identificacion_supervisor =
+        "El número de identificación debe contener solo números";
+    } else if (numero_identificacion_supervisor.length > 20) {
+      errors.numero__identificacion_supervisor =
+        "El número de identificación debe contener máximo 20 números";
+    }
+  }
+  //Aprobación Gerencia De Área
+
+  if (tipo_identificacion_gerencia && numero_identificacion_gerencia) {
+    if (
+      tipo_identificacion_gerencia === "V" &&
+      !regexSoloNumeros.test(numero_identificacion_gerencia)
+    ) {
+      // Si es una cedula y contiene letras, marca el error
+      errors.numero_identificacion_gerencia =
+        "El número de identificación debe contener solo números";
+    } else if (numero_identificacion_gerencia.length > 20) {
+      errors.numero_identificacion_gerencia =
+        "El número de identificación debe contener máximo 20 números";
+    }
+  }
+  //Talento Humano
+
+ if (tipo_identificacion_tthh && numero_identificacion_tthh) {
+    if (
+      tipo_identificacion_tthh === "V" &&
+      !regexSoloNumeros.test(numero_identificacion_tthh)
+    ) {
+      // Si es una cedula y contiene letras, marca el error
+      errors.numero_identificacion_tthh =
+        "El número de identificación debe contener solo números";
+    } else if (numero_identificacion_tthh.length > 20) {
+      errors.numero_identificacion_tthh =
+        "El número de identificación debe contener máximo 20 números";
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   if (nuevo_sueldo) {
     if (nuevo_sueldo.length > 8) {
@@ -47,6 +134,18 @@ export default function validations(inputs) {
   }
   //Finaliza Nuevo Codigo de Nomina
 
+  // // Validación de duración del movimiento
+  // if (
+  //   duracion_movimiento_desde &&
+  //   duracion_movimiento_hasta &&
+  //   duracion_movimiento_desde >= duracion_movimiento_hasta
+  // ) {
+  //   errors.duracion_movimiento =
+  //     "La fecha 'Desde' no puede ser mayor o igual que la fecha 'Hasta'.";
+  // }
+  // Obtener el año actual
+  const anioActual = new Date().getFullYear();
+
   // Validación de duración del movimiento
   if (
     duracion_movimiento_desde &&
@@ -54,17 +153,17 @@ export default function validations(inputs) {
     duracion_movimiento_desde >= duracion_movimiento_hasta
   ) {
     errors.duracion_movimiento =
-      "La fecha 'Desde' no puede ser mayor o igual que la fecha 'Hasta'.";
+      'La fecha "Desde" no puede ser mayor o igual que la fecha "Hasta"';
   }
-  
+
   if (
     vigencia_movimiento_desde &&
     vigencia_movimiento_hasta &&
     vigencia_movimiento_desde >= vigencia_movimiento_hasta
   ) {
     errors.vigencia_movimiento =
-      "La fecha 'Desde' no puede ser mayor o igual que la fecha 'Hasta'.";
+      'La fecha "Desde" no puede ser mayor o igual que la fecha "Hasta"';
   }
-  
+
   return errors;
 }
