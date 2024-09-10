@@ -76,6 +76,8 @@ export const getEmpleadoExistencia = (
 
       if (data?.empleado_id) {
         dispatch(empleadoExiste(data));
+
+        return data.empleado_id;
       } else {
         dispatch(resetEmpleadoExiste());
       }
