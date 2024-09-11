@@ -22,11 +22,12 @@ module.exports = (sequelize) => {
     },
     habilidades_tecnicas: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
-    estado: {
-      type: DataTypes.ENUM("Pendiente por revisar", "Revisado"),
-      defaultValue: "Pendiente por revisar",
+    revisado_por_id: {
+      // Campo relacionado
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,
