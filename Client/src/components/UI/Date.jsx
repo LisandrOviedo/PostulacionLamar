@@ -1,12 +1,14 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export const Date = ({ className, ...props }) => {
+export const Date = ({ className, errors, ...props }) => {
   return (
     <input
       className={twMerge(
         clsx(
-          "bg-gray-50 border border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-[#002846] block w-full p-2.5",
+          `bg-gray-50 border ${
+            errors ? "border-[#ff1a1a]" : "border-gray-400"
+          } text-gray-900 text-sm rounded-lg focus:ring-[#002846] block w-full p-2.5`,
           className
         )
       )}

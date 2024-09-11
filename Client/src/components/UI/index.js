@@ -8,6 +8,7 @@ export { Logo } from "./Logo";
 export { LogoHorizontal } from "./LogoHorizontal";
 export { Radio } from "./Radio";
 export { Select } from "./Select";
+export { Span } from "./Span";
 export { TextArea } from "./TextArea";
 export { Title } from "./Title";
 export { Hr } from "./Hr";
