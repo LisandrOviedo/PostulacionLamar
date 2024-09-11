@@ -103,6 +103,19 @@ Empleados.hasOne(Curriculos, {
   },
 });
 
+// Empleados 1:M Curriculos
+Empleados.hasMany(Curriculos, {
+  foreignKey: {
+    name: "revisado_por_id",
+  },
+});
+Curriculos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "revisado_por_id",
+  },
+  as: "RevisadoPor",
+});
+
 // Areas_Interes M:M Curriculos
 Areas_Interes.belongsToMany(Curriculos, {
   through: "Areas_Interes_Curriculos",
