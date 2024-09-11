@@ -8,7 +8,7 @@ export const Input = ({ className, errors, ...props }) => {
         clsx(
           `bg-gray-50 border ${
             errors ? "border-[#ff1a1a]" : "border-gray-400"
-          }  text-gray-900 text-sm rounded-lg block w-full p-2.5 outline-none`,
+          }  text-gray-900 text-sm rounded-lg block w-full p-2.5 outline-none uppercase`,
 
           className
         )

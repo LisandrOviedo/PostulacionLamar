@@ -20,7 +20,8 @@ export default function validations(inputs) {
     tipo_identificacion_gerencia,
     numero_identificacion_gerencia,
     tipo_identificacion_tthh,
-    numero_identificacion_tthh
+    numero_identificacion_tthh,
+    codigo_nomina,
   } = inputs; //debo importar
 
   //Numero de identificación
@@ -38,6 +39,13 @@ export default function validations(inputs) {
         "El número de identificación debe contener máximo 20 números";
     }
   }
+
+  if (codigo_nomina) {
+    if (codigo_nomina.length === 1) {
+      errors.codigo_nomina = "El código debe ser de al menos 2 caracteres";
+    }
+  }
+
   //numero_identificacion_solicitante
 
   if (tipo_identificacion_solicitante && numero_identificacion_solicitante) {
@@ -85,7 +93,7 @@ export default function validations(inputs) {
   }
   //Talento Humano
 
- if (tipo_identificacion_tthh && numero_identificacion_tthh) {
+  if (tipo_identificacion_tthh && numero_identificacion_tthh) {
     if (
       tipo_identificacion_tthh === "V" &&
       !regexSoloNumeros.test(numero_identificacion_tthh)
@@ -98,26 +106,6 @@ export default function validations(inputs) {
         "El número de identificación debe contener máximo 20 números";
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   if (nuevo_sueldo) {
     if (nuevo_sueldo.length > 8) {
@@ -132,19 +120,6 @@ export default function validations(inputs) {
         "El nuevo código de nómina debe contener mínimo 2 caracteres";
     }
   }
-  //Finaliza Nuevo Codigo de Nomina
-
-  // // Validación de duración del movimiento
-  // if (
-  //   duracion_movimiento_desde &&
-  //   duracion_movimiento_hasta &&
-  //   duracion_movimiento_desde >= duracion_movimiento_hasta
-  // ) {
-  //   errors.duracion_movimiento =
-  //     "La fecha 'Desde' no puede ser mayor o igual que la fecha 'Hasta'.";
-  // }
-  // Obtener el año actual
-  const anioActual = new Date().getFullYear();
 
   // Validación de duración del movimiento
   if (

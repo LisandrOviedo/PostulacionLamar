@@ -85,16 +85,16 @@ export function Movimientos() {
     vigencia_movimiento_hasta: "",
     frecuencia_nomina: "",
     sueldo_actual: "",
-    numero_identificacion_solicitante: "",
-    tipo_identificacion_solicitante: "V",
     nuevo_sueldo: "1",
     codigo_nomina: "",
-    numero_identificacion_supervisor: "",
-    tipo_identificacion_supervisor: "v",
+    tipo_identificacion_solicitante: "V",
+    tipo_identificacion_supervisor: "V",
     tipo_identificacion_gerencia: "V",
+    tipo_identificacion_tthh: "V",
+    numero_identificacion_solicitante: "",
+    numero_identificacion_supervisor: "",
     numero_identificacion_gerencia: "",
     numero_identificacion_tthh: "",
-    tipo_identificacion_tthh: "V",
   });
 
   useEffect(() => {
@@ -235,7 +235,7 @@ export function Movimientos() {
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
           <div>
             <span>Nombres</span>
-            {/*El componente <Label> en tu código se utiliza para renderizar un componente de etiqueta label asociada a un campo de entrada en un formulario. */}
+            {/*El componente <Label> en tu código se utiliza para renderizar un componente de etiqueta Label asociada a un campo de entrada en un formulario. */}
             <br />
             <span>{datosMovimiento.nombres || "-"}</span>
           </div>
@@ -561,14 +561,36 @@ export function Movimientos() {
           />
           <span>{errors.vigencia_movimiento}</span>
         </div>
+
         {/* Tipo de Nómina */}
         <div>
-          <Label htmlFor="nuevo_tipo_nomina">Tipo de Nómina</Label>
-          <Select id="nuevo_tipo_nomina" name="nuevo_tipo_nomina">
+          {/* Tipo de Nómina */}
+          <Label htmlFor="tipo_nomina">Tipo de Nómina</Label>
+          <Select
+            id="tipo_nomina"
+            name="tipo_nomina"
+            onChange={handleValidate}
+            value={datosMovimiento.tipo_nomina}
+          >
             <option value="Empleados">Empleados</option>
-            <option value="Contratados">Contratados</option>
+            <option value="Obreros">Obreros</option>
+            <option value="Otros">Otros</option>
           </Select>
         </div>
+
+        {datosMovimiento.tipo_nomina === "Otros" && (
+          <div>
+            <Label htmlFor="otro_tipo">Especifica otro tipo:</Label>
+            <Input
+              type="text"
+              id="otro_tipo"
+              name="otro_tipo"
+              value={datosMovimiento.otro_tipo}
+              onChange={handleValidate}
+            />
+          </div>
+        )}
+
         {/* Frecuencia de Nómina */}
         <div>
           <Label htmlFor="nueva_frecuencia_nomina">Frecuencia de Nómina</Label>
@@ -672,6 +694,7 @@ export function Movimientos() {
         </div>
       </div>
       <br />
+
       <Title>Supervisor Inmediato</Title>
       <Hr className="w-full my-5" />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
@@ -686,8 +709,9 @@ export function Movimientos() {
             <Select
               className="w-auto"
               name="tipo_identificacion_supervisor"
-              onChange={handleValidate}
+              value={datosMovimiento.tipo_identificacion_supervisor}
               errors={errors.numero_identificacion_supervisor}
+              onChange={handleValidate}
             >
               <option value="V">V</option>
               <option value="E">E</option>
@@ -698,6 +722,7 @@ export function Movimientos() {
                 id="numero_identificacion_supervisor"
                 name="numero_identificacion_supervisor"
                 onChange={handleValidate}
+                // value={datosMovimiento.tipo_identificacion_supervisor}
                 errors={errors.numero_identificacion_supervisor}
               />
               {errors.numero_identificacion_supervisor && (
@@ -709,6 +734,7 @@ export function Movimientos() {
             {errors.numero_identificacion_supervisor}
           </span>
         </div>
+
         <div>
           <Span>Nombre Completo</Span>
           <span>-</span>
