@@ -78,11 +78,9 @@ const traerFichaIngresoEmpleado = async (empleado_id) => {
           attributes: {
             exclude: ["empleado_id", "activo", "createdAt", "updatedAt"],
           },
-        },
-        {
-          model: Paises,
-          attributes: {
-            exclude: ["empleado_id", "activo", "createdAt", "updatedAt"],
+          include: {
+            model: Paises,
+            attributes: ["pais_id", "nombre"],
           },
         },
         {
@@ -125,16 +123,16 @@ const traerFichaIngresoEmpleado = async (empleado_id) => {
           },
           include: [
             {
-              model: Paises,
-              attributes: ["pais_id", "nombre"],
-            },
-            {
-              model: Estados,
-              attributes: ["estado_id", "nombre"],
-            },
-            {
               model: Municipios,
               attributes: ["municipio_id", "nombre"],
+              include: {
+                model: Estados,
+                attributes: ["estado_id", "nombre"],
+                include: {
+                  model: Paises,
+                  attributes: ["pais_id", "nombre"],
+                },
+              },
             },
             {
               model: Parroquias,
@@ -291,7 +289,7 @@ const traerFichaIngresoPDF = async (empleado_id) => {
         },
         {
           titulo_campo: "Nacionalidad: ",
-          descripcion_campo: ficha_ingreso.Paise.nombre,
+          descripcion_campo: ficha_ingreso.Estado.Paise.nombre,
         },
         {
           titulo_campo: "Licencia de conducir: ",
@@ -365,7 +363,7 @@ const traerFichaIngresoPDF = async (empleado_id) => {
           descripcion_campo: ficha_ingreso.Direcciones[0].urbanizacion_sector,
         },
         {
-          titulo_campo: "Parroqia: ",
+          titulo_campo: "Parroquia: ",
           descripcion_campo: ficha_ingreso.Direcciones[0].Parroquia.nombre,
         },
         {
@@ -374,11 +372,11 @@ const traerFichaIngresoPDF = async (empleado_id) => {
         },
         {
           titulo_campo: "Estado: ",
-          descripcion_campo: ficha_ingreso.Direcciones[0].Estado.nombre,
+          descripcion_campo: ficha_ingreso.Direcciones[0].Municipio.Estado.nombre,
         },
         {
           titulo_campo: "País: ",
-          descripcion_campo: ficha_ingreso.Direcciones[0].Paise.nombre,
+          descripcion_campo: ficha_ingreso.Direcciones[0].Municipio.Estado.Paise.nombre,
         },
       ],
     });

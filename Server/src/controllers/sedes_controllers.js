@@ -10,6 +10,7 @@ const todasLasSedes = async (empresa_id) => {
       where: {
         empresa_id: empresa_id,
       },
+      order: [["nombre", "ASC"]],
     });
 
     return sedes;
@@ -26,6 +27,7 @@ const todasLasSedesActivas = async (empresa_id) => {
   try {
     const sedes = await Sedes.findAll({
       where: { empresa_id: empresa_id, activo: true },
+      order: [["nombre", "ASC"]],
     });
 
     return sedes;

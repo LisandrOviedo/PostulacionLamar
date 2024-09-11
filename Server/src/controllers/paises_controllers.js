@@ -4,7 +4,9 @@ const { paises } = require("../utils/paises");
 
 const todosLosPaises = async () => {
   try {
-    const paises = await Paises.findAll();
+    const paises = await Paises.findAll({
+      order: [["nombre", "ASC"]],
+    });
 
     return paises;
   } catch (error) {
@@ -16,6 +18,7 @@ const todosLosPaisesActivos = async () => {
   try {
     const paises = await Paises.findAll({
       where: { activo: true },
+      order: [["nombre", "ASC"]],
     });
 
     return paises;

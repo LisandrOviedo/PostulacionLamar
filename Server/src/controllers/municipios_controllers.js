@@ -12,6 +12,7 @@ const todosLosMunicipios = async (estado_id) => {
       where: {
         estado_id: estado_id,
       },
+      order: [["nombre", "ASC"]],
     });
 
     return municipios;
@@ -28,6 +29,7 @@ const todosLosMunicipiosActivos = async (estado_id) => {
   try {
     const municipios = await Municipios.findAll({
       where: { estado_id: estado_id, activo: true },
+      order: [["nombre", "ASC"]],
     });
 
     return municipios;

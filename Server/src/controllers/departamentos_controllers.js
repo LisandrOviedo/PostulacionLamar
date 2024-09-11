@@ -10,6 +10,7 @@ const todosLosDepartamentos = async (empresa_id) => {
       where: {
         empresa_id: empresa_id,
       },
+      order: [["nombre", "ASC"]],
     });
 
     return departamentos;
@@ -26,6 +27,7 @@ const todosLosDepartamentosActivos = async (empresa_id) => {
   try {
     const departamentos = await Departamentos.findAll({
       where: { empresa_id: empresa_id, activo: true },
+      order: [["nombre", "ASC"]],
     });
 
     return departamentos;

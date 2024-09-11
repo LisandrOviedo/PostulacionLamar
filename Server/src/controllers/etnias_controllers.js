@@ -4,7 +4,9 @@ const { etnias } = require("../utils/etnias");
 
 const todasLasEtnias = async () => {
   try {
-    const etnias = await Etnias.findAll();
+    const etnias = await Etnias.findAll({
+      order: [["nombre", "ASC"]],
+    });
 
     if (!etnias.length) {
       throw new Error(`No existen etnias`);
@@ -20,6 +22,7 @@ const todasLasEtniasActivas = async () => {
   try {
     const etnias = await Etnias.findAll({
       where: { activo: true },
+      order: [["nombre", "ASC"]],
     });
 
     if (!etnias.length) {

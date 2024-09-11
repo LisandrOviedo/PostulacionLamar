@@ -34,6 +34,10 @@ const {
   cargarMunicipios,
 } = require("./src/controllers/municipios_controllers.js");
 
+const {
+  cargarParroquias,
+} = require("./src/controllers/parroquias_controllers.js");
+
 const { cargarEmpresas } = require("./src/controllers/empresas_controllers.js");
 
 conn
@@ -68,6 +72,9 @@ conn
 
       // Registrar municipios principales en la BD
       // await cargarMunicipios();
+
+      // Registrar parroquias principales en la BD
+      // await cargarParroquias();
 
       // Registrar empresas principales en la BD
       // await cargarEmpresas();

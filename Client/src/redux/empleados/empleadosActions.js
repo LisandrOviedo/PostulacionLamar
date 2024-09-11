@@ -9,10 +9,12 @@ import {
   allEmpleados,
   empleadoLogin,
   empleadoDetail,
+  empleadoExiste,
   allDocumentos,
   paginaActual,
   limitePorPagina,
   filtros,
+  resetEmpleadoExiste,
   resetFilters,
   resetState,
 } from "./empleadosSlices";
@@ -59,32 +61,44 @@ export const getEmpleadoDetail = (token, empleado_id) => {
   };
 };
 
-export const getEmpleadoExistencia = async (
+export const getEmpleadoExistencia = (
   token,
   tipo_identificacion,
   numero_identificacion
 ) => {
   const URL_EMPLEADO_EXISTENCIA = `${URL_SERVER}/empleados/empleadoExistencia?tipo_identificacion=${tipo_identificacion}&numero_identificacion=${numero_identificacion}`;
 
-  try {
-    const { data } = await axios(URL_EMPLEADO_EXISTENCIA, {
-      headers: { authorization: `Bearer ${token}` },
-    });
-
-    if (data.empleado_id) {
-      return Swal.fire({
-        title: "Oops...",
-        text: "Este empleado ya existe",
-        icon: "error",
-        showConfirmButton: false,
-        timer: 2000,
+  return async (dispatch) => {
+    try {
+      const { data } = await axios(URL_EMPLEADO_EXISTENCIA, {
+        headers: { authorization: `Bearer ${token}` },
       });
-    }
-  } catch (error) {
-    alertError(error);
 
-    throw new Error();
-  }
+      if (data?.empleado_id) {
+        dispatch(empleadoExiste(data));
+
+        return data.empleado_id;
+      } else {
+        dispatch(resetEmpleadoExiste());
+      }
+    } catch (error) {
+      alertError(error);
+
+      throw new Error();
+    }
+  };
+};
+
+export const resetEmpleadoExistencia = () => {
+  return async (dispatch) => {
+    try {
+      return dispatch(resetEmpleadoExiste());
+    } catch (error) {
+      alertError(error);
+
+      throw new Error();
+    }
+  };
 };
 
 export const putPassword = async (token, body) => {
