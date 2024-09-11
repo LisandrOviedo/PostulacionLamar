@@ -90,9 +90,28 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
               attributes: ["nivel"],
             },
             where: filtros.idioma_id ? { idioma_id: filtros.idioma_id } : {},
+            required: false,
+          },
+          {
+            model: Empleados,
+            as: "RevisadoPor",
+            attributes: [
+              "empleado_id",
+              "empresa_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
+            required: false,
           },
         ],
-        where: filtros.estado ? { estado: filtros.estado } : {},
+        where:
+          filtros.estado === "Pendiente por revisar"
+            ? { revisado_por_id: null }
+            : filtros.estado === "Revisado"
+            ? { revisado_por_id: { [Op.not]: null } }
+            : {},
         distinct: true,
         order: [
           filtros.orden_campo === "apellidos"
@@ -309,16 +328,14 @@ const traerCurriculoPDFAnexos = async (empleado_id) => {
   }
 };
 
-const cambiarEstadoRevisado = async (empleado_id) => {
-  if (!empleado_id) {
+const cambiarEstadoRevisado = async (empleado_id, revisado_por_id) => {
+  if (!empleado_id || !revisado_por_id) {
     throw new Error(`Datos faltantes`);
   }
 
   let t;
 
   try {
-    t = await conn.transaction();
-
     await traerEmpleado(empleado_id);
 
     const curriculo = await Curriculos.findOne({
@@ -327,10 +344,12 @@ const cambiarEstadoRevisado = async (empleado_id) => {
       },
     });
 
-    if (curriculo.estado === "Pendiente por revisar") {
+    if (curriculo && !curriculo.revisado_por_id) {
+      t = await conn.transaction();
+
       await Curriculos.update(
         {
-          estado: "Revisado",
+          revisado_por_id: revisado_por_id,
         },
         {
           where: {
@@ -339,21 +358,17 @@ const cambiarEstadoRevisado = async (empleado_id) => {
         },
         { transaction: t }
       );
+
+      await t.commit();
     }
-
-    await t.commit();
-
-    return await Curriculos.findOne({
-      where: {
-        empleado_id: empleado_id,
-      },
-    });
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
     }
 
-    throw new Error(`Error al modificar el curriculo: ${error.message}`);
+    throw new Error(
+      `Error al modificar el estado del curriculo: ${error.message}`
+    );
   }
 };
 
@@ -453,8 +468,8 @@ const modificarCurriculo = async (
         {
           disponibilidad_viajar: disponibilidad_viajar,
           disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
-          habilidades_tecnicas: habilidades_tecnicas,
-          estado: "Pendiente por revisar",
+          habilidades_tecnicas: habilidades_tecnicas || null,
+          revisado_por_id: null,
         },
         {
           where: {
@@ -480,8 +495,7 @@ const modificarCurriculo = async (
           empleado_id: empleado_id,
           disponibilidad_viajar: disponibilidad_viajar,
           disponibilidad_cambio_residencia: disponibilidad_cambio_residencia,
-          habilidades_tecnicas: habilidades_tecnicas,
-          estado: "Pendiente por revisar",
+          habilidades_tecnicas: habilidades_tecnicas || null,
         },
         transaction: t,
       });

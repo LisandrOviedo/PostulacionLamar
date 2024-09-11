@@ -272,8 +272,6 @@ const getCurriculoPDFAnexos = async (req, res) => {
     // Guardar el archivo ZIP en la carpeta específica
     fs.writeFileSync(rutaArchivoZip, content);
 
-    await cambiarEstadoRevisado(empleado_id);
-
     return res.send("Archivo ZIP generado y guardado correctamente.");
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -316,6 +314,18 @@ const putCurriculo = async (req, res) => {
   }
 };
 
+const putCurriculoEstado = async (req, res) => {
+  const { empleado_id, revisado_por_id } = req.body;
+
+  try {
+    const response = await cambiarEstadoRevisado(empleado_id, revisado_por_id);
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 const deleteCurriculo = async (req, res) => {
   const { curriculo_id } = req.body;
 
@@ -335,5 +345,6 @@ module.exports = {
   getCurriculoPDFAnexos,
   getCurriculoEmpleado,
   putCurriculo,
+  putCurriculoEstado,
   deleteCurriculo,
 };
