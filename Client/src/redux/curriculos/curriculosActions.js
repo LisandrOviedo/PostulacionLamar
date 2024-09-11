@@ -309,3 +309,24 @@ const putIdiomas = async (token, curriculo_id, idiomas) => {
 };
 
 // FIN PUT CURRICULO
+
+export const putCambiarEstado = async (token, empleado_id, revisado_por_id) => {
+  const URL_PUT_ESTADO = `${URL_SERVER}/curriculos/modificarEstado`;
+
+  try {
+    await axios.put(
+      `${URL_PUT_ESTADO}`,
+      {
+        empleado_id,
+        revisado_por_id,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
