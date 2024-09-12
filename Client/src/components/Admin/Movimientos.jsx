@@ -9,6 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
 
 import {
+  getEmpleadoExistencia,
+  resetEmpleadoExistencia,
+} from "../../redux/empleados/empleadosActions";
+
+import {
   getAllDepartamentosActivos,
   resetDepartamentos,
 } from "../../redux/departamentos/departamentosActions";
@@ -41,6 +46,8 @@ import { FaMagnifyingGlass, FaFloppyDisk } from "react-icons/fa6";
 import validations from "../../utils/validacionesMovimientos";
 
 import { MdCancel } from "react-icons/md";
+
+import { calcularAntiguedad } from "../../utils/formatearFecha";
 
 export function Movimientos() {
   //dispatch es esencial para comunicar cambios en el estado de tu aplicación a través de acciones
@@ -97,8 +104,14 @@ export function Movimientos() {
     numero_identificacion_tthh: "",
   });
 
+  const [datosEmpleado, setDatosEmpleado] = useState({});
+  const [datosSolicitante, setDatosSolicitante] = useState({});
+  const [datosSupervisor, setDatosSupervisor] = useState({});
+  const [datosAprobacionGerencia, setDatosAprobacionGerencia] = useState({});
+  const [datosTTHH, setDatosTTHH] = useState({});
+
   useEffect(() => {
-    window.scroll(0, 0); //window.scroll(0, 0): Desplaza la ventana a la parte superior izquierda de la página.
+    window.scroll(0, 0); // Desplaza la ventana a la parte superior izquierda de la página.
     document.title = "Grupo Lamar - Movimientos (Admin)";
 
     dispatch(getAllEmpresasActivas(token));
@@ -178,6 +191,131 @@ export function Movimientos() {
     setDatosMovimiento({ ...datosMovimiento, [name]: checked });
   };
 
+  const handleExistenciaEmpleado = async () => {
+    if (!datosMovimiento.numero_identificacion) {
+      setDatosEmpleado({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        empleado_id: "",
+      });
+    } else {
+      await getEmpleadoExistencia(
+        token,
+        datosMovimiento.tipo_identificacion,
+        datosMovimiento.numero_identificacion
+      ).then((data) => {
+        if (data?.empleado_id) {
+          setDatosEmpleado(data);
+          setDatosMovimiento({
+            ...datosMovimiento,
+            empleado_id: data.empleado_id,
+          });
+        }
+      });
+    }
+  };
+
+  const handleEmpleadoSolicitante = async () => {
+    //Se reutilliza
+    if (!datosMovimiento.numero_identificacion_solicitante) {
+      setDatosSolicitante({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        empleado_solicitante_id: "",
+      });
+    } else {
+      await getEmpleadoExistencia(
+        token,
+        datosMovimiento.tipo_identificacion_solicitante,
+        datosMovimiento.numero_identificacion_solicitante
+      ).then((data) => {
+        if (data?.empleado_id) {
+          setDatosSolicitante(data);
+          setDatosMovimiento({
+            ...datosMovimiento,
+            empleado_solicitante_id: data.empleado_id,
+          });
+        }
+      });
+    }
+  };
+
+  const handleEmpleadoSupervisor = async () => {
+    //Se reutilliza
+    if (!datosMovimiento.numero_identificacion_supervisor) {
+      setDatosSupervisor({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        empleado_supervisor_id: "",
+      });
+    } else {
+      await getEmpleadoExistencia(
+        token,
+        datosMovimiento.tipo_identificacion_supervisor,
+        datosMovimiento.numero_identificacion_supervisor
+      ).then((data) => {
+        if (data?.empleado_id) {
+          setDatosSupervisor(data);
+          setDatosMovimiento({
+            ...datosMovimiento,
+            empleado_supervisor_id: data.empleado_id,
+          });
+        }
+      });
+    }
+  };
+  //Aprobación Gerencia De Área
+
+  const handleEmpleadoGerencia = async () => {
+    //Se reutilliza
+    if (!datosMovimiento.numero_identificacion_gerencia) {
+      setDatosAprobacionGerencia({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        empleado_gerencia_id: "",
+      });
+    } else {
+      await getEmpleadoExistencia(
+        token,
+        datosMovimiento.tipo_identificacion_gerencia,
+        datosMovimiento.numero_identificacion_gerencia
+      ).then((data) => {
+        if (data?.empleado_id) {
+          setDatosAprobacionGerencia(data);
+          setDatosMovimiento({
+            ...datosMovimiento,
+            empleado_gerencia_id: data.empleado_id,
+          });
+        }
+      });
+    }
+  };
+
+  const handleEmpleadoTTHH = async () => {
+    //Se reutilliza
+    if (!datosMovimiento.numero_identificacion_tthh) {
+      setDatosTTHH({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        empleado_tthh_id: "",
+      });
+    } else {
+      await getEmpleadoExistencia(
+        token,
+        datosMovimiento.tipo_identificacion_tthh,
+        datosMovimiento.numero_identificacion_tthh
+      ).then((data) => {
+        if (data?.empleado_id) {
+          setDatosTTHH(data);
+          setDatosMovimiento({
+            ...datosMovimiento,
+            empleado_tthh_id: data.empleado_id,
+          });
+        }
+      });
+    }
+  };
+
   //Este es el código que renderiza un formulario para los movimientos.
   /*En este caso, el return está devolviendo un conjunto de elementos JSX que forman la estructura del formulario para movimientos */
   return (
@@ -220,7 +358,10 @@ export function Movimientos() {
             )}
           </div>
 
-          <Button className="w-auto flex gap-2 items-center m-0">
+          <Button
+            className="w-auto flex gap-2 items-center m-0"
+            onClick={handleExistenciaEmpleado}
+          >
             <FaMagnifyingGlass />
             <span>Buscar</span>
           </Button>
@@ -231,81 +372,98 @@ export function Movimientos() {
         </span>
       </div>
 
-      <div className="p-4 border rounded-lg shadow-md w-full">
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
-          <div>
-            <span>Nombres</span>
-            {/*El componente <Label> en tu código se utiliza para renderizar un componente de etiqueta Label asociada a un campo de entrada en un formulario. */}
-            <br />
-            <span>{datosMovimiento.nombres || "-"}</span>
-          </div>
+      {datosEmpleado?.empleado_id && (
+        <div className="p-4 border rounded-lg shadow-md w-full">
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
+            <div>
+              <span>Nombres</span>
+              {/*El componente <Label> en tu código se utiliza para renderizar un componente de etiqueta Label asociada a un campo de entrada en un formulario. */}
+              <br />
+              <span>{datosEmpleado?.nombres || "-"}</span>
+            </div>
 
-          <div>
-            <span>Apellidos</span>
-            <br />
-            <span>{datosMovimiento.apellidos || "-"}</span>
-          </div>
-          <div>
-            <span>Número de identificación</span>
-            <br />
-            <span>
-              {(datosMovimiento.tipo_identificacion &&
-                datosMovimiento.numero_identificacion) ||
-                "-"}
-            </span>
-          </div>
-          <div>
-            <span>Código de Nómina</span>
-            <br />
-            <span>{datosMovimiento.codigo_nomina || "-"}</span>
-          </div>
+            <div>
+              <span>Apellidos</span>
+              <br />
+              <span>{datosEmpleado?.apellidos || "-"}</span>
+            </div>
+            <div>
+              <span>Número de identificación</span>
+              <br />
+              <span>
+                {(datosEmpleado?.tipo_identificacion &&
+                  datosEmpleado?.numero_identificacion) ||
+                  "-"}
+              </span>
+            </div>
+            <div>
+              <span>Código de Nómina</span>
+              <br />
+              <span>{datosEmpleado?.codigo_nomina || "-"}</span>
+            </div>
 
-          <div>
-            <span>Cargo Actual</span>
-            <br />
-            <span>{datosMovimiento.cargo_actual || "-"}</span>
-          </div>
+            <div>
+              <span>Cargo Actual</span>
+              <br />
+              <span>
+                {datosEmpleado?.Cargos_Niveles[0]?.Cargo.descripcion || "-"}
+              </span>
+            </div>
 
-          <div>
-            <span>Empresa</span>
-            <br />
-            <span>{datosMovimiento.empresa || "-"}</span>
-          </div>
-          <div>
-            <span>Unidad Organizativa De Adscripción</span>
-            <br />
-            <span>{datosMovimiento.unidad_organizativa || "-"}</span>
-          </div>
+            <div>
+              <span>Empresa</span>
+              <br />
+              <span>{datosEmpleado?.Empresa?.nombre || "-"}</span>
+            </div>
+            <div>
+              <span>Unidad Organizativa De Adscripción</span>
+              <br />
+              <span>
+                {datosEmpleado?.Cargos_Niveles[0]?.Cargo.Departamento.nombre ||
+                  "-"}
+              </span>
+            </div>
 
-          <div>
-            <span>Fecha de Ingreso</span>
-            <br />
-            <span>{datosMovimiento.fecha_ingreso || "-"}</span>
-          </div>
-          <div>
-            <span>Antigüedad</span>
-            <br />
-            <span>{datosMovimiento.antiguedad || "-"}</span>
-          </div>
-          <div>
-            <span>Sueldo Actual</span>
-            <br />
-            <span>{datosMovimiento.sueldo_actual || "-"}</span>
-          </div>
+            <div>
+              <span>Fecha de Ingreso</span>
+              <br />
+              <span>
+                {datosEmpleado?.Cargos_Niveles[0]?.Fichas_Ingresos
+                  .fecha_ingreso || "-"}
+              </span>
+            </div>
+            <div>
+              <span>Antigüedad</span>
+              <br />
+              <span>
+                {datosEmpleado?.Cargos_Niveles[0]?.Fichas_Ingresos.fecha_ingreso
+                  ? `${calcularAntiguedad(
+                      datosEmpleado?.Cargos_Niveles[0]?.Fichas_Ingresos
+                        .fecha_ingreso
+                    )} días`
+                  : "-"}
+              </span>
+            </div>
+            <div>
+              <span>Sueldo Actual</span>
+              <br />
+              <span>{datosEmpleado?.sueldo_actual || "-"}</span>
+            </div>
 
-          <div>
-            <span>Tipo de Nómina</span>
-            <br />
-            <span>{datosMovimiento.tipo_nomina || "-"}</span>
-          </div>
+            <div>
+              <span>Tipo de Nómina</span>
+              <br />
+              <span>{datosEmpleado?.tipo_nomina || "-"}</span>
+            </div>
 
-          <div>
-            <span>Frecuencia de Nómina</span>
-            <br />
-            <span>{datosMovimiento.frecuencia_nomina || "-"}</span>
+            <div>
+              <span>Frecuencia de Nómina</span>
+              <br />
+              <span>{datosEmpleado?.frecuencia_nomina || "-"}</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <br />
       <Title>Detalle del Movimiento Organizativo</Title>
@@ -365,6 +523,7 @@ export function Movimientos() {
                 value={datosMovimiento.duracion_movimiento_desde}
                 errors={errors.duracion_movimiento}
               />
+              Aprobación Gerencia De Área
             </div>
             <div>
               <Label htmlFor="duracion_movimiento_hasta">Fecha Hasta</Label>
@@ -671,6 +830,7 @@ export function Movimientos() {
                 id="numero_identificacion_solicitante"
                 name="numero_identificacion_solicitante"
                 onChange={handleValidate}
+                onBlur={handleEmpleadoSolicitante}
                 value={datosMovimiento.numero_identificacion_solicitante}
                 errors={errors.numero_identificacion_solicitante}
               />
@@ -686,11 +846,19 @@ export function Movimientos() {
 
         <div>
           <Span>Nombre Completo</Span>
-          <span>-</span>
+          <span>
+            {datosSolicitante.nombres
+              ? `${datosSolicitante.nombres} ${datosSolicitante.apellidos}`
+              : "-"}
+          </span>
         </div>
         <div>
           <Span>Cargo</Span>
-          <span>-</span>
+          <span>
+            {datosSolicitante.Cargos_Niveles
+              ? datosSolicitante?.Cargos_Niveles[0]?.Cargo?.descripcion
+              : "-"}
+          </span>
         </div>
       </div>
       <br />
@@ -722,8 +890,9 @@ export function Movimientos() {
                 id="numero_identificacion_supervisor"
                 name="numero_identificacion_supervisor"
                 onChange={handleValidate}
-                // value={datosMovimiento.tipo_identificacion_supervisor}
+                value={datosMovimiento.numero_identificacion_supervisor}
                 errors={errors.numero_identificacion_supervisor}
+                onBlur={handleEmpleadoSupervisor} //onblur
               />
               {errors.numero_identificacion_supervisor && (
                 <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
@@ -737,11 +906,19 @@ export function Movimientos() {
 
         <div>
           <Span>Nombre Completo</Span>
-          <span>-</span>
+          <span>
+            {datosSupervisor.nombres
+              ? `${datosSupervisor.nombres} ${datosSupervisor.apellidos}`
+              : "-"}
+          </span>
         </div>
         <div>
           <Span>Cargo</Span>
-          <span>-</span>
+          <span>
+            {datosSupervisor.Cargos_Niveles
+              ? datosSupervisor?.Cargos_Niveles[0]?.Cargo?.descripcion
+              : "-"}
+          </span>
         </div>
       </div>
 
@@ -759,6 +936,7 @@ export function Movimientos() {
               name="tipo_identificacion_gerencia"
               onChange={handleValidate}
               errors={errors.numero_identificacion_gerencia}
+              value={datosMovimiento.tipo_identificacion_gerencia}
             >
               <option value="V">V</option>
               <option value="E">E</option>
@@ -770,6 +948,8 @@ export function Movimientos() {
                 name="numero_identificacion_gerencia"
                 onChange={handleValidate}
                 errors={errors.numero_identificacion_gerencia}
+                onBlur={handleEmpleadoGerencia} //onblur
+                value={datosMovimiento.numero_identificacion_gerencia}
               />
               {errors.numero_identificacion_gerencia && (
                 <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
@@ -782,11 +962,19 @@ export function Movimientos() {
         </div>
         <div>
           <Span>Nombre Completo</Span>
-          <span>-</span>
+          <span>
+            {datosAprobacionGerencia.nombres
+              ? `${datosAprobacionGerencia.nombres} ${datosAprobacionGerencia.apellidos}`
+              : "-"}
+          </span>
         </div>
         <div>
           <Span>Cargo</Span>
-          <span>-</span>
+          <span>
+            {datosAprobacionGerencia.Cargos_Niveles
+              ? datosAprobacionGerencia?.Cargos_Niveles[0]?.Cargo?.descripcion
+              : "-"}
+          </span>
         </div>
       </div>
       <br />
@@ -803,6 +991,7 @@ export function Movimientos() {
               className="w-auto"
               name="tipo_identificacion_tthh"
               onChange={handleValidate}
+              value={datosMovimiento.tipo_identificacion_tthh}
             >
               <option value="V">V</option>
               <option value="E">E</option>
@@ -814,6 +1003,8 @@ export function Movimientos() {
                 name="numero_identificacion_tthh"
                 onChange={handleValidate}
                 errors={errors.numero_identificacion_tthh}
+                onBlur={handleEmpleadoTTHH} //onblur
+                value={datosMovimiento.numero_identificacion_tthh}
               />
               {errors.numero_identificacion_tthh && (
                 <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
@@ -826,11 +1017,19 @@ export function Movimientos() {
         </div>
         <div>
           <Span>Nombre Completo</Span>
-          <span>-</span>
+          <span>
+            {datosTTHH.nombres
+              ? `${datosTTHH.nombres} ${datosTTHH.apellidos}`
+              : "-"}
+          </span>
         </div>
         <div>
           <Span>Cargo</Span>
-          <span>-</span>
+          <span>
+            {datosTTHH.Cargos_Niveles
+              ? datosTTHH?.Cargos_Niveles[0]?.Cargo?.descripcion
+              : "-"}
+          </span>
         </div>
       </div>
 
