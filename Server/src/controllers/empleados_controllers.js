@@ -154,6 +154,7 @@ const traerEmpleado = async (empleado_id) => {
           through: {
             model: Cargos_Empleados,
             attributes: ["cargo_empleado_id", "fecha_ingreso", "fecha_egreso"],
+            where: { activo: true },
           },
         },
       ],
@@ -268,8 +269,51 @@ const traerEmpleadoExistencia = async (
           ],
           through: {
             model: Cargos_Empleados,
-            attributes: ["cargo_empleado_id", "fecha_ingreso", "fecha_egreso"],
+            attributes: [
+              "cargo_empleado_id",
+              "salario",
+              "fecha_ingreso",
+              "fecha_egreso",
+              "activo",
+            ],
           },
+        },
+        {
+          model: Fichas_Ingresos,
+          attributes: [
+            "fecha_ingreso_id",
+            "salario",
+            "fecha_ingreso",
+            "observaciones",
+            "activo",
+          ],
+          include: [
+            {
+              model: Cargos_Niveles,
+              include: [
+                {
+                  model: Cargos,
+                  attributes: [
+                    "cargo_id",
+                    "descripcion",
+                    "descripcion_cargo_antiguo",
+                  ],
+                  include: [
+                    {
+                      model: Departamentos,
+                      attributes: ["departamento_id", "nombre"],
+                      include: [
+                        {
+                          model: Empresas,
+                          attributes: ["empresa_id", "nombre"],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
         },
       ],
     });

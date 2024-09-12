@@ -412,15 +412,25 @@ Cargos_Niveles.belongsToMany(Empleados, {
   },
 });
 
-// Empleados M:M Cargos_Niveles
-Empleados.belongsToMany(Cargos_Niveles, {
-  through: "Fichas_Ingresos",
+// Empleados 1:M Fichas_Ingresos
+Empleados.hasMany(Fichas_Ingresos, {
   foreignKey: {
     name: "empleado_id",
   },
 });
-Cargos_Niveles.belongsToMany(Empleados, {
-  through: "Fichas_Ingresos",
+Fichas_Ingresos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Cargos_Niveles 1:M Fichas_Ingresos
+Cargos_Niveles.hasMany(Fichas_Ingresos, {
+  foreignKey: {
+    name: "cargo_nivel_id",
+  },
+});
+Fichas_Ingresos.belongsTo(Cargos_Niveles, {
   foreignKey: {
     name: "cargo_nivel_id",
   },
