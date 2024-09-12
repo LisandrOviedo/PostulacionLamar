@@ -49,19 +49,14 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
         attributes: {
           exclude: ["rol_id", "clave"],
         },
-        include: [
-          {
-            model: Cargos_Niveles,
-            attributes: ["cargo_nivel_id"],
-            through: {
-              model: Fichas_Ingresos,
-              attributes: ["ficha_ingreso_id"],
-              where: {
-                activo: true,
-              },
-            },
+        include: {
+          model: Fichas_Ingresos,
+          attributes: ["ficha_ingreso_id"],
+          where: {
+            activo: true,
           },
-        ],
+          required: false,
+        },
         where: {
           empresa_id: filtros.empresa_id,
           [Op.and]: [
@@ -277,7 +272,7 @@ const traerEmpleadoExistencia = async (
         {
           model: Fichas_Ingresos,
           attributes: [
-            "fecha_ingreso_id",
+            "ficha_ingreso_id",
             "salario",
             "fecha_ingreso",
             "observaciones",
