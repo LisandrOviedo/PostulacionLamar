@@ -50,3 +50,14 @@ export const DDMMYYYYHHMM2 = (fecha) => {
 
   return fechaHoraFormateada;
 };
+
+export const calcularAntiguedad = (fecha_ingreso) => {
+  const fecha_actual = new Date(); // fecha actual del sistema
+    const fechaIngreso = new Date(fecha_ingreso); // convertir fecha de ingreso a objeto Date
+    // calcular la diferencia en milisegundos
+    const diferencia = fecha_actual - fechaIngreso;
+    // convertir milisegundos a días
+    const antiguedad = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+    
+    return antiguedad;
+};

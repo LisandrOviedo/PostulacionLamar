@@ -173,10 +173,6 @@ const traerEmpleadoExistencia = async (
   tipo_identificacion,
   numero_identificacion
 ) => {
-  if (!tipo_identificacion || !numero_identificacion) {
-    throw new Error(`Datos faltantes`);
-  }
-
   try {
     const empleado = await Empleados.findOne({
       attributes: {
