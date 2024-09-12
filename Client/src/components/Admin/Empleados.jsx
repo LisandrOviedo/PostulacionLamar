@@ -479,8 +479,7 @@ export function Empleados() {
                       {DDMMYYYY(empleado.updatedAt)}
                     </td>
                     <td className="px-4 py-4 flex gap-2">
-                      {empleado.Cargos_Niveles[0]?.Fichas_Ingresos
-                        .ficha_ingreso_id && (
+                      {empleado.Fichas_Ingresos[0]?.ficha_ingreso_id && (
                         <Button
                           className="m-0 w-auto text-xs"
                           onClick={() =>
