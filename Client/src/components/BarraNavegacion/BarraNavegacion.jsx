@@ -391,6 +391,23 @@ export function BarraNavegacion() {
                       Sugerencias
                     </Link>
                   </li>
+                  <li>
+                    <Link
+                      to="/admin/consultaMovimientos"
+                      className="text-white hover:text-[#F0C95C]"
+                      onClick={() => {
+                        toggleMenuBurger();
+                        toggleMenu({});
+                      }}
+                    >
+                      Consulta Movimientos
+                    </Link>
+                  </li>
+
+
+
+
+
                 </>
               )}
 

@@ -428,18 +428,16 @@ export function Movimientos() {
               <span>Fecha de Ingreso</span>
               <br />
               <span>
-                {datosEmpleado?.Cargos_Niveles[0]?.Fichas_Ingresos
-                  .fecha_ingreso || "-"}
+                {datosEmpleado?.Fichas_Ingresos[0]?.fecha_ingreso || "-"}
               </span>
             </div>
             <div>
               <span>Antigüedad</span>
               <br />
               <span>
-                {datosEmpleado?.Cargos_Niveles[0]?.Fichas_Ingresos.fecha_ingreso
+                {datosEmpleado?.Fichas_Ingresos[0]?.fecha_ingreso
                   ? `${calcularAntiguedad(
-                      datosEmpleado?.Cargos_Niveles[0]?.Fichas_Ingresos
-                        .fecha_ingreso
+                      datosEmpleado?.Fichas_Ingresos[0]?.fecha_ingreso
                     )} días`
                   : "-"}
               </span>
@@ -447,7 +445,10 @@ export function Movimientos() {
             <div>
               <span>Sueldo Actual</span>
               <br />
-              <span>{datosEmpleado?.sueldo_actual || "-"}</span>
+              <span>
+                {datosEmpleado?.Cargos_Niveles[0]?.Cargos_Empleados?.salario ||
+                  "-"}
+              </span>
             </div>
 
             <div>
@@ -554,7 +555,7 @@ export function Movimientos() {
         {datosMovimiento.periodo_prueba && (
           <div>
             <Label htmlFor="duracion_periodo_prueba">
-              Duración De Periodo De Prueba
+              Días De Duración De Periodo De Prueba
             </Label>
             <Input
               id="duracion_periodo_prueba"
