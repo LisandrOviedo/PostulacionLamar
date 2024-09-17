@@ -54,7 +54,6 @@ export function ConsultaMovimientos() {
   const [datosMovimiento, setDatosMovimiento] = useState({
     numero_identificacion_solicitante: "",
     tipo_identificacion_solicitante: "V",
-    numero_identificacion_solicitante: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -381,9 +380,7 @@ export function ConsultaMovimientos() {
                       {empleado.numero_identificacion}
                     </td>
 
-                    <td className="px-4 py-4">
-                      {/* tipo movimiento */}
-                    </td>
+                    <td className="px-4 py-4">{/* tipo movimiento */}</td>
                     <td className="px-4 py-4 flex gap-2">
                       <Button
                         className="m-0 w-auto text-xs"
