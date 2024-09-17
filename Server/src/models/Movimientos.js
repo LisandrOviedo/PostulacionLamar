@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    tipo_movimiento_id: {
+    clase_movimiento_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: false,

@@ -31,7 +31,7 @@ const sedes = require("./sedes_routes");
 const sesiones = require("./sesiones_routes");
 const sugerencias_pred = require("./sugerencias_pred_routes");
 const sugerencias = require("./sugerencias_routes");
-const tipos_movimientos = require("./tipos_movimientos_routes");
+const clases_movimientos = require("./clases_movimientos_routes");
 const tipos_sugerencias = require("./tipos_sugerencias_routes");
 const titulos_obtenidos = require("./titulos_obtenidos_routes");
 
@@ -68,7 +68,7 @@ router.use("/tthh/sedes", sedes);
 router.use("/tthh/sesiones", sesiones);
 router.use("/tthh/sugerencias_pred", sugerencias_pred);
 router.use("/tthh/sugerencias", sugerencias);
-router.use("/tthh/tipos_movimientos", tipos_movimientos);
+router.use("/tthh/clases_movimientos", clases_movimientos);
 router.use("/tthh/tipos_sugerencias", tipos_sugerencias);
 router.use("/tthh/titulos_obtenidos", titulos_obtenidos);
 

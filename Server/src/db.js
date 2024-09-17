@@ -44,6 +44,7 @@ const {
   Cargos_Empleados,
   Cargos_Niveles,
   Cargos,
+  Clases_Movimientos,
   Contactos_Emergencia,
   Curriculos,
   Datos_Bancarios,
@@ -73,7 +74,6 @@ const {
   Sesiones,
   Sugerencias_Pred,
   Sugerencias,
-  Tipos_Movimientos,
   Tipos_Sugerencias,
   Titulos_Obtenidos,
 } = sequelize.models;
@@ -448,17 +448,17 @@ Sedes.belongsTo(Empresas, {
   },
 });
 
-// Empleados M:M Tipos_Movimientos
-Empleados.belongsToMany(Tipos_Movimientos, {
+// Empleados M:M Clases_Movimientos
+Empleados.belongsToMany(Clases_Movimientos, {
   through: "Movimientos",
   foreignKey: {
     name: "empleado_id",
   },
 });
-Tipos_Movimientos.belongsToMany(Empleados, {
+Clases_Movimientos.belongsToMany(Empleados, {
   through: "Movimientos",
   foreignKey: {
-    name: "tipo_movimiento_id",
+    name: "clase_movimiento_id",
   },
 });
 
@@ -524,6 +524,7 @@ module.exports = {
   Cargos_Empleados,
   Cargos_Niveles,
   Cargos,
+  Clases_Movimientos,
   Contactos_Emergencia,
   Curriculos,
   Datos_Bancarios,
@@ -553,7 +554,6 @@ module.exports = {
   Sesiones,
   Sugerencias_Pred,
   Sugerencias,
-  Tipos_Movimientos,
   Tipos_Sugerencias,
   Titulos_Obtenidos,
 };
