@@ -9,12 +9,10 @@ import {
   allEmpleados,
   empleadoLogin,
   empleadoDetail,
-  empleadoExiste,
   allDocumentos,
   paginaActual,
   limitePorPagina,
   filtros,
-  resetEmpleadoExiste,
   resetFilters,
   resetState,
 } from "./empleadosSlices";
@@ -81,30 +79,6 @@ export const getEmpleadoExistencia = async (
 
     throw new Error();
   }
-};
-
-export const postEmpleadoExistencia = (data) => {
-  return async (dispatch) => {
-    try {
-      return dispatch(empleadoExiste(data));
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-export const resetEmpleadoExistencia = () => {
-  return async (dispatch) => {
-    try {
-      return dispatch(resetEmpleadoExiste());
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
 };
 
 export const putPassword = async (token, body) => {

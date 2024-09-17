@@ -5,7 +5,6 @@ const initialState = {
   empleados: {},
   empleado: {},
   empleadoDetail: {},
-  empleadoExiste: {},
   documentos: [],
   paginaActual: 1,
   limitePorPagina: 2,
@@ -35,9 +34,6 @@ export const empleadoSlice = createSlice({
     empleadoDetail: (state, action) => {
       state.empleadoDetail = action.payload;
     },
-    empleadoExiste: (state, action) => {
-      state.empleadoExiste = action.payload;
-    },
     allDocumentos: (state, action) => {
       state.documentos = action.payload;
     },
@@ -49,9 +45,6 @@ export const empleadoSlice = createSlice({
     },
     filtros: (state, action) => {
       state.filtros = action.payload;
-    },
-    resetEmpleadoExiste: (state, action) => {
-      state.empleadoExiste = {};
     },
     resetFilters: (state) => {
       state.filtros = {
@@ -74,12 +67,10 @@ export const {
   allEmpleados,
   empleadoLogin,
   empleadoDetail,
-  empleadoExiste,
   allDocumentos,
   paginaActual,
   limitePorPagina,
   filtros,
-  resetEmpleadoExiste,
   resetFilters,
   resetState,
 } = empleadoSlice.actions;
