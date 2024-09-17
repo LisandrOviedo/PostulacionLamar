@@ -80,13 +80,13 @@ export function Movimientos() {
   const [errors, setErrors] = useState({});
 
   const [datosMovimiento, setDatosMovimiento] = useState({
-    empleado_solicitante_id: empleado.empleado_id,
+    solicitante_id: empleado.empleado_id,
     tipo_identificacion: "V",
     numero_identificacion: "",
     duracion_movimiento: "Permanente",
     duracion_movimiento_dias: "1",
     duracion_periodo_prueba: "1",
-    nuevo_sueldo: "1.00",
+    sueldo: "1.00",
     tipo_identificacion_supervisor: "V",
     tipo_identificacion_gerencia: "V",
     tipo_identificacion_tthh: "V",
@@ -212,7 +212,7 @@ export function Movimientos() {
       setDatosSupervisor({});
       setDatosMovimiento({
         ...datosMovimiento,
-        empleado_supervisor_id: "",
+        supervisor_id: "",
       });
     } else {
       await getEmpleadoExistencia(
@@ -224,13 +224,12 @@ export function Movimientos() {
           setDatosSupervisor(data);
           setDatosMovimiento({
             ...datosMovimiento,
-            empleado_supervisor_id: data.empleado_id,
+            supervisor_id: data.empleado_id,
           });
         }
       });
     }
   };
-  //Aprobación Gerencia De Área
 
   const handleEmpleadoGerencia = async () => {
     //Se reutilliza
@@ -238,7 +237,7 @@ export function Movimientos() {
       setDatosAprobacionGerencia({});
       setDatosMovimiento({
         ...datosMovimiento,
-        empleado_gerencia_id: "",
+        gerencia_id: "",
       });
     } else {
       await getEmpleadoExistencia(
@@ -250,7 +249,7 @@ export function Movimientos() {
           setDatosAprobacionGerencia(data);
           setDatosMovimiento({
             ...datosMovimiento,
-            empleado_gerencia_id: data.empleado_id,
+            gerencia_id: data.empleado_id,
           });
         }
       });
@@ -263,7 +262,7 @@ export function Movimientos() {
       setDatosTTHH({});
       setDatosMovimiento({
         ...datosMovimiento,
-        empleado_tthh_id: "",
+        tthh_id: "",
       });
     } else {
       await getEmpleadoExistencia(
@@ -275,7 +274,7 @@ export function Movimientos() {
           setDatosTTHH(data);
           setDatosMovimiento({
             ...datosMovimiento,
-            empleado_tthh_id: data.empleado_id,
+            tthh_id: data.empleado_id,
           });
         }
       });
@@ -451,6 +450,7 @@ export function Movimientos() {
             name="clase_movimiento_id"
             onChange={handleValidate}
           >
+            <option>Seleccione</option>
             {clases_movimientos_activas?.length
               ? clases_movimientos_activas?.map((clase_movimiento, i) => (
                   <option
@@ -494,15 +494,15 @@ export function Movimientos() {
         )}
         <div className="flex items-center justify-center gap-2">
           <CheckBox
-            id="periodo_prueba"
-            name="periodo_prueba"
+            id="requiere_periodo_prueba"
+            name="requiere_periodo_prueba"
             onChange={handleCheckedValidate}
           />
-          <Label className="select-none" htmlFor="periodo_prueba">
+          <Label className="select-none" htmlFor="requiere_periodo_prueba">
             ¿Requiere periodo de prueba?
           </Label>
         </div>
-        {datosMovimiento.periodo_prueba && (
+        {datosMovimiento.requiere_periodo_prueba && (
           <div>
             <Label htmlFor="duracion_periodo_prueba">
               Duración de periodo de prueba (días)
@@ -668,12 +668,8 @@ export function Movimientos() {
 
         {/* Tipo de Nómina */}
         <div>
-          <Label htmlFor="nuevo_tipo_nomina">Tipo de nómina</Label>
-          <Select
-            id="nuevo_tipo_nomina"
-            name="nuevo_tipo_nomina"
-            onChange={handleValidate}
-          >
+          <Label htmlFor="tipo_nomina">Tipo de nómina</Label>
+          <Select id="tipo_nomina" name="tipo_nomina" onChange={handleValidate}>
             <option value="Seleccione">Seleccione</option>
             <option value="Empleados">Empleados</option>
             <option value="Obreros">Obreros</option>
@@ -681,7 +677,7 @@ export function Movimientos() {
           </Select>
         </div>
 
-        {datosMovimiento.nuevo_tipo_nomina === "Otro" && (
+        {datosMovimiento.tipo_nomina === "Otro" && (
           <div>
             <Label htmlFor="otro_tipo_nomina">
               Especifique el otro tipo de nómina:
@@ -697,19 +693,20 @@ export function Movimientos() {
 
         {/* Frecuencia de Nómina */}
         <div>
-          <Label htmlFor="nueva_frecuencia_nomina">Frecuencia de nómina</Label>
+          <Label htmlFor="frecuencia_nomina">Frecuencia de nómina</Label>
           <Select
-            id="nueva_frecuencia_nomina"
-            name="nueva_frecuencia_nomina"
+            id="frecuencia_nomina"
+            name="frecuencia_nomina"
             onChange={handleValidate}
           >
+            <option>Seleccione</option>
             <option value="Semanal">Semanal</option>
             <option value="Quincenal">Quincenal</option>
             <option value="Otro">Otro</option>
           </Select>
         </div>
 
-        {datosMovimiento.nueva_frecuencia_nomina === "Otro" && (
+        {datosMovimiento.frecuencia_nomina === "Otro" && (
           <div>
             <Label htmlFor="otra_frecuencia_nomina">
               Especifique la otra frecuencia de nómina:
@@ -724,28 +721,28 @@ export function Movimientos() {
         )}
 
         <div>
-          <Label htmlFor="nuevo_sueldo" errors={errors.nuevo_sueldo}>
+          <Label htmlFor="sueldo" errors={errors.sueldo}>
             Nuevo sueldo (Bs.)
           </Label>
 
           <div className="relative">
             <Input
-              id="nuevo_sueldo"
-              name="nuevo_sueldo"
+              id="sueldo"
+              name="sueldo"
               onChange={handleValidate} // Esta línea llama a tu función de validación
               onBlur={handleConvertirADecimales}
-              errors={errors.nuevo_sueldo}
+              errors={errors.sueldo}
               className="pr-8" // padding a la derecha para que no tenga conflicto con el icono de validacion
-              value={datosMovimiento.nuevo_sueldo}
+              value={datosMovimiento.sueldo}
               type="number"
               min="1"
             />
-            {errors.nuevo_sueldo && (
+            {errors.sueldo && (
               <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
             )}
           </div>
-          {errors.nuevo_sueldo && (
-            <span className="text-sm text-gray-500">{errors.nuevo_sueldo}</span>
+          {errors.sueldo && (
+            <span className="text-sm text-gray-500">{errors.sueldo}</span>
           )}
         </div>
 
