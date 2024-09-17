@@ -40,6 +40,10 @@ const {
 
 const { cargarEmpresas } = require("./src/controllers/empresas_controllers.js");
 
+const {
+  cargarClasesMovimientos,
+} = require("./src/controllers/clases_movimientos_controllers.js");
+
 conn
   .sync()
   .then(() => {
@@ -75,6 +79,9 @@ conn
 
       // Registrar parroquias principales en la BD
       // await cargarParroquias();
+
+      // Registrar clases de movimientos principales en la BD
+      // await cargarClasesMovimientos();
 
       // Registrar empresas principales en la BD
       // await cargarEmpresas();

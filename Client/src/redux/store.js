@@ -5,6 +5,7 @@ import storage from "redux-persist/lib/storage";
 import areas_interes from "./areasInteres/areasInteresSlices";
 import cargos from "./cargos/cargosSlices";
 import cargos_niveles from "./cargosNiveles/cargosNivelesSlices";
+import clases_movimientos from "./clasesMovimientos/clasesMovimientosSlices";
 import curriculos from "./curriculos/curriculosSlices";
 import departamentos from "./departamentos/departamentosSlices";
 import empleados from "./empleados/empleadosSlices";
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
   areas_interes: areas_interes,
   cargos: cargos,
   cargos_niveles: cargos_niveles,
+  clases_movimientos: clases_movimientos,
   curriculos: curriculos,
   departamentos: departamentos,
   empleados: empleados,
