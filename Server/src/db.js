@@ -462,11 +462,13 @@ Clases_Movimientos.belongsToMany(Empleados, {
   },
 });
 
-Movimientos.belongsTo(Empleados, { foreignKey: "empleado_supervisor_id" });
-Movimientos.belongsTo(Empleados, { foreignKey: "empleado_solicitante_id" });
-Movimientos.belongsTo(Empleados, { foreignKey: "empleado_rrhh_id" });
-Movimientos.belongsTo(Empleados, { foreignKey: "empleado_aprueba_id" });
 Movimientos.belongsTo(Cargos_Niveles, { foreignKey: "cargo_nivel_id" });
+Movimientos.belongsTo(Empleados, { foreignKey: "solicitante_id" });
+Movimientos.belongsTo(Empleados, { foreignKey: "supervisor_id" });
+Movimientos.belongsTo(Empleados, {
+  foreignKey: "gerencia_id",
+});
+Movimientos.belongsTo(Empleados, { foreignKey: "tthh_id" });
 
 // Tipos_Sugerencias 1:M Sugerencias
 Tipos_Sugerencias.hasMany(Sugerencias, {
