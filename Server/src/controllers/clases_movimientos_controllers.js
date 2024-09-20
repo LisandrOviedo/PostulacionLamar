@@ -148,8 +148,8 @@ const modificarClaseMovimiento = async (clase_movimiento_id, descripcion) => {
         where: {
           clase_movimiento_id: clase_movimiento_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -182,8 +182,8 @@ const inactivarClaseMovimiento = async (clase_movimiento_id) => {
       { activo: !clase_movimiento.activo },
       {
         where: { clase_movimiento_id: clase_movimiento_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
