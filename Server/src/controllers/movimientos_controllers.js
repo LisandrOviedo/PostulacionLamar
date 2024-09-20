@@ -1,6 +1,6 @@
 // const { Op } = require("sequelize");
 
-const { conn, Movimientos, Empleados } = require("../db");
+const { conn, Movimientos, Empleados, Cargos_Empleados } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
 
@@ -104,94 +104,183 @@ const traerMovimiento = async (movimiento_id) => {
 };
 
 const crearMovimiento = async (
-  tipo_movimiento_id,
-  fecha_inicio,
-  fecha_fin,
   empleado_id,
+  clase_movimiento_id,
+  duracion_movimiento,
+  duracion_movimiento_dias,
+  requiere_periodo_prueba,
+  duracion_periodo_prueba,
+  justificacion_movimiento,
+  empresa_id,
   cargo_nivel_id,
+  vigencia_movimiento_desde,
+  vigencia_movimiento_hasta,
   tipo_nomina,
-  frecuencia,
-  descripcion,
-  empleado_supervisor_id,
-  empleado_solicitante_id,
-  empleado_rrhh_id,
-  empleado_aprueba_id,
-  observaciones
+  otro_tipo_nomina,
+  frecuencia_nomina,
+  otra_frecuencia_nomina,
+  sueldo,
+  codigo_nomina,
+  solicitante_id,
+  supervisor_id,
+  gerencia_id,
+  tthh_id
 ) => {
   if (
-    !tipo_movimiento_id ||
-    !fecha_inicio ||
     !empleado_id ||
+    !clase_movimiento_id ||
+    !duracion_movimiento ||
+    !empresa_id ||
     !cargo_nivel_id ||
-    !empleado_supervisor_id ||
-    !empleado_solicitante_id ||
-    !empleado_rrhh_id
+    !vigencia_movimiento_desde ||
+    !tipo_nomina ||
+    !frecuencia_nomina ||
+    !sueldo ||
+    !solicitante_id ||
+    !supervisor_id ||
+    !gerencia_id ||
+    !tthh_id
   ) {
     throw new Error(`Datos faltantes`);
   }
 
+  let t;
+
   try {
     await traerEmpleado(empleado_id);
 
-    t = await conn.transaction();
-
-    const [crearMovimiento, created] = await Movimientos.findOrCreate({
+    const existeMovimiento = await Movimientos.findOne({
       where: {
-        fecha_inicio: fecha_inicio,
         empleado_id: empleado_id,
+        vigencia_movimiento_desde: vigencia_movimiento_desde,
+        activo: true,
       },
-      defaults: {
-        tipo_movimiento_id: tipo_movimiento_id,
-        fecha_inicio: fecha_inicio,
-        fecha_fin: fecha_fin || null,
-        empleado_id: empleado_id,
-        cargo_nivel_id: cargo_nivel_id,
-        tipo_nomina: tipo_nomina || null,
-        frecuencia: frecuencia || null,
-        descripcion: descripcion || null,
-        empleado_supervisor_id: empleado_supervisor_id,
-        empleado_solicitante_id: empleado_solicitante_id,
-        empleado_rrhh_id: empleado_rrhh_id,
-        empleado_aprueba_id: empleado_aprueba_id || null,
-        observaciones: observaciones || null,
-      },
-      transaction: t,
     });
 
-    await t.commit();
+    if (!existeMovimiento) {
+      t = await conn.transaction();
 
-    if (created) {
+      const crearMovimiento = await Movimientos.create(
+        {
+          empleado_id: empleado_id,
+          clase_movimiento_id: clase_movimiento_id,
+          duracion_movimiento: duracion_movimiento,
+          duracion_movimiento_dias:
+            duracion_movimiento === "Temporal"
+              ? duracion_movimiento_dias
+              : null,
+          requiere_periodo_prueba: requiere_periodo_prueba,
+          duracion_periodo_prueba: requiere_periodo_prueba
+            ? duracion_periodo_prueba
+            : null,
+          justificacion_movimiento: justificacion_movimiento || null,
+          cargo_nivel_id: cargo_nivel_id,
+          vigencia_movimiento_desde: vigencia_movimiento_desde,
+          vigencia_movimiento_hasta: vigencia_movimiento_hasta || null,
+          tipo_nomina: tipo_nomina,
+          otro_tipo_nomina: tipo_nomina === "Otro" ? otro_tipo_nomina : null,
+          frecuencia_nomina: frecuencia_nomina,
+          otra_frecuencia_nomina:
+            frecuencia_nomina === "Otro" ? otra_frecuencia_nomina : null,
+          sueldo: sueldo,
+          codigo_nomina: codigo_nomina || null,
+          solicitante_id: solicitante_id,
+          supervisor_id: supervisor_id,
+          gerencia_id: gerencia_id,
+          tthh_id: tthh_id,
+        },
+        { transaction: t }
+      );
+
+      await Cargos_Empleados.update(
+        {
+          activo: false,
+        },
+        {
+          where: {
+            empleado_id: empleado_id,
+            activo: true,
+          },
+          transaction: t,
+        }
+      );
+
+      await Cargos_Empleados.create(
+        {
+          empleado_id: empleado_id,
+          cargo_nivel_id: cargo_nivel_id,
+          salario: sueldo,
+          fecha_ingreso: vigencia_movimiento_desde,
+        },
+        { transaction: t }
+      );
+
+      await Empleados.update(
+        {
+          empresa_id: empresa_id,
+        },
+        {
+          where: {
+            empleado_id: empleado_id,
+          },
+          transaction: t,
+        }
+      );
+
+      await t.commit();
+
       return await traerMovimiento(crearMovimiento.movimiento_id);
+    } else {
+      throw new Error(
+        `Ese empleado posee un movimiento activo con esa fecha de inicio de vigencia`
+      );
     }
   } catch (error) {
-    throw new Error(`Error al traer el movimiento: ${error.message}`);
+    if (t && !t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error(`Error al crear el movimiento: ${error.message}`);
   }
 };
 
 const modificarMovimiento = async (
   movimiento_id,
-  tipo_movimiento_id,
-  fecha_inicio,
-  fecha_fin,
-  empleado_id,
+  clase_movimiento_id,
+  duracion_movimiento,
+  duracion_movimiento_dias,
+  requiere_periodo_prueba,
+  duracion_periodo_prueba,
+  justificacion_movimiento,
+  empresa_id,
   cargo_nivel_id,
+  vigencia_movimiento_desde,
+  vigencia_movimiento_hasta,
   tipo_nomina,
-  frecuencia,
-  descripcion,
-  empleado_supervisor_id,
-  empleado_solicitante_id,
-  empleado_rrhh_id,
-  empleado_aprueba_id,
-  observaciones
+  otro_tipo_nomina,
+  frecuencia_nomina,
+  otra_frecuencia_nomina,
+  sueldo,
+  codigo_nomina,
+  solicitante_id,
+  supervisor_id,
+  gerencia_id,
+  tthh_id
 ) => {
   if (
-    !tipo_movimiento_id ||
-    !fecha_inicio ||
-    !empleado_id ||
+    !movimiento_id ||
+    !clase_movimiento_id ||
+    !duracion_movimiento ||
+    !empresa_id ||
     !cargo_nivel_id ||
-    !empleado_supervisor_id ||
-    !empleado_solicitante_id ||
-    !empleado_rrhh_id
+    !vigencia_movimiento_desde ||
+    !tipo_nomina ||
+    !frecuencia_nomina ||
+    !sueldo ||
+    !solicitante_id ||
+    !supervisor_id ||
+    !gerencia_id ||
+    !tthh_id
   ) {
     throw new Error(`Datos faltantes`);
   }
@@ -205,26 +294,36 @@ const modificarMovimiento = async (
 
     await Movimientos.update(
       {
-        tipo_movimiento_id: tipo_movimiento_id,
-        fecha_inicio: fecha_inicio,
-        fecha_fin: fecha_fin || null,
-        empleado_id: empleado_id,
+        clase_movimiento_id: clase_movimiento_id,
+        duracion_movimiento: duracion_movimiento,
+        duracion_movimiento_dias:
+          duracion_movimiento === "Temporal" ? duracion_movimiento_dias : null,
+        requiere_periodo_prueba: requiere_periodo_prueba,
+        duracion_periodo_prueba: requiere_periodo_prueba
+          ? duracion_periodo_prueba
+          : null,
+        justificacion_movimiento: justificacion_movimiento || null,
         cargo_nivel_id: cargo_nivel_id,
-        tipo_nomina: tipo_nomina || null,
-        frecuencia: frecuencia || null,
-        descripcion: descripcion || null,
-        empleado_supervisor_id: empleado_supervisor_id,
-        empleado_solicitante_id: empleado_solicitante_id,
-        empleado_rrhh_id: empleado_rrhh_id,
-        empleado_aprueba_id: empleado_aprueba_id || null,
-        observaciones: observaciones || null,
+        vigencia_movimiento_desde: vigencia_movimiento_desde,
+        vigencia_movimiento_hasta: vigencia_movimiento_hasta || null,
+        tipo_nomina: tipo_nomina,
+        otro_tipo_nomina: tipo_nomina === "Otro" ? otro_tipo_nomina : null,
+        frecuencia_nomina: frecuencia_nomina,
+        otra_frecuencia_nomina:
+          frecuencia_nomina === "Otro" ? otra_frecuencia_nomina : null,
+        sueldo: sueldo,
+        codigo_nomina: codigo_nomina || null,
+        solicitante_id: solicitante_id,
+        supervisor_id: supervisor_id,
+        gerencia_id: gerencia_id,
+        tthh_id: tthh_id,
       },
       {
         where: {
           movimiento_id: movimiento_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -255,8 +354,8 @@ const inactivarMovimiento = async (movimiento_id) => {
       { activo: !movimiento.activo },
       {
         where: { movimiento_id: movimiento_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
