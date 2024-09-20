@@ -24,6 +24,8 @@ const {
   Salud,
   Contactos_Emergencia,
   Datos_Bancarios,
+  Movimientos,
+  Clases_Movimientos,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
@@ -267,6 +269,8 @@ const traerEmpleadoExistencia = async (
               "fecha_egreso",
               "activo",
             ],
+            where: { activo: true },
+            required: true,
           },
         },
         {
@@ -306,7 +310,28 @@ const traerEmpleadoExistencia = async (
             },
           ],
         },
+        {
+          model: Movimientos,
+          attributes: [
+            "movimiento_id",
+            "tipo_nomina",
+            "otro_tipo_nomina",
+            "frecuencia_nomina",
+            "otra_frecuencia_nomina",
+            "codigo_nomina",
+            "createdAt",
+          ],
+          where: { activo: true },
+          required: false,
+          include: [
+            {
+              model: Clases_Movimientos,
+              attributes: ["clase_movimiento_id", "descripcion"],
+            },
+          ],
+        },
       ],
+      order: [[Movimientos, "createdAt", "DESC"]],
     });
 
     if (empleado) {
@@ -730,8 +755,8 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
         where: {
           empleado_id: empleado_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -853,15 +878,12 @@ const modificarEmpleado = async (datosPersonales) => {
 
     await traerEmpleado(datosPersonales.empleado_id);
 
-    await Empleados.update(
-      camposActualizar,
-      {
-        where: {
-          empleado_id: datosPersonales.empleado_id,
-        },
+    await Empleados.update(camposActualizar, {
+      where: {
+        empleado_id: datosPersonales.empleado_id,
       },
-      { transaction: t }
-    );
+      transaction: t,
+    });
 
     await t.commit();
 
@@ -909,8 +931,8 @@ const modificarFotoEmpleado = async (empleado_id, filename, path) => {
         where: {
           empleado_id: empleado_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -963,8 +985,8 @@ const actualizarClaveEmpleado = async (
         where: {
           empleado_id: empleado_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -1001,8 +1023,8 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
         where: {
           empleado_id: empleado_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -1033,8 +1055,8 @@ const inactivarEmpleado = async (empleado_id) => {
       { activo: !empleado.activo },
       {
         where: { empleado_id: empleado_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
