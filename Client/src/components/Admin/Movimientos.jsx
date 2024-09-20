@@ -27,6 +27,8 @@ import {
 
 import { getAllClasesMovimientosActivas } from "../../redux/clasesMovimientos/clasesMovimientosActions";
 
+import { postMovimiento } from "../../redux/movimientos/movimientosActions";
+
 import {
   Button,
   CheckBox,
@@ -281,6 +283,10 @@ export function Movimientos() {
     }
   };
 
+  const handlePostMovimiento = async () => {
+    await postMovimiento(token, datosMovimiento);
+  };
+
   //Este es el código que renderiza un formulario para los movimientos.
   /*En este caso, el return está devolviendo un conjunto de elementos JSX que forman la estructura del formulario para movimientos */
   return (
@@ -368,7 +374,7 @@ export function Movimientos() {
             <div>
               <span>Código de nómina</span>
               <br />
-              <span>{datosEmpleado?.codigo_nomina || "-"}</span>
+              <span>{datosEmpleado?.Movimientos[0]?.codigo_nomina || "-"}</span>
             </div>
 
             <div>
@@ -426,13 +432,21 @@ export function Movimientos() {
             <div>
               <span>Tipo de nómina</span>
               <br />
-              <span>{datosEmpleado?.tipo_nomina || "-"}</span>
+              <span>
+                {datosEmpleado?.Movimientos[0]?.tipo_nomina === "Otro"
+                  ? datosEmpleado?.Movimientos[0]?.otro_tipo_nomina
+                  : datosEmpleado?.Movimientos[0]?.tipo_nomina || "-"}
+              </span>
             </div>
 
             <div>
               <span>Frecuencia de nómina</span>
               <br />
-              <span>{datosEmpleado?.frecuencia_nomina || "-"}</span>
+              <span>
+                {datosEmpleado?.Movimientos[0]?.frecuencia_nomina === "Otro"
+                  ? datosEmpleado?.Movimientos[0]?.otra_frecuencia_nomina
+                  : datosEmpleado?.Movimientos[0]?.frecuencia_nomina || "-"}
+              </span>
             </div>
           </div>
         </div>
@@ -536,7 +550,7 @@ export function Movimientos() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         {/* Nueva Condición Laboral del Trabajador */}
 
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="empresa_id">Empresa</Label>
 
           <Select
@@ -563,7 +577,7 @@ export function Movimientos() {
           </Select>
         </div>
 
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="departamento_id">Departamento</Label>
           <Select
             className="w-full"
@@ -588,7 +602,7 @@ export function Movimientos() {
               : null}
           </Select>
         </div>
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="cargo_id">Cargo</Label>
           <Select
             className="w-full"
@@ -613,7 +627,7 @@ export function Movimientos() {
               : null}
           </Select>
         </div>
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="cargo_nivel_id">Nivel del cargo</Label>
           <Select
             className="w-full"
@@ -638,7 +652,7 @@ export function Movimientos() {
               : null}
           </Select>
         </div>
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="vigencia_movimiento_desde">
             Vigencia del movimiento (fecha desde)
           </Label>
@@ -650,7 +664,7 @@ export function Movimientos() {
             errors={errors.vigencia_movimiento}
           />
         </div>
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="vigencia_movimiento_hasta">
             Vigencia del movimiento (fecha hasta)
           </Label>
@@ -667,7 +681,7 @@ export function Movimientos() {
         </div>
 
         {/* Tipo de Nómina */}
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="tipo_nomina">Tipo de nómina</Label>
           <Select id="tipo_nomina" name="tipo_nomina" onChange={handleValidate}>
             <option value="Seleccione">Seleccione</option>
@@ -678,7 +692,7 @@ export function Movimientos() {
         </div>
 
         {datosMovimiento.tipo_nomina === "Otro" && (
-          <div>
+          <div className="flex flex-col justify-end">
             <Label htmlFor="otro_tipo_nomina">
               Especifique el otro tipo de nómina:
             </Label>
@@ -692,7 +706,7 @@ export function Movimientos() {
         )}
 
         {/* Frecuencia de Nómina */}
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="frecuencia_nomina">Frecuencia de nómina</Label>
           <Select
             id="frecuencia_nomina"
@@ -707,7 +721,7 @@ export function Movimientos() {
         </div>
 
         {datosMovimiento.frecuencia_nomina === "Otro" && (
-          <div>
+          <div className="flex flex-col justify-end">
             <Label htmlFor="otra_frecuencia_nomina">
               Especifique la otra frecuencia de nómina:
             </Label>
@@ -720,7 +734,7 @@ export function Movimientos() {
           </div>
         )}
 
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="sueldo" errors={errors.sueldo}>
             Nuevo sueldo (Bs.)
           </Label>
@@ -746,7 +760,7 @@ export function Movimientos() {
           )}
         </div>
 
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="codigo_nomina" errors={errors.codigo_nomina}>
             Código de nómina
           </Label>
@@ -975,7 +989,10 @@ export function Movimientos() {
       </div>
 
       <div className="mx-auto sm:col-span-2 md:col-span-3">
-        <Button className="w-auto flex items-center gap-2">
+        <Button
+          className="w-auto flex items-center gap-2"
+          onClick={handlePostMovimiento}
+        >
           {/*Es un icono de la libreria react icons */}
           <FaFloppyDisk />
           <span>Guardar</span>
