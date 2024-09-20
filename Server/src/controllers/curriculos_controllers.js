@@ -355,8 +355,8 @@ const cambiarEstadoRevisado = async (empleado_id, revisado_por_id) => {
           where: {
             empleado_id: empleado_id,
           },
-        },
-        { transaction: t }
+          transaction: t,
+        }
       );
 
       await t.commit();
@@ -475,8 +475,8 @@ const modificarCurriculo = async (
           where: {
             curriculo_id: curriculo_id,
           },
-        },
-        { transaction: t }
+          transaction: t,
+        }
       );
 
       await t.commit();
@@ -531,8 +531,8 @@ const inactivarCurriculo = async (curriculo_id) => {
       { activo: !curriculo.activo },
       {
         where: { curriculo_id: curriculo_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

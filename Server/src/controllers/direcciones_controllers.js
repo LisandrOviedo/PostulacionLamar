@@ -129,7 +129,7 @@ const modificarDireccion = async (
   numero_casa,
   piso,
   apartamento,
-  urbanizacion_sector,
+  urbanizacion_sector
 ) => {
   if (
     !direccion_id ||
@@ -167,8 +167,8 @@ const modificarDireccion = async (
         where: {
           direccion_id: direccion_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -199,8 +199,8 @@ const inactivarDireccion = async (direccion_id) => {
       { activo: !direccion.activo },
       {
         where: { direccion_id: direccion_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

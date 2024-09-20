@@ -168,8 +168,8 @@ const modificarMunicipio = async (municipio_id, estado_id, nombre) => {
         where: {
           municipio_id: municipio_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -200,8 +200,8 @@ const inactivarMunicipio = async (municipio_id) => {
       { activo: !municipio.activo },
       {
         where: { municipio_id: municipio_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

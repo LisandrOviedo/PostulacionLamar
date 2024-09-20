@@ -144,8 +144,8 @@ const modificarIdioma = async (idioma_id, nombre) => {
         where: {
           idioma_id: idioma_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -176,8 +176,8 @@ const inactivarIdioma = async (idioma_id) => {
       { activo: !idioma.activo },
       {
         where: { idioma_id: idioma_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

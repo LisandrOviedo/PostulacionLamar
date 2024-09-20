@@ -229,8 +229,8 @@ const modificarEmpresa = async (
         where: {
           empresa_id: empresa_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -261,8 +261,8 @@ const inactivarEmpresa = async (empresa_id) => {
       { activo: !empresa.activo },
       {
         where: { empresa_id: empresa_id },
+         transaction: t 
       },
-      { transaction: t }
     );
 
     await t.commit();

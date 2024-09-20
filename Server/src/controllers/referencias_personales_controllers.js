@@ -138,8 +138,8 @@ const modificarReferenciaPersonal = async (
         where: {
           referencia_personal_id: referencia_personal_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -174,8 +174,8 @@ const inactivarReferenciaPersonal = async (referencia_personal_id) => {
       { activo: !referencia_personal.activo },
       {
         where: { referencia_personal_id: referencia_personal_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

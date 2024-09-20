@@ -127,8 +127,8 @@ const modificarRol = async (rol_id, nombre, descripcion) => {
         where: {
           rol_id: rol_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -158,8 +158,8 @@ const inactivarRol = async (rol_id) => {
       { activo: !rol.activo },
       {
         where: { rol_id: rol_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

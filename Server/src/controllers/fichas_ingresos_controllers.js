@@ -654,8 +654,8 @@ const modificarFichaIngreso = async (
         where: {
           ficha_ingreso_id: ficha_ingreso_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -686,8 +686,8 @@ const inactivarFichaIngreso = async (ficha_ingreso_id) => {
       { activo: !ficha_ingreso.activo },
       {
         where: { ficha_ingreso_id: ficha_ingreso_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

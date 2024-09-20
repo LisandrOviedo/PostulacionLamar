@@ -125,8 +125,8 @@ const modificarSugerenciaPred = async (
         where: {
           sugerencia_pred_id: sugerencia_pred_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -159,8 +159,8 @@ const inactivarSugerenciaPred = async (sugerencia_pred_id) => {
       { activo: !sugerencia_pred.activo },
       {
         where: { sugerencia_pred_id: sugerencia_pred_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

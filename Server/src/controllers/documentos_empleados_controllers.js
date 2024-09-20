@@ -121,8 +121,8 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
             empleado_id: empleado_id,
             tipo: "perfil_pdf",
           },
-        },
-        { transaction: t }
+          transaction: t,
+        }
       );
     } else {
       await Documentos_Empleados.findOrCreate({
