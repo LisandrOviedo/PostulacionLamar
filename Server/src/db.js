@@ -448,27 +448,97 @@ Sedes.belongsTo(Empresas, {
   },
 });
 
-// Empleados M:M Clases_Movimientos
-Empleados.belongsToMany(Clases_Movimientos, {
-  through: "Movimientos",
+// Empleados 1:M Movimientos
+Empleados.hasMany(Movimientos, {
   foreignKey: {
     name: "empleado_id",
   },
 });
-Clases_Movimientos.belongsToMany(Empleados, {
-  through: "Movimientos",
+Movimientos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Clases_Movimientos 1:M Movimientos
+Clases_Movimientos.hasMany(Movimientos, {
+  foreignKey: {
+    name: "clase_movimiento_id",
+  },
+});
+Movimientos.belongsTo(Clases_Movimientos, {
   foreignKey: {
     name: "clase_movimiento_id",
   },
 });
 
-Movimientos.belongsTo(Cargos_Niveles, { foreignKey: "cargo_nivel_id" });
-Movimientos.belongsTo(Empleados, { foreignKey: "solicitante_id" });
-Movimientos.belongsTo(Empleados, { foreignKey: "supervisor_id" });
-Movimientos.belongsTo(Empleados, {
-  foreignKey: "gerencia_id",
+// Cargos_Niveles 1:M Movimientos
+Cargos_Niveles.hasMany(Movimientos, {
+  foreignKey: {
+    name: "cargo_nivel_id",
+  },
 });
-Movimientos.belongsTo(Empleados, { foreignKey: "tthh_id" });
+Movimientos.belongsTo(Cargos_Niveles, {
+  foreignKey: {
+    name: "cargo_nivel_id",
+  },
+});
+
+// Empleados 1:M Movimientos
+Empleados.hasMany(Movimientos, {
+  foreignKey: {
+    name: "solicitante_id",
+  },
+  as: "Solicitante",
+});
+Movimientos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "solicitante_id",
+  },
+  as: "Solicitante",
+});
+
+// Empleados 1:M Movimientos
+Empleados.hasMany(Movimientos, {
+  foreignKey: {
+    name: "supervisor_id",
+  },
+  as: "Supervisor",
+});
+Movimientos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "supervisor_id",
+  },
+  as: "Supervisor",
+});
+
+// Empleados 1:M Movimientos
+Empleados.hasMany(Movimientos, {
+  foreignKey: {
+    name: "gerencia_id",
+  },
+  as: "Gerencia",
+});
+Movimientos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "gerencia_id",
+  },
+  as: "Gerencia",
+});
+
+// Empleados 1:M Movimientos
+Empleados.hasMany(Movimientos, {
+  foreignKey: {
+    name: "tthh_id",
+  },
+  as: "TTHH",
+});
+Movimientos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "tthh_id",
+  },
+  as: "TTHH",
+});
 
 // Tipos_Sugerencias 1:M Sugerencias
 Tipos_Sugerencias.hasMany(Sugerencias, {
