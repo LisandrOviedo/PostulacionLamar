@@ -87,12 +87,20 @@ module.exports = (sequelize) => {
     gerencia_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
     tthh_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    estado_solicitud: {
+      type: DataTypes.ENUM("Pendiente por revisar", "Aprobada", "Denegada"),
+      defaultValue: "Pendiente por revisar",
+    },
+    observaciones: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,
