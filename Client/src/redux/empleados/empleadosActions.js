@@ -62,9 +62,10 @@ export const getEmpleadoDetail = (token, empleado_id) => {
 export const getEmpleadoExistencia = async (
   token,
   tipo_identificacion,
-  numero_identificacion
+  numero_identificacion,
+  empresa_id
 ) => {
-  const URL_EMPLEADO_EXISTENCIA = `${URL_SERVER}/empleados/empleadoExistencia?tipo_identificacion=${tipo_identificacion}&numero_identificacion=${numero_identificacion}`;
+  const URL_EMPLEADO_EXISTENCIA = `${URL_SERVER}/empleados/empleadoExistencia?tipo_identificacion=${tipo_identificacion}&numero_identificacion=${numero_identificacion}&empresa_id=${empresa_id}`;
 
   try {
     const { data } = await axios(URL_EMPLEADO_EXISTENCIA, {

@@ -83,6 +83,7 @@ export function Movimientos() {
 
   const [datosMovimiento, setDatosMovimiento] = useState({
     solicitante_id: empleado.empleado_id,
+    empresa_id: empleado.empresa_id,
     tipo_identificacion: "V",
     numero_identificacion: "",
     duracion_movimiento: "Permanente",
@@ -101,6 +102,8 @@ export function Movimientos() {
   const [datosSupervisor, setDatosSupervisor] = useState({});
   const [datosAprobacionGerencia, setDatosAprobacionGerencia] = useState({});
   const [datosTTHH, setDatosTTHH] = useState({});
+
+  const [movEntreEmpresas, setMovEntreEmpresas] = useState(true);
 
   useEffect(() => {
     window.scroll(0, 0); // Desplaza la ventana a la parte superior izquierda de la página.
@@ -161,11 +164,25 @@ export function Movimientos() {
 
   //Cada vez que el usuario cambia el valor de un campo, handleValidate se encarga de validar la entrada y actualizar el estado del formulario.
   const handleValidate = (e) => {
-    const { name, value } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (Input).
+    const { name, value, options } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (Input).
 
     setDatosMovimiento({ ...datosMovimiento, [name]: value }); //... y el nombre del estado hace que se mantenga la información del estado
 
     setErrors(validations({ ...datosMovimiento, [name]: value }));
+
+    if (e.target.tagName === "SELECT" && name === "clase_movimiento_id") {
+      if (
+        options[e.target.selectedIndex].text === "Transferencia entre empresas"
+      ) {
+        setMovEntreEmpresas(false);
+      } else {
+        setMovEntreEmpresas(true);
+        setDatosMovimiento({
+          ...datosMovimiento,
+          empresa_id: empleado.empresa_id,
+        });
+      }
+    }
   };
 
   const handleConvertirADecimales = (e) => {
@@ -192,10 +209,17 @@ export function Movimientos() {
         empleado_id: "",
       });
     } else {
+      setDatosEmpleado({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        empleado_id: "",
+      });
+
       await getEmpleadoExistencia(
         token,
         datosMovimiento.tipo_identificacion,
-        datosMovimiento.numero_identificacion
+        datosMovimiento.numero_identificacion,
+        empleado.empresa_id
       ).then((data) => {
         if (data?.empleado_id) {
           setDatosEmpleado(data);
@@ -217,10 +241,17 @@ export function Movimientos() {
         supervisor_id: "",
       });
     } else {
+      setDatosSupervisor({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        supervisor_id: "",
+      });
+
       await getEmpleadoExistencia(
         token,
         datosMovimiento.tipo_identificacion_supervisor,
-        datosMovimiento.numero_identificacion_supervisor
+        datosMovimiento.numero_identificacion_supervisor,
+        empleado.empresa_id
       ).then((data) => {
         if (data?.empleado_id) {
           setDatosSupervisor(data);
@@ -242,10 +273,17 @@ export function Movimientos() {
         gerencia_id: "",
       });
     } else {
+      setDatosAprobacionGerencia({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        gerencia_id: "",
+      });
+
       await getEmpleadoExistencia(
         token,
         datosMovimiento.tipo_identificacion_gerencia,
-        datosMovimiento.numero_identificacion_gerencia
+        datosMovimiento.numero_identificacion_gerencia,
+        empleado.empresa_id
       ).then((data) => {
         if (data?.empleado_id) {
           setDatosAprobacionGerencia(data);
@@ -267,10 +305,17 @@ export function Movimientos() {
         tthh_id: "",
       });
     } else {
+      setDatosTTHH({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        tthh_id: "",
+      });
+
       await getEmpleadoExistencia(
         token,
         datosMovimiento.tipo_identificacion_tthh,
-        datosMovimiento.numero_identificacion_tthh
+        datosMovimiento.numero_identificacion_tthh,
+        empleado.empresa_id
       ).then((data) => {
         if (data?.empleado_id) {
           setDatosTTHH(data);
@@ -381,7 +426,8 @@ export function Movimientos() {
               <span>Cargo actual</span>
               <br />
               <span>
-                {datosEmpleado?.Cargos_Niveles[0]?.Cargo.descripcion || "-"}
+                {datosEmpleado?.Cargos_Empleados[0]?.Cargos_Nivele.Cargo
+                  .descripcion || "-"}
               </span>
             </div>
 
@@ -395,8 +441,8 @@ export function Movimientos() {
               <span>Unidad organizativa de adscripción</span>
               <br />
               <span>
-                {datosEmpleado?.Cargos_Niveles[0]?.Cargo.Departamento.nombre ||
-                  "-"}
+                {datosEmpleado?.Cargos_Empleados[0]?.Cargos_Nivele.Cargo
+                  .Departamento.nombre || "-"}
               </span>
             </div>
 
@@ -424,8 +470,9 @@ export function Movimientos() {
               <span>Sueldo actual</span>
               <br />
               <span>
-                {`Bs. ${datosEmpleado?.Cargos_Niveles[0]?.Cargos_Empleados?.salario}` ||
-                  "-"}
+                {datosEmpleado?.Cargos_Empleados[0]?.salario
+                  ? `Bs. ${datosEmpleado?.Cargos_Empleados[0]?.salario}`
+                  : "-"}
               </span>
             </div>
 
@@ -558,6 +605,8 @@ export function Movimientos() {
             id="empresa_id"
             name="empresa_id"
             onChange={handleValidate}
+            value={datosMovimiento.empresa_id}
+            disabled={movEntreEmpresas}
           >
             <option>Seleccione</option>
             {empresas_activas?.length
@@ -803,8 +852,8 @@ export function Movimientos() {
         <div>
           <Span>Cargo</Span>
           <span>
-            {empleado?.Cargos_Niveles[0]?.Cargo.descripcion
-              ? `${empleado?.Cargos_Niveles[0]?.Cargo.descripcion} ${empleado?.Cargos_Niveles[0]?.nivel}`
+            {empleado?.Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion
+              ? `${empleado?.Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion} ${empleado?.Cargos_Empleados[0]?.Cargos_Nivele.nivel}`
               : "-"}
           </span>
         </div>

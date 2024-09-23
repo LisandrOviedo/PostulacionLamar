@@ -41,12 +41,13 @@ const getEmpleado = async (req, res) => {
 };
 
 const getEmpleadoExistencia = async (req, res) => {
-  const { tipo_identificacion, numero_identificacion } = req.query;
+  const { tipo_identificacion, numero_identificacion, empresa_id } = req.query;
 
   try {
     const response = await traerEmpleadoExistencia(
       tipo_identificacion,
-      numero_identificacion
+      numero_identificacion,
+      empresa_id
     );
 
     return res.json(response);

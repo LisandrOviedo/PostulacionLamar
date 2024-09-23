@@ -124,35 +124,38 @@ const traerEmpleado = async (empleado_id) => {
           attributes: ["nombre"],
         },
         {
-          model: Cargos_Niveles,
-          attributes: ["cargo_nivel_id", "nivel"],
+          model: Cargos_Empleados,
+          attributes: ["cargo_empleado_id", "fecha_ingreso", "fecha_egreso"],
+          where: { activo: true },
+          required: false,
           include: [
             {
-              model: Cargos,
-              attributes: [
-                "cargo_id",
-                "descripcion",
-                "descripcion_cargo_antiguo",
-              ],
+              model: Cargos_Niveles,
+              attributes: ["cargo_nivel_id", "nivel"],
               include: [
                 {
-                  model: Departamentos,
-                  attributes: ["departamento_id", "nombre"],
+                  model: Cargos,
+                  attributes: [
+                    "cargo_id",
+                    "descripcion",
+                    "descripcion_cargo_antiguo",
+                  ],
                   include: [
                     {
-                      model: Empresas,
-                      attributes: ["empresa_id", "nombre"],
+                      model: Departamentos,
+                      attributes: ["departamento_id", "nombre"],
+                      include: [
+                        {
+                          model: Empresas,
+                          attributes: ["empresa_id", "nombre"],
+                        },
+                      ],
                     },
                   ],
                 },
               ],
             },
           ],
-          through: {
-            model: Cargos_Empleados,
-            attributes: ["cargo_empleado_id", "fecha_ingreso", "fecha_egreso"],
-            where: { activo: true },
-          },
         },
       ],
     });
@@ -169,17 +172,28 @@ const traerEmpleado = async (empleado_id) => {
 
 const traerEmpleadoExistencia = async (
   tipo_identificacion,
-  numero_identificacion
+  numero_identificacion,
+  empresa_id
 ) => {
+  if (!tipo_identificacion || !numero_identificacion) {
+    throw new Error(`Datos faltantes`);
+  }
+
   try {
+    const filtros = {
+      tipo_identificacion: tipo_identificacion,
+      numero_identificacion: numero_identificacion,
+    };
+
+    if (empresa_id) {
+      filtros.empresa_id = empresa_id;
+    }
+
     const empleado = await Empleados.findOne({
       attributes: {
         exclude: ["rol_id", "clave", "createdAt", "updatedAt"],
       },
-      where: {
-        tipo_identificacion: tipo_identificacion,
-        numero_identificacion: numero_identificacion,
-      },
+      where: filtros,
       include: [
         {
           model: Etnias,
@@ -236,42 +250,44 @@ const traerEmpleadoExistencia = async (
           attributes: ["empresa_id", "nombre"],
         },
         {
-          model: Cargos_Niveles,
-          attributes: ["cargo_nivel_id", "nivel"],
+          model: Cargos_Empleados,
+          attributes: [
+            "cargo_empleado_id",
+            "salario",
+            "fecha_ingreso",
+            "fecha_egreso",
+            "activo",
+          ],
+          where: { activo: true },
+          required: false,
           include: [
             {
-              model: Cargos,
-              attributes: [
-                "cargo_id",
-                "descripcion",
-                "descripcion_cargo_antiguo",
-              ],
+              model: Cargos_Niveles,
+              attributes: ["cargo_nivel_id", "nivel"],
               include: [
                 {
-                  model: Departamentos,
-                  attributes: ["departamento_id", "nombre"],
+                  model: Cargos,
+                  attributes: [
+                    "cargo_id",
+                    "descripcion",
+                    "descripcion_cargo_antiguo",
+                  ],
                   include: [
                     {
-                      model: Empresas,
-                      attributes: ["empresa_id", "nombre"],
+                      model: Departamentos,
+                      attributes: ["departamento_id", "nombre"],
+                      include: [
+                        {
+                          model: Empresas,
+                          attributes: ["empresa_id", "nombre"],
+                        },
+                      ],
                     },
                   ],
                 },
               ],
             },
           ],
-          through: {
-            model: Cargos_Empleados,
-            attributes: [
-              "cargo_empleado_id",
-              "salario",
-              "fecha_ingreso",
-              "fecha_egreso",
-              "activo",
-            ],
-            where: { activo: true },
-            required: true,
-          },
         },
         {
           model: Fichas_Ingresos,

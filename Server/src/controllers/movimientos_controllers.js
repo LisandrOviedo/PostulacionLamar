@@ -192,40 +192,40 @@ const crearMovimiento = async (
         { transaction: t }
       );
 
-      await Cargos_Empleados.update(
-        {
-          activo: false,
-        },
-        {
-          where: {
-            empleado_id: empleado_id,
-            activo: true,
-          },
-          transaction: t,
-        }
-      );
+      // await Cargos_Empleados.update(
+      //   {
+      //     activo: false,
+      //   },
+      //   {
+      //     where: {
+      //       empleado_id: empleado_id,
+      //       activo: true,
+      //     },
+      //     transaction: t,
+      //   }
+      // );
 
-      await Cargos_Empleados.create(
-        {
-          empleado_id: empleado_id,
-          cargo_nivel_id: cargo_nivel_id,
-          salario: sueldo,
-          fecha_ingreso: vigencia_movimiento_desde,
-        },
-        { transaction: t }
-      );
+      // await Cargos_Empleados.create(
+      //   {
+      //     empleado_id: empleado_id,
+      //     cargo_nivel_id: cargo_nivel_id,
+      //     salario: sueldo,
+      //     fecha_ingreso: vigencia_movimiento_desde,
+      //   },
+      //   { transaction: t }
+      // );
 
-      await Empleados.update(
-        {
-          empresa_id: empresa_id,
-        },
-        {
-          where: {
-            empleado_id: empleado_id,
-          },
-          transaction: t,
-        }
-      );
+      // await Empleados.update(
+      //   {
+      //     empresa_id: empresa_id,
+      //   },
+      //   {
+      //     where: {
+      //       empleado_id: empleado_id,
+      //     },
+      //     transaction: t,
+      //   }
+      // );
 
       await t.commit();
 
