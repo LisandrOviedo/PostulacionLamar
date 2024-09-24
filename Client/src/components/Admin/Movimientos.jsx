@@ -166,10 +166,6 @@ export function Movimientos() {
   const handleValidate = (e) => {
     const { name, value, options } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (Input).
 
-    setDatosMovimiento({ ...datosMovimiento, [name]: value }); //... y el nombre del estado hace que se mantenga la información del estado
-
-    setErrors(validations({ ...datosMovimiento, [name]: value }));
-
     if (e.target.tagName === "SELECT" && name === "clase_movimiento_id") {
       if (
         options[e.target.selectedIndex].text === "Transferencia entre empresas"
@@ -183,6 +179,10 @@ export function Movimientos() {
         });
       }
     }
+
+    setDatosMovimiento({ ...datosMovimiento, [name]: value }); //... y el nombre del estado hace que se mantenga la información del estado
+
+    setErrors(validations({ ...datosMovimiento, [name]: value }));
   };
 
   const handleConvertirADecimales = (e) => {
@@ -213,6 +213,7 @@ export function Movimientos() {
       setDatosMovimiento({
         ...datosMovimiento,
         empleado_id: "",
+        cargo_empleado_id: "",
       });
 
       await getEmpleadoExistencia(
@@ -226,6 +227,7 @@ export function Movimientos() {
           setDatosMovimiento({
             ...datosMovimiento,
             empleado_id: data.empleado_id,
+            cargo_empleado_id: data.Cargos_Empleados[0].cargo_empleado_id,
           });
         }
       });
@@ -329,7 +331,10 @@ export function Movimientos() {
   };
 
   const handlePostMovimiento = async () => {
-    await postMovimiento(token, datosMovimiento);
+    await postMovimiento(token, datosMovimiento).then(() => {
+      window.scroll(0, 0);
+      window.location.reload();
+    });
   };
 
   //Este es el código que renderiza un formulario para los movimientos.
