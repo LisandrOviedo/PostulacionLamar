@@ -550,6 +550,31 @@ Movimientos.belongsTo(Empleados, {
   as: "TTHH",
 });
 
+// Empleados 1:M Movimientos
+Empleados.hasMany(Movimientos, {
+  foreignKey: {
+    name: "revisado_por_id",
+  },
+});
+Movimientos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "revisado_por_id",
+  },
+  as: "RevisadoPor",
+});
+
+// Cargos_Empleados 1:M Movimientos
+Cargos_Empleados.hasMany(Movimientos, {
+  foreignKey: {
+    name: "cargo_actual_id",
+  },
+});
+Movimientos.belongsTo(Cargos_Empleados, {
+  foreignKey: {
+    name: "cargo_actual_id",
+  },
+});
+
 // Tipos_Sugerencias 1:M Sugerencias
 Tipos_Sugerencias.hasMany(Sugerencias, {
   foreignKey: {
