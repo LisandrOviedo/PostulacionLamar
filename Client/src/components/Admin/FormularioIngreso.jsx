@@ -717,7 +717,6 @@ export function FormularioIngreso() {
               <Input
                 id="numero_identificacion"
                 name="numero_identificacion"
-                type="number"
                 min="0"
                 value={datosIngreso.numero_identificacion}
                 onChange={handleValidate}
