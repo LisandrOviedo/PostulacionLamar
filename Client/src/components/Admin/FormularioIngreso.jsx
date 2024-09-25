@@ -562,11 +562,13 @@ export function FormularioIngreso() {
 
   const handleEmpleadoExiste = async (e) => {
     const { value } = e.target;
+
     if (value) {
       await getEmpleadoExistencia(
         token,
         datosIngreso.tipo_identificacion,
-        datosIngreso.numero_identificacion
+        datosIngreso.numero_identificacion,
+        ""
       ).then((data) => {
         if (data) {
           const numero_identificacion = document.getElementById(
