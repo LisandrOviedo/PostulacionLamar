@@ -73,7 +73,7 @@ module.exports = (sequelize) => {
     },
     sueldo: {
       type: DataTypes.DECIMAL(11, 2),
-      allowNull: false,
+      allowNull: true,
     },
     codigo_nomina: {
       type: DataTypes.STRING(10),

@@ -487,11 +487,13 @@ Cargos_Niveles.hasMany(Movimientos, {
   foreignKey: {
     name: "cargo_nivel_id",
   },
+  as: "Nuevo_Cargo",
 });
 Movimientos.belongsTo(Cargos_Niveles, {
   foreignKey: {
     name: "cargo_nivel_id",
   },
+  as: "Nuevo_Cargo",
 });
 
 // Empleados 1:M Movimientos
@@ -568,11 +570,13 @@ Cargos_Empleados.hasMany(Movimientos, {
   foreignKey: {
     name: "cargo_actual_id",
   },
+  as: "Cargo_Actual",
 });
 Movimientos.belongsTo(Cargos_Empleados, {
   foreignKey: {
     name: "cargo_actual_id",
   },
+  as: "Cargo_Actual",
 });
 
 // Tipos_Sugerencias 1:M Sugerencias
