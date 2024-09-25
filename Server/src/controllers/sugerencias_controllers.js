@@ -151,8 +151,8 @@ const traerSugerencia = async (sugerencia_id, empleado_id) => {
           where: {
             sugerencia_id: sugerencia_id,
           },
-        },
-        { transaction: t }
+          transaction: t,
+        }
       );
 
       await t.commit();
@@ -215,8 +215,8 @@ const inactivarSugerencia = async (sugerencia_id) => {
       { activo: !sugerencia.activo },
       {
         where: { sugerencia_id: sugerencia_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

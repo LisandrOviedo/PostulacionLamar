@@ -167,8 +167,8 @@ const modificarDatoBancario = async (
         where: {
           dato_bancario_id: dato_bancario_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -199,8 +199,8 @@ const inactivarDatoBancario = async (dato_bancario_id) => {
       { activo: !dato_bancario.activo },
       {
         where: { dato_bancario_id: dato_bancario_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

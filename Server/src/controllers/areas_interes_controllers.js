@@ -146,8 +146,8 @@ const modificarAreaInteres = async (area_interes_id, nombre) => {
         where: {
           area_interes_id: area_interes_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -178,8 +178,8 @@ const inactivarAreaInteres = async (area_interes_id) => {
       { activo: !area_interes.activo },
       {
         where: { area_interes_id: area_interes_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

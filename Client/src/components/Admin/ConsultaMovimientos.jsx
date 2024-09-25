@@ -9,11 +9,7 @@ import {
   postLimitePorPagina,
   postFiltros,
   deleteFiltros,
-  putActivo,
-  resetPassword,
 } from "../../redux/empleados/empleadosActions";
-
-import { postFichaIngresoPDF } from "../../redux/fichasIngresos/fichasIngresosActions";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
@@ -26,13 +22,13 @@ import { DDMMYYYY } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
-export function Empleados() {
+export function ConsultaMovimientos() {
   const tableRef = useRef(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
+  // const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const token = useSelector((state) => state.empleados.token);
 
@@ -50,12 +46,25 @@ export function Empleados() {
 
   const [filters, setFilters] = useState({
     numero_identificacion: filtros.numero_identificacion || "",
-    apellidos: filtros.apellidos || "",
-    activo: filtros.activo || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
     empresa_id: empleado.empresa_id,
   });
+
+  const [datosMovimiento, setDatosMovimiento] = useState({
+    numero_identificacion_solicitante: "",
+    tipo_identificacion_solicitante: "V",
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const handleValidate = (e) => {
+    const { name, value } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (Input).
+
+    setDatosMovimiento({ ...datosMovimiento, [name]: value }); //... y el nombre del estado hace que se mantenga la información del estado
+
+    setErrors(validations({ ...datosMovimiento, [name]: value }));
+  };
 
   const handleChangePagination = (e) => {
     const { value } = e.target;
@@ -80,27 +89,6 @@ export function Empleados() {
     const valueBuscarPor = buscarPor.value;
 
     setFilters({ ...filters, [valueBuscarPor]: value });
-  };
-
-  const handleChangeFiltersSelect = (e) => {
-    const { value } = e.target;
-
-    const buscarPor = document.getElementById("input_search");
-    const valueBuscarPor = buscarPor.value;
-
-    if (valueBuscarPor) {
-      setFilters((prevFilters) => {
-        let updatedFilters = { ...prevFilters };
-
-        if (value === "numero_identificacion") {
-          updatedFilters.apellidos = "";
-        } else if (value === "apellidos") {
-          updatedFilters.numero_identificacion = "";
-        }
-
-        return { ...updatedFilters, [value]: valueBuscarPor };
-      });
-    }
   };
 
   const handleResetFilters = () => {
@@ -135,7 +123,7 @@ export function Empleados() {
 
     handleFind();
 
-    document.title = "Grupo Lamar - Empleados (Admin)";
+    document.title = "Grupo Lamar - Consulta Movimientos (Admin)";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -146,26 +134,26 @@ export function Empleados() {
     dispatch(getAllEmpleados(token, filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
 
-  const handleVerFicha = (empleado_id, identificacion) => {
-    dispatch(postFichaIngresoPDF(token, empleado_id, identificacion)).then(
-      (response) => {
-        Swal.fire({
-          text: `Ficha de ingreso del empleado ${identificacion} generada ¿Deseas abrirla?`,
-          icon: "info",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Si",
-          cancelButtonText: "No",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${response.data}`;
-            window.open(URL_GET_PDF, "_blank");
-          }
-        });
-      }
-    );
-  };
+  // const handleVerFicha = (empleado_id, identificacion) => {
+  //   dispatch(postFichaIngresoPDF(token, empleado_id, identificacion)).then(
+  //     (response) => {
+  //       Swal.fire({
+  //         text: `Ficha de ingreso del empleado ${identificacion} generada ¿Deseas abrirla?`,
+  //         icon: "info",
+  //         showCancelButton: true,
+  //         confirmButtonColor: "#3085d6",
+  //         cancelButtonColor: "#d33",
+  //         confirmButtonText: "Si",
+  //         cancelButtonText: "No",
+  //       }).then((result) => {
+  //         if (result.isConfirmed) {
+  //           const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${response.data}`;
+  //           window.open(URL_GET_PDF, "_blank");
+  //         }
+  //       });
+  //     }
+  //   );
+  // };
 
   const handleVerDetalles = (empleado_id) => {
     dispatch(getEmpleadoDetail(token, empleado_id))
@@ -233,48 +221,10 @@ export function Empleados() {
     }
   };
 
-  const handleChangeActivo = (empleado_id) => {
-    Swal.fire({
-      text: "¿Seguro que desea activar / desactivar el empleado?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Si",
-      cancelButtonText: "No",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await putActivo(token, empleado_id);
-        dispatch(
-          getAllEmpleados(token, filtros, paginaActual, limitePorPagina)
-        );
-      }
-    });
-  };
-
-  const handleReiniciarClave = (empleado_id) => {
-    Swal.fire({
-      text: "¿Seguro que desea reiniciar la clave del empleado?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Si",
-      cancelButtonText: "No",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await resetPassword(token, empleado_id);
-        dispatch(
-          getAllEmpleados(token, filtros, paginaActual, limitePorPagina)
-        );
-      }
-    });
-  };
-
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <Title>Empleados</Title>
+        <Title>Consulta Movimientos</Title>
       </div>
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
         <div className="flex flex-col place-content-between">
@@ -282,7 +232,7 @@ export function Empleados() {
           <Select
             id="buscar_por"
             name="buscar_por"
-            onChange={handleChangeFiltersSelect}
+            // onChange={handleChangeFiltersSelect}
             defaultValue={
               filtros.apellidos ? "apellidos" : "numero_identificacion"
             }
@@ -308,19 +258,36 @@ export function Empleados() {
             }
           />
         </div>
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="activo">Filtrar por activo / inactivo</Label>
+
+        {/* Clase de Movimiento */}
+        <div>
+          <Label htmlFor="clase_movimiento">Clase De Movimiento</Label>
           <Select
-            id="activo"
-            name="activo"
-            onChange={handleChangeFilters}
-            defaultValue={filters.activo}
+            id="clase_movimiento"
+            name="clase_movimiento"
+            onChange={handleValidate}
           >
-            <option value="">Todos</option>
-            <option value="1">Activos</option>
-            <option value="0">Inactivos</option>
+            <option value="Seleccione">Seleccione</option>
+            <option value="Transferencia entre Empresas">
+              Transferencia entre Empresas
+            </option>
+            <option value="Reasignacion de funciones">
+              Reasignacion de funciones
+            </option>
+            <option value="redenominacion">Redenominacion de cargo</option>
+            <option value="promocion">Promoción</option>
+            <option value="cambio_sede_misma_empresa">
+              Cambio de sede (misma empresa)
+            </option>
+            <option value="cambio_dpto_misma_empresa">
+              Cambio de departamento (misma empresa)
+            </option>
+            <option value="ajuste_sueldo">Ajuste de sueldo</option>
+            <option value="cambio_nomina">Cambio de nómina</option>
+            <option value="otro">Otro</option>
           </Select>
         </div>
+
         <div className="flex flex-col place-content-between">
           <Label htmlFor="limitePorPagina">Límite por página</Label>
           <Select
@@ -383,61 +350,7 @@ export function Empleados() {
                   <div className="flex items-center">Número identificación</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Teléfono</div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Correo</div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    <span
-                      name="activo"
-                      onClick={changeOrder}
-                      className="text-black hover:text-black flex items-center"
-                    >
-                      Estado
-                      <img
-                        name="activo"
-                        src={
-                          filters.orden_campo === "activo" &&
-                          filters.orden_por === "ASC"
-                            ? "./SortAZ.svg"
-                            : filters.orden_campo === "activo" &&
-                              filters.orden_por === "DESC"
-                            ? "./SortZA.svg"
-                            : "./SortDefault.svg"
-                        }
-                        alt="Icon Sort"
-                        className="w-5 h-5 ms-1.5 cursor-pointer"
-                      />
-                    </span>
-                  </div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    <span
-                      id="updatedAt"
-                      name="updatedAt"
-                      onClick={changeOrder}
-                      className="text-black hover:text-black flex items-center"
-                    >
-                      Últ. Modif.
-                      <img
-                        name="updatedAt"
-                        src={
-                          filters.orden_campo === "updatedAt" &&
-                          filters.orden_por === "ASC"
-                            ? "./SortAZ.svg"
-                            : filters.orden_campo === "updatedAt" &&
-                              filters.orden_por === "DESC"
-                            ? "./SortZA.svg"
-                            : "./SortDefault.svg"
-                        }
-                        alt="Icon Sort"
-                        className="w-5 h-5 ms-1.5 cursor-pointer"
-                      />
-                    </span>
-                  </div>
+                  <div className="flex items-center">Tipo Movimiento</div>
                 </th>
 
                 <th scope="col" className="px-4 py-3">
@@ -466,56 +379,14 @@ export function Empleados() {
                       {empleado.tipo_identificacion}
                       {empleado.numero_identificacion}
                     </td>
-                    <td className="px-4 py-4">
-                      {empleado.telefono || "Sin registrar / No posee"}
-                    </td>
-                    <td className="px-4 py-4">
-                      {empleado.correo || "Sin registrar / No posee"}
-                    </td>
-                    <td className="px-4 py-4">
-                      {empleado.activo ? "Activo" : "Inactivo"}
-                    </td>
-                    <td className="px-4 py-4">
-                      {DDMMYYYY(empleado.updatedAt)}
-                    </td>
-                    <td className="px-4 py-4 flex gap-2">
-                      {empleado.Fichas_Ingresos[0]?.ficha_ingreso_id && (
-                        <Button
-                          className="m-0 w-auto text-xs"
-                          onClick={() =>
-                            handleVerFicha(
-                              empleado.empleado_id,
-                              `${empleado.tipo_identificacion}${empleado.numero_identificacion}`
-                            )
-                          }
-                        >
-                          Ver Ficha
-                        </Button>
-                      )}
 
+                    <td className="px-4 py-4">{/* tipo movimiento */}</td>
+                    <td className="px-4 py-4 flex gap-2">
                       <Button
                         className="m-0 w-auto text-xs"
                         onClick={() => handleVerDetalles(empleado.empleado_id)}
                       >
                         Detalles
-                      </Button>
-                      <Button
-                        className="m-0 w-auto text-xs bg-yellow-400 hover:bg-yellow-500"
-                        onClick={() =>
-                          handleReiniciarClave(empleado.empleado_id)
-                        }
-                      >
-                        Reiniciar Clave
-                      </Button>
-                      <Button
-                        className={`m-0 w-auto text-xs ${
-                          empleado.activo
-                            ? "bg-red-500 hover:bg-red-600 "
-                            : "bg-green-500 hover:bg-green-600"
-                        }`}
-                        onClick={() => handleChangeActivo(empleado.empleado_id)}
-                      >
-                        {empleado.activo ? "Inactivar" : "Activar"}
                       </Button>
                     </td>
                   </tr>

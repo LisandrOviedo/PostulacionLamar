@@ -133,8 +133,8 @@ const modificarSede = async (
         where: {
           sede_id: sede_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -165,8 +165,8 @@ const inactivarSede = async (sede_id) => {
       { activo: !sede.activo },
       {
         where: { sede_id: sede_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

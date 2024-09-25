@@ -132,8 +132,8 @@ const modificarPais = async (pais_id, nombre) => {
         where: {
           pais_id: pais_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -164,8 +164,8 @@ const inactivarPais = async (pais_id) => {
       { activo: !pais.activo },
       {
         where: { pais_id: pais_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

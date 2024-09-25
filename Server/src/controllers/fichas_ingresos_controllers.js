@@ -141,42 +141,44 @@ const traerFichaIngresoEmpleado = async (empleado_id) => {
           ],
         },
         {
-          model: Cargos_Niveles,
-          attributes: ["cargo_nivel_id", "nivel"],
-          required: true,
+          model: Fichas_Ingresos,
+          attributes: [
+            "ficha_ingreso_id",
+            "salario",
+            "fecha_ingreso",
+            "observaciones",
+          ],
           include: [
             {
-              model: Cargos,
-              attributes: [
-                "cargo_id",
-                "descripcion",
-                "descripcion_cargo_antiguo",
-              ],
+              model: Cargos_Niveles,
+              attributes: ["cargo_nivel_id", "nivel"],
+              required: true,
               include: [
                 {
-                  model: Departamentos,
-                  attributes: ["departamento_id", "nombre"],
+                  model: Cargos,
+                  attributes: [
+                    "cargo_id",
+                    "descripcion",
+                    "descripcion_cargo_antiguo",
+                  ],
                   include: [
                     {
-                      model: Empresas,
-                      attributes: ["empresa_id", "nombre"],
+                      model: Departamentos,
+                      attributes: ["departamento_id", "nombre"],
+                      include: [
+                        {
+                          model: Empresas,
+                          attributes: ["empresa_id", "nombre"],
+                        },
+                      ],
                     },
                   ],
                 },
               ],
             },
           ],
-          through: {
-            model: Fichas_Ingresos,
-            attributes: [
-              "ficha_ingreso_id",
-              "salario",
-              "fecha_ingreso",
-              "observaciones",
-            ],
-            where: {
-              activo: true,
-            },
+          where: {
+            activo: true,
           },
         },
       ],
@@ -372,11 +374,13 @@ const traerFichaIngresoPDF = async (empleado_id) => {
         },
         {
           titulo_campo: "Estado: ",
-          descripcion_campo: ficha_ingreso.Direcciones[0].Municipio.Estado.nombre,
+          descripcion_campo:
+            ficha_ingreso.Direcciones[0].Municipio.Estado.nombre,
         },
         {
           titulo_campo: "País: ",
-          descripcion_campo: ficha_ingreso.Direcciones[0].Municipio.Estado.Paise.nombre,
+          descripcion_campo:
+            ficha_ingreso.Direcciones[0].Municipio.Estado.Paise.nombre,
         },
       ],
     });
@@ -553,25 +557,24 @@ const traerFichaIngresoPDF = async (empleado_id) => {
       contenido: [
         {
           titulo_campo: "Cargo: ",
-          descripcion_campo: `${ficha_ingreso.Cargos_Niveles[0].Cargo.descripcion} (${ficha_ingreso.Cargos_Niveles[0].nivel})`,
+          descripcion_campo: `${ficha_ingreso.Fichas_Ingresos[0].Cargos_Nivele.Cargo.descripcion} (${ficha_ingreso.Fichas_Ingresos[0].Cargos_Nivele.nivel})`,
         },
         {
           titulo_campo: "Departamento / Gerencia: ",
-          descripcion_campo: `${ficha_ingreso.Cargos_Niveles[0].Cargo.Departamento.nombre} (${ficha_ingreso.Cargos_Niveles[0].Cargo.Departamento.Empresa.nombre})`,
+          descripcion_campo: `${ficha_ingreso.Fichas_Ingresos[0].Cargos_Nivele.Cargo.Departamento.nombre} (${ficha_ingreso.Fichas_Ingresos[0].Cargos_Nivele.Cargo.Departamento.Empresa.nombre})`,
         },
         {
           titulo_campo: "Salario: ",
-          descripcion_campo: `${ficha_ingreso.Cargos_Niveles[0].Fichas_Ingresos.salario} Bs.`,
+          descripcion_campo: `${ficha_ingreso.Fichas_Ingresos[0].salario} Bs.`,
         },
         {
           titulo_campo: "Fecha de ingreso: ",
-          descripcion_campo:
-            ficha_ingreso.Cargos_Niveles[0].Fichas_Ingresos.fecha_ingreso,
+          descripcion_campo: ficha_ingreso.Fichas_Ingresos[0].fecha_ingreso,
         },
         {
           titulo_campo: "Observaciones: ",
           descripcion_campo:
-            ficha_ingreso.Cargos_Niveles[0].Fichas_Ingresos.observaciones || "",
+            ficha_ingreso.Fichas_Ingresos[0].observaciones || "",
         },
       ],
     });
@@ -651,8 +654,8 @@ const modificarFichaIngreso = async (
         where: {
           ficha_ingreso_id: ficha_ingreso_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -683,8 +686,8 @@ const inactivarFichaIngreso = async (ficha_ingreso_id) => {
       { activo: !ficha_ingreso.activo },
       {
         where: { ficha_ingreso_id: ficha_ingreso_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

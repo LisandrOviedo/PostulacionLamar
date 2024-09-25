@@ -560,15 +560,13 @@ export function FormularioIngreso() {
     input_direccion.value = null;
   };
 
-  const handleEmpleadoExiste = (e) => {
+  const handleEmpleadoExiste = async (e) => {
     const { value } = e.target;
     if (value) {
-      dispatch(
-        getEmpleadoExistencia(
-          token,
-          datosIngreso.tipo_identificacion,
-          datosIngreso.numero_identificacion
-        )
+      await getEmpleadoExistencia(
+        token,
+        datosIngreso.tipo_identificacion,
+        datosIngreso.numero_identificacion
       ).then((data) => {
         if (data) {
           const numero_identificacion = document.getElementById(
@@ -719,7 +717,6 @@ export function FormularioIngreso() {
               <Input
                 id="numero_identificacion"
                 name="numero_identificacion"
-                type="number"
                 min="0"
                 value={datosIngreso.numero_identificacion}
                 onChange={handleValidate}

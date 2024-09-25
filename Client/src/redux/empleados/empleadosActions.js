@@ -9,12 +9,10 @@ import {
   allEmpleados,
   empleadoLogin,
   empleadoDetail,
-  empleadoExiste,
   allDocumentos,
   paginaActual,
   limitePorPagina,
   filtros,
-  resetEmpleadoExiste,
   resetFilters,
   resetState,
 } from "./empleadosSlices";
@@ -61,44 +59,27 @@ export const getEmpleadoDetail = (token, empleado_id) => {
   };
 };
 
-export const getEmpleadoExistencia = (
+export const getEmpleadoExistencia = async (
   token,
   tipo_identificacion,
-  numero_identificacion
+  numero_identificacion,
+  empresa_id
 ) => {
-  const URL_EMPLEADO_EXISTENCIA = `${URL_SERVER}/empleados/empleadoExistencia?tipo_identificacion=${tipo_identificacion}&numero_identificacion=${numero_identificacion}`;
+  const URL_EMPLEADO_EXISTENCIA = `${URL_SERVER}/empleados/empleadoExistencia?tipo_identificacion=${tipo_identificacion}&numero_identificacion=${numero_identificacion}&empresa_id=${empresa_id}`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios(URL_EMPLEADO_EXISTENCIA, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+  try {
+    const { data } = await axios(URL_EMPLEADO_EXISTENCIA, {
+      headers: { authorization: `Bearer ${token}` },
+    });
 
-      if (data?.empleado_id) {
-        dispatch(empleadoExiste(data));
-
-        return data.empleado_id;
-      } else {
-        dispatch(resetEmpleadoExiste());
-      }
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
+    if (data?.empleado_id) {
+      return data;
     }
-  };
-};
+  } catch (error) {
+    alertError(error);
 
-export const resetEmpleadoExistencia = () => {
-  return async (dispatch) => {
-    try {
-      return dispatch(resetEmpleadoExiste());
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
 export const putPassword = async (token, body) => {

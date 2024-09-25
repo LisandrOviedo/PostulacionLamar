@@ -44,6 +44,7 @@ const {
   Cargos_Empleados,
   Cargos_Niveles,
   Cargos,
+  Clases_Movimientos,
   Contactos_Emergencia,
   Curriculos,
   Datos_Bancarios,
@@ -73,7 +74,6 @@ const {
   Sesiones,
   Sugerencias_Pred,
   Sugerencias,
-  Tipos_Movimientos,
   Tipos_Sugerencias,
   Titulos_Obtenidos,
 } = sequelize.models;
@@ -398,29 +398,49 @@ Cargos_Niveles.belongsTo(Cargos, {
   },
 });
 
-// Empleados M:M Cargos_Niveles
-Empleados.belongsToMany(Cargos_Niveles, {
-  through: "Cargos_Empleados",
+// Empleados 1:M Cargos_Empleados
+Empleados.hasMany(Cargos_Empleados, {
   foreignKey: {
     name: "empleado_id",
   },
 });
-Cargos_Niveles.belongsToMany(Empleados, {
-  through: "Cargos_Empleados",
+Cargos_Empleados.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Cargos_Niveles 1:M Cargos_Empleados
+Cargos_Niveles.hasMany(Cargos_Empleados, {
+  foreignKey: {
+    name: "cargo_nivel_id",
+  },
+});
+Cargos_Empleados.belongsTo(Cargos_Niveles, {
   foreignKey: {
     name: "cargo_nivel_id",
   },
 });
 
-// Empleados M:M Cargos_Niveles
-Empleados.belongsToMany(Cargos_Niveles, {
-  through: "Fichas_Ingresos",
+// Empleados 1:M Fichas_Ingresos
+Empleados.hasMany(Fichas_Ingresos, {
   foreignKey: {
     name: "empleado_id",
   },
 });
-Cargos_Niveles.belongsToMany(Empleados, {
-  through: "Fichas_Ingresos",
+Fichas_Ingresos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Cargos_Niveles 1:M Fichas_Ingresos
+Cargos_Niveles.hasMany(Fichas_Ingresos, {
+  foreignKey: {
+    name: "cargo_nivel_id",
+  },
+});
+Fichas_Ingresos.belongsTo(Cargos_Niveles, {
   foreignKey: {
     name: "cargo_nivel_id",
   },
@@ -438,25 +458,122 @@ Sedes.belongsTo(Empresas, {
   },
 });
 
-// Empleados M:M Tipos_Movimientos
-Empleados.belongsToMany(Tipos_Movimientos, {
-  through: "Movimientos",
+// Empleados 1:M Movimientos
+Empleados.hasMany(Movimientos, {
   foreignKey: {
     name: "empleado_id",
   },
 });
-Tipos_Movimientos.belongsToMany(Empleados, {
-  through: "Movimientos",
+Movimientos.belongsTo(Empleados, {
   foreignKey: {
-    name: "tipo_movimiento_id",
+    name: "empleado_id",
   },
 });
 
-Movimientos.belongsTo(Empleados, { foreignKey: "empleado_supervisor_id" });
-Movimientos.belongsTo(Empleados, { foreignKey: "empleado_solicitante_id" });
-Movimientos.belongsTo(Empleados, { foreignKey: "empleado_rrhh_id" });
-Movimientos.belongsTo(Empleados, { foreignKey: "empleado_aprueba_id" });
-Movimientos.belongsTo(Cargos_Niveles, { foreignKey: "cargo_nivel_id" });
+// Clases_Movimientos 1:M Movimientos
+Clases_Movimientos.hasMany(Movimientos, {
+  foreignKey: {
+    name: "clase_movimiento_id",
+  },
+});
+Movimientos.belongsTo(Clases_Movimientos, {
+  foreignKey: {
+    name: "clase_movimiento_id",
+  },
+});
+
+// Cargos_Niveles 1:M Movimientos
+Cargos_Niveles.hasMany(Movimientos, {
+  foreignKey: {
+    name: "cargo_nivel_id",
+  },
+});
+Movimientos.belongsTo(Cargos_Niveles, {
+  foreignKey: {
+    name: "cargo_nivel_id",
+  },
+});
+
+// Empleados 1:M Movimientos
+Empleados.hasMany(Movimientos, {
+  foreignKey: {
+    name: "solicitante_id",
+  },
+  as: "Solicitante",
+});
+Movimientos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "solicitante_id",
+  },
+  as: "Solicitante",
+});
+
+// Empleados 1:M Movimientos
+Empleados.hasMany(Movimientos, {
+  foreignKey: {
+    name: "supervisor_id",
+  },
+  as: "Supervisor",
+});
+Movimientos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "supervisor_id",
+  },
+  as: "Supervisor",
+});
+
+// Empleados 1:M Movimientos
+Empleados.hasMany(Movimientos, {
+  foreignKey: {
+    name: "gerencia_id",
+  },
+  as: "Gerencia",
+});
+Movimientos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "gerencia_id",
+  },
+  as: "Gerencia",
+});
+
+// Empleados 1:M Movimientos
+Empleados.hasMany(Movimientos, {
+  foreignKey: {
+    name: "tthh_id",
+  },
+  as: "TTHH",
+});
+Movimientos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "tthh_id",
+  },
+  as: "TTHH",
+});
+
+// Empleados 1:M Movimientos
+Empleados.hasMany(Movimientos, {
+  foreignKey: {
+    name: "revisado_por_id",
+  },
+});
+Movimientos.belongsTo(Empleados, {
+  foreignKey: {
+    name: "revisado_por_id",
+  },
+  as: "RevisadoPor",
+});
+
+// Cargos_Empleados 1:M Movimientos
+Cargos_Empleados.hasMany(Movimientos, {
+  foreignKey: {
+    name: "cargo_actual_id",
+  },
+});
+Movimientos.belongsTo(Cargos_Empleados, {
+  foreignKey: {
+    name: "cargo_actual_id",
+  },
+});
 
 // Tipos_Sugerencias 1:M Sugerencias
 Tipos_Sugerencias.hasMany(Sugerencias, {
@@ -514,6 +631,7 @@ module.exports = {
   Cargos_Empleados,
   Cargos_Niveles,
   Cargos,
+  Clases_Movimientos,
   Contactos_Emergencia,
   Curriculos,
   Datos_Bancarios,
@@ -543,7 +661,6 @@ module.exports = {
   Sesiones,
   Sugerencias_Pred,
   Sugerencias,
-  Tipos_Movimientos,
   Tipos_Sugerencias,
   Titulos_Obtenidos,
 };

@@ -159,8 +159,8 @@ const modificarEstado = async (estado_id, pais_id, nombre) => {
         where: {
           estado_id: estado_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -191,8 +191,8 @@ const inactivarEstado = async (estado_id) => {
       { activo: !estado.activo },
       {
         where: { estado_id: estado_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

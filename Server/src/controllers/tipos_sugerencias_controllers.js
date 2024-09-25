@@ -103,8 +103,8 @@ const modificarTipoSugerencia = async (tipo_sugerencia_id, descripcion) => {
         where: {
           tipo_sugerencia_id: tipo_sugerencia_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -137,8 +137,8 @@ const inactivarTipoSugerencia = async (tipo_sugerencia_id) => {
       { activo: !tipo_sugerencia.activo },
       {
         where: { tipo_sugerencia_id: tipo_sugerencia_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

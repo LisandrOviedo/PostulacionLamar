@@ -145,8 +145,8 @@ const modificarContactoEmergencia = async (
         where: {
           contacto_emergencia_id: contacto_emergencia_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -181,8 +181,8 @@ const inactivarContactoEmergencia = async (contacto_emergencia_id) => {
       { activo: !contacto_emergencia.activo },
       {
         where: { contacto_emergencia_id: contacto_emergencia_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

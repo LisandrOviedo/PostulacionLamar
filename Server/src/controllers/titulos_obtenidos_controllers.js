@@ -121,8 +121,8 @@ const modificarTitulosObtenidos = async (
         where: {
           titulo_obtenido_id: titulo_obtenido_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -153,8 +153,8 @@ const inactivarTituloObtenido = async (titulo_obtenido_id) => {
       { activo: !titulo_obtenido.activo },
       {
         where: { titulo_obtenido_id: titulo_obtenido_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

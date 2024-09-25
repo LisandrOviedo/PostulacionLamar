@@ -25,6 +25,7 @@ import {
   Postulaciones,
   PruebasEmpleados,
   Sugerencias,
+  ConsultaMovimientos,
 } from "./components/";
 
 import {
@@ -112,7 +113,10 @@ function App() {
               element={<FormularioIngreso />}
             />
             <Route path="/admin/movimientos" element={<Movimientos />} />
+            <Route path="/admin/consultaMovimientos" element={<ConsultaMovimientos />} />
+
             <Route path="/admin/sugerencias" element={<Sugerencias />} />
+
           </Route>
 
           <Route path="*" element={<PaginaNoEncontrada />} />

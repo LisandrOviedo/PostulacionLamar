@@ -143,8 +143,8 @@ const modificarSalud = async (
         where: {
           salud_id: salud_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -175,8 +175,8 @@ const inactivarSalud = async (salud_id) => {
       { activo: !salud.activo },
       {
         where: { salud_id: salud_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

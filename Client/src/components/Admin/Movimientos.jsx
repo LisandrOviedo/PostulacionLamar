@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
 
+import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
+
 import {
   getAllDepartamentosActivos,
   resetDepartamentos,
@@ -22,6 +24,10 @@ import {
   getAllCargosActivos,
   resetCargos,
 } from "../../redux/cargos/cargosActions";
+
+import { getAllClasesMovimientosActivas } from "../../redux/clasesMovimientos/clasesMovimientosActions";
+
+import { postMovimiento } from "../../redux/movimientos/movimientosActions";
 
 import {
   Button,
@@ -42,6 +48,8 @@ import validations from "../../utils/validacionesMovimientos";
 
 import { MdCancel } from "react-icons/md";
 
+import { calcularAntiguedad } from "../../utils/formatearFecha";
+
 export function Movimientos() {
   //dispatch es esencial para comunicar cambios en el estado de tu aplicación a través de acciones
   const dispatch = useDispatch();
@@ -50,11 +58,11 @@ export function Movimientos() {
   lo que significa que está extrayendo el valor del token del objeto empleados dentro del estado. */
   const token = useSelector((state) => state.empleados.token);
 
-  /*Toma todo el estado de Redux como argumento y devuelve la propiedad 
-  filtros del slice empleados del estado */
-  const filtros = useSelector((state) => state.empleados.filtros);
-
   const empleado = useSelector((state) => state.empleados.empleado);
+
+  const clases_movimientos_activas = useSelector(
+    (state) => state.clases_movimientos.clases_movimientos_activas
+  );
 
   const empresas_activas = useSelector(
     (state) => state.empresas.empresas_activas
@@ -74,34 +82,35 @@ export function Movimientos() {
   const [errors, setErrors] = useState({});
 
   const [datosMovimiento, setDatosMovimiento] = useState({
+    solicitante_id: empleado.empleado_id,
+    empresa_id: empleado.empresa_id,
     tipo_identificacion: "V",
     numero_identificacion: "",
-    duracion_movimiento: "Temporal",
-    clase_movimiento: "Seleccione",
-    duracion_movimiento_desde: "",
-    duracion_movimiento_hasta: "",
-    duracion_periodo_prueba: "",
-    vigencia_movimiento_desde: "",
-    vigencia_movimiento_hasta: "",
-    frecuencia_nomina: "",
-    sueldo_actual: "",
-    nuevo_sueldo: "1",
-    codigo_nomina: "",
-    tipo_identificacion_solicitante: "V",
+    duracion_movimiento: "Permanente",
+    duracion_movimiento_dias: "1",
+    duracion_periodo_prueba: "1",
+    sueldo: "1.00",
     tipo_identificacion_supervisor: "V",
     tipo_identificacion_gerencia: "V",
     tipo_identificacion_tthh: "V",
-    numero_identificacion_solicitante: "",
     numero_identificacion_supervisor: "",
     numero_identificacion_gerencia: "",
     numero_identificacion_tthh: "",
   });
 
+  const [datosEmpleado, setDatosEmpleado] = useState({});
+  const [datosSupervisor, setDatosSupervisor] = useState({});
+  const [datosAprobacionGerencia, setDatosAprobacionGerencia] = useState({});
+  const [datosTTHH, setDatosTTHH] = useState({});
+
+  const [movEntreEmpresas, setMovEntreEmpresas] = useState(true);
+
   useEffect(() => {
-    window.scroll(0, 0); //window.scroll(0, 0): Desplaza la ventana a la parte superior izquierda de la página.
+    window.scroll(0, 0); // Desplaza la ventana a la parte superior izquierda de la página.
     document.title = "Grupo Lamar - Movimientos (Admin)";
 
     dispatch(getAllEmpresasActivas(token));
+    dispatch(getAllClasesMovimientosActivas(token));
 
     return () => {
       document.title = "Grupo Lamar";
@@ -155,7 +164,21 @@ export function Movimientos() {
 
   //Cada vez que el usuario cambia el valor de un campo, handleValidate se encarga de validar la entrada y actualizar el estado del formulario.
   const handleValidate = (e) => {
-    const { name, value } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (Input).
+    const { name, value, options } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (Input).
+
+    if (e.target.tagName === "SELECT" && name === "clase_movimiento_id") {
+      if (
+        options[e.target.selectedIndex].text === "Transferencia entre empresas"
+      ) {
+        setMovEntreEmpresas(false);
+      } else {
+        setMovEntreEmpresas(true);
+        setDatosMovimiento({
+          ...datosMovimiento,
+          empresa_id: empleado.empresa_id,
+        });
+      }
+    }
 
     setDatosMovimiento({ ...datosMovimiento, [name]: value }); //... y el nombre del estado hace que se mantenga la información del estado
 
@@ -176,6 +199,142 @@ export function Movimientos() {
     const { name, checked } = event.target;
 
     setDatosMovimiento({ ...datosMovimiento, [name]: checked });
+  };
+
+  const handleExistenciaEmpleado = async () => {
+    if (!datosMovimiento.numero_identificacion) {
+      setDatosEmpleado({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        empleado_id: "",
+      });
+    } else {
+      setDatosEmpleado({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        empleado_id: "",
+        cargo_empleado_id: "",
+      });
+
+      await getEmpleadoExistencia(
+        token,
+        datosMovimiento.tipo_identificacion,
+        datosMovimiento.numero_identificacion,
+        empleado.empresa_id
+      ).then((data) => {
+        if (data?.empleado_id) {
+          setDatosEmpleado(data);
+          setDatosMovimiento({
+            ...datosMovimiento,
+            empleado_id: data.empleado_id,
+            cargo_empleado_id: data.Cargos_Empleados[0].cargo_empleado_id,
+          });
+        }
+      });
+    }
+  };
+
+  const handleEmpleadoSupervisor = async () => {
+    //Se reutilliza
+    if (!datosMovimiento.numero_identificacion_supervisor) {
+      setDatosSupervisor({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        supervisor_id: "",
+      });
+    } else {
+      setDatosSupervisor({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        supervisor_id: "",
+      });
+
+      await getEmpleadoExistencia(
+        token,
+        datosMovimiento.tipo_identificacion_supervisor,
+        datosMovimiento.numero_identificacion_supervisor,
+        empleado.empresa_id
+      ).then((data) => {
+        if (data?.empleado_id) {
+          setDatosSupervisor(data);
+          setDatosMovimiento({
+            ...datosMovimiento,
+            supervisor_id: data.empleado_id,
+          });
+        }
+      });
+    }
+  };
+
+  const handleEmpleadoGerencia = async () => {
+    //Se reutilliza
+    if (!datosMovimiento.numero_identificacion_gerencia) {
+      setDatosAprobacionGerencia({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        gerencia_id: "",
+      });
+    } else {
+      setDatosAprobacionGerencia({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        gerencia_id: "",
+      });
+
+      await getEmpleadoExistencia(
+        token,
+        datosMovimiento.tipo_identificacion_gerencia,
+        datosMovimiento.numero_identificacion_gerencia,
+        empleado.empresa_id
+      ).then((data) => {
+        if (data?.empleado_id) {
+          setDatosAprobacionGerencia(data);
+          setDatosMovimiento({
+            ...datosMovimiento,
+            gerencia_id: data.empleado_id,
+          });
+        }
+      });
+    }
+  };
+
+  const handleEmpleadoTTHH = async () => {
+    //Se reutilliza
+    if (!datosMovimiento.numero_identificacion_tthh) {
+      setDatosTTHH({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        tthh_id: "",
+      });
+    } else {
+      setDatosTTHH({});
+      setDatosMovimiento({
+        ...datosMovimiento,
+        tthh_id: "",
+      });
+
+      await getEmpleadoExistencia(
+        token,
+        datosMovimiento.tipo_identificacion_tthh,
+        datosMovimiento.numero_identificacion_tthh,
+        empleado.empresa_id
+      ).then((data) => {
+        if (data?.empleado_id) {
+          setDatosTTHH(data);
+          setDatosMovimiento({
+            ...datosMovimiento,
+            tthh_id: data.empleado_id,
+          });
+        }
+      });
+    }
+  };
+
+  const handlePostMovimiento = async () => {
+    await postMovimiento(token, datosMovimiento).then(() => {
+      window.scroll(0, 0);
+      window.location.reload();
+    });
   };
 
   //Este es el código que renderiza un formulario para los movimientos.
@@ -220,92 +379,130 @@ export function Movimientos() {
             )}
           </div>
 
-          <Button className="w-auto flex gap-2 items-center m-0">
+          <Button
+            className="w-auto flex gap-2 items-center m-0"
+            onClick={handleExistenciaEmpleado}
+          >
             <FaMagnifyingGlass />
             <span>Buscar</span>
           </Button>
         </div>
 
-        <span className="text-sm text-gray-500">
-          {errors.numero_identificacion}
-        </span>
+        {errors.numero_identificacion && (
+          <span className="text-sm text-gray-500">
+            {errors.numero_identificacion}
+          </span>
+        )}
       </div>
 
-      <div className="p-4 border rounded-lg shadow-md w-full">
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
-          <div>
-            <span>Nombres</span>
-            {/*El componente <Label> en tu código se utiliza para renderizar un componente de etiqueta Label asociada a un campo de entrada en un formulario. */}
-            <br />
-            <span>{datosMovimiento.nombres || "-"}</span>
-          </div>
+      {datosEmpleado?.empleado_id && (
+        <div className="p-4 border rounded-lg shadow-md w-full">
+          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
+            <div>
+              <span>Nombres</span>
+              {/*El componente <Label> en tu código se utiliza para renderizar un componente de etiqueta Label asociada a un campo de entrada en un formulario. */}
+              <br />
+              <span>{datosEmpleado?.nombres || "-"}</span>
+            </div>
 
-          <div>
-            <span>Apellidos</span>
-            <br />
-            <span>{datosMovimiento.apellidos || "-"}</span>
-          </div>
-          <div>
-            <span>Número de identificación</span>
-            <br />
-            <span>
-              {(datosMovimiento.tipo_identificacion &&
-                datosMovimiento.numero_identificacion) ||
-                "-"}
-            </span>
-          </div>
-          <div>
-            <span>Código de Nómina</span>
-            <br />
-            <span>{datosMovimiento.codigo_nomina || "-"}</span>
-          </div>
+            <div>
+              <span>Apellidos</span>
+              <br />
+              <span>{datosEmpleado?.apellidos || "-"}</span>
+            </div>
 
-          <div>
-            <span>Cargo Actual</span>
-            <br />
-            <span>{datosMovimiento.cargo_actual || "-"}</span>
-          </div>
+            <div>
+              <span>Número de identificación</span>
+              <br />
+              <span>
+                {(datosEmpleado?.tipo_identificacion &&
+                  datosEmpleado?.numero_identificacion) ||
+                  "-"}
+              </span>
+            </div>
 
-          <div>
-            <span>Empresa</span>
-            <br />
-            <span>{datosMovimiento.empresa || "-"}</span>
-          </div>
-          <div>
-            <span>Unidad Organizativa De Adscripción</span>
-            <br />
-            <span>{datosMovimiento.unidad_organizativa || "-"}</span>
-          </div>
+            <div>
+              <span>Código de nómina</span>
+              <br />
+              <span>{datosEmpleado?.Movimientos[0]?.codigo_nomina || "-"}</span>
+            </div>
 
-          <div>
-            <span>Fecha de Ingreso</span>
-            <br />
-            <span>{datosMovimiento.fecha_ingreso || "-"}</span>
-          </div>
-          <div>
-            <span>Antigüedad</span>
-            <br />
-            <span>{datosMovimiento.antiguedad || "-"}</span>
-          </div>
-          <div>
-            <span>Sueldo Actual</span>
-            <br />
-            <span>{datosMovimiento.sueldo_actual || "-"}</span>
-          </div>
+            <div>
+              <span>Cargo actual</span>
+              <br />
+              <span>
+                {datosEmpleado?.Cargos_Empleados[0]?.Cargos_Nivele.Cargo
+                  .descripcion || "-"}
+              </span>
+            </div>
 
-          <div>
-            <span>Tipo de Nómina</span>
-            <br />
-            <span>{datosMovimiento.tipo_nomina || "-"}</span>
-          </div>
+            <div>
+              <span>Empresa</span>
+              <br />
+              <span>{datosEmpleado?.Empresa?.nombre || "-"}</span>
+            </div>
 
-          <div>
-            <span>Frecuencia de Nómina</span>
-            <br />
-            <span>{datosMovimiento.frecuencia_nomina || "-"}</span>
+            <div>
+              <span>Unidad organizativa de adscripción</span>
+              <br />
+              <span>
+                {datosEmpleado?.Cargos_Empleados[0]?.Cargos_Nivele.Cargo
+                  .Departamento.nombre || "-"}
+              </span>
+            </div>
+
+            <div>
+              <span>Fecha de ingreso</span>
+              <br />
+              <span>
+                {datosEmpleado?.Fichas_Ingresos[0]?.fecha_ingreso || "-"}
+              </span>
+            </div>
+
+            <div>
+              <span>Antigüedad</span>
+              <br />
+              <span>
+                {datosEmpleado?.Fichas_Ingresos[0]?.fecha_ingreso
+                  ? `${calcularAntiguedad(
+                      datosEmpleado?.Fichas_Ingresos[0]?.fecha_ingreso
+                    )} días`
+                  : "-"}
+              </span>
+            </div>
+
+            <div>
+              <span>Sueldo actual</span>
+              <br />
+              <span>
+                {datosEmpleado?.Cargos_Empleados[0]?.salario
+                  ? `Bs. ${datosEmpleado?.Cargos_Empleados[0]?.salario}`
+                  : "-"}
+              </span>
+            </div>
+
+            <div>
+              <span>Tipo de nómina</span>
+              <br />
+              <span>
+                {datosEmpleado?.Movimientos[0]?.tipo_nomina === "Otro"
+                  ? datosEmpleado?.Movimientos[0]?.otro_tipo_nomina
+                  : datosEmpleado?.Movimientos[0]?.tipo_nomina || "-"}
+              </span>
+            </div>
+
+            <div>
+              <span>Frecuencia de nómina</span>
+              <br />
+              <span>
+                {datosEmpleado?.Movimientos[0]?.frecuencia_nomina === "Otro"
+                  ? datosEmpleado?.Movimientos[0]?.otra_frecuencia_nomina
+                  : datosEmpleado?.Movimientos[0]?.frecuencia_nomina || "-"}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <br />
       <Title>Detalle del Movimiento Organizativo</Title>
@@ -313,89 +510,68 @@ export function Movimientos() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         {/* Clase de Movimiento */}
         <div>
-          <Label htmlFor="clase_movimiento">Clase De Movimiento</Label>
+          <Label htmlFor="clase_movimiento_id">Clase de movimiento</Label>
           <Select
-            id="clase_movimiento"
-            name="clase_movimiento"
+            id="clase_movimiento_id"
+            name="clase_movimiento_id"
             onChange={handleValidate}
           >
-            <option value="Seleccione">Seleccione</option>
-            <option value="Transferencia entre Empresas">
-              Transferencia entre Empresas
-            </option>
-            <option value="Reasignacion de funciones">
-              Reasignacion de funciones
-            </option>
-            <option value="redenominacion">Redenominacion de cargo</option>
-            <option value="promocion">Promocion</option>
-            <option value="cambio_sede_misma_empresa">
-              Cambio de sede (misma empresa)
-            </option>
-            <option value="cambio_dpto_misma_empresa">
-              Cambio de departamento (misma empresa)
-            </option>
-            <option value="ajuste_sueldo">Ajuste de sueldo</option>
-            <option value="cambio_nomina">Cambio de nómina</option>
-            <option value="otro">Otro</option>
+            <option>Seleccione</option>
+            {clases_movimientos_activas?.length
+              ? clases_movimientos_activas?.map((clase_movimiento, i) => (
+                  <option
+                    key={i}
+                    name={clase_movimiento.descripcion}
+                    value={clase_movimiento.clase_movimiento_id}
+                  >
+                    {clase_movimiento.descripcion}
+                  </option>
+                ))
+              : null}
           </Select>
         </div>
         <div>
-          <Label htmlFor="duracion_movimiento">Duración De Movimiento</Label>
+          <Label htmlFor="duracion_movimiento">Duración de movimiento</Label>
           <Select
             id="duracion_movimiento"
             name="duracion_movimiento"
             onChange={handleValidate}
             value={datosMovimiento.duracion_movimiento}
           >
+            <option value="Permanente">Permanente</option>
             <option value="Temporal">Temporal</option>
-            {datosMovimiento.clase_movimiento !== "periodo_prueba" && (
-              <option value="Permanente">Permanente</option>
-            )}
           </Select>
         </div>
+
         {datosMovimiento.duracion_movimiento === "Temporal" && (
-          <>
-            <div>
-              <Label htmlFor="duracion_movimiento_desde">Fecha Desde</Label>
-              <Date
-                id="duracion_movimiento_desde"
-                name="duracion_movimiento_desde"
-                type="date" //se cambia tipo date, numer o text password email
-                onChange={handleValidate}
-                value={datosMovimiento.duracion_movimiento_desde}
-                errors={errors.duracion_movimiento}
-              />
-            </div>
-            <div>
-              <Label htmlFor="duracion_movimiento_hasta">Fecha Hasta</Label>
-              <Date
-                id="duracion_movimiento_hasta"
-                name="duracion_movimiento_hasta"
-                type="date"
-                onChange={handleValidate}
-                value={datosMovimiento.duracion_movimiento_hasta}
-                errors={errors.duracion_movimiento}
-              />
-              <span className="text-sm text-gray-500">
-                {errors.duracion_movimiento}
-              </span>
-            </div>
-          </>
+          <div>
+            <Label htmlFor="duracion_movimiento_dias">
+              Duración de movimiento (días)
+            </Label>
+            <Input
+              id="duracion_movimiento_dias"
+              name="duracion_movimiento_dias"
+              type="number"
+              onChange={handleValidate}
+              value={datosMovimiento.duracion_movimiento_dias}
+              min="1"
+            />
+          </div>
         )}
         <div className="flex items-center justify-center gap-2">
           <CheckBox
-            id="periodo_prueba"
-            name="periodo_prueba"
+            id="requiere_periodo_prueba"
+            name="requiere_periodo_prueba"
             onChange={handleCheckedValidate}
           />
-          <Label className="select-none" htmlFor="periodo_prueba">
+          <Label className="select-none" htmlFor="requiere_periodo_prueba">
             ¿Requiere periodo de prueba?
           </Label>
         </div>
-        {datosMovimiento.periodo_prueba && (
+        {datosMovimiento.requiere_periodo_prueba && (
           <div>
             <Label htmlFor="duracion_periodo_prueba">
-              Duración De Periodo De Prueba
+              Duración de periodo de prueba (días)
             </Label>
             <Input
               id="duracion_periodo_prueba"
@@ -404,19 +580,18 @@ export function Movimientos() {
               min="1"
               max="90"
               onChange={handleValidate}
-              value={datosMovimiento.duracion_periodo_prueba || 1}
+              value={datosMovimiento.duracion_periodo_prueba}
             />
           </div>
         )}
         <div className="sm:col-span-2 md:col-span-3">
-          <Label htmlFor="justificacion">
-            Justificación Del Movimiento Organizativo
+          <Label htmlFor="justificacion_movimiento">
+            Justificación del movimiento organizativo
           </Label>
           <TextArea
-            id="justificacion"
-            name="justificacion"
+            id="justificacion_movimiento"
+            name="justificacion_movimiento"
             onChange={handleValidate}
-            value={datosMovimiento.justificacion}
             rows="5"
           />
         </div>
@@ -426,43 +601,42 @@ export function Movimientos() {
       <Hr className="w-full my-5" />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         {/* Nueva Condición Laboral del Trabajador */}
-        {(datosMovimiento.clase_movimiento !== "cambio_sede_misma_empresa" ||
-          datosMovimiento.clase_movimiento !== "cambio_dpto_misma_empresa") && (
-          <div>
-            <Label htmlFor="empresa_id">Empresa</Label>
 
-            <Select
-              className="w-full"
-              id="empresa_id"
-              name="empresa_id"
-              value="Seleccione"
-              onChange={handleValidate}
-            >
-              <option>Seleccione</option>
-              {empresas_activas?.length
-                ? empresas_activas?.map(
-                    (empresa, i) =>
-                      empresa.activo && (
-                        <option
-                          key={i}
-                          name={empresa.nombre}
-                          value={empresa.empresa_id}
-                        >
-                          {empresa.nombre}
-                        </option>
-                      )
-                  )
-                : null}
-            </Select>
-          </div>
-        )}
-        <div>
+        <div className="flex flex-col justify-end">
+          <Label htmlFor="empresa_id">Empresa</Label>
+
+          <Select
+            className="w-full"
+            id="empresa_id"
+            name="empresa_id"
+            onChange={handleValidate}
+            value={datosMovimiento.empresa_id}
+            disabled={movEntreEmpresas}
+          >
+            <option>Seleccione</option>
+            {empresas_activas?.length
+              ? empresas_activas?.map(
+                  (empresa, i) =>
+                    empresa.activo && (
+                      <option
+                        key={i}
+                        name={empresa.nombre}
+                        value={empresa.empresa_id}
+                      >
+                        {empresa.nombre}
+                      </option>
+                    )
+                )
+              : null}
+          </Select>
+        </div>
+
+        <div className="flex flex-col justify-end">
           <Label htmlFor="departamento_id">Departamento</Label>
           <Select
             className="w-full"
             id="departamento_id"
             name="departamento_id"
-            value="Seleccione"
             onChange={handleValidate}
           >
             <option>Seleccione</option>
@@ -482,13 +656,12 @@ export function Movimientos() {
               : null}
           </Select>
         </div>
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="cargo_id">Cargo</Label>
           <Select
             className="w-full"
             id="cargo_id"
             name="cargo_id"
-            value="Seleccione"
             onChange={handleValidate}
           >
             <option>Seleccione</option>
@@ -508,13 +681,12 @@ export function Movimientos() {
               : null}
           </Select>
         </div>
-        <div>
-          <Label htmlFor="cargo_nivel_id">Nivel Del Cargo</Label>
+        <div className="flex flex-col justify-end">
+          <Label htmlFor="cargo_nivel_id">Nivel del cargo</Label>
           <Select
             className="w-full"
             id="cargo_nivel_id"
             name="cargo_nivel_id"
-            value="Seleccione"
             onChange={handleValidate}
           >
             <option>Seleccione</option>
@@ -534,100 +706,117 @@ export function Movimientos() {
               : null}
           </Select>
         </div>
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="vigencia_movimiento_desde">
-            Vigencia del Movimiento Fecha Desde
+            Vigencia del movimiento (fecha desde)
           </Label>
           <Date
             type="date"
             id="vigencia_movimiento_desde"
             name="vigencia_movimiento_desde"
             onChange={handleValidate}
-            value={datosMovimiento.vigencia_movimiento_desde}
             errors={errors.vigencia_movimiento}
           />
         </div>
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="vigencia_movimiento_hasta">
-            Vigencia del Movimiento Fecha Hasta
+            Vigencia del movimiento (fecha hasta)
           </Label>
           <Date
             type="date"
             id="vigencia_movimiento_hasta"
             name="vigencia_movimiento_hasta"
             onChange={handleValidate}
-            value={datosMovimiento.vigencia_movimiento_hasta}
             errors={errors.vigencia_movimiento}
           />
-          <span>{errors.vigencia_movimiento}</span>
+          {errors.vigencia_movimiento && (
+            <span>{errors.vigencia_movimiento}</span>
+          )}
         </div>
 
         {/* Tipo de Nómina */}
-        <div>
-          {/* Tipo de Nómina */}
-          <Label htmlFor="tipo_nomina">Tipo de Nómina</Label>
-          <Select
-            id="tipo_nomina"
-            name="tipo_nomina"
-            onChange={handleValidate}
-            value={datosMovimiento.tipo_nomina}
-          >
+        <div className="flex flex-col justify-end">
+          <Label htmlFor="tipo_nomina">Tipo de nómina</Label>
+          <Select id="tipo_nomina" name="tipo_nomina" onChange={handleValidate}>
+            <option value="Seleccione">Seleccione</option>
             <option value="Empleados">Empleados</option>
             <option value="Obreros">Obreros</option>
-            <option value="Otros">Otros</option>
+            <option value="Otro">Otro</option>
           </Select>
         </div>
 
-        {datosMovimiento.tipo_nomina === "Otros" && (
-          <div>
-            <Label htmlFor="otro_tipo">Especifica otro tipo:</Label>
+        {datosMovimiento.tipo_nomina === "Otro" && (
+          <div className="flex flex-col justify-end">
+            <Label htmlFor="otro_tipo_nomina">
+              Especifique el otro tipo de nómina:
+            </Label>
             <Input
               type="text"
-              id="otro_tipo"
-              name="otro_tipo"
-              value={datosMovimiento.otro_tipo}
+              id="otro_tipo_nomina"
+              name="otro_tipo_nomina"
               onChange={handleValidate}
             />
           </div>
         )}
 
         {/* Frecuencia de Nómina */}
-        <div>
-          <Label htmlFor="nueva_frecuencia_nomina">Frecuencia de Nómina</Label>
-          <Select id="nueva_frecuencia_nomina" name="nueva_frecuencia_nomina">
+        <div className="flex flex-col justify-end">
+          <Label htmlFor="frecuencia_nomina">Frecuencia de nómina</Label>
+          <Select
+            id="frecuencia_nomina"
+            name="frecuencia_nomina"
+            onChange={handleValidate}
+          >
+            <option>Seleccione</option>
             <option value="Semanal">Semanal</option>
             <option value="Quincenal">Quincenal</option>
-            <option value="Mensual">Mensual</option>
+            <option value="Otro">Otro</option>
           </Select>
         </div>
-        <div>
-          <Label htmlFor="nuevo_sueldo" errors={errors.nuevo_sueldo}>
-            Nuevo Sueldo
+
+        {datosMovimiento.frecuencia_nomina === "Otro" && (
+          <div className="flex flex-col justify-end">
+            <Label htmlFor="otra_frecuencia_nomina">
+              Especifique la otra frecuencia de nómina:
+            </Label>
+            <Input
+              type="text"
+              id="otra_frecuencia_nomina"
+              name="otra_frecuencia_nomina"
+              onChange={handleValidate}
+            />
+          </div>
+        )}
+
+        <div className="flex flex-col justify-end">
+          <Label htmlFor="sueldo" errors={errors.sueldo}>
+            Nuevo sueldo (Bs.)
           </Label>
 
           <div className="relative">
             <Input
-              id="nuevo_sueldo"
-              name="nuevo_sueldo"
+              id="sueldo"
+              name="sueldo"
               onChange={handleValidate} // Esta línea llama a tu función de validación
               onBlur={handleConvertirADecimales}
-              errors={errors.nuevo_sueldo}
-              maxLength="5" //maximo de digitos
+              errors={errors.sueldo}
               className="pr-8" // padding a la derecha para que no tenga conflicto con el icono de validacion
-              value={datosMovimiento.nuevo_sueldo}
+              value={datosMovimiento.sueldo}
               type="number"
               min="1"
             />
-            {errors.nuevo_sueldo && (
+            {errors.sueldo && (
               <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
             )}
           </div>
-          <span className="text-sm text-gray-500">{errors.nuevo_sueldo}</span>
+          {errors.sueldo && (
+            <span className="text-sm text-gray-500">{errors.sueldo}</span>
+          )}
         </div>
 
-        <div>
+        <div className="flex flex-col justify-end">
           <Label htmlFor="codigo_nomina" errors={errors.codigo_nomina}>
-            Código de Nómina
+            Código de nómina
           </Label>
           <div className="relative">
             <Input
@@ -635,13 +824,16 @@ export function Movimientos() {
               name="codigo_nomina"
               onChange={handleValidate}
               errors={errors.codigo_nomina}
-              value={datosMovimiento.codigo_nomina}
             />
             {errors.codigo_nomina && (
               <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
             )}
           </div>
-          <span className="text-sm text-gray-500">{errors.codigo_nomina}</span>
+          {errors.codigo_nomina && (
+            <span className="text-sm text-gray-500">
+              {errors.codigo_nomina}
+            </span>
+          )}
         </div>
       </div>
       <br />
@@ -650,49 +842,28 @@ export function Movimientos() {
       <Hr className="w-full my-5" />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div>
-          <Label
-            htmlFor="numero_identificacion_solicitante"
-            errors={errors.numero_identificacion_solicitante}
-          >
-            Número de identificación
-          </Label>
-          <div className="flex justify-between gap-2">
-            <Select
-              className="w-auto"
-              name="tipo_identificacion_solicitante"
-              value={datosMovimiento.tipo_identificacion_solicitante}
-              onChange={handleValidate}
-            >
-              <option value="V">V</option>
-              <option value="E">E</option>
-            </Select>
-            <div className="relative w-full">
-              <Input
-                id="numero_identificacion_solicitante"
-                name="numero_identificacion_solicitante"
-                onChange={handleValidate}
-                value={datosMovimiento.numero_identificacion_solicitante}
-                errors={errors.numero_identificacion_solicitante}
-              />
-              {errors.numero_identificacion_solicitante && (
-                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
-              )}
-            </div>
-          </div>
-          <span className="text-sm text-gray-500">
-            {errors.numero_identificacion_solicitante}
+          <Span>Número de identificación</Span>
+          <span>
+            {empleado.tipo_identificacion}
+            {empleado.numero_identificacion}
           </span>
         </div>
 
         <div>
-          <Span>Nombre Completo</Span>
-          <span>-</span>
+          <Span>Nombre completo</Span>
+          <span>{`${empleado.nombres} ${empleado.apellidos}`}</span>
         </div>
+
         <div>
           <Span>Cargo</Span>
-          <span>-</span>
+          <span>
+            {empleado?.Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion
+              ? `${empleado?.Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion} ${empleado?.Cargos_Empleados[0]?.Cargos_Nivele.nivel}`
+              : "-"}
+          </span>
         </div>
       </div>
+      <br />
       <br />
 
       <Title>Supervisor Inmediato</Title>
@@ -722,26 +893,37 @@ export function Movimientos() {
                 id="numero_identificacion_supervisor"
                 name="numero_identificacion_supervisor"
                 onChange={handleValidate}
-                // value={datosMovimiento.tipo_identificacion_supervisor}
+                value={datosMovimiento.numero_identificacion_supervisor}
                 errors={errors.numero_identificacion_supervisor}
+                onBlur={handleEmpleadoSupervisor} //onblur
               />
               {errors.numero_identificacion_supervisor && (
                 <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
               )}
             </div>
           </div>
-          <span className="text- sm text-gray-500">
-            {errors.numero_identificacion_supervisor}
-          </span>
+          {errors.numero_identificacion_supervisor && (
+            <span className="text-sm text-gray-500">
+              {errors.numero_identificacion_supervisor}
+            </span>
+          )}
         </div>
 
         <div>
-          <Span>Nombre Completo</Span>
-          <span>-</span>
+          <Span>Nombre completo</Span>
+          <span>
+            {datosSupervisor.nombres
+              ? `${datosSupervisor.nombres} ${datosSupervisor.apellidos}`
+              : "-"}
+          </span>
         </div>
         <div>
           <Span>Cargo</Span>
-          <span>-</span>
+          <span>
+            {datosSupervisor.Cargos_Niveles
+              ? datosSupervisor?.Cargos_Niveles[0]?.Cargo?.descripcion
+              : "-"}
+          </span>
         </div>
       </div>
 
@@ -759,6 +941,7 @@ export function Movimientos() {
               name="tipo_identificacion_gerencia"
               onChange={handleValidate}
               errors={errors.numero_identificacion_gerencia}
+              value={datosMovimiento.tipo_identificacion_gerencia}
             >
               <option value="V">V</option>
               <option value="E">E</option>
@@ -770,23 +953,35 @@ export function Movimientos() {
                 name="numero_identificacion_gerencia"
                 onChange={handleValidate}
                 errors={errors.numero_identificacion_gerencia}
+                onBlur={handleEmpleadoGerencia} //onblur
+                value={datosMovimiento.numero_identificacion_gerencia}
               />
               {errors.numero_identificacion_gerencia && (
                 <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
               )}
             </div>
           </div>
-          <span className="text- sm text-gray-500">
-            {errors.numero_identificacion_gerencia}
+          {errors.numero_identificacion_gerencia && (
+            <span className="text-sm text-gray-500">
+              {errors.numero_identificacion_gerencia}
+            </span>
+          )}
+        </div>
+        <div>
+          <Span>Nombre completo</Span>
+          <span>
+            {datosAprobacionGerencia.nombres
+              ? `${datosAprobacionGerencia.nombres} ${datosAprobacionGerencia.apellidos}`
+              : "-"}
           </span>
         </div>
         <div>
-          <Span>Nombre Completo</Span>
-          <span>-</span>
-        </div>
-        <div>
           <Span>Cargo</Span>
-          <span>-</span>
+          <span>
+            {datosAprobacionGerencia.Cargos_Niveles
+              ? datosAprobacionGerencia?.Cargos_Niveles[0]?.Cargo?.descripcion
+              : "-"}
+          </span>
         </div>
       </div>
       <br />
@@ -803,6 +998,7 @@ export function Movimientos() {
               className="w-auto"
               name="tipo_identificacion_tthh"
               onChange={handleValidate}
+              value={datosMovimiento.tipo_identificacion_tthh}
             >
               <option value="V">V</option>
               <option value="E">E</option>
@@ -814,28 +1010,43 @@ export function Movimientos() {
                 name="numero_identificacion_tthh"
                 onChange={handleValidate}
                 errors={errors.numero_identificacion_tthh}
+                onBlur={handleEmpleadoTTHH} //onblur
+                value={datosMovimiento.numero_identificacion_tthh}
               />
               {errors.numero_identificacion_tthh && (
                 <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
               )}
             </div>
           </div>
-          <span className="text- sm text-gray-500">
-            {errors.numero_identificacion_tthh}
+          {errors.numero_identificacion_tthh && (
+            <span className="text-sm text-gray-500">
+              {errors.numero_identificacion_tthh}
+            </span>
+          )}
+        </div>
+        <div>
+          <Span>Nombre completo</Span>
+          <span>
+            {datosTTHH.nombres
+              ? `${datosTTHH.nombres} ${datosTTHH.apellidos}`
+              : "-"}
           </span>
         </div>
         <div>
-          <Span>Nombre Completo</Span>
-          <span>-</span>
-        </div>
-        <div>
           <Span>Cargo</Span>
-          <span>-</span>
+          <span>
+            {datosTTHH.Cargos_Niveles
+              ? datosTTHH?.Cargos_Niveles[0]?.Cargo?.descripcion
+              : "-"}
+          </span>
         </div>
       </div>
 
       <div className="mx-auto sm:col-span-2 md:col-span-3">
-        <Button className="w-auto flex items-center gap-2">
+        <Button
+          className="w-auto flex items-center gap-2"
+          onClick={handlePostMovimiento}
+        >
           {/*Es un icono de la libreria react icons */}
           <FaFloppyDisk />
           <span>Guardar</span>

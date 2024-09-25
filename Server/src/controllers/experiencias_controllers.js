@@ -121,8 +121,8 @@ const modificarExperiencia = async (
         where: {
           experiencia_id: experiencia_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -153,8 +153,8 @@ const inactivarExperiencia = async (experiencia_id) => {
       { activo: !experiencia.activo },
       {
         where: { experiencia_id: experiencia_id },
+        transaction: t 
       },
-      { transaction: t }
     );
 
     await t.commit();

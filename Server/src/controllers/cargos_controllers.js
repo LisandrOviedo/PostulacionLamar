@@ -128,8 +128,8 @@ const modificarCargo = async (
         where: {
           cargo_id: cargo_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -159,9 +159,9 @@ const inactivarCargo = async (cargo_id) => {
     await Cargos.update(
       { activo: !cargo.activo },
       {
-        where: { departamento_id: departamento_id },
-      },
-      { transaction: t }
+        where: { cargo_id: cargo_id },
+        transaction: t,
+      }
     );
 
     await t.commit();

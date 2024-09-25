@@ -7,63 +7,109 @@ module.exports = (sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    tipo_movimiento_id: {
-      // Campo relacionado
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    fecha_inicio: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-    },
-    fecha_fin: {
-      type: DataTypes.DATEONLY,
-      allowNull: true,
-    },
     empleado_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    cargo_actual_id: {
+      // Campo relacionado
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    clase_movimiento_id: {
+      // Campo relacionado
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    duracion_movimiento: {
+      type: DataTypes.ENUM("Permanente", "Temporal"),
+      allowNull: false,
+    },
+    duracion_movimiento_dias: {
+      type: DataTypes.INTEGER(2),
+      allowNull: true,
+    },
+    requiere_periodo_prueba: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    duracion_periodo_prueba: {
+      type: DataTypes.INTEGER(2),
+      allowNull: true,
+    },
+    justificacion_movimiento: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     cargo_nivel_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    vigencia_movimiento_desde: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    vigencia_movimiento_hasta: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
     tipo_nomina: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.ENUM("Empleados", "Obreros", "Otro"),
+      allowNull: false,
+    },
+    otro_tipo_nomina: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
-    frecuencia: {
-      type: DataTypes.STRING(50),
+    frecuencia_nomina: {
+      type: DataTypes.ENUM("Semanal", "Quincenal", "Otro"),
+      allowNull: false,
+    },
+    otra_frecuencia_nomina: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
-    descripcion: {
-      type: DataTypes.STRING(100),
+    sueldo: {
+      type: DataTypes.DECIMAL(11, 2),
+      allowNull: false,
+    },
+    codigo_nomina: {
+      type: DataTypes.STRING(10),
       allowNull: true,
     },
-    empleado_supervisor_id: {
+    solicitante_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    empleado_solicitante_id: {
+    supervisor_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    empleado_rrhh_id: {
+    gerencia_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    empleado_aprueba_id: {
+    tthh_id: {
+      // Campo relacionado
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    estado_solicitud: {
+      type: DataTypes.ENUM("Pendiente por revisar", "Aprobada", "Denegada"),
+      defaultValue: "Pendiente por revisar",
+    },
+    revisado_por_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: true,
     },
     observaciones: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING,
       allowNull: true,
     },
     activo: {

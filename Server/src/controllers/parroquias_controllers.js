@@ -179,8 +179,8 @@ const modificarParroquia = async (parroquia_id, municipio_id, nombre) => {
         where: {
           parroquia_id: parroquia_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -211,8 +211,8 @@ const inactivarParroquia = async (parroquia_id) => {
       { activo: !parroquia.activo },
       {
         where: { parroquia_id: parroquia_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

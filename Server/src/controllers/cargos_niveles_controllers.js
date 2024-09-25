@@ -127,8 +127,8 @@ const modificarCargoNivel = async (
         where: {
           cargo_nivel_id: cargo_nivel_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -161,8 +161,8 @@ const inactivarCargoNivel = async (cargo_nivel_id) => {
       { activo: !cargo_nivel.activo },
       {
         where: { cargo_nivel_id: cargo_nivel_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

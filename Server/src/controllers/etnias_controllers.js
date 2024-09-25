@@ -140,8 +140,8 @@ const modificarEtnia = async (etnia_id, nombre) => {
         where: {
           etnia_id: etnia_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -172,8 +172,8 @@ const inactivarEtnia = async (etnia_id) => {
       { activo: !etnia.activo },
       {
         where: { etnia_id: etnia_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();

@@ -122,8 +122,8 @@ const modificarDepartamento = async (
         where: {
           departamento_id: departamento_id,
         },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -154,8 +154,8 @@ const inactivarDepartamento = async (departamento_id) => {
       { activo: !departamento.activo },
       {
         where: { departamento_id: departamento_id },
-      },
-      { transaction: t }
+        transaction: t,
+      }
     );
 
     await t.commit();
