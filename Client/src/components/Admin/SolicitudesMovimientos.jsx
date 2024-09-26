@@ -569,23 +569,38 @@ export function SolicitudesMovimientos() {
             : "hidden"
         }
       >
-        <div className="p-4 max-w-2xl max-h-full sm:min-w-[600px]">
+        <div className="w-[80%]">
           {/* <!-- Modal content --> */}
           <div className="bg-[#FBFBFD] rounded-lg shadow border-4">
             {/* <!-- Modal header --> */}
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-              <h3 className="sm:text-lg font-semibold text-gray-900">
-                {/* {sugerencia.Sede?.Empresa?.nombre} - Sede{" "}
-                {sugerencia.Sede?.nombre} */}
-              </h3>
+              <div className="flex-grow">
+              <span>
+                <b>Inmarlaca Corporativo</b>{" "}
+              </span>
+              <span>
+                <b>Astrid Molero</b>{" "}
+              </span>
+              </div>
+             
+              <div className="flex gap-4">
+                <Button className="m-0 w-auto">Aprobar</Button>
+                <Button className="m-0 w-auto">Denegar</Button>
+                <Button
+                  className="m-0 w-auto"
+                  onClick={() => {
+                    setShowModal(0);
+                  }}
+                >
+                  Cerrar
+                </Button>
+              </div>
             </div>
+
             {/* <!-- Modal body --> */}
             <div className="p-4 md:p-5 space-y-4">
               <span>
-                <p>Nombre</p>
-              </span>
-              <span>
-                <b>Tipo De Movimiento:</b>{" "}
+                <b>Tipo De Movimiento:</b>
                 {/* {sugerencia.Tipos_Sugerencia?.descripcion} */}
                 promocion
               </span>
@@ -615,16 +630,6 @@ export function SolicitudesMovimientos() {
               </span>
             </div>
             {/* <!-- Modal footer --> */}
-            <div className="flex items-center justify-center border-t border-gray-200 rounded-b">
-              <Button
-                className="w-auto"
-                onClick={() => {
-                  setShowModal(0);
-                }}
-              >
-                Cerrar
-              </Button>
-            </div>
           </div>
         </div>
       </div>
