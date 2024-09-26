@@ -13,6 +13,7 @@ import empresas from "./empresas/empresasSlices";
 import estados from "./estados/estadosSlices";
 import etnias from "./etnias/etniasSlices";
 import idiomas from "./idiomas/idiomasSlices";
+import movimientos from "./movimientos/movimientosSlices";
 import municipios from "./municipios/municipiosSlices";
 import paises from "./paises/paisesSlices";
 import parroquias from "./parroquias/parroquiasSlices";
@@ -42,6 +43,7 @@ const rootReducer = combineReducers({
   estados: estados,
   etnias: etnias,
   idiomas: idiomas,
+  movimientos: movimientos,
   municipios: municipios,
   paises: paises,
   parroquias: parroquias,

@@ -58,13 +58,17 @@ const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
             include: {
               model: Empresas,
               attributes: ["empresa_id", "nombre"],
-              where: filtros.empresa_id
-                ? { empresa_id: filtros.empresa_id }
-                : {},
+              where:
+                filtros.empresa_id && filtros.empresa_id !== "Seleccione"
+                  ? { empresa_id: filtros.empresa_id }
+                  : {},
               include: {
                 model: Sedes,
                 attributes: ["sede_id", "nombre"],
-                where: filtros.sede_id ? { sede_id: filtros.sede_id } : {},
+                where:
+                  filtros.sede_id && filtros.sede_id !== "Seleccione"
+                    ? { sede_id: filtros.sede_id }
+                    : {},
               },
             },
           },
@@ -104,11 +108,13 @@ const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
           {
             model: Clases_Movimientos,
             attributes: ["clase_movimiento_id", "descripcion"],
-            where: filtros.clase_movimiento_id
-              ? {
-                  clase_movimiento_id: filtros.clase_movimiento_id,
-                }
-              : {},
+            where:
+              filtros.clase_movimiento_id &&
+              filtros.clase_movimiento_id !== "Seleccione"
+                ? {
+                    clase_movimiento_id: filtros.clase_movimiento_id,
+                  }
+                : {},
           },
           {
             model: Cargos_Niveles,
@@ -310,12 +316,20 @@ const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
             },
           },
         ],
+        where:
+          filtros.estado_solicitud && filtros.estado_solicitud !== "Seleccione"
+            ? {
+                estado_solicitud: filtros.estado_solicitud,
+              }
+            : {},
         distinct: true,
         order: [
           filtros.orden_campo === "apellidos"
             ? [Empleados, "apellidos", filtros.orden_por]
             : filtros.orden_campo === "updatedAt"
             ? ["updatedAt", filtros.orden_por]
+            : filtros.orden_campo === "createdAt"
+            ? ["createdAt", filtros.orden_por]
             : null,
         ].filter(Boolean),
       });
