@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
-  getAllEmpleados,
-  getEmpleadoDetail,
+  getAllMovimientos,
+  // getMovimientoDetail,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
-} from "../../redux/empleados/empleadosActions";
+  deleteFiltros,
+} from "../../redux/movimientos/movimientosActions";
+
+import { getAllClasesMovimientosActivas } from "../../redux/clasesMovimientos/clasesMovimientosActions";
 
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
 
@@ -24,13 +26,7 @@ import {
   infoPaginador,
 } from "../../utils/paginacion";
 
-import {
-  getAllSugerencias,
-  getSugerencia,
-  deleteFiltros,
-} from "../../redux/sugerencias/sugerenciasActions";
-
-import { DDMMYYYY } from "../../utils/formatearFecha";
+import { DDMMYYYYHHMM2 } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
@@ -38,52 +34,42 @@ export function SolicitudesMovimientos() {
   const tableRef = useRef(null);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  // const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const token = useSelector((state) => state.empleados.token);
 
-  const empleado = useSelector((state) => state.empleados.empleado);
+  const movimiento = useSelector((state) => state.movimientos.movimientoDetail);
 
-  const empleados = useSelector((state) => state.empleados.empleados);
+  const movimientos = useSelector((state) => state.movimientos.movimientos);
 
-  const paginaActual = useSelector((state) => state.empleados.paginaActual);
+  const paginaActual = useSelector((state) => state.movimientos.paginaActual);
 
   const empresas_activas = useSelector(
     (state) => state.empresas.empresas_activas
+  );
+  const clases_movimientos_activas = useSelector(
+    (state) => state.clases_movimientos.clases_movimientos_activas
   );
 
   const sedes_activas = useSelector((state) => state.sedes.sedes_activas);
 
   const limitePorPagina = useSelector(
-    (state) => state.empleados.limitePorPagina
+    (state) => state.movimientos.limitePorPagina
   );
 
-  const filtros = useSelector((state) => state.empleados.filtros);
+  const filtros = useSelector((state) => state.movimientos.filtros);
 
   const [showModal, setShowModal] = useState(false);
 
   const [filters, setFilters] = useState({
     numero_identificacion: filtros.numero_identificacion || "",
+    apellidos: filtros.numero_identificacion || "",
+    clase_movimiento_id: filtros.clase_movimiento_id || "Seleccione",
+    estado_solicitud: filtros.estado_solicitud || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
-    empresa_id: empleado.empresa_id,
-    sede_id: filtros.sede_id || "",
+    empresa_id: filtros.empresa_id || "Seleccione",
+    sede_id: filtros.sede_id || "Seleccione",
   });
-
-  const [datosMovimiento, setDatosMovimiento] = useState({
-    numero_identificacion_solicitante: "",
-    tipo_identificacion_solicitante: "V",
-  });
-
-  const [errors, setErrors] = useState({});
-
-  const handleValidate = (e) => {
-    const { name, value } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (Input).
-
-    setDatosMovimiento({ ...datosMovimiento, [name]: value }); //... y el nombre del estado hace que se mantenga la información del estado
-  };
 
   const handleChangePagination = (e) => {
     const { value } = e.target;
@@ -114,27 +100,19 @@ export function SolicitudesMovimientos() {
     setFilters({
       numero_identificacion: "",
       apellidos: "",
-      activo: "",
+      clase_movimiento_id: "Seleccione",
+      estado_solicitud: "",
       orden_campo: "",
       orden_por: "",
-      empresa_id: empleado.empresa_id,
-      empresas_activas: "",
-      sedes_activas: "",
-      getAllSedesActivas: "",
-      sede_id: "",
+      empresa_id: "Seleccione",
+      sede_id: "Seleccione",
     });
 
     const buscarPor = document.getElementById("buscar_por");
     const inputSearch = document.getElementById("input_search");
-    const activo = document.getElementById("activo");
-    const empresa_id = document.getElementById("empresa_id");
-    const sede_id = document.getElementById("sede_id");
 
     buscarPor.selectedIndex = 0;
     inputSearch.value = "";
-    activo.selectedIndex = 0;
-    empresa_id.selectedIndex = 0;
-    sede_id.selectedIndex = 0;
 
     dispatch(deleteFiltros());
   };
@@ -149,9 +127,11 @@ export function SolicitudesMovimientos() {
     window.scroll(0, 0);
 
     handleFind();
-    dispatch(getAllEmpresasActivas(token));
 
-    document.title = "Grupo Lamar - Consulta Movimientos (Admin)";
+    dispatch(getAllEmpresasActivas(token));
+    dispatch(getAllClasesMovimientosActivas(token));
+
+    document.title = "Grupo Lamar - Solicitudes Movimientos (Admin)";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -159,19 +139,8 @@ export function SolicitudesMovimientos() {
   }, []);
 
   useEffect(() => {
-    dispatch(getAllEmpleados(token, filtros, paginaActual, limitePorPagina));
+    dispatch(getAllMovimientos(token, filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
-  //revisar esto
-
-  const handleVerDetalles1 = (empleado_id) => {
-    dispatch(getEmpleadoDetail(token, empleado_id))
-      .then(() => {
-        navigate(`/admin/empleado/${empleado_id}`);
-      })
-      .catch((error) => {
-        return error;
-      });
-  };
 
   useEffect(() => {
     if (filters.empresa_id && filters.empresa_id !== "Seleccione") {
@@ -182,11 +151,6 @@ export function SolicitudesMovimientos() {
       setFilters({ ...filters, sede_id: "Seleccione" });
     }
   }, [filters.empresa_id]);
-  //Nuevo codigo
-
-  useEffect(() => {
-    dispatch(getAllSugerencias(token, filtros, paginaActual, limitePorPagina));
-  }, [filtros, paginaActual, limitePorPagina]);
 
   const handleVerDetalles = (movimiento_id) => {
     setShowModal(true);
@@ -244,7 +208,7 @@ export function SolicitudesMovimientos() {
   };
 
   const paginaSiguiente = () => {
-    if (paginaActual < empleados.cantidadPaginas) {
+    if (paginaActual < movimientos.cantidadPaginas) {
       dispatch(postPaginaActual(paginaActual + 1)).then(() => {
         tableRef.current.scrollIntoView({ behavior: "smooth" });
       });
@@ -291,74 +255,95 @@ export function SolicitudesMovimientos() {
 
         {/* Clase de Movimiento */}
         <div>
-          <Label htmlFor="clase_movimiento">Clase De Movimiento</Label>
+          <Label htmlFor="clase_movimiento_id">Clase De Movimiento</Label>
           <Select
-            id="clase_movimiento"
-            name="clase_movimiento"
-            onChange={handleValidate}
+            id="clase_movimiento_id"
+            name="clase_movimiento_id"
+            onChange={handleChangeFilters}
+            value={filters.clase_movimiento_id}
           >
             <option value="Seleccione">Seleccione</option>
-            <option value="Transferencia entre Empresas">
-              Transferencia entre Empresas
-            </option>
-            <option value="Reasignacion de funciones">
-              Reasignacion de funciones
-            </option>
-            <option value="redenominacion">Redenominacion de cargo</option>
-            <option value="promocion">Promoción</option>
-            <option value="cambio_sede_misma_empresa">
-              Cambio de sede (misma empresa)
-            </option>
-            <option value="cambio_dpto_misma_empresa">
-              Cambio de departamento (misma empresa)
-            </option>
-            <option value="ajuste_sueldo">Ajuste de sueldo</option>
-            <option value="cambio_nomina">Cambio de nómina</option>
-            <option value="otro">Otro</option>
+            {clases_movimientos_activas?.length
+              ? clases_movimientos_activas?.map((clase_movimiento, i) => (
+                  <option
+                    key={i}
+                    name={clase_movimiento.descripcion}
+                    value={clase_movimiento.clase_movimiento_id}
+                  >
+                    {clase_movimiento.descripcion}
+                  </option>
+                ))
+              : null}
           </Select>
         </div>
 
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
-          <div className="flex flex-col place-content-between">
-            <Label htmlFor="empresa_id">Empresa</Label>
-            <Select
-              id="empresa_id"
-              name="empresa_id"
-              defaultValue="Seleccione"
-              onChange={handleChangeFilters}
-            >
-              <option>Seleccione</option>
-              {empresas_activas?.length
-                ? empresas_activas?.map((empresa, i) => (
-                    <option
-                      key={i}
-                      name={empresa.nombre}
-                      value={empresa.empresa_id}
-                    >
-                      {empresa.nombre}
-                    </option>
-                  ))
-                : null}
-            </Select>
-          </div>
-          <div className="flex flex-col place-content-between">
-            <Label htmlFor="sede_id">Sede</Label>
-            <Select
-              id="sede_id"
-              name="sede_id"
-              value={filters.sede_id}
-              onChange={handleChangeFilters}
-            >
-              <option>Seleccione</option>
-              {sedes_activas?.length
-                ? sedes_activas?.map((sede, i) => (
-                    <option key={i} name={sede.nombre} value={sede.sede_id}>
-                      {sede.nombre}
-                    </option>
-                  ))
-                : null}
-            </Select>
-          </div>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="empresa_id">Empresa</Label>
+          <Select
+            id="empresa_id"
+            name="empresa_id"
+            value={filters.empresa_id}
+            onChange={handleChangeFilters}
+          >
+            <option>Seleccione</option>
+            {empresas_activas?.length
+              ? empresas_activas?.map((empresa, i) => (
+                  <option
+                    key={i}
+                    name={empresa.nombre}
+                    value={empresa.empresa_id}
+                  >
+                    {empresa.nombre}
+                  </option>
+                ))
+              : null}
+          </Select>
+        </div>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="sede_id">Sede</Label>
+          <Select
+            id="sede_id"
+            name="sede_id"
+            value={filters.sede_id}
+            onChange={handleChangeFilters}
+          >
+            <option>Seleccione</option>
+            {sedes_activas?.length
+              ? sedes_activas?.map((sede, i) => (
+                  <option key={i} name={sede.nombre} value={sede.sede_id}>
+                    {sede.nombre}
+                  </option>
+                ))
+              : null}
+          </Select>
+        </div>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="estado_solicitud">Estado de la solicitud</Label>
+          <Select
+            id="estado_solicitud"
+            name="estado_solicitud"
+            value={filters.estado_solicitud}
+            onChange={handleChangeFilters}
+          >
+            <option value="">Todos</option>
+            <option value="Pendiente por revisar">Pendiente por revisar</option>
+            <option value="Aprobada">Aprobada</option>
+            <option value="Denegada">Denegada</option>
+          </Select>
+        </div>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="limitePorPagina">Límite por página</Label>
+          <Select
+            id="limitePorPagina"
+            name="limitePorPagina"
+            defaultValue={limitePorPagina}
+            onChange={handleChangePagination}
+          >
+            <option value="2">2</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+          </Select>
         </div>
 
         <div
@@ -410,36 +395,100 @@ export function SolicitudesMovimientos() {
                   <div className="flex items-center">Número identificación</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Tipo Movimiento</div>
+                  <div className="flex items-center">Clase Movimiento</div>
                 </th>
-
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">
+                    <span
+                      id="createdAt"
+                      name="createdAt"
+                      onClick={changeOrder}
+                      className="text-black hover:text-black flex items-center"
+                    >
+                      Solicitado
+                      <img
+                        name="createdAt"
+                        src={
+                          filters.orden_campo === "createdAt" &&
+                          filters.orden_por === "ASC"
+                            ? "./SortAZ.svg"
+                            : filters.orden_campo === "createdAt" &&
+                              filters.orden_por === "DESC"
+                            ? "./SortZA.svg"
+                            : "./SortDefault.svg"
+                        }
+                        alt="Icon Sort"
+                        className="w-5 h-5 ms-1.5 cursor-pointer"
+                      />
+                    </span>
+                  </div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Estado</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">
+                    <span
+                      id="updatedAt"
+                      name="updatedAt"
+                      onClick={changeOrder}
+                      className="text-black hover:text-black flex items-center"
+                    >
+                      Revisado
+                      <img
+                        name="updatedAt"
+                        src={
+                          filters.orden_campo === "updatedAt" &&
+                          filters.orden_por === "ASC"
+                            ? "./SortAZ.svg"
+                            : filters.orden_campo === "updatedAt" &&
+                              filters.orden_por === "DESC"
+                            ? "./SortZA.svg"
+                            : "./SortDefault.svg"
+                        }
+                        alt="Icon Sort"
+                        className="w-5 h-5 ms-1.5 cursor-pointer"
+                      />
+                    </span>
+                  </div>
+                </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {empleados === "No existen empleados" ||
-              !empleados.empleados?.length ? (
+              {movimientos === "No existen movimientos" ||
+              !movimientos.movimientos?.length ? (
                 <tr>
                   <td colSpan="4" className="text-center p-2">
-                    <p>¡No existen registros de empleados!</p>
+                    <p>¡No existen registros de movimientos!</p>
                   </td>
                 </tr>
               ) : (
-                empleados.empleados?.map((empleado, i) => (
+                movimientos.movimientos?.map((movimiento, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
                     <td className="px-4 py-4">
-                      {empleado.apellidos} {empleado.nombres}
+                      {movimiento.Empleado.apellidos}{" "}
+                      {movimiento.Empleado.nombres}
                     </td>
                     <td className="px-4 py-4">
-                      {empleado.tipo_identificacion}
-                      {empleado.numero_identificacion}
+                      {movimiento.Empleado.tipo_identificacion}
+                      {movimiento.Empleado.numero_identificacion}
                     </td>
-                    <td className="px-4 py-4">Tipo de movimiento</td>
+                    <td className="px-4 py-4">
+                      {movimiento.Clases_Movimiento.descripcion}
+                    </td>
+                    <td className="px-4 py-4">
+                      {DDMMYYYYHHMM2(movimiento.createdAt)}
+                    </td>
+                    <td className="px-4 py-4">{movimiento.estado_solicitud}</td>
+                    <td className="px-4 py-4">
+                      {DDMMYYYYHHMM2(movimiento.updatedAt)}
+                    </td>
                     <td className="px-4 py-4 flex gap-2">
                       <Button
                         className="m-0 w-auto text-xs"
@@ -459,7 +508,7 @@ export function SolicitudesMovimientos() {
           {infoPaginador(
             paginaActual,
             limitePorPagina,
-            empleados.totalRegistros
+            movimientos.totalRegistros
           )}
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
@@ -477,7 +526,7 @@ export function SolicitudesMovimientos() {
             </li>
             {calcularPaginasARenderizar(
               paginaActual,
-              empleados.cantidadPaginas
+              movimientos.cantidadPaginas
             ).map((page) => (
               <li key={page}>
                 <span
@@ -501,7 +550,7 @@ export function SolicitudesMovimientos() {
                 onClick={paginaSiguiente}
                 className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
-                  paginaActual >= empleados.cantidadPaginas
+                  paginaActual >= movimientos.cantidadPaginas
                     ? "cursor-default"
                     : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}
