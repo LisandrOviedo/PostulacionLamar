@@ -352,7 +352,283 @@ const traerMovimiento = async (movimiento_id) => {
   }
 
   try {
-    return await Movimientos.findByPk(movimiento_id);
+    const movimiento = await Movimientos.findByPk(movimiento_id, {
+      attributes: {
+        exclude: [
+          "empleado_id",
+          "cargo_actual_id",
+          "clase_movimiento_id",
+          "cargo_nivel_id",
+          "solicitante_id",
+          "supervisor_id",
+          "gerencia_id",
+          "tthh_id",
+          "revisado_por_id",
+        ],
+      },
+      include: [
+        {
+          model: Empleados,
+          attributes: [
+            "empleado_id",
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+          include: {
+            model: Empresas,
+            attributes: ["empresa_id", "nombre"],
+            include: {
+              model: Sedes,
+              attributes: ["sede_id", "nombre"],
+            },
+          },
+        },
+        {
+          model: Cargos_Empleados,
+          as: "Cargo_Actual",
+          attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+          include: [
+            {
+              model: Cargos_Niveles,
+              attributes: ["cargo_nivel_id", "nivel"],
+              include: [
+                {
+                  model: Cargos,
+                  attributes: [
+                    "cargo_id",
+                    "descripcion",
+                    "descripcion_cargo_antiguo",
+                  ],
+                  include: [
+                    {
+                      model: Departamentos,
+                      attributes: ["departamento_id", "nombre"],
+                      include: [
+                        {
+                          model: Empresas,
+                          attributes: ["empresa_id", "nombre"],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Clases_Movimientos,
+          attributes: ["clase_movimiento_id", "descripcion"],
+        },
+        {
+          model: Cargos_Niveles,
+          as: "Nuevo_Cargo",
+          attributes: ["cargo_nivel_id", "nivel"],
+          include: [
+            {
+              model: Cargos,
+              attributes: [
+                "cargo_id",
+                "descripcion",
+                "descripcion_cargo_antiguo",
+              ],
+              include: [
+                {
+                  model: Departamentos,
+                  attributes: ["departamento_id", "nombre"],
+                  include: [
+                    {
+                      model: Empresas,
+                      attributes: ["empresa_id", "nombre"],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Empleados,
+          as: "Solicitante",
+          attributes: [
+            "empleado_id",
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+          include: {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        {
+          model: Empleados,
+          as: "Supervisor",
+          attributes: [
+            "empleado_id",
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+          include: {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        {
+          model: Empleados,
+          as: "Gerencia",
+          attributes: [
+            "empleado_id",
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+          include: {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        {
+          model: Empleados,
+          as: "TTHH",
+          attributes: [
+            "empleado_id",
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+          include: {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    if (!movimiento) {
+      throw new Error(`No existe ese movimiento`);
+    }
+
+    return movimiento;
   } catch (error) {
     throw new Error(`Error al traer el movimiento: ${error.message}`);
   }
