@@ -393,14 +393,14 @@ export function BarraNavegacion() {
                   </li>
                   <li>
                     <Link
-                      to="/admin/consultaMovimientos"
+                      to="/admin/solicitudesMovimientos"
                       className="text-white hover:text-[#F0C95C]"
                       onClick={() => {
                         toggleMenuBurger();
                         toggleMenu({});
                       }}
                     >
-                      Consulta Movimientos
+                     Solicitudes Movimientos
                     </Link>
                   </li>
 

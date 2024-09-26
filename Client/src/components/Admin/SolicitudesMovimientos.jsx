@@ -8,8 +8,14 @@ import {
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
-  deleteFiltros,
 } from "../../redux/empleados/empleadosActions";
+
+import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
+
+import {
+  getAllSedesActivas,
+  resetSedesActivas,
+} from "../../redux/sedes/sedesActions";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
@@ -18,11 +24,17 @@ import {
   infoPaginador,
 } from "../../utils/paginacion";
 
+import {
+  getAllSugerencias,
+  getSugerencia,
+  deleteFiltros,
+} from "../../redux/sugerencias/sugerenciasActions";
+
 import { DDMMYYYY } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
-export function ConsultaMovimientos() {
+export function SolicitudesMovimientos() {
   const tableRef = useRef(null);
 
   const dispatch = useDispatch();
@@ -38,17 +50,26 @@ export function ConsultaMovimientos() {
 
   const paginaActual = useSelector((state) => state.empleados.paginaActual);
 
+  const empresas_activas = useSelector(
+    (state) => state.empresas.empresas_activas
+  );
+
+  const sedes_activas = useSelector((state) => state.sedes.sedes_activas);
+
   const limitePorPagina = useSelector(
     (state) => state.empleados.limitePorPagina
   );
 
   const filtros = useSelector((state) => state.empleados.filtros);
 
+  const [showModal, setShowModal] = useState(false);
+
   const [filters, setFilters] = useState({
     numero_identificacion: filtros.numero_identificacion || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
     empresa_id: empleado.empresa_id,
+    sede_id: filtros.sede_id || "",
   });
 
   const [datosMovimiento, setDatosMovimiento] = useState({
@@ -62,8 +83,6 @@ export function ConsultaMovimientos() {
     const { name, value } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (Input).
 
     setDatosMovimiento({ ...datosMovimiento, [name]: value }); //... y el nombre del estado hace que se mantenga la información del estado
-
-    setErrors(validations({ ...datosMovimiento, [name]: value }));
   };
 
   const handleChangePagination = (e) => {
@@ -99,15 +118,23 @@ export function ConsultaMovimientos() {
       orden_campo: "",
       orden_por: "",
       empresa_id: empleado.empresa_id,
+      empresas_activas: "",
+      sedes_activas: "",
+      getAllSedesActivas: "",
+      sede_id: "",
     });
 
     const buscarPor = document.getElementById("buscar_por");
     const inputSearch = document.getElementById("input_search");
     const activo = document.getElementById("activo");
+    const empresa_id = document.getElementById("empresa_id");
+    const sede_id = document.getElementById("sede_id");
 
     buscarPor.selectedIndex = 0;
     inputSearch.value = "";
     activo.selectedIndex = 0;
+    empresa_id.selectedIndex = 0;
+    sede_id.selectedIndex = 0;
 
     dispatch(deleteFiltros());
   };
@@ -122,6 +149,7 @@ export function ConsultaMovimientos() {
     window.scroll(0, 0);
 
     handleFind();
+    dispatch(getAllEmpresasActivas(token));
 
     document.title = "Grupo Lamar - Consulta Movimientos (Admin)";
 
@@ -133,29 +161,9 @@ export function ConsultaMovimientos() {
   useEffect(() => {
     dispatch(getAllEmpleados(token, filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
+  //revisar esto
 
-  // const handleVerFicha = (empleado_id, identificacion) => {
-  //   dispatch(postFichaIngresoPDF(token, empleado_id, identificacion)).then(
-  //     (response) => {
-  //       Swal.fire({
-  //         text: `Ficha de ingreso del empleado ${identificacion} generada ¿Deseas abrirla?`,
-  //         icon: "info",
-  //         showCancelButton: true,
-  //         confirmButtonColor: "#3085d6",
-  //         cancelButtonColor: "#d33",
-  //         confirmButtonText: "Si",
-  //         cancelButtonText: "No",
-  //       }).then((result) => {
-  //         if (result.isConfirmed) {
-  //           const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${response.data}`;
-  //           window.open(URL_GET_PDF, "_blank");
-  //         }
-  //       });
-  //     }
-  //   );
-  // };
-
-  const handleVerDetalles = (empleado_id) => {
+  const handleVerDetalles1 = (empleado_id) => {
     dispatch(getEmpleadoDetail(token, empleado_id))
       .then(() => {
         navigate(`/admin/empleado/${empleado_id}`);
@@ -164,6 +172,28 @@ export function ConsultaMovimientos() {
         return error;
       });
   };
+
+  useEffect(() => {
+    if (filters.empresa_id && filters.empresa_id !== "Seleccione") {
+      setFilters({ ...filters, sede_id: "Seleccione" });
+      dispatch(getAllSedesActivas(filters.empresa_id));
+    } else {
+      dispatch(resetSedesActivas());
+      setFilters({ ...filters, sede_id: "Seleccione" });
+    }
+  }, [filters.empresa_id]);
+  //Nuevo codigo
+
+  useEffect(() => {
+    dispatch(getAllSugerencias(token, filtros, paginaActual, limitePorPagina));
+  }, [filtros, paginaActual, limitePorPagina]);
+
+  const handleVerDetalles = (movimiento_id) => {
+    setShowModal(true);
+
+    // dispatch(getSugerencia(token, sugerencia_id, empleado.empleado_id));
+  };
+  //Finaliza nuevo codigo
 
   const changeOrder = (e) => {
     const { name } = e.target;
@@ -224,7 +254,7 @@ export function ConsultaMovimientos() {
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <Title>Consulta Movimientos</Title>
+        <Title>Solicitudes Movimientos</Title>
       </div>
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
         <div className="flex flex-col place-content-between">
@@ -288,20 +318,49 @@ export function ConsultaMovimientos() {
           </Select>
         </div>
 
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="limitePorPagina">Límite por página</Label>
-          <Select
-            id="limitePorPagina"
-            name="limitePorPagina"
-            defaultValue={limitePorPagina}
-            onChange={handleChangePagination}
-          >
-            <option value="2">2</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="30">30</option>
-          </Select>
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
+          <div className="flex flex-col place-content-between">
+            <Label htmlFor="empresa_id">Empresa</Label>
+            <Select
+              id="empresa_id"
+              name="empresa_id"
+              defaultValue="Seleccione"
+              onChange={handleChangeFilters}
+            >
+              <option>Seleccione</option>
+              {empresas_activas?.length
+                ? empresas_activas?.map((empresa, i) => (
+                    <option
+                      key={i}
+                      name={empresa.nombre}
+                      value={empresa.empresa_id}
+                    >
+                      {empresa.nombre}
+                    </option>
+                  ))
+                : null}
+            </Select>
+          </div>
+          <div className="flex flex-col place-content-between">
+            <Label htmlFor="sede_id">Sede</Label>
+            <Select
+              id="sede_id"
+              name="sede_id"
+              value={filters.sede_id}
+              onChange={handleChangeFilters}
+            >
+              <option>Seleccione</option>
+              {sedes_activas?.length
+                ? sedes_activas?.map((sede, i) => (
+                    <option key={i} name={sede.nombre} value={sede.sede_id}>
+                      {sede.nombre}
+                    </option>
+                  ))
+                : null}
+            </Select>
+          </div>
         </div>
+
         <div
           id="tabla"
           ref={tableRef}
@@ -315,8 +374,9 @@ export function ConsultaMovimientos() {
           </Button>
         </div>
       </div>
+
       <div className="mt-8 sm:mx-auto w-full">
-        <div className=" overflow-x-auto shadow-md rounded-lg">
+        <div className="overflow-x-auto shadow-md rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400">
             <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
               <tr>
@@ -362,8 +422,8 @@ export function ConsultaMovimientos() {
               {empleados === "No existen empleados" ||
               !empleados.empleados?.length ? (
                 <tr>
-                  <td colSpan="9" className="text-center p-2">
-                    <p>¡No existen registros!</p>
+                  <td colSpan="4" className="text-center p-2">
+                    <p>¡No existen registros de empleados!</p>
                   </td>
                 </tr>
               ) : (
@@ -379,12 +439,11 @@ export function ConsultaMovimientos() {
                       {empleado.tipo_identificacion}
                       {empleado.numero_identificacion}
                     </td>
-
-                    <td className="px-4 py-4">{/* tipo movimiento */}</td>
+                    <td className="px-4 py-4">Tipo de movimiento</td>
                     <td className="px-4 py-4 flex gap-2">
                       <Button
                         className="m-0 w-auto text-xs"
-                        onClick={() => handleVerDetalles(empleado.empleado_id)}
+                        onClick={() => handleVerDetalles()}
                       >
                         Detalles
                       </Button>
@@ -395,6 +454,7 @@ export function ConsultaMovimientos() {
             </tbody>
           </table>
         </div>
+
         <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">
           {infoPaginador(
             paginaActual,
@@ -451,6 +511,73 @@ export function ConsultaMovimientos() {
             </li>
           </ul>
         </nav>
+      </div>
+      {/* Main modal */}
+      <div
+        className={
+          showModal
+            ? "fixed z-50 inset-0 flex items-center justify-center"
+            : "hidden"
+        }
+      >
+        <div className="p-4 max-w-2xl max-h-full sm:min-w-[600px]">
+          {/* <!-- Modal content --> */}
+          <div className="bg-[#FBFBFD] rounded-lg shadow border-4">
+            {/* <!-- Modal header --> */}
+            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+              <h3 className="sm:text-lg font-semibold text-gray-900">
+                {/* {sugerencia.Sede?.Empresa?.nombre} - Sede{" "}
+                {sugerencia.Sede?.nombre} */}
+              </h3>
+            </div>
+            {/* <!-- Modal body --> */}
+            <div className="p-4 md:p-5 space-y-4">
+              <span>
+                <p>Nombre</p>
+              </span>
+              <span>
+                <b>Tipo De Movimiento:</b>{" "}
+                {/* {sugerencia.Tipos_Sugerencia?.descripcion} */}
+                promocion
+              </span>
+
+              <p className="text-base leading-relaxed break-words">
+                <span>
+                  <b>Descripción: </b>
+                </span>
+                {/* {sugerencia.descripcion} */}
+              </p>
+              <br />
+              <span>
+                <b>Revisado por: </b>
+                {/* {sugerencia.Empleado?.nombres ? (
+                  <>
+                    {sugerencia.Empleado?.nombres}{" "}
+                    {sugerencia.Empleado?.apellidos} (
+                    {sugerencia.Empleado?.tipo_identificacion}-
+                    {sugerencia.Empleado?.numero_identificacion})
+                  </>
+                ) : (
+                  ""
+                )} */}
+              </span>
+              <span>
+                <p></p>
+              </span>
+            </div>
+            {/* <!-- Modal footer --> */}
+            <div className="flex items-center justify-center border-t border-gray-200 rounded-b">
+              <Button
+                className="w-auto"
+                onClick={() => {
+                  setShowModal(0);
+                }}
+              >
+                Cerrar
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

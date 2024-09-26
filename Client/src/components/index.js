@@ -20,7 +20,7 @@ import { PanelAdmin } from "./Admin/PanelAdmin";
 import { Postulaciones } from "./Admin/Postulaciones";
 import { PruebasEmpleados } from "./Admin/PruebasEmpleados";
 import { Sugerencias } from "./Admin/Sugerencias";
-import {ConsultaMovimientos} from "./Admin/ConsultaMovimientos";
+import { SolicitudesMovimientos } from "./Admin/SolicitudesMovimientos";
 
 export {
   AccesoEmpleado,
@@ -43,6 +43,6 @@ export {
   PanelAdmin,
   Postulaciones,
   PruebasEmpleados,
+  SolicitudesMovimientos,
   Sugerencias,
-  ConsultaMovimientos
 };
