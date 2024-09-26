@@ -852,8 +852,8 @@ export function Movimientos() {
         <div>
           <Span>Cargo</Span>
           <span>
-            {empleado?.Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion
-              ? `${empleado?.Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion} ${empleado?.Cargos_Empleados[0]?.Cargos_Nivele.nivel}`
+            {empleado?.Cargos_Empleados && empleado.Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion
+              ? `${empleado?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} ${empleado?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel}`
               : "-"}
           </span>
         </div>
