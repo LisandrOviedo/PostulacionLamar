@@ -50,6 +50,8 @@ import { MdCancel } from "react-icons/md";
 
 import { calcularAntiguedad } from "../../utils/formatearFecha";
 
+import Swal from "sweetalert2";
+
 export function Movimientos() {
   //dispatch es esencial para comunicar cambios en el estado de tu aplicación a través de acciones
   const dispatch = useDispatch();
@@ -89,7 +91,7 @@ export function Movimientos() {
     duracion_movimiento: "Permanente",
     duracion_movimiento_dias: "1",
     duracion_periodo_prueba: "1",
-    sueldo: "1.00",
+    sueldo: "",
     tipo_identificacion_supervisor: "V",
     tipo_identificacion_gerencia: "V",
     tipo_identificacion_tthh: "V",
@@ -166,10 +168,6 @@ export function Movimientos() {
   const handleValidate = (e) => {
     const { name, value, options } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (Input).
 
-    setDatosMovimiento({ ...datosMovimiento, [name]: value }); //... y el nombre del estado hace que se mantenga la información del estado
-
-    setErrors(validations({ ...datosMovimiento, [name]: value }));
-
     if (e.target.tagName === "SELECT" && name === "clase_movimiento_id") {
       if (
         options[e.target.selectedIndex].text === "Transferencia entre empresas"
@@ -183,16 +181,22 @@ export function Movimientos() {
         });
       }
     }
+
+    setDatosMovimiento({ ...datosMovimiento, [name]: value }); //... y el nombre del estado hace que se mantenga la información del estado
+
+    setErrors(validations({ ...datosMovimiento, [name]: value }));
   };
 
   const handleConvertirADecimales = (e) => {
     const { name, value } = e.target;
 
-    const numeroFormateado = Number.parseFloat(value).toFixed(2);
+    if (value) {
+      const numeroFormateado = Number.parseFloat(value).toFixed(2);
 
-    setDatosMovimiento({ ...datosMovimiento, [name]: numeroFormateado });
+      setDatosMovimiento({ ...datosMovimiento, [name]: numeroFormateado });
 
-    setErrors(validations({ ...datosMovimiento, [name]: numeroFormateado }));
+      setErrors(validations({ ...datosMovimiento, [name]: numeroFormateado }));
+    }
   };
 
   const handleCheckedValidate = (event) => {
@@ -213,6 +217,7 @@ export function Movimientos() {
       setDatosMovimiento({
         ...datosMovimiento,
         empleado_id: "",
+        cargo_empleado_id: "",
       });
 
       await getEmpleadoExistencia(
@@ -226,6 +231,7 @@ export function Movimientos() {
           setDatosMovimiento({
             ...datosMovimiento,
             empleado_id: data.empleado_id,
+            cargo_empleado_id: data.Cargos_Empleados[0].cargo_empleado_id,
           });
         }
       });
@@ -329,7 +335,28 @@ export function Movimientos() {
   };
 
   const handlePostMovimiento = async () => {
-    await postMovimiento(token, datosMovimiento);
+    const select = document.getElementById("clase_movimiento_id");
+
+    const opcionSeleccionada = select.options[select.selectedIndex];
+
+    const tipoSeleccionado = opcionSeleccionada.getAttribute("name");
+
+    const sueldo = document.getElementById("sueldo").value;
+
+    if (tipoSeleccionado !== "Transferencia entre empresas" && !sueldo) {
+      Swal.fire({
+        title: "Oops...",
+        text: "Datos faltantes",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+    } else {
+      await postMovimiento(token, datosMovimiento).then(() => {
+        window.scroll(0, 0);
+        window.location.reload();
+      });
+    }
   };
 
   //Este es el código que renderiza un formulario para los movimientos.

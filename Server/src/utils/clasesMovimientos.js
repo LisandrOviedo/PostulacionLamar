@@ -7,7 +7,6 @@ const clasesMovimientos = [
   "Cambio de departamento (misma empresa)",
   "Ajuste de sueldo",
   "Cambio de nómina",
-  "Periodo de prueba",
 ];
 
 module.exports = {

@@ -12,6 +12,11 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    cargo_actual_id: {
+      // Campo relacionado
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     clase_movimiento_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
@@ -68,7 +73,7 @@ module.exports = (sequelize) => {
     },
     sueldo: {
       type: DataTypes.DECIMAL(11, 2),
-      allowNull: false,
+      allowNull: true,
     },
     codigo_nomina: {
       type: DataTypes.STRING(10),
@@ -97,6 +102,11 @@ module.exports = (sequelize) => {
     estado_solicitud: {
       type: DataTypes.ENUM("Pendiente por revisar", "Aprobada", "Denegada"),
       defaultValue: "Pendiente por revisar",
+    },
+    revisado_por_id: {
+      // Campo relacionado
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     observaciones: {
       type: DataTypes.STRING,

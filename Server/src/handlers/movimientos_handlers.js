@@ -37,6 +37,7 @@ const getMovimiento = async (req, res) => {
 const postMovimiento = async (req, res) => {
   const {
     empleado_id,
+    cargo_empleado_id,
     clase_movimiento_id,
     duracion_movimiento,
     duracion_movimiento_dias,
@@ -62,6 +63,7 @@ const postMovimiento = async (req, res) => {
   try {
     const response = await crearMovimiento(
       empleado_id,
+      cargo_empleado_id,
       clase_movimiento_id,
       duracion_movimiento,
       duracion_movimiento_dias,

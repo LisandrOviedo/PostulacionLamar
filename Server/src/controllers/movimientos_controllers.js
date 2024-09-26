@@ -1,6 +1,17 @@
-// const { Op } = require("sequelize");
+const { Op } = require("sequelize");
 
-const { conn, Movimientos, Empleados, Cargos_Empleados } = require("../db");
+const {
+  conn,
+  Movimientos,
+  Empleados,
+  Cargos_Empleados,
+  Cargos_Niveles,
+  Cargos,
+  Departamentos,
+  Empresas,
+  Clases_Movimientos,
+  Sedes,
+} = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
 
@@ -12,63 +23,293 @@ const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
   try {
     const { count: totalRegistros, rows: dataMovimientos } =
       await Movimientos.findAndCountAll({
-        include: {
-          all: true,
+        attributes: {
+          exclude: [
+            "empleado_id",
+            "cargo_actual_id",
+            "clase_movimiento_id",
+            "cargo_nivel_id",
+            "solicitante_id",
+            "supervisor_id",
+            "gerencia_id",
+            "tthh_id",
+            "revisado_por_id",
+          ],
         },
-        // [
-        //   {
-        //     model: Empleados,
-        //     attributes: {
-        //       exclude: ["createdAt", "updatedAt"],
-        //     },
-        //     include: [
-        //       {
-        //         model: Documentos_Empleados,
-        //         attributes: ["tipo", "nombre"],
-        //         where: { tipo: "perfil_pdf" },
-        //       },
-        //       {
-        //         model: Titulos_Obtenidos,
-        //         attributes: {
-        //           exclude: ["empleado_id", "activo", "createdAt", "updatedAt"],
-        //         },
-        //       },
-        //       {
-        //         model: Experiencias,
-        //         attributes: {
-        //           exclude: ["empleado_id", "activo", "createdAt", "updatedAt"],
-        //         },
-        //       },
-        //     ],
-        //     where: filtros.cedula
-        //       ? { cedula: { [Op.like]: `%${filtros.cedula}%` } }
-        //       : filtros.apellidos
-        //       ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
-        //       : {},
-        //   },
-        //   {
-        //     model: Areas_Interes,
-        //     attributes: {
-        //       exclude: ["activo", "createdAt", "updatedAt"],
-        //     },
-        //     through: {
-        //       attributes: ["area_interes_curriculo_id"],
-        //     },
-        //     where: filtros.area_interes_id
-        //       ? { area_interes_id: filtros.area_interes_id }
-        //       : {},
-        //   },
-        //   {
-        //     model: Idiomas,
-        //     attributes: {
-        //       exclude: ["activo", "createdAt", "updatedAt"],
-        //     },
-        //     through: {
-        //       attributes: ["nivel"],
-        //     },
-        //     where: filtros.idioma_id ? { idioma_id: filtros.idioma_id } : {},
-        //   },
-        // ],
+        include: [
+          {
+            model: Empleados,
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
+            where: filtros.numero_identificacion
+              ? {
+                  numero_identificacion: {
+                    [Op.like]: `%${filtros.numero_identificacion}%`,
+                  },
+                }
+              : filtros.apellidos
+              ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
+              : {},
+            include: {
+              model: Empresas,
+              attributes: ["empresa_id", "nombre"],
+              where: filtros.empresa_id
+                ? { empresa_id: filtros.empresa_id }
+                : {},
+              include: {
+                model: Sedes,
+                attributes: ["sede_id", "nombre"],
+                where: filtros.sede_id ? { sede_id: filtros.sede_id } : {},
+              },
+            },
+          },
+          {
+            model: Cargos_Empleados,
+            as: "Cargo_Actual",
+            attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: Clases_Movimientos,
+            attributes: ["clase_movimiento_id", "descripcion"],
+            where: filtros.clase_movimiento_id
+              ? {
+                  clase_movimiento_id: filtros.clase_movimiento_id,
+                }
+              : {},
+          },
+          {
+            model: Cargos_Niveles,
+            as: "Nuevo_Cargo",
+            attributes: ["cargo_nivel_id", "nivel"],
+            include: [
+              {
+                model: Cargos,
+                attributes: [
+                  "cargo_id",
+                  "descripcion",
+                  "descripcion_cargo_antiguo",
+                ],
+                include: [
+                  {
+                    model: Departamentos,
+                    attributes: ["departamento_id", "nombre"],
+                    include: [
+                      {
+                        model: Empresas,
+                        attributes: ["empresa_id", "nombre"],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: Empleados,
+            as: "Solicitante",
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
+            include: {
+              model: Cargos_Empleados,
+              attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+              include: [
+                {
+                  model: Cargos_Niveles,
+                  attributes: ["cargo_nivel_id", "nivel"],
+                  include: [
+                    {
+                      model: Cargos,
+                      attributes: [
+                        "cargo_id",
+                        "descripcion",
+                        "descripcion_cargo_antiguo",
+                      ],
+                      include: [
+                        {
+                          model: Departamentos,
+                          attributes: ["departamento_id", "nombre"],
+                          include: [
+                            {
+                              model: Empresas,
+                              attributes: ["empresa_id", "nombre"],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            model: Empleados,
+            as: "Supervisor",
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
+            include: {
+              model: Cargos_Empleados,
+              attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+              include: [
+                {
+                  model: Cargos_Niveles,
+                  attributes: ["cargo_nivel_id", "nivel"],
+                  include: [
+                    {
+                      model: Cargos,
+                      attributes: [
+                        "cargo_id",
+                        "descripcion",
+                        "descripcion_cargo_antiguo",
+                      ],
+                      include: [
+                        {
+                          model: Departamentos,
+                          attributes: ["departamento_id", "nombre"],
+                          include: [
+                            {
+                              model: Empresas,
+                              attributes: ["empresa_id", "nombre"],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            model: Empleados,
+            as: "Gerencia",
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
+            include: {
+              model: Cargos_Empleados,
+              attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+              include: [
+                {
+                  model: Cargos_Niveles,
+                  attributes: ["cargo_nivel_id", "nivel"],
+                  include: [
+                    {
+                      model: Cargos,
+                      attributes: [
+                        "cargo_id",
+                        "descripcion",
+                        "descripcion_cargo_antiguo",
+                      ],
+                      include: [
+                        {
+                          model: Departamentos,
+                          attributes: ["departamento_id", "nombre"],
+                          include: [
+                            {
+                              model: Empresas,
+                              attributes: ["empresa_id", "nombre"],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            model: Empleados,
+            as: "TTHH",
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
+            include: {
+              model: Cargos_Empleados,
+              attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+              include: [
+                {
+                  model: Cargos_Niveles,
+                  attributes: ["cargo_nivel_id", "nivel"],
+                  include: [
+                    {
+                      model: Cargos,
+                      attributes: [
+                        "cargo_id",
+                        "descripcion",
+                        "descripcion_cargo_antiguo",
+                      ],
+                      include: [
+                        {
+                          model: Departamentos,
+                          attributes: ["departamento_id", "nombre"],
+                          include: [
+                            {
+                              model: Empresas,
+                              attributes: ["empresa_id", "nombre"],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        ],
         distinct: true,
         order: [
           filtros.orden_campo === "apellidos"
@@ -105,6 +346,7 @@ const traerMovimiento = async (movimiento_id) => {
 
 const crearMovimiento = async (
   empleado_id,
+  cargo_empleado_id,
   clase_movimiento_id,
   duracion_movimiento,
   duracion_movimiento_dias,
@@ -128,14 +370,15 @@ const crearMovimiento = async (
 ) => {
   if (
     !empleado_id ||
+    !cargo_empleado_id ||
     !clase_movimiento_id ||
     !duracion_movimiento ||
     !empresa_id ||
     !cargo_nivel_id ||
+    cargo_nivel_id === "Seleccione" ||
     !vigencia_movimiento_desde ||
     !tipo_nomina ||
     !frecuencia_nomina ||
-    !sueldo ||
     !solicitante_id ||
     !supervisor_id ||
     !gerencia_id ||
@@ -152,8 +395,7 @@ const crearMovimiento = async (
     const existeMovimiento = await Movimientos.findOne({
       where: {
         empleado_id: empleado_id,
-        vigencia_movimiento_desde: vigencia_movimiento_desde,
-        activo: true,
+        estado_solicitud: "Pendiente por revisar",
       },
     });
 
@@ -163,6 +405,7 @@ const crearMovimiento = async (
       const crearMovimiento = await Movimientos.create(
         {
           empleado_id: empleado_id,
+          cargo_actual_id: cargo_empleado_id,
           clase_movimiento_id: clase_movimiento_id,
           duracion_movimiento: duracion_movimiento,
           duracion_movimiento_dias:
@@ -182,7 +425,7 @@ const crearMovimiento = async (
           frecuencia_nomina: frecuencia_nomina,
           otra_frecuencia_nomina:
             frecuencia_nomina === "Otro" ? otra_frecuencia_nomina : null,
-          sueldo: sueldo,
+          sueldo: sueldo || null,
           codigo_nomina: codigo_nomina || null,
           solicitante_id: solicitante_id,
           supervisor_id: supervisor_id,
@@ -231,9 +474,7 @@ const crearMovimiento = async (
 
       return await traerMovimiento(crearMovimiento.movimiento_id);
     } else {
-      throw new Error(
-        `Ese empleado posee un movimiento activo con esa fecha de inicio de vigencia`
-      );
+      throw new Error(`Ese empleado posee un movimiento pendiente por revisar`);
     }
   } catch (error) {
     if (t && !t.finished) {
