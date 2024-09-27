@@ -69,6 +69,7 @@ const {
   Pruebas_Empleados,
   Referencias_Personales,
   Respuestas_Kostick,
+  Roles_Menus,
   Roles,
   Salud,
   Sedes,
@@ -628,6 +629,23 @@ Empleados.belongsTo(Empresas, {
   },
 });
 
+// Roles M:M Menus
+Roles.belongsToMany(Menus, {
+  through: "Roles_Menus",
+  foreignKey: {
+    name: "rol_id",
+  },
+});
+Menus.belongsToMany(Roles, {
+  through: "Roles_Menus",
+  foreignKey: {
+    name: "menu_id",
+  },
+});
+
+Menus.belongsTo(Menus, { foreignKey: "padre_id", as: "Padre" });
+Menus.hasMany(Menus, { foreignKey: "padre_id", as: "Sub_Menus" });
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -661,6 +679,7 @@ module.exports = {
   Pruebas_Empleados,
   Referencias_Personales,
   Respuestas_Kostick,
+  Roles_Menus,
   Roles,
   Salud,
   Sedes,
