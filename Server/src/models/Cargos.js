@@ -24,6 +24,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(80),
       allowNull: true,
     },
+    limite_empleados: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     activo: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
