@@ -873,7 +873,6 @@ const aprobarMovimiento = async (
     const movimiento = await Movimientos.findOne({
       where: {
         movimiento_id: movimiento_id,
-        estado_solicitud: "Pendiente por revisar",
       },
       include: {
         model: Cargos_Niveles,
@@ -891,7 +890,11 @@ const aprobarMovimiento = async (
       },
     });
 
-    if (movimiento) {
+    if (
+      movimiento &&
+      (movimiento.estado_solicitud === "Pendiente por revisar" ||
+        movimiento.estado_solicitud === "Revisado")
+    ) {
       t = await conn.transaction();
 
       await Movimientos.update(
@@ -972,11 +975,14 @@ const denegarMovimiento = async (
     const movimiento = await Movimientos.findOne({
       where: {
         movimiento_id: movimiento_id,
-        estado_solicitud: "Pendiente por revisar",
       },
     });
 
-    if (movimiento) {
+    if (
+      movimiento &&
+      (movimiento.estado_solicitud === "Pendiente por revisar" ||
+        movimiento.estado_solicitud === "Revisado")
+    ) {
       t = await conn.transaction();
 
       await Movimientos.update(
