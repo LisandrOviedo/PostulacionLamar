@@ -346,10 +346,12 @@ const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
   }
 };
 
-const traerMovimiento = async (movimiento_id) => {
-  if (!movimiento_id) {
+const traerMovimiento = async (movimiento_id, empleado_id) => {
+  if (!movimiento_id || !empleado_id) {
     throw new Error(`Datos faltantes`);
   }
+
+  let t;
 
   try {
     const movimiento = await Movimientos.findByPk(movimiento_id, {
@@ -628,8 +630,31 @@ const traerMovimiento = async (movimiento_id) => {
       throw new Error(`No existe ese movimiento`);
     }
 
+    if (movimiento.estado_solicitud === "Pendiente por revisar") {
+      t = await conn.transaction();
+
+      await Movimientos.update(
+        {
+          estado_solicitud: "Revisado",
+          revisado_por_id: empleado_id,
+        },
+        {
+          where: {
+            movimiento_id: movimiento_id,
+          },
+          transaction: t,
+        }
+      );
+
+      await t.commit();
+    }
+
     return movimiento;
   } catch (error) {
+    if (t && !t.finished) {
+      await t.rollback();
+    }
+
     throw new Error(`Error al traer el movimiento: ${error.message}`);
   }
 };
@@ -692,7 +717,7 @@ const crearMovimiento = async (
     if (!existeMovimiento) {
       t = await conn.transaction();
 
-      const crearMovimiento = await Movimientos.create(
+      await Movimientos.create(
         {
           empleado_id: empleado_id,
           cargo_actual_id: cargo_empleado_id,
@@ -848,7 +873,6 @@ const aprobarMovimiento = async (
     const movimiento = await Movimientos.findOne({
       where: {
         movimiento_id: movimiento_id,
-        estado_solicitud: "Pendiente por revisar",
       },
       include: {
         model: Cargos_Niveles,
@@ -866,12 +890,16 @@ const aprobarMovimiento = async (
       },
     });
 
-    if (movimiento) {
+    if (
+      movimiento &&
+      (movimiento.estado_solicitud === "Pendiente por revisar" ||
+        movimiento.estado_solicitud === "Revisado")
+    ) {
       t = await conn.transaction();
 
       await Movimientos.update(
         {
-          estado_solicitud: "Aprobada",
+          estado_solicitud: "Aprobado",
           revisado_por_id: revisado_por_id,
           observaciones: observaciones || null,
         },
@@ -947,16 +975,19 @@ const denegarMovimiento = async (
     const movimiento = await Movimientos.findOne({
       where: {
         movimiento_id: movimiento_id,
-        estado_solicitud: "Pendiente por revisar",
       },
     });
 
-    if (movimiento) {
+    if (
+      movimiento &&
+      (movimiento.estado_solicitud === "Pendiente por revisar" ||
+        movimiento.estado_solicitud === "Revisado")
+    ) {
       t = await conn.transaction();
 
       await Movimientos.update(
         {
-          estado_solicitud: "Denegada",
+          estado_solicitud: "Denegado",
           revisado_por_id: revisado_por_id,
           observaciones: observaciones,
         },

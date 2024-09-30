@@ -25,10 +25,10 @@ const getMovimientos = async (req, res) => {
 };
 
 const getMovimiento = async (req, res) => {
-  const { movimiento_id } = req.params;
+  const { movimiento_id, empleado_id } = req.query;
 
   try {
-    const response = await traerMovimiento(movimiento_id);
+    const response = await traerMovimiento(movimiento_id, empleado_id);
 
     return res.json(response);
   } catch (error) {
