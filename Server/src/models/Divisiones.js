@@ -1,31 +1,18 @@
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define("Cargos", {
-    cargo_id: {
+  sequelize.define("Divisiones", {
+    division_id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    departamento_id: {
-      // Campo relacionado
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    codigo_cargo: {
-      type: DataTypes.STRING(12),
+    nombre: {
+      type: DataTypes.STRING(80),
       allowNull: false,
     },
     descripcion: {
       type: DataTypes.STRING(80),
-      allowNull: false,
-    },
-    descripcion_cargo_antiguo: {
-      type: DataTypes.STRING(80),
-      allowNull: true,
-    },
-    limite_empleados: {
-      type: DataTypes.INTEGER,
       allowNull: false,
     },
     activo: {

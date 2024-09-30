@@ -725,44 +725,7 @@ const crearMovimiento = async (
         { transaction: t }
       );
 
-      // await Cargos_Empleados.update(
-      //   {
-      //     activo: false,
-      //   },
-      //   {
-      //     where: {
-      //       empleado_id: empleado_id,
-      //       activo: true,
-      //     },
-      //     transaction: t,
-      //   }
-      // );
-
-      // await Cargos_Empleados.create(
-      //   {
-      //     empleado_id: empleado_id,
-      //     cargo_nivel_id: cargo_nivel_id,
-      //     salario: sueldo,
-      //     fecha_ingreso: vigencia_movimiento_desde,
-      //   },
-      //   { transaction: t }
-      // );
-
-      // await Empleados.update(
-      //   {
-      //     empresa_id: empresa_id,
-      //   },
-      //   {
-      //     where: {
-      //       empleado_id: empleado_id,
-      //     },
-      //     transaction: t,
-      //   }
-      // );
-
       await t.commit();
-
-      return await traerMovimiento(crearMovimiento.movimiento_id);
     } else {
       throw new Error(`Ese empleado posee un movimiento pendiente por revisar`);
     }
@@ -804,10 +767,10 @@ const modificarMovimiento = async (
     !duracion_movimiento ||
     !empresa_id ||
     !cargo_nivel_id ||
+    cargo_nivel_id === "Seleccione" ||
     !vigencia_movimiento_desde ||
     !tipo_nomina ||
     !frecuencia_nomina ||
-    !sueldo ||
     !solicitante_id ||
     !supervisor_id ||
     !gerencia_id ||
@@ -842,12 +805,15 @@ const modificarMovimiento = async (
         frecuencia_nomina: frecuencia_nomina,
         otra_frecuencia_nomina:
           frecuencia_nomina === "Otro" ? otra_frecuencia_nomina : null,
-        sueldo: sueldo,
+        sueldo: sueldo || null,
         codigo_nomina: codigo_nomina || null,
         solicitante_id: solicitante_id,
         supervisor_id: supervisor_id,
         gerencia_id: gerencia_id,
         tthh_id: tthh_id,
+        estado_solicitud: "Pendiente por revisar",
+        revisado_por_id: null,
+        observaciones: null,
       },
       {
         where: {
@@ -858,14 +824,160 @@ const modificarMovimiento = async (
     );
 
     await t.commit();
-
-    return await traerMovimiento(movimiento_id);
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
     }
 
     throw new Error(`Error al modificar el movimiento: ${error.message}`);
+  }
+};
+
+const aprobarMovimiento = async (
+  movimiento_id,
+  revisado_por_id,
+  observaciones
+) => {
+  if (!movimiento_id || !revisado_por_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  let t;
+
+  try {
+    const movimiento = await Movimientos.findOne({
+      where: {
+        movimiento_id: movimiento_id,
+        estado_solicitud: "Pendiente por revisar",
+      },
+      include: {
+        model: Cargos_Niveles,
+        as: "Nuevo_Cargo",
+        include: {
+          model: Cargos,
+          include: {
+            model: Departamentos,
+            include: {
+              model: Empresas,
+              required: true,
+            },
+          },
+        },
+      },
+    });
+
+    if (movimiento) {
+      t = await conn.transaction();
+
+      await Movimientos.update(
+        {
+          estado_solicitud: "Aprobada",
+          revisado_por_id: revisado_por_id,
+          observaciones: observaciones || null,
+        },
+        {
+          where: {
+            movimiento_id: movimiento.movimiento_id,
+          },
+          transaction: t,
+        }
+      );
+
+      await Cargos_Empleados.update(
+        {
+          activo: false,
+        },
+        {
+          where: {
+            empleado_id: movimiento.empleado_id,
+            activo: true,
+          },
+          transaction: t,
+        }
+      );
+
+      await Cargos_Empleados.create(
+        {
+          empleado_id: movimiento.empleado_id,
+          cargo_nivel_id: movimiento.cargo_nivel_id,
+          salario: movimiento.sueldo,
+          fecha_ingreso: movimiento.vigencia_movimiento_desde,
+        },
+        { transaction: t }
+      );
+
+      await Empleados.update(
+        {
+          empresa_id:
+            movimiento.Nuevo_Cargo.Cargo.Departamento.Empresa.empresa_id,
+        },
+        {
+          where: {
+            empleado_id: movimiento.empleado_id,
+          },
+          transaction: t,
+        }
+      );
+
+      await t.commit();
+    } else {
+      throw new Error(`Ese movimiento ya fue revisado o no existe`);
+    }
+  } catch (error) {
+    if (t && !t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error(`Error al inactivar el movimiento: ${error.message}`);
+  }
+};
+
+const denegarMovimiento = async (
+  movimiento_id,
+  revisado_por_id,
+  observaciones
+) => {
+  if (!movimiento_id || !revisado_por_id || !observaciones) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  let t;
+
+  try {
+    const movimiento = await Movimientos.findOne({
+      where: {
+        movimiento_id: movimiento_id,
+        estado_solicitud: "Pendiente por revisar",
+      },
+    });
+
+    if (movimiento) {
+      t = await conn.transaction();
+
+      await Movimientos.update(
+        {
+          estado_solicitud: "Denegada",
+          revisado_por_id: revisado_por_id,
+          observaciones: observaciones,
+        },
+        {
+          where: {
+            movimiento_id: movimiento.movimiento_id,
+          },
+          transaction: t,
+        }
+      );
+
+      await t.commit();
+    } else {
+      throw new Error(`Ese movimiento ya fue revisado o no existe`);
+    }
+  } catch (error) {
+    if (t && !t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error(`Error al inactivar el movimiento: ${error.message}`);
   }
 };
 
@@ -890,8 +1002,6 @@ const inactivarMovimiento = async (movimiento_id) => {
     );
 
     await t.commit();
-
-    return await traerMovimiento(movimiento_id);
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -906,5 +1016,7 @@ module.exports = {
   traerMovimiento,
   crearMovimiento,
   modificarMovimiento,
+  aprobarMovimiento,
+  denegarMovimiento,
   inactivarMovimiento,
 };
