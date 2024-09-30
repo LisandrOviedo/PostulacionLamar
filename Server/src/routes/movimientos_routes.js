@@ -13,7 +13,7 @@ const { authenticateToken } = require("../auth/index");
 
 const movimientos = Router();
 
-movimientos.get("/detalle/:movimiento_id", authenticateToken, getMovimiento);
+movimientos.get("/detalle", authenticateToken, getMovimiento);
 
 movimientos.post("/", authenticateToken, postMovimiento);
 movimientos.post("/allMovimientos", authenticateToken, getMovimientos);

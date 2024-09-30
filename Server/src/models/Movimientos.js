@@ -100,7 +100,12 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     estado_solicitud: {
-      type: DataTypes.ENUM("Pendiente por revisar", "Aprobada", "Denegada"),
+      type: DataTypes.ENUM(
+        "Pendiente por revisar",
+        "Revisado",
+        "Aprobado",
+        "Denegado"
+      ),
       defaultValue: "Pendiente por revisar",
     },
     revisado_por_id: {
