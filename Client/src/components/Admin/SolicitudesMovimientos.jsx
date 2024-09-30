@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import {
   getAllMovimientos,
-  // getMovimientoDetail,
+  getMovimientoDetail,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
@@ -155,9 +155,10 @@ export function SolicitudesMovimientos() {
   const handleVerDetalles = (movimiento_id) => {
     setShowModal(true);
 
-    // dispatch(getSugerencia(token, sugerencia_id, empleado.empleado_id));
+    dispatch(getMovimientoDetail(token, movimiento_id));
+
+    console.log(movimiento);
   };
-  //Finaliza nuevo codigo
 
   const changeOrder = (e) => {
     const { name } = e.target;
@@ -492,7 +493,9 @@ export function SolicitudesMovimientos() {
                     <td className="px-4 py-4 flex gap-2">
                       <Button
                         className="m-0 w-auto text-xs"
-                        onClick={() => handleVerDetalles()}
+                        onClick={() =>
+                          handleVerDetalles(movimiento.movimiento_id)
+                        }
                       >
                         Detalles
                       </Button>
@@ -574,15 +577,23 @@ export function SolicitudesMovimientos() {
           <div className="bg-[#FBFBFD] rounded-lg shadow border-4">
             {/* <!-- Modal header --> */}
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-              <div className="flex-grow">
-              <span>
-                <b>Inmarlaca Corporativo</b>{" "}
-              </span>
-              <span>
-                <b>Astrid Molero</b>{" "}
-              </span>
+              <div className="flex flex-col">
+                <span className="font-bold">
+                  {movimiento?.Empleado?.Empresa?.nombre}{" ("}
+                  {movimiento?.Empleado?.Empresa?.Sedes[0]?.nombre}{")"}
+                </span>
+                <span>
+                  {movimiento?.Empleado?.nombres}{" "}
+                  {movimiento?.Empleado?.apellidos}
+                </span>
+
+                <span>
+                  {movimiento?.Empleado?.tipo_identificacion}
+                  {"-"}
+                  {movimiento?.Empleado?.numero_identificacion}
+                </span>
               </div>
-             
+
               <div className="flex gap-4">
                 <Button className="m-0 w-auto">Aprobar</Button>
                 <Button className="m-0 w-auto">Denegar</Button>

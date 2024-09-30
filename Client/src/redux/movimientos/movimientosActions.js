@@ -47,6 +47,24 @@ export const getAllMovimientos = (
   };
 };
 
+export const getMovimientoDetail = (token, movimiento_id) => {
+  const URL_MOVIMIENTO_DETAIL = `${URL_SERVER}/movimientos/detalle/${movimiento_id}`;
+
+  return async (dispatch) => {
+    try {
+      const { data } = await axios(URL_MOVIMIENTO_DETAIL, {
+        headers: { authorization: `Bearer ${token}` },
+      });
+
+      return dispatch(movimientoDetail(data));
+    } catch (error) {
+      alertError(error);
+
+      throw new Error();
+    }
+  };
+};
+
 export const postMovimiento = async (token, datosMovimiento) => {
   const URL_POST_MOVIMIENTO = `${URL_SERVER}/movimientos`;
 
