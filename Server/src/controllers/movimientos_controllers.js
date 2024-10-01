@@ -621,6 +621,49 @@ const traerMovimiento = async (movimiento_id) => {
             ],
           },
         },
+        {
+          model: Empleados,
+          as: "RevisadoPor",
+          attributes: [
+            "empleado_id",
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+          include: {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
       ],
     });
 
