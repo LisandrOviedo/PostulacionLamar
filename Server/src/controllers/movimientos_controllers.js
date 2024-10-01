@@ -660,7 +660,6 @@ const crearMovimiento = async (
 ) => {
   if (
     !empleado_id ||
-    !cargo_empleado_id ||
     !clase_movimiento_id ||
     !duracion_movimiento ||
     !empresa_id ||
@@ -695,7 +694,7 @@ const crearMovimiento = async (
       const crearMovimiento = await Movimientos.create(
         {
           empleado_id: empleado_id,
-          cargo_actual_id: cargo_empleado_id,
+          cargo_actual_id: cargo_empleado_id || null,
           clase_movimiento_id: clase_movimiento_id,
           duracion_movimiento: duracion_movimiento,
           duracion_movimiento_dias:

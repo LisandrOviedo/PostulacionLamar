@@ -231,7 +231,9 @@ export function Movimientos() {
           setDatosMovimiento({
             ...datosMovimiento,
             empleado_id: data.empleado_id,
-            cargo_empleado_id: data.Cargos_Empleados[0].cargo_empleado_id,
+            cargo_empleado_id: data.Cargos_Empleados[0]?.cargo_empleado_id
+              ? data.Cargos_Empleados[0].cargo_empleado_id
+              : "",
           });
         }
       });
@@ -879,7 +881,8 @@ export function Movimientos() {
         <div>
           <Span>Cargo</Span>
           <span>
-            {empleado?.Cargos_Empleados && empleado.Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion
+            {empleado?.Cargos_Empleados &&
+            empleado.Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion
               ? `${empleado?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} ${empleado?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel}`
               : "-"}
           </span>
