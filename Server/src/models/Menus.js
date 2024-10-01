@@ -18,7 +18,7 @@ module.exports = (sequelize) => {
     },
     ruta: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
     },
     orden: {
       type: DataTypes.INTEGER(2),
