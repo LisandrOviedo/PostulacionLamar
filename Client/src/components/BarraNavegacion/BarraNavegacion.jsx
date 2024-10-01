@@ -11,7 +11,6 @@ import { resetIdiomas } from "../../redux/idiomas/idiomasActions";
 import { resetPruebas } from "../../redux/pruebasEmpleados/pruebasEmpleadosActions";
 import { getSugerenciasActivasNoRevisadas } from "../../redux/sugerencias/sugerenciasActions";
 
-import { Logo } from "../UI";
 import { LogoHorizontal } from "../UI";
 
 import Swal from "sweetalert2";
@@ -80,6 +79,7 @@ export function BarraNavegacion() {
   const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${empleado.foto_perfil_nombre}`;
 
   const [notificaciones, setNotificaciones] = useState({});
+  const [menu, setMenu] = useState([]);
 
   useEffect(() => {
     if (pathname.startsWith("/admin/")) {
@@ -90,6 +90,12 @@ export function BarraNavegacion() {
       });
     }
   }, [pathname]);
+
+  useEffect(() => {
+    const resultadoMenu = organizedMenus();
+
+    setMenu(resultadoMenu);
+  }, []);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -112,6 +118,31 @@ export function BarraNavegacion() {
       }
     };
   }, [empleado]);
+
+  const organizedMenus = () => {
+    const menus = empleado?.Role?.Menus;
+
+    const menusResultado = menus.reduce((acc, menu) => {
+      if (menu.padre_id === null) {
+        // Si es un menú padre, lo agregamos
+        acc.push({ ...menu, subMenus: [] });
+      } else {
+        // Si es un submenú, lo agregamos a su padre correspondiente
+        const parentMenu = acc.find((m) => m.menu_id === menu.padre_id);
+        if (parentMenu) {
+          // Agrega el submenú y lo ordena
+          parentMenu.subMenus.push(menu);
+          parentMenu.subMenus.sort((a, b) => a.orden - b.orden); // Ordena submenús
+        }
+      }
+      return acc;
+    }, []);
+
+    // Primero, ordena los menús por el atributo 'orden'
+    const sortedMenus = [...menusResultado].sort((a, b) => a.orden - b.orden);
+
+    return sortedMenus;
+  };
 
   return (
     <div className="w-full fixed top-0 select-none z-[999]">
@@ -318,92 +349,52 @@ export function BarraNavegacion() {
                 </>
               ) : (
                 // ADMINISTRADORES
-                <>
-                  <li>
-                    <Link
-                      to="/admin/empleados"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Empleados
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admin/postulaciones"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Postulaciones
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admin/pruebasEmpleados"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Pruebas de Empleados
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admin/formularioIngreso"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Ingreso
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admin/movimientos"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Movimientos
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admin/solicitudesMovimientos"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Solicitudes Movimientos
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admin/sugerencias"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Sugerencias
-                    </Link>
-                  </li>
-                </>
+
+                menu?.map((menu) =>
+                  menu.subMenus.length > 0 ? (
+                    <li key={menu.menu_id}>
+                      <div
+                        onClick={() => toggleMenu(menu.menu_id)}
+                        data-index={menu.menu_id}
+                        className="hover:text-[#F0C95C]"
+                      >
+                        <span>{menu.titulo}</span>
+                      </div>
+                      <ul
+                        className={
+                          isOpen[menu.menu_id]
+                            ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
+                            : "hidden"
+                        }
+                      >
+                        {menu.subMenus.map((submenu) => (
+                          <li key={submenu.menu_id}>
+                            <Link
+                              to={submenu.ruta}
+                              className="text-white hover:text-[#F0C95C] text-sm"
+                              onClick={toggleMenuBurger}
+                            >
+                              {submenu.titulo}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  ) : (
+                    <li key={menu.menu_id}>
+                      <Link
+                        to={menu.ruta}
+                        className="text-white hover:text-[#F0C95C]"
+                        onClick={() => {
+                          toggleMenuBurger();
+                          toggleMenu({});
+                        }}
+                      >
+                        {menu.titulo}
+                      </Link>
+                    </li>
+                  )
+                )
               )}
 
               <li>
