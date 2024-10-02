@@ -171,8 +171,6 @@ export function SolicitudesMovimientos() {
     setShowModal(true);
 
     dispatch(getMovimientoDetail(token, movimiento_id, empleado.empleado_id));
-
-    console.log(movimiento);
   };
 
   const changeOrder = (e) => {
@@ -661,14 +659,14 @@ export function SolicitudesMovimientos() {
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
             <div className="flex flex-col">
               <span className="font-bold">
-                {`${movimiento?.Empleado?.Empresa?.nombre} (${movimiento?.Empleado?.Empresa?.Sedes[0]?.nombre})`}
+                {`${movimiento?.movimiento?.Empleado?.Empresa?.nombre} (${movimiento?.movimiento?.Empleado?.Empresa?.Sedes[0]?.nombre})`}
               </span>
               <span>
-                {`${movimiento?.Empleado?.nombres} ${movimiento?.Empleado?.apellidos}`}
+                {`${movimiento?.movimiento?.Empleado?.nombres} ${movimiento?.movimiento?.Empleado?.apellidos}`}
               </span>
 
               <span>
-                {`${movimiento?.Empleado?.tipo_identificacion}-${movimiento?.Empleado?.numero_identificacion}`}
+                {`${movimiento?.movimiento?.Empleado?.tipo_identificacion}-${movimiento?.movimiento?.Empleado?.numero_identificacion}`}
               </span>
             </div>
 
@@ -712,55 +710,57 @@ export function SolicitudesMovimientos() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
               <span>
                 <b>Código de nómina: </b>
-                Antiguo
+                {movimiento?.movimientoAnterior?.codigo_nomina}
               </span>
               <span>
                 <b>Cargo actual: </b>
-                {movimiento?.Cargo_Actual?.Cargos_Nivele?.Cargo?.descripcion &&
-                  `${movimiento?.Cargo_Actual?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.Cargo_Actual?.Cargos_Nivele?.nivel})`}
+                {movimiento?.movimiento?.Cargo_Actual?.Cargos_Nivele?.Cargo
+                  ?.descripcion &&
+                  `${movimiento?.movimiento?.Cargo_Actual?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.Cargo_Actual?.Cargos_Nivele?.nivel})`}
               </span>
               <span>
                 <b>Unidad organizativa de adscripción: </b>
                 {
-                  movimiento?.Cargo_Actual?.Cargos_Nivele?.Cargo?.Departamento
-                    ?.nombre
+                  movimiento?.movimiento?.Cargo_Actual?.Cargos_Nivele?.Cargo
+                    ?.Departamento?.nombre
                 }
               </span>
               <span>
                 <b>Fecha de ingreso: </b>
-                {movimiento?.Cargo_Actual?.fecha_ingreso}
+                {movimiento?.movimiento?.Cargo_Actual?.fecha_ingreso}
               </span>
               <span>
                 <b>Antiguedad: </b>
-                {movimiento?.Cargo_Actual?.fecha_ingreso &&
+                {movimiento?.movimiento?.Cargo_Actual?.fecha_ingreso &&
                   `${calcularAntiguedad(
-                    movimiento?.Cargo_Actual?.fecha_ingreso
+                    movimiento?.movimiento?.Cargo_Actual?.fecha_ingreso
                   )} días`}
               </span>
               <span>
                 <b>Sueldo actual: </b>
-                {movimiento?.Cargo_Actual?.salario &&
-                  `Bs. ${movimiento?.Cargo_Actual?.salario}`}
+                {movimiento?.movimiento?.Cargo_Actual?.salario &&
+                  `Bs. ${movimiento?.movimiento?.Cargo_Actual?.salario}`}
               </span>
               <span>
-                <b>Tipo de nómina: </b> Antiguo
+                <b>Tipo de nómina: </b>
+                {movimiento?.movimientoAnterior?.tipo_nomina}
               </span>
-              {/* {movimiento?.tipo_nomina === "Otro" && (
+              {movimiento?.movimientoAnterior?.tipo_nomina === "Otro" && (
                 <span>
                   <b>Otro tipo de nómina: </b>
-                  Antiguo
+                  {movimiento?.movimientoAnterior?.otro_tipo_nomina}
                 </span>
-              )} */}
+              )}
               <span>
                 <b>Frecuencia de nómina: </b>
-                Antiguo
+                {movimiento?.movimientoAnterior?.frecuencia_nomina}
               </span>
-              {/* {movimiento?.tipo_nomina === "Otro" && (
+              {movimiento?.movimientoAnterior?.frecuencia_nomina === "Otro" && (
                 <span>
                   <b>Otra frecuencia de nómina: </b>
-                  Antiguo
+                  {movimiento?.movimientoAnterior?.otra_frecuencia_nomina}
                 </span>
-              )} */}
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
@@ -769,30 +769,30 @@ export function SolicitudesMovimientos() {
               </span>
               <span>
                 <b>Clase de movimiento: </b>
-                {movimiento?.Clases_Movimiento?.descripcion}
+                {movimiento?.movimiento?.Clases_Movimiento?.descripcion}
               </span>
               <span>
                 <b>Duración de movimiento: </b>
-                {movimiento?.duracion_movimiento}
+                {movimiento?.movimiento?.duracion_movimiento}
               </span>
               <span>
                 <b>Duración de movimiento: </b>
-                {movimiento?.duracion_movimiento_dias}
+                {movimiento?.movimiento?.duracion_movimiento_dias}
               </span>
               <span>
                 <b>Requiere periodo de prueba: </b>
-                {movimiento?.requiere_periodo_prueba ? "Sí" : "No"}
+                {movimiento?.movimiento?.requiere_periodo_prueba ? "Sí" : "No"}
               </span>
-              {movimiento?.requiere_periodo_prueba && (
+              {movimiento?.movimiento?.requiere_periodo_prueba && (
                 <span>
                   <b>Duración de periodo de prueba en días: </b>
-                  {movimiento?.duracion_periodo_prueba &&
-                    `${movimiento?.duracion_periodo_prueba} días`}
+                  {movimiento?.movimiento?.duracion_periodo_prueba &&
+                    `${movimiento?.movimiento?.duracion_periodo_prueba} días`}
                 </span>
               )}
               <span className="sm:col-span-2 md:col-span-3">
                 <b>Justificación del movimiento: </b>
-                {movimiento?.justificacion_movimiento}
+                {movimiento?.movimiento?.justificacion_movimiento}
               </span>
             </div>
 
@@ -802,55 +802,62 @@ export function SolicitudesMovimientos() {
               </span>
               <span>
                 <b>Empresa: </b>
-                {movimiento?.Nuevo_Cargo?.Cargo?.Departamento?.Empresa?.nombre}
+                {
+                  movimiento?.movimiento?.Nuevo_Cargo?.Cargo?.Departamento
+                    ?.Empresa?.nombre
+                }
               </span>
               <span>
                 <b>Departamento: </b>
-                {movimiento?.Nuevo_Cargo?.Cargo?.Departamento?.nombre}
+                {
+                  movimiento?.movimiento?.Nuevo_Cargo?.Cargo?.Departamento
+                    ?.nombre
+                }
               </span>
               <span>
                 <b>Cargo: </b>
-                {movimiento?.Nuevo_Cargo?.Cargo?.descripcion}
+                {movimiento?.movimiento?.Nuevo_Cargo?.Cargo?.descripcion}
               </span>
               <span>
                 <b>Nivel del cargo: </b>
-                {movimiento?.Nuevo_Cargo?.nivel}
+                {movimiento?.movimiento?.Nuevo_Cargo?.nivel}
               </span>
               <span>
                 <b>Vigencia del movimiento (fecha desde): </b>
-                {movimiento?.vigencia_movimiento_desde}
+                {movimiento?.movimiento?.vigencia_movimiento_desde}
               </span>
               <span>
                 <b>Vigencia del movimiento (fecha hasta): </b>
-                {movimiento?.vigencia_movimiento_hasta}
+                {movimiento?.movimiento?.vigencia_movimiento_hasta}
               </span>
               <span>
                 <b>Tipo de nómina: </b>
-                {movimiento?.tipo_nomina}
+                {movimiento?.movimiento?.tipo_nomina}
               </span>
-              {movimiento?.tipo_nomina === "Otro" && (
+              {movimiento?.movimiento?.tipo_nomina === "Otro" && (
                 <span>
                   <b>Otro tipo de nómina: </b>
-                  {movimiento?.otro_tipo_nomina}
+                  {movimiento?.movimiento?.otro_tipo_nomina}
                 </span>
               )}
               <span>
                 <b>Frecuencia de nómina: </b>
-                {movimiento?.frecuencia_nomina}
+                {movimiento?.movimiento?.frecuencia_nomina}
               </span>
-              {movimiento?.frecuencia_nomina === "Otro" && (
+              {movimiento?.movimiento?.frecuencia_nomina === "Otro" && (
                 <span>
                   <b>Otra frecuencia de nómina: </b>
-                  {movimiento?.otra_frecuencia_nomina}
+                  {movimiento?.movimiento?.otra_frecuencia_nomina}
                 </span>
               )}
               <span>
                 <b>Nuevo sueldo: </b>
-                {movimiento?.sueldo && `Bs. ${movimiento?.sueldo}`}
+                {movimiento?.movimiento?.sueldo &&
+                  `Bs. ${movimiento?.movimiento?.sueldo}`}
               </span>
               <span>
                 <b>Código de nómina: </b>
-                {movimiento?.codigo_nomina}
+                {movimiento?.movimiento?.codigo_nomina}
               </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b p-4 sm:2">
@@ -859,18 +866,18 @@ export function SolicitudesMovimientos() {
                   <b>Datos Del Solicitante</b>
                 </span>
                 <span>
-                  {movimiento?.Solicitante?.nombres}{" "}
-                  {movimiento?.Solicitante?.apellidos}
+                  {movimiento?.movimiento?.Solicitante?.nombres}{" "}
+                  {movimiento?.movimiento?.Solicitante?.apellidos}
                 </span>
                 <span>
-                  {movimiento?.Solicitante?.tipo_identificacion}
+                  {movimiento?.movimiento?.Solicitante?.tipo_identificacion}
                   {"-"}
-                  {movimiento?.Solicitante?.numero_identificacion}
+                  {movimiento?.movimiento?.Solicitante?.numero_identificacion}
                 </span>
                 <span>
-                  {movimiento?.Solicitante?.Cargos_Empleados[0]?.Cargos_Nivele
-                    ?.Cargo?.descripcion &&
-                    `${movimiento?.Solicitante?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.Solicitante?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
+                  {movimiento?.movimiento?.Solicitante?.Cargos_Empleados[0]
+                    ?.Cargos_Nivele?.Cargo?.descripcion &&
+                    `${movimiento?.movimiento?.Solicitante?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.Solicitante?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
                 </span>
               </div>
 
@@ -879,18 +886,18 @@ export function SolicitudesMovimientos() {
                   <b>Supervisor Inmediato</b>
                 </span>
                 <span>
-                  {movimiento?.Supervisor?.nombres}{" "}
-                  {movimiento?.Supervisor?.apellidos}
+                  {movimiento?.movimiento?.Supervisor?.nombres}{" "}
+                  {movimiento?.movimiento?.Supervisor?.apellidos}
                 </span>
                 <span>
-                  {movimiento?.Supervisor?.tipo_identificacion}
+                  {movimiento?.movimiento?.Supervisor?.tipo_identificacion}
                   {"-"}
-                  {movimiento?.Supervisor?.numero_identificacion}
+                  {movimiento?.movimiento?.Supervisor?.numero_identificacion}
                 </span>
                 <span>
-                  {movimiento?.Supervisor?.Cargos_Empleados[0]?.Cargos_Nivele
-                    ?.Cargo?.descripcion &&
-                    `${movimiento?.Supervisor?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.Supervisor?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
+                  {movimiento?.movimiento?.Supervisor?.Cargos_Empleados[0]
+                    ?.Cargos_Nivele?.Cargo?.descripcion &&
+                    `${movimiento?.movimiento?.Supervisor?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.Supervisor?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
                 </span>
               </div>
 
@@ -899,18 +906,18 @@ export function SolicitudesMovimientos() {
                   <b>Aprobación Gerencia De Área</b>
                 </span>
                 <span>
-                  {movimiento?.Gerencia?.nombres} {""}
-                  {movimiento?.Gerencia?.apellidos}
+                  {movimiento?.movimiento?.Gerencia?.nombres} {""}
+                  {movimiento?.movimiento?.Gerencia?.apellidos}
                 </span>
                 <span>
-                  {movimiento?.Gerencia?.tipo_identificacion}
+                  {movimiento?.movimiento?.Gerencia?.tipo_identificacion}
                   {"-"}
-                  {movimiento?.Gerencia?.numero_identificacion}
+                  {movimiento?.movimiento?.Gerencia?.numero_identificacion}
                 </span>
                 <span>
-                  {movimiento?.Gerencia?.Cargos_Empleados[0]?.Cargos_Nivele
-                    ?.Cargo?.descripcion &&
-                    `${movimiento?.Gerencia?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.Gerencia?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
+                  {movimiento?.movimiento?.Gerencia?.Cargos_Empleados[0]
+                    ?.Cargos_Nivele?.Cargo?.descripcion &&
+                    `${movimiento?.movimiento?.Gerencia?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.Gerencia?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
                 </span>
               </div>
 
@@ -919,18 +926,18 @@ export function SolicitudesMovimientos() {
                   <b>Talento Humano</b>
                 </span>
                 <span>
-                  {movimiento?.TTHH?.nombres} {""}
-                  {movimiento?.TTHH?.apellidos}
+                  {movimiento?.movimiento?.TTHH?.nombres} {""}
+                  {movimiento?.movimiento?.TTHH?.apellidos}
                 </span>
                 <span>
-                  {movimiento?.TTHH?.tipo_identificacion}
+                  {movimiento?.movimiento?.TTHH?.tipo_identificacion}
                   {"-"}
-                  {movimiento?.TTHH?.numero_identificacion}
+                  {movimiento?.movimiento?.TTHH?.numero_identificacion}
                 </span>
                 <span>
-                  {movimiento?.TTHH?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo
-                    ?.descripcion &&
-                    `${movimiento?.TTHH?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.TTHH?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
+                  {movimiento?.movimiento?.TTHH?.Cargos_Empleados[0]
+                    ?.Cargos_Nivele?.Cargo?.descripcion &&
+                    `${movimiento?.movimiento?.TTHH?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.TTHH?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
                 </span>
               </div>
               <div className="flex flex-col justify-center items-center text-center">
@@ -938,18 +945,18 @@ export function SolicitudesMovimientos() {
                   <b>Revisado por: </b>
                 </span>
                 <span>
-                  {movimiento?.RevisadoPor?.nombres}{" "}
-                  {movimiento?.RevisadoPor?.apellidos}
+                  {movimiento?.movimiento?.RevisadoPor?.nombres}{" "}
+                  {movimiento?.movimiento?.RevisadoPor?.apellidos}
                 </span>
                 <span>
-                  {movimiento?.RevisadoPor?.tipo_identificacion}
+                  {movimiento?.movimiento?.RevisadoPor?.tipo_identificacion}
                   {"-"}
-                  {movimiento?.RevisadoPor?.numero_identificacion}
+                  {movimiento?.movimiento?.RevisadoPor?.numero_identificacion}
                 </span>
                 <span>
-                  {movimiento?.RevisadoPor?.Cargos_Empleados[0]?.Cargos_Nivele
-                    ?.Cargo?.descripcion &&
-                    `${movimiento?.RevisadoPor?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.RevisadoPor?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
+                  {movimiento?.movimiento?.RevisadoPor?.Cargos_Empleados[0]
+                    ?.Cargos_Nivele?.Cargo?.descripcion &&
+                    `${movimiento?.movimiento?.RevisadoPor?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.RevisadoPor?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
                 </span>
               </div>
             </div>
