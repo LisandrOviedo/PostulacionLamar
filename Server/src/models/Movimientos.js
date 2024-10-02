@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
     cargo_actual_id: {
       // Campo relacionado
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     clase_movimiento_id: {
       // Campo relacionado

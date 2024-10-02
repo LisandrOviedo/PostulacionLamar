@@ -156,6 +156,8 @@ const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
             include: {
               model: Cargos_Empleados,
               attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+              where: { activo: true },
+              required: false,
               include: [
                 {
                   model: Cargos_Niveles,
@@ -199,6 +201,8 @@ const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
             include: {
               model: Cargos_Empleados,
               attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+              where: { activo: true },
+              required: false,
               include: [
                 {
                   model: Cargos_Niveles,
@@ -242,6 +246,8 @@ const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
             include: {
               model: Cargos_Empleados,
               attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+              where: { activo: true },
+              required: false,
               include: [
                 {
                   model: Cargos_Niveles,
@@ -285,6 +291,8 @@ const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
             include: {
               model: Cargos_Empleados,
               attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+              where: { activo: true },
+              required: false,
               include: [
                 {
                   model: Cargos_Niveles,
@@ -464,6 +472,8 @@ const traerMovimiento = async (movimiento_id, empleado_id) => {
           include: {
             model: Cargos_Empleados,
             attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            where: { activo: true },
+            required: false,
             include: [
               {
                 model: Cargos_Niveles,
@@ -507,6 +517,8 @@ const traerMovimiento = async (movimiento_id, empleado_id) => {
           include: {
             model: Cargos_Empleados,
             attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            where: { activo: true },
+            required: false,
             include: [
               {
                 model: Cargos_Niveles,
@@ -550,6 +562,8 @@ const traerMovimiento = async (movimiento_id, empleado_id) => {
           include: {
             model: Cargos_Empleados,
             attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            where: { activo: true },
+            required: false,
             include: [
               {
                 model: Cargos_Niveles,
@@ -593,6 +607,53 @@ const traerMovimiento = async (movimiento_id, empleado_id) => {
           include: {
             model: Cargos_Empleados,
             attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            where: { activo: true },
+            required: false,
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        {
+          model: Empleados,
+          as: "RevisadoPor",
+          attributes: [
+            "empleado_id",
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+          include: {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            where: { activo: true },
+            required: false,
             include: [
               {
                 model: Cargos_Niveles,
@@ -649,7 +710,27 @@ const traerMovimiento = async (movimiento_id, empleado_id) => {
       await t.commit();
     }
 
-    return movimiento;
+    const movimientoAnterior = await Movimientos.findAll({
+      attributes: [
+        "movimiento_id",
+        "tipo_nomina",
+        "otro_tipo_nomina",
+        "frecuencia_nomina",
+        "otra_frecuencia_nomina",
+        "codigo_nomina",
+      ],
+      where: {
+        [Op.not]: {
+          movimiento_id: movimiento.movimiento_id,
+        },
+        empleado_id: movimiento.Empleado.empleado_id,
+        estado_solicitud: "Aprobado",
+        activo: true,
+      },
+      order: [["updatedAt", "DESC"]],
+    });
+
+    return { movimiento, movimientoAnterior: movimientoAnterior[0] || null };
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -685,7 +766,6 @@ const crearMovimiento = async (
 ) => {
   if (
     !empleado_id ||
-    !cargo_empleado_id ||
     !clase_movimiento_id ||
     !duracion_movimiento ||
     !empresa_id ||
@@ -720,7 +800,7 @@ const crearMovimiento = async (
       await Movimientos.create(
         {
           empleado_id: empleado_id,
-          cargo_actual_id: cargo_empleado_id,
+          cargo_actual_id: cargo_empleado_id || null,
           clase_movimiento_id: clase_movimiento_id,
           duracion_movimiento: duracion_movimiento,
           duracion_movimiento_dias:

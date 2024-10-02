@@ -48,6 +48,9 @@ export const movimientoSlice = createSlice({
         orden_por: "",
       };
     },
+    resetMovimientoDetail: (state, action) => {
+      state.movimientoDetail = {};
+    },
     resetState: () => {
       return initialState;
     },
@@ -61,6 +64,7 @@ export const {
   limitePorPagina,
   filtros,
   resetFilters,
+  resetMovimientoDetail,
   resetState,
 } = movimientoSlice.actions;
 export default movimientoSlice.reducer;
