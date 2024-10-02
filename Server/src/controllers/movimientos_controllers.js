@@ -649,7 +649,27 @@ const traerMovimiento = async (movimiento_id, empleado_id) => {
       await t.commit();
     }
 
-    return movimiento;
+    const movimientoAnterior = await Movimientos.findAll({
+      attributes: [
+        "movimiento_id",
+        "tipo_nomina",
+        "otro_tipo_nomina",
+        "frecuencia_nomina",
+        "otra_frecuencia_nomina",
+        "codigo_nomina",
+      ],
+      where: {
+        [Op.not]: {
+          movimiento_id: movimiento.movimiento_id,
+        },
+        empleado_id: movimiento.Empleado.empleado_id,
+        estado_solicitud: "Aprobado",
+        activo: true,
+      },
+      order: [["updatedAt", "DESC"]],
+    });
+
+    return { movimiento, movimientoAnterior: movimientoAnterior[0] || null };
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
