@@ -11,6 +11,7 @@ import {
   limitePorPagina,
   filtros,
   resetFilters,
+  resetMovimientoDetail,
   resetState,
 } from "./movimientosSlices";
 
@@ -45,6 +46,92 @@ export const getAllMovimientos = (
       throw new Error();
     }
   };
+};
+
+export const getMovimientoDetail = (token, movimiento_id, empleado_id) => {
+  const URL_MOVIMIENTO_DETAIL = `${URL_SERVER}/movimientos/detalle?movimiento_id=${movimiento_id}&empleado_id=${empleado_id}`;
+
+  return async (dispatch) => {
+    try {
+      const { data } = await axios(URL_MOVIMIENTO_DETAIL, {
+        headers: { authorization: `Bearer ${token}` },
+      });
+
+      return dispatch(movimientoDetail(data));
+    } catch (error) {
+      alertError(error);
+
+      throw new Error();
+    }
+  };
+};
+
+export const putAprobarMovimiento = async (
+  token,
+  movimiento_id,
+  empleado_id,
+  observaciones
+) => {
+  const URL_APROBAR_MOVIMIENTO = `${URL_SERVER}/movimientos/aprobar`;
+
+  try {
+    await axios.put(
+      URL_APROBAR_MOVIMIENTO,
+      {
+        movimiento_id: movimiento_id,
+        revisado_por_id: empleado_id,
+        observaciones: observaciones,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+
+    return Swal.fire({
+      text: "¡Movimiento aprobado exitosamente!",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
+
+export const putDenegarMovimiento = async (
+  token,
+  movimiento_id,
+  empleado_id,
+  observaciones
+) => {
+  const URL_DENEGAR_MOVIMIENTO = `${URL_SERVER}/movimientos/denegar`;
+
+  try {
+    await axios.put(
+      URL_DENEGAR_MOVIMIENTO,
+      {
+        movimiento_id: movimiento_id,
+        revisado_por_id: empleado_id,
+        observaciones: observaciones,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+
+    return Swal.fire({
+      text: "¡Movimiento denegado exitosamente!",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
 };
 
 export const postMovimiento = async (token, datosMovimiento) => {
@@ -120,6 +207,18 @@ export const resetMovimientos = () => {
   return async (dispatch) => {
     try {
       return dispatch(resetState());
+    } catch (error) {
+      alertError(error);
+
+      throw new Error();
+    }
+  };
+};
+
+export const clearMovimientoDetail = () => {
+  return async (dispatch) => {
+    try {
+      return await dispatch(resetMovimientoDetail());
     } catch (error) {
       alertError(error);
 
