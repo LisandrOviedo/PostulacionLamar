@@ -4,10 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   getAllMovimientos,
   getMovimientoDetail,
+  putAprobarMovimiento,
+  putDenegarMovimiento,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
   deleteFiltros,
+  clearMovimientoDetail,
 } from "../../redux/movimientos/movimientosActions";
 
 import { getAllClasesMovimientosActivas } from "../../redux/clasesMovimientos/clasesMovimientosActions";
@@ -39,6 +42,8 @@ export function SolicitudesMovimientos() {
   const dispatch = useDispatch();
 
   const token = useSelector((state) => state.empleados.token);
+
+  const empleado = useSelector((state) => state.empleados.empleado);
 
   const movimiento = useSelector((state) => state.movimientos.movimientoDetail);
 
@@ -165,7 +170,7 @@ export function SolicitudesMovimientos() {
   const handleVerDetalles = (movimiento_id) => {
     setShowModal(true);
 
-    dispatch(getMovimientoDetail(token, movimiento_id));
+    dispatch(getMovimientoDetail(token, movimiento_id, empleado.empleado_id));
 
     console.log(movimiento);
   };
@@ -226,6 +231,76 @@ export function SolicitudesMovimientos() {
     }
   };
 
+  const handleAprobarMovimiento = async (movimiento_id) => {
+    const { value: text, isConfirmed } = await Swal.fire({
+      input: "textarea",
+      inputLabel: "Aprobar Movimiento",
+      inputPlaceholder: "Escribe tus observaciones aquí...",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Aceptar",
+      cancelButtonText: "Cancelar",
+      showCancelButton: true,
+    });
+
+    if (isConfirmed) {
+      await putAprobarMovimiento(
+        token,
+        movimiento_id,
+        empleado.empleado_id,
+        text
+      );
+    }
+  };
+
+  const handleDenegarMovimiento = async (movimiento_id) => {
+    const { value: text, isConfirmed } = await Swal.fire({
+      input: "textarea",
+      inputLabel: "Denegar Movimiento",
+      inputPlaceholder: "Escribe tus observaciones aquí...",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Aceptar",
+      cancelButtonText: "Cancelar",
+      showCancelButton: true,
+    });
+
+    if (isConfirmed) {
+      await putDenegarMovimiento(
+        token,
+        movimiento_id,
+        empleado.empleado_id,
+        text
+      );
+    }
+  };
+
+  const handleCerrarModal = () => {
+    setShowModal(0);
+    clearMovimientoDetail();
+  };
+
+  const handleChangeFiltersSelect = (e) => {
+    const { value } = e.target;
+
+    const buscarPor = document.getElementById("input_search");
+    const valueBuscarPor = buscarPor.value;
+
+    if (valueBuscarPor) {
+      setFilters((prevFilters) => {
+        let updatedFilters = { ...prevFilters };
+
+        if (value === "numero_identificacion") {
+          updatedFilters.apellidos = "";
+        } else if (value === "apellidos") {
+          updatedFilters.numero_identificacion = "";
+        }
+
+        return { ...updatedFilters, [value]: valueBuscarPor };
+      });
+    }
+  };
+
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -237,7 +312,7 @@ export function SolicitudesMovimientos() {
           <Select
             id="buscar_por"
             name="buscar_por"
-            // onChange={handleChangeFiltersSelect}
+            onChange={handleChangeFiltersSelect}
             defaultValue={
               filtros.apellidos ? "apellidos" : "numero_identificacion"
             }
@@ -336,8 +411,8 @@ export function SolicitudesMovimientos() {
             <option value="">Todos</option>
             <option value="Pendiente por revisar">Pendiente por revisar</option>
             <option value="Revisado">Revisado</option>
-            <option value="Aprobada">Aprobado</option>
-            <option value="Denegada">Denegado</option>
+            <option value="Aprobado">Aprobado</option>
+            <option value="Denegado">Denegado</option>
           </Select>
         </div>
         <div className="flex flex-col place-content-between">
@@ -598,17 +673,33 @@ export function SolicitudesMovimientos() {
             </div>
 
             <div className="flex gap-2 flex-col sm:flex-row">
-              <Button className="m-0 w-auto text-xs sm:text-sm bg-green-600 hover:bg-green-700">
-                Aprobar
-              </Button>
-              <Button className="m-0 w-auto text-xs sm:text-sm bg-red-600 hover:bg-red-700">
-                Denegar
-              </Button>
+              {/*  */}
+
+              {movimiento.estado_solicitud === "Pendiente por revisar" ||
+              movimiento.estado_solicitud === "Revisado" ? (
+                <>
+                  <Button
+                    className="m-0 w-auto text-xs sm:text-sm bg-green-600 hover:bg-green-700"
+                    onClick={() =>
+                      handleAprobarMovimiento(movimiento.movimiento_id)
+                    }
+                  >
+                    Aprobar
+                  </Button>
+                  <Button
+                    className="m-0 w-auto text-xs sm:text-sm bg-red-600 hover:bg-red-700"
+                    onClick={() =>
+                      handleDenegarMovimiento(movimiento.movimiento_id)
+                    }
+                  >
+                    Denegar
+                  </Button>
+                </>
+              ) : null}
+
               <Button
                 className="m-0 w-auto text-xs sm:text-sm"
-                onClick={() => {
-                  setShowModal(0);
-                }}
+                onClick={handleCerrarModal}
               >
                 Cerrar
               </Button>
