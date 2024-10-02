@@ -1,4 +1,4 @@
-// const { Op } = require("sequelize");
+const { Op } = require("sequelize");
 
 const {
   conn,
@@ -9,6 +9,8 @@ const {
   Cargos,
   Departamentos,
   Empresas,
+  Clases_Movimientos,
+  Sedes,
 } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
@@ -53,9 +55,26 @@ const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
               : filtros.apellidos
               ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
               : {},
+            include: {
+              model: Empresas,
+              attributes: ["empresa_id", "nombre"],
+              where:
+                filtros.empresa_id && filtros.empresa_id !== "Seleccione"
+                  ? { empresa_id: filtros.empresa_id }
+                  : {},
+              include: {
+                model: Sedes,
+                attributes: ["sede_id", "nombre"],
+                where:
+                  filtros.sede_id && filtros.sede_id !== "Seleccione"
+                    ? { sede_id: filtros.sede_id }
+                    : {},
+              },
+            },
           },
           {
             model: Cargos_Empleados,
+            as: "Cargo_Actual",
             attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
             include: [
               {
@@ -86,13 +105,239 @@ const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
               },
             ],
           },
+          {
+            model: Clases_Movimientos,
+            attributes: ["clase_movimiento_id", "descripcion"],
+            where:
+              filtros.clase_movimiento_id &&
+              filtros.clase_movimiento_id !== "Seleccione"
+                ? {
+                    clase_movimiento_id: filtros.clase_movimiento_id,
+                  }
+                : {},
+          },
+          {
+            model: Cargos_Niveles,
+            as: "Nuevo_Cargo",
+            attributes: ["cargo_nivel_id", "nivel"],
+            include: [
+              {
+                model: Cargos,
+                attributes: [
+                  "cargo_id",
+                  "descripcion",
+                  "descripcion_cargo_antiguo",
+                ],
+                include: [
+                  {
+                    model: Departamentos,
+                    attributes: ["departamento_id", "nombre"],
+                    include: [
+                      {
+                        model: Empresas,
+                        attributes: ["empresa_id", "nombre"],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            model: Empleados,
+            as: "Solicitante",
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
+            include: {
+              model: Cargos_Empleados,
+              attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+              where: { activo: true },
+              required: false,
+              include: [
+                {
+                  model: Cargos_Niveles,
+                  attributes: ["cargo_nivel_id", "nivel"],
+                  include: [
+                    {
+                      model: Cargos,
+                      attributes: [
+                        "cargo_id",
+                        "descripcion",
+                        "descripcion_cargo_antiguo",
+                      ],
+                      include: [
+                        {
+                          model: Departamentos,
+                          attributes: ["departamento_id", "nombre"],
+                          include: [
+                            {
+                              model: Empresas,
+                              attributes: ["empresa_id", "nombre"],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            model: Empleados,
+            as: "Supervisor",
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
+            include: {
+              model: Cargos_Empleados,
+              attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+              where: { activo: true },
+              required: false,
+              include: [
+                {
+                  model: Cargos_Niveles,
+                  attributes: ["cargo_nivel_id", "nivel"],
+                  include: [
+                    {
+                      model: Cargos,
+                      attributes: [
+                        "cargo_id",
+                        "descripcion",
+                        "descripcion_cargo_antiguo",
+                      ],
+                      include: [
+                        {
+                          model: Departamentos,
+                          attributes: ["departamento_id", "nombre"],
+                          include: [
+                            {
+                              model: Empresas,
+                              attributes: ["empresa_id", "nombre"],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            model: Empleados,
+            as: "Gerencia",
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
+            include: {
+              model: Cargos_Empleados,
+              attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+              where: { activo: true },
+              required: false,
+              include: [
+                {
+                  model: Cargos_Niveles,
+                  attributes: ["cargo_nivel_id", "nivel"],
+                  include: [
+                    {
+                      model: Cargos,
+                      attributes: [
+                        "cargo_id",
+                        "descripcion",
+                        "descripcion_cargo_antiguo",
+                      ],
+                      include: [
+                        {
+                          model: Departamentos,
+                          attributes: ["departamento_id", "nombre"],
+                          include: [
+                            {
+                              model: Empresas,
+                              attributes: ["empresa_id", "nombre"],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            model: Empleados,
+            as: "TTHH",
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
+            include: {
+              model: Cargos_Empleados,
+              attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+              where: { activo: true },
+              required: false,
+              include: [
+                {
+                  model: Cargos_Niveles,
+                  attributes: ["cargo_nivel_id", "nivel"],
+                  include: [
+                    {
+                      model: Cargos,
+                      attributes: [
+                        "cargo_id",
+                        "descripcion",
+                        "descripcion_cargo_antiguo",
+                      ],
+                      include: [
+                        {
+                          model: Departamentos,
+                          attributes: ["departamento_id", "nombre"],
+                          include: [
+                            {
+                              model: Empresas,
+                              attributes: ["empresa_id", "nombre"],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
         ],
+        where:
+          filtros.estado_solicitud && filtros.estado_solicitud !== "Seleccione"
+            ? {
+                estado_solicitud: filtros.estado_solicitud,
+              }
+            : {},
         distinct: true,
         order: [
           filtros.orden_campo === "apellidos"
             ? [Empleados, "apellidos", filtros.orden_por]
             : filtros.orden_campo === "updatedAt"
             ? ["updatedAt", filtros.orden_por]
+            : filtros.orden_campo === "createdAt"
+            ? ["createdAt", filtros.orden_por]
             : null,
         ].filter(Boolean),
       });
@@ -109,14 +354,388 @@ const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
   }
 };
 
-const traerMovimiento = async (movimiento_id) => {
-  if (!movimiento_id) {
+const traerMovimiento = async (movimiento_id, empleado_id) => {
+  if (!movimiento_id || !empleado_id) {
     throw new Error(`Datos faltantes`);
   }
 
+  let t;
+
   try {
-    return await Movimientos.findByPk(movimiento_id);
+    const movimiento = await Movimientos.findByPk(movimiento_id, {
+      attributes: {
+        exclude: [
+          "empleado_id",
+          "cargo_actual_id",
+          "clase_movimiento_id",
+          "cargo_nivel_id",
+          "solicitante_id",
+          "supervisor_id",
+          "gerencia_id",
+          "tthh_id",
+          "revisado_por_id",
+        ],
+      },
+      include: [
+        {
+          model: Empleados,
+          attributes: [
+            "empleado_id",
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+          include: {
+            model: Empresas,
+            attributes: ["empresa_id", "nombre"],
+            include: {
+              model: Sedes,
+              attributes: ["sede_id", "nombre"],
+            },
+          },
+        },
+        {
+          model: Cargos_Empleados,
+          as: "Cargo_Actual",
+          attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+          include: [
+            {
+              model: Cargos_Niveles,
+              attributes: ["cargo_nivel_id", "nivel"],
+              include: [
+                {
+                  model: Cargos,
+                  attributes: [
+                    "cargo_id",
+                    "descripcion",
+                    "descripcion_cargo_antiguo",
+                  ],
+                  include: [
+                    {
+                      model: Departamentos,
+                      attributes: ["departamento_id", "nombre"],
+                      include: [
+                        {
+                          model: Empresas,
+                          attributes: ["empresa_id", "nombre"],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Clases_Movimientos,
+          attributes: ["clase_movimiento_id", "descripcion"],
+        },
+        {
+          model: Cargos_Niveles,
+          as: "Nuevo_Cargo",
+          attributes: ["cargo_nivel_id", "nivel"],
+          include: [
+            {
+              model: Cargos,
+              attributes: [
+                "cargo_id",
+                "descripcion",
+                "descripcion_cargo_antiguo",
+              ],
+              include: [
+                {
+                  model: Departamentos,
+                  attributes: ["departamento_id", "nombre"],
+                  include: [
+                    {
+                      model: Empresas,
+                      attributes: ["empresa_id", "nombre"],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Empleados,
+          as: "Solicitante",
+          attributes: [
+            "empleado_id",
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+          include: {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            where: { activo: true },
+            required: false,
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        {
+          model: Empleados,
+          as: "Supervisor",
+          attributes: [
+            "empleado_id",
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+          include: {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            where: { activo: true },
+            required: false,
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        {
+          model: Empleados,
+          as: "Gerencia",
+          attributes: [
+            "empleado_id",
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+          include: {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            where: { activo: true },
+            required: false,
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        {
+          model: Empleados,
+          as: "TTHH",
+          attributes: [
+            "empleado_id",
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+          include: {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            where: { activo: true },
+            required: false,
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        {
+          model: Empleados,
+          as: "RevisadoPor",
+          attributes: [
+            "empleado_id",
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+          include: {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "salario", "fecha_ingreso"],
+            where: { activo: true },
+            required: false,
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    if (!movimiento) {
+      throw new Error(`No existe ese movimiento`);
+    }
+
+    if (movimiento.estado_solicitud === "Pendiente por revisar") {
+      t = await conn.transaction();
+
+      await Movimientos.update(
+        {
+          estado_solicitud: "Revisado",
+          revisado_por_id: empleado_id,
+        },
+        {
+          where: {
+            movimiento_id: movimiento_id,
+          },
+          transaction: t,
+        }
+      );
+
+      await t.commit();
+    }
+
+    const movimientoAnterior = await Movimientos.findAll({
+      attributes: [
+        "movimiento_id",
+        "tipo_nomina",
+        "otro_tipo_nomina",
+        "frecuencia_nomina",
+        "otra_frecuencia_nomina",
+        "codigo_nomina",
+      ],
+      where: {
+        [Op.not]: {
+          movimiento_id: movimiento.movimiento_id,
+        },
+        empleado_id: movimiento.Empleado.empleado_id,
+        estado_solicitud: "Aprobado",
+        activo: true,
+      },
+      order: [["updatedAt", "DESC"]],
+    });
+
+    return { movimiento, movimientoAnterior: movimientoAnterior[0] || null };
   } catch (error) {
+    if (t && !t.finished) {
+      await t.rollback();
+    }
+
     throw new Error(`Error al traer el movimiento: ${error.message}`);
   }
 };
@@ -147,7 +766,6 @@ const crearMovimiento = async (
 ) => {
   if (
     !empleado_id ||
-    !cargo_empleado_id ||
     !clase_movimiento_id ||
     !duracion_movimiento ||
     !empresa_id ||
@@ -156,7 +774,6 @@ const crearMovimiento = async (
     !vigencia_movimiento_desde ||
     !tipo_nomina ||
     !frecuencia_nomina ||
-    !sueldo ||
     !solicitante_id ||
     !supervisor_id ||
     !gerencia_id ||
@@ -180,10 +797,10 @@ const crearMovimiento = async (
     if (!existeMovimiento) {
       t = await conn.transaction();
 
-      const crearMovimiento = await Movimientos.create(
+      await Movimientos.create(
         {
           empleado_id: empleado_id,
-          cargo_actual_id: cargo_empleado_id,
+          cargo_actual_id: cargo_empleado_id || null,
           clase_movimiento_id: clase_movimiento_id,
           duracion_movimiento: duracion_movimiento,
           duracion_movimiento_dias:
@@ -203,7 +820,7 @@ const crearMovimiento = async (
           frecuencia_nomina: frecuencia_nomina,
           otra_frecuencia_nomina:
             frecuencia_nomina === "Otro" ? otra_frecuencia_nomina : null,
-          sueldo: sueldo,
+          sueldo: sueldo || null,
           codigo_nomina: codigo_nomina || null,
           solicitante_id: solicitante_id,
           supervisor_id: supervisor_id,
@@ -213,44 +830,7 @@ const crearMovimiento = async (
         { transaction: t }
       );
 
-      // await Cargos_Empleados.update(
-      //   {
-      //     activo: false,
-      //   },
-      //   {
-      //     where: {
-      //       empleado_id: empleado_id,
-      //       activo: true,
-      //     },
-      //     transaction: t,
-      //   }
-      // );
-
-      // await Cargos_Empleados.create(
-      //   {
-      //     empleado_id: empleado_id,
-      //     cargo_nivel_id: cargo_nivel_id,
-      //     salario: sueldo,
-      //     fecha_ingreso: vigencia_movimiento_desde,
-      //   },
-      //   { transaction: t }
-      // );
-
-      // await Empleados.update(
-      //   {
-      //     empresa_id: empresa_id,
-      //   },
-      //   {
-      //     where: {
-      //       empleado_id: empleado_id,
-      //     },
-      //     transaction: t,
-      //   }
-      // );
-
       await t.commit();
-
-      return await traerMovimiento(crearMovimiento.movimiento_id);
     } else {
       throw new Error(`Ese empleado posee un movimiento pendiente por revisar`);
     }
@@ -292,10 +872,10 @@ const modificarMovimiento = async (
     !duracion_movimiento ||
     !empresa_id ||
     !cargo_nivel_id ||
+    cargo_nivel_id === "Seleccione" ||
     !vigencia_movimiento_desde ||
     !tipo_nomina ||
     !frecuencia_nomina ||
-    !sueldo ||
     !solicitante_id ||
     !supervisor_id ||
     !gerencia_id ||
@@ -330,12 +910,15 @@ const modificarMovimiento = async (
         frecuencia_nomina: frecuencia_nomina,
         otra_frecuencia_nomina:
           frecuencia_nomina === "Otro" ? otra_frecuencia_nomina : null,
-        sueldo: sueldo,
+        sueldo: sueldo || null,
         codigo_nomina: codigo_nomina || null,
         solicitante_id: solicitante_id,
         supervisor_id: supervisor_id,
         gerencia_id: gerencia_id,
         tthh_id: tthh_id,
+        estado_solicitud: "Pendiente por revisar",
+        revisado_por_id: null,
+        observaciones: null,
       },
       {
         where: {
@@ -346,14 +929,166 @@ const modificarMovimiento = async (
     );
 
     await t.commit();
-
-    return await traerMovimiento(movimiento_id);
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
     }
 
     throw new Error(`Error al modificar el movimiento: ${error.message}`);
+  }
+};
+
+const aprobarMovimiento = async (
+  movimiento_id,
+  revisado_por_id,
+  observaciones
+) => {
+  if (!movimiento_id || !revisado_por_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  let t;
+
+  try {
+    const movimiento = await Movimientos.findOne({
+      where: {
+        movimiento_id: movimiento_id,
+      },
+      include: {
+        model: Cargos_Niveles,
+        as: "Nuevo_Cargo",
+        include: {
+          model: Cargos,
+          include: {
+            model: Departamentos,
+            include: {
+              model: Empresas,
+              required: true,
+            },
+          },
+        },
+      },
+    });
+
+    if (
+      movimiento &&
+      (movimiento.estado_solicitud === "Pendiente por revisar" ||
+        movimiento.estado_solicitud === "Revisado")
+    ) {
+      t = await conn.transaction();
+
+      await Movimientos.update(
+        {
+          estado_solicitud: "Aprobado",
+          revisado_por_id: revisado_por_id,
+          observaciones: observaciones || null,
+        },
+        {
+          where: {
+            movimiento_id: movimiento.movimiento_id,
+          },
+          transaction: t,
+        }
+      );
+
+      await Cargos_Empleados.update(
+        {
+          activo: false,
+        },
+        {
+          where: {
+            empleado_id: movimiento.empleado_id,
+            activo: true,
+          },
+          transaction: t,
+        }
+      );
+
+      await Cargos_Empleados.create(
+        {
+          empleado_id: movimiento.empleado_id,
+          cargo_nivel_id: movimiento.cargo_nivel_id,
+          salario: movimiento.sueldo,
+          fecha_ingreso: movimiento.vigencia_movimiento_desde,
+        },
+        { transaction: t }
+      );
+
+      await Empleados.update(
+        {
+          empresa_id:
+            movimiento.Nuevo_Cargo.Cargo.Departamento.Empresa.empresa_id,
+        },
+        {
+          where: {
+            empleado_id: movimiento.empleado_id,
+          },
+          transaction: t,
+        }
+      );
+
+      await t.commit();
+    } else {
+      throw new Error(`Ese movimiento ya fue revisado o no existe`);
+    }
+  } catch (error) {
+    if (t && !t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error(`Error al inactivar el movimiento: ${error.message}`);
+  }
+};
+
+const denegarMovimiento = async (
+  movimiento_id,
+  revisado_por_id,
+  observaciones
+) => {
+  if (!movimiento_id || !revisado_por_id || !observaciones) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  let t;
+
+  try {
+    const movimiento = await Movimientos.findOne({
+      where: {
+        movimiento_id: movimiento_id,
+      },
+    });
+
+    if (
+      movimiento &&
+      (movimiento.estado_solicitud === "Pendiente por revisar" ||
+        movimiento.estado_solicitud === "Revisado")
+    ) {
+      t = await conn.transaction();
+
+      await Movimientos.update(
+        {
+          estado_solicitud: "Denegado",
+          revisado_por_id: revisado_por_id,
+          observaciones: observaciones,
+        },
+        {
+          where: {
+            movimiento_id: movimiento.movimiento_id,
+          },
+          transaction: t,
+        }
+      );
+
+      await t.commit();
+    } else {
+      throw new Error(`Ese movimiento ya fue revisado o no existe`);
+    }
+  } catch (error) {
+    if (t && !t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error(`Error al inactivar el movimiento: ${error.message}`);
   }
 };
 
@@ -378,8 +1113,6 @@ const inactivarMovimiento = async (movimiento_id) => {
     );
 
     await t.commit();
-
-    return await traerMovimiento(movimiento_id);
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -394,5 +1127,7 @@ module.exports = {
   traerMovimiento,
   crearMovimiento,
   modificarMovimiento,
+  aprobarMovimiento,
+  denegarMovimiento,
   inactivarMovimiento,
 };

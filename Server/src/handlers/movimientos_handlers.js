@@ -3,6 +3,8 @@ const {
   traerMovimiento,
   crearMovimiento,
   modificarMovimiento,
+  aprobarMovimiento,
+  denegarMovimiento,
   inactivarMovimiento,
 } = require("../controllers/movimientos_controllers");
 
@@ -23,10 +25,10 @@ const getMovimientos = async (req, res) => {
 };
 
 const getMovimiento = async (req, res) => {
-  const { movimiento_id } = req.params;
+  const { movimiento_id, empleado_id } = req.query;
 
   try {
-    const response = await traerMovimiento(movimiento_id);
+    const response = await traerMovimiento(movimiento_id, empleado_id);
 
     return res.json(response);
   } catch (error) {
@@ -148,6 +150,38 @@ const putMovimiento = async (req, res) => {
   }
 };
 
+const putAprobarMovimiento = async (req, res) => {
+  const { movimiento_id, revisado_por_id, observaciones } = req.body;
+
+  try {
+    const response = await aprobarMovimiento(
+      movimiento_id,
+      revisado_por_id,
+      observaciones
+    );
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const putDenegarMovimiento = async (req, res) => {
+  const { movimiento_id, revisado_por_id, observaciones } = req.body;
+
+  try {
+    const response = await denegarMovimiento(
+      movimiento_id,
+      revisado_por_id,
+      observaciones
+    );
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 const deleteMovimiento = async (req, res) => {
   const { movimiento_id } = req.body;
 
@@ -165,5 +199,7 @@ module.exports = {
   getMovimiento,
   postMovimiento,
   putMovimiento,
+  putAprobarMovimiento,
+  putDenegarMovimiento,
   deleteMovimiento,
 };

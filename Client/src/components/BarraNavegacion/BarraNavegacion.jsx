@@ -381,6 +381,18 @@ export function BarraNavegacion() {
                   </li>
                   <li>
                     <Link
+                      to="/admin/solicitudesMovimientos"
+                      className="text-white hover:text-[#F0C95C]"
+                      onClick={() => {
+                        toggleMenuBurger();
+                        toggleMenu({});
+                      }}
+                    >
+                      Solicitudes Movimientos
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       to="/admin/sugerencias"
                       className="text-white hover:text-[#F0C95C]"
                       onClick={() => {
@@ -391,23 +403,6 @@ export function BarraNavegacion() {
                       Sugerencias
                     </Link>
                   </li>
-                  <li>
-                    <Link
-                      to="/admin/consultaMovimientos"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Consulta Movimientos
-                    </Link>
-                  </li>
-
-
-
-
-
                 </>
               )}
 

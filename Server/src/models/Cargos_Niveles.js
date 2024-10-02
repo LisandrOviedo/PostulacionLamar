@@ -13,7 +13,14 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     nivel: {
-      type: DataTypes.ENUM("Junior", "Semi-Senior", "Senior"),
+      type: DataTypes.ENUM(
+        "Junior",
+        "Semi-Senior",
+        "Senior",
+        "Primera",
+        "Segunda",
+        "Tercera"
+      ),
       allowNull: false,
     },
     salario_min: {
