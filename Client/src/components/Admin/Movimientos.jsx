@@ -413,9 +413,7 @@ export function Movimientos() {
         </div>
 
         {errors.numero_identificacion && (
-          <Span className="m-0">
-            {errors.numero_identificacion}
-          </Span>
+          <Span className="m-0">{errors.numero_identificacion}</Span>
         )}
       </div>
 
@@ -718,7 +716,10 @@ export function Movimientos() {
           </Select>
         </div>
         <div className="flex flex-col justify-start">
-          <Label htmlFor="vigencia_movimiento_desde">
+          <Label
+            htmlFor="vigencia_movimiento_desde"
+            errors={errors.vigencia_movimiento}
+          >
             Vigencia del movimiento (fecha desde)
           </Label>
           <Date
@@ -730,7 +731,10 @@ export function Movimientos() {
           />
         </div>
         <div className="flex flex-col justify-start">
-          <Label htmlFor="vigencia_movimiento_hasta">
+          <Label
+            htmlFor="vigencia_movimiento_hasta"
+            errors={errors.vigencia_movimiento}
+          >
             Vigencia del movimiento (fecha hasta)
           </Label>
           <Date
@@ -820,9 +824,7 @@ export function Movimientos() {
               <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
             )}
           </div>
-          {errors.sueldo && (
-            <Span className="m-0">{errors.sueldo}</Span>
-          )}
+          {errors.sueldo && <Span className="m-0">{errors.sueldo}</Span>}
         </div>
 
         <div className="flex flex-col justify-start">
@@ -841,9 +843,7 @@ export function Movimientos() {
             )}
           </div>
           {errors.codigo_nomina && (
-            <Span className="m-0">
-              {errors.codigo_nomina}
-            </Span>
+            <Span className="m-0">{errors.codigo_nomina}</Span>
           )}
         </div>
       </div>
@@ -974,9 +974,7 @@ export function Movimientos() {
             </div>
           </div>
           {errors.numero_identificacion_gerencia && (
-            <Span className="m-0">
-              {errors.numero_identificacion_gerencia}
-            </Span>
+            <Span className="m-0">{errors.numero_identificacion_gerencia}</Span>
           )}
         </div>
         <div>
@@ -1031,9 +1029,7 @@ export function Movimientos() {
             </div>
           </div>
           {errors.numero_identificacion_tthh && (
-            <Span className="m-0">
-              {errors.numero_identificacion_tthh}
-            </Span>
+            <Span className="m-0">{errors.numero_identificacion_tthh}</Span>
           )}
         </div>
         <div>
