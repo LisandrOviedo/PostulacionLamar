@@ -2003,7 +2003,7 @@ export function FormularioIngreso() {
             onClick={handleSaveFicha}
           >
             <FaFloppyDisk />
-            <span>Guardar</span>
+            <>Guardar</>
           </Button>
         </div>
       </div>
