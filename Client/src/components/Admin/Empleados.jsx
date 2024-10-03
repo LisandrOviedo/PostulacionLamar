@@ -459,26 +459,26 @@ export function Empleados() {
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {empleado.apellidos} {empleado.nombres}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {empleado.tipo_identificacion}
                       {empleado.numero_identificacion}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {empleado.telefono || "Sin registrar / No posee"}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {empleado.correo || "Sin registrar / No posee"}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {empleado.activo ? "Activo" : "Inactivo"}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {DDMMYYYY(empleado.updatedAt)}
                     </td>
-                    <td className="px-4 py-4 flex gap-2">
+                    <td className="p-4 flex gap-2">
                       {empleado.Fichas_Ingresos[0]?.ficha_ingreso_id && (
                         <Button
                           className="m-0 w-auto text-xs"

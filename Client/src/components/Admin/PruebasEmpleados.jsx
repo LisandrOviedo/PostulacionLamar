@@ -395,22 +395,22 @@ export function PruebasEmpleados() {
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {prueba.Empleado.apellidos} {prueba.Empleado.nombres}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {prueba.Empleado.tipo_identificacion}
                       {prueba.Empleado.numero_identificacion}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {prueba.Empleado.telefono || "Sin registrar"}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {prueba.Empleado.correo || "Sin registrar"}
                     </td>
-                    <td className="px-4 py-4">{prueba.prueba}</td>
-                    <td className="px-4 py-4">{DDMMYYYY(prueba.createdAt)}</td>
-                    <td className="px-4 py-4 flex gap-2 items-center">
+                    <td className="p-4">{prueba.prueba}</td>
+                    <td className="p-4">{DDMMYYYY(prueba.createdAt)}</td>
+                    <td className="p-4 flex gap-2 items-center">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
