@@ -1,18 +1,12 @@
 import { clsx } from "clsx";
-
 import { useEffect, useState } from "react";
-
 import { useDispatch, useSelector } from "react-redux";
-
 import { getAllEtniasActivas } from "../../redux/etnias/etniasActions";
 import { putEmpleado } from "../../redux/empleados/empleadosActions";
-
-import { Button, Hr, Input, Select, Title } from "../UI";
-
+import { Button, Hr, Input, Select, Title, Span } from "../UI";
 import { calcularEdad } from "../../utils/formatearFecha";
 import validations from "../../utils/validacionesDatosPersonales";
-
-import Swal from "sweetalert2";
+import { MdCancel } from "react-icons/md";
 
 export function DatosPersonales() {
   const dispatch = useDispatch();
@@ -98,13 +92,21 @@ export function DatosPersonales() {
       <br />
       <Hr />
       <br />
-      <div className="flex items-center justify-center flex-col-reverse sm:flex-row">
-        <div>
-          <dl className="divide-y divide-gray-100">
+      <div className="flex flex-col items-center gap-8 mb-2">
+        <img
+          src={imagen}
+          alt="Imgen del perfil"
+          className="w-40 h-40 border border-[#002846] bg-gray-400 rounded-full ring-2 ring-[#F0C95C] "
+        />
+        <span className="text-sm ">Imagen del perfil</span>
+      </div>
+      <div className="lg:grid-cols-3:">
+        <div className="flex items-center justify-center flex-col-reverse sm:flex-row ">
+          <dl className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-[-0.5rem] md:mx-[-0.5rem] lg:mx-[-0.5rem] divide-y divide-gray-100">
             {empleado && (
               <>
-                <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
-                  <dt className="text-sm font-bold leading-6 text-gray-900">
+                <div className="px-2 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center ">
+                  <dt className="text-sm font-bold leading-5 text-gray-900  ">
                     Tipo de usuario
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
@@ -204,48 +206,61 @@ export function DatosPersonales() {
                     </dd>
                   </div>
                 )}
+
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
-                  <dt className="text-sm font-bold leading-6 text-gray-900">
+                  <dt
+                    className={`text-sm font-bold leading-6 ${
+                      errors.telefono ? "text-red-600" : "text-gray-900"
+                    } sm:mr-2`}
+                  >
                     Número de contacto
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    <Input
-                      className="w-auto"
-                      id="telefono"
-                      type="tel"
-                      name="telefono"
-                      value={datosPersonales.telefono}
-                      onChange={handleInputChangeDatos}
-                      placeholder="+58412XXXXXXX"
-                      maxLength="20"
-                    />
-                    {errors.telefono && (
-                      <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-                        {errors.telefono}
-                      </p>
-                    )}
+                    <div className="relative">
+                      <Input
+                        className="pr-10 " // Asegúrate de que el padding derecho sea suficiente
+                        id="telefono"
+                        type="tel" // Asegúrate de que el tipo sea "tel"
+                        name="telefono"
+                        value={datosPersonales.telefono}
+                        onChange={handleInputChangeDatos}
+                        placeholder="+58412XXXXXXX"
+                        maxLength="20"
+                      />
+                      {errors.telefono && (
+                        <MdCancel className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-600 text-xl pointer-events-none" />
+                      )}
+                    </div>
+                    <span>{errors.telefono}</span>
                   </dd>
                 </div>
+
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
-                  <dt className="text-sm font-bold leading-6 text-gray-900">
+                  <dt
+                    className={`text-sm font-bold leading-6 ${
+                      errors.correo ? "text-red-600" : "text-gray-900"
+                    } sm:mr-2`}
+                  >
                     Correo electrónico
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                    <Input
-                      className="w-auto"
-                      id="correo"
-                      type="text"
-                      name="correo"
-                      value={datosPersonales.correo}
-                      onChange={handleInputChangeDatos}
-                      placeholder="ejemplo@ejemplo.com"
-                      maxLength="150"
-                    />
-                    {errors.correo && (
-                      <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-                        {errors.correo}
-                      </p>
-                    )}
+                    <div className="relative">
+                      <Input
+                        className=" pr-10"
+                        id="correo"
+                        type="text"
+                        name="correo"
+                        errors={errors.correo}
+                        value={datosPersonales.correo}
+                        onChange={handleInputChangeDatos}
+                        placeholder="ejemplo@ejemplo.com"
+                        maxLength="150"
+                      />
+                      {errors.correo && (
+                        <MdCancel className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-600 text-xl" />
+                      )}
+                    </div>
+                    {errors.correo && <span>{errors.correo}</span>}
                   </dd>
                 </div>
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -403,22 +418,13 @@ export function DatosPersonales() {
               )}
           </dl>
         </div>
-
-        <div className="flex flex-col items-center gap-2 mb-2">
-          <img
-            src={imagen}
-            alt="Imgen del perfil"
-            className="w-40 h-40 border border-[#002846] bg-gray-400 rounded-full ring-2 ring-[#F0C95C]"
-          />
-          <span className="text-sm">Imagen del perfil</span>
-        </div>
       </div>
       <div className="grid gap-6 md:grid-cols-3 mt-5 mb-5">
         <div className="md:col-span-3 flex justify-center items-center">
           <Button
             disabled={Object.keys(errors).length}
             className={clsx("m-0 w-auto ", {
-              "opacity-50": Object.keys(errors).length,
+              "opacity-600": Object.keys(errors).length,
             })}
             onClick={handleSaveChanges}
           >
