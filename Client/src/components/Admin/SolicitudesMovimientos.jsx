@@ -6,6 +6,7 @@ import {
   getMovimientoDetail,
   putAprobarMovimiento,
   putDenegarMovimiento,
+  postMovimientoPDF,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
@@ -78,6 +79,8 @@ export function SolicitudesMovimientos() {
     empresa_id: filtros.empresa_id || "Seleccione",
     sede_id: filtros.sede_id || "Seleccione",
   });
+
+  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const handleChangePagination = (e) => {
     const { value } = e.target;
@@ -297,6 +300,32 @@ export function SolicitudesMovimientos() {
         return { ...updatedFilters, [value]: valueBuscarPor };
       });
     }
+  };
+
+  const handleVerDetallesPDF = (movimiento_id, identificacion) => {
+    dispatch(
+      postMovimientoPDF(
+        token,
+        movimiento_id,
+        empleado.empleado_id,
+        identificacion
+      )
+    ).then((response) => {
+      Swal.fire({
+        text: `Movimiento del empleado ${identificacion} generado ¿Deseas abrirlo?`,
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: "No",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${response.data}`;
+          window.open(URL_GET_PDF, "_blank");
+        }
+      });
+    });
   };
 
   return (
@@ -553,25 +582,25 @@ export function SolicitudesMovimientos() {
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {movimiento.Empleado.apellidos}{" "}
                       {movimiento.Empleado.nombres}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {movimiento.Empleado.tipo_identificacion}
                       {movimiento.Empleado.numero_identificacion}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {movimiento.Clases_Movimiento.descripcion}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {DDMMYYYYHHMM2(movimiento.createdAt)}
                     </td>
-                    <td className="px-4 py-4">{movimiento.estado_solicitud}</td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">{movimiento.estado_solicitud}</td>
+                    <td className="p-4">
                       {DDMMYYYYHHMM2(movimiento.updatedAt)}
                     </td>
-                    <td className="px-4 py-4 flex gap-2">
+                    <td className="p-4 flex gap-2">
                       <Button
                         className="m-0 w-auto text-xs"
                         onClick={() =>
@@ -579,6 +608,17 @@ export function SolicitudesMovimientos() {
                         }
                       >
                         Detalles
+                      </Button>
+                      <Button
+                        className="m-0 w-auto text-xs bg-red-600 hover:bg-red-600/[.5] text-white"
+                        onClick={() =>
+                          handleVerDetallesPDF(
+                            movimiento.movimiento_id,
+                            `${movimiento.Empleado.tipo_identificacion}${movimiento.Empleado.numero_identificacion}`
+                          )
+                        }
+                      >
+                        PDF
                       </Button>
                     </td>
                   </tr>

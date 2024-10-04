@@ -155,6 +155,37 @@ export const postMovimiento = async (token, datosMovimiento) => {
   }
 };
 
+export const postMovimientoPDF = (
+  token,
+  movimiento_id,
+  empleado_id,
+  identificacion
+) => {
+  const URL_POST_MOVIMIENTO_PDF = `${URL_SERVER}/movimientos/detalle`;
+
+  return async () => {
+    try {
+      const response = await axios.post(
+        URL_POST_MOVIMIENTO_PDF,
+        {
+          movimiento_id: movimiento_id,
+          empleado_id: empleado_id,
+          identificacion: identificacion,
+        },
+        {
+          headers: { authorization: `Bearer ${token}` },
+        }
+      );
+
+      return response;
+    } catch (error) {
+      alertError(error);
+
+      throw new Error();
+    }
+  };
+};
+
 export const postPaginaActual = (pagina_actual) => {
   return async (dispatch) => {
     try {
