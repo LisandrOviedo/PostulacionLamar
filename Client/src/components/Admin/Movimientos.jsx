@@ -408,14 +408,12 @@ export function Movimientos() {
             onClick={handleExistenciaEmpleado}
           >
             <FaMagnifyingGlass />
-            <span>Buscar</span>
+            <>Buscar</>
           </Button>
         </div>
 
         {errors.numero_identificacion && (
-          <span className="text-sm text-gray-500">
-            {errors.numero_identificacion}
-          </span>
+          <Span className="m-0">{errors.numero_identificacion}</Span>
         )}
       </div>
 
@@ -423,106 +421,93 @@ export function Movimientos() {
         <div className="p-4 border rounded-lg shadow-md w-full">
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
             <div>
-              <span>Nombres</span>
-              {/*El componente <Label> en tu código se utiliza para renderizar un componente de etiqueta Label asociada a un campo de entrada en un formulario. */}
-              <br />
-              <span>{datosEmpleado?.nombres || "-"}</span>
+              <Span>Nombres</Span>
+              <Span>{datosEmpleado?.nombres || "-"}</Span>
             </div>
 
             <div>
-              <span>Apellidos</span>
-              <br />
-              <span>{datosEmpleado?.apellidos || "-"}</span>
+              <Span>Apellidos</Span>
+              <Span>{datosEmpleado?.apellidos || "-"}</Span>
             </div>
 
             <div>
-              <span>Número de identificación</span>
-              <br />
-              <span>
+              <Span>Número de identificación</Span>
+              <Span>
                 {(datosEmpleado?.tipo_identificacion &&
                   datosEmpleado?.numero_identificacion) ||
                   "-"}
-              </span>
+              </Span>
             </div>
 
             <div>
-              <span>Código de nómina</span>
-              <br />
-              <span>{datosEmpleado?.Movimientos[0]?.codigo_nomina || "-"}</span>
+              <Span>Código de nómina</Span>
+              <Span>{datosEmpleado?.Movimientos[0]?.codigo_nomina || "-"}</Span>
             </div>
 
             <div>
-              <span>Cargo actual</span>
-              <br />
-              <span>
+              <Span>Cargo actual</Span>
+              <Span>
                 {datosEmpleado?.Cargos_Empleados[0]?.Cargos_Nivele.Cargo
                   .descripcion || "-"}
-              </span>
+              </Span>
             </div>
 
             <div>
-              <span>Empresa</span>
-              <br />
-              <span>{datosEmpleado?.Empresa?.nombre || "-"}</span>
+              <Span>Empresa</Span>
+              <Span>{datosEmpleado?.Empresa?.nombre || "-"}</Span>
             </div>
 
             <div>
-              <span>Unidad organizativa de adscripción</span>
-              <br />
-              <span>
+              <Span>Unidad organizativa de adscripción</Span>
+              <Span>
                 {datosEmpleado?.Cargos_Empleados[0]?.Cargos_Nivele.Cargo
                   .Departamento.nombre || "-"}
-              </span>
+              </Span>
             </div>
 
             <div>
-              <span>Fecha de ingreso</span>
-              <br />
-              <span>
+              <Span>Fecha de ingreso</Span>
+              <Span>
                 {datosEmpleado?.Fichas_Ingresos[0]?.fecha_ingreso || "-"}
-              </span>
+              </Span>
             </div>
 
             <div>
-              <span>Antigüedad</span>
-              <br />
-              <span>
+              <Span>Antigüedad</Span>
+              <Span>
                 {datosEmpleado?.Fichas_Ingresos[0]?.fecha_ingreso
                   ? `${calcularAntiguedad(
                       datosEmpleado?.Fichas_Ingresos[0]?.fecha_ingreso
                     )} días`
                   : "-"}
-              </span>
+              </Span>
             </div>
 
             <div>
-              <span>Sueldo actual</span>
-              <br />
-              <span>
+              <Span>Sueldo actual</Span>
+              <Span>
                 {datosEmpleado?.Cargos_Empleados[0]?.salario
                   ? `Bs. ${datosEmpleado?.Cargos_Empleados[0]?.salario}`
                   : "-"}
-              </span>
+              </Span>
             </div>
 
             <div>
-              <span>Tipo de nómina</span>
-              <br />
-              <span>
+              <Span>Tipo de nómina</Span>
+              <Span>
                 {datosEmpleado?.Movimientos[0]?.tipo_nomina === "Otro"
                   ? datosEmpleado?.Movimientos[0]?.otro_tipo_nomina
                   : datosEmpleado?.Movimientos[0]?.tipo_nomina || "-"}
-              </span>
+              </Span>
             </div>
 
             <div>
-              <span>Frecuencia de nómina</span>
-              <br />
-              <span>
+              <Span>Frecuencia de nómina</Span>
+              <Span>
                 {datosEmpleado?.Movimientos[0]?.frecuencia_nomina === "Otro"
                   ? datosEmpleado?.Movimientos[0]?.otra_frecuencia_nomina
                   : datosEmpleado?.Movimientos[0]?.frecuencia_nomina || "-"}
-              </span>
+              </Span>
             </div>
           </div>
         </div>
@@ -626,7 +611,7 @@ export function Movimientos() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         {/* Nueva Condición Laboral del Trabajador */}
 
-        <div className="flex flex-col justify-end">
+        <div className="flex flex-col justify-start">
           <Label htmlFor="empresa_id">Empresa</Label>
 
           <Select
@@ -655,7 +640,7 @@ export function Movimientos() {
           </Select>
         </div>
 
-        <div className="flex flex-col justify-end">
+        <div className="flex flex-col justify-start">
           <Label htmlFor="departamento_id">Departamento</Label>
           <Select
             className="w-full"
@@ -680,7 +665,7 @@ export function Movimientos() {
               : null}
           </Select>
         </div>
-        <div className="flex flex-col justify-end">
+        <div className="flex flex-col justify-start">
           <Label htmlFor="cargo_id">Cargo</Label>
           <Select
             className="w-full"
@@ -705,7 +690,7 @@ export function Movimientos() {
               : null}
           </Select>
         </div>
-        <div className="flex flex-col justify-end">
+        <div className="flex flex-col justify-start">
           <Label htmlFor="cargo_nivel_id">Nivel del cargo</Label>
           <Select
             className="w-full"
@@ -730,8 +715,11 @@ export function Movimientos() {
               : null}
           </Select>
         </div>
-        <div className="flex flex-col justify-end">
-          <Label htmlFor="vigencia_movimiento_desde">
+        <div className="flex flex-col justify-start">
+          <Label
+            htmlFor="vigencia_movimiento_desde"
+            errors={errors.vigencia_movimiento}
+          >
             Vigencia del movimiento (fecha desde)
           </Label>
           <Date
@@ -742,8 +730,11 @@ export function Movimientos() {
             errors={errors.vigencia_movimiento}
           />
         </div>
-        <div className="flex flex-col justify-end">
-          <Label htmlFor="vigencia_movimiento_hasta">
+        <div className="flex flex-col justify-start">
+          <Label
+            htmlFor="vigencia_movimiento_hasta"
+            errors={errors.vigencia_movimiento}
+          >
             Vigencia del movimiento (fecha hasta)
           </Label>
           <Date
@@ -754,12 +745,12 @@ export function Movimientos() {
             errors={errors.vigencia_movimiento}
           />
           {errors.vigencia_movimiento && (
-            <span>{errors.vigencia_movimiento}</span>
+            <Span className="m-0">{errors.vigencia_movimiento}</Span>
           )}
         </div>
 
         {/* Tipo de Nómina */}
-        <div className="flex flex-col justify-end">
+        <div className="flex flex-col justify-start">
           <Label htmlFor="tipo_nomina">Tipo de nómina</Label>
           <Select id="tipo_nomina" name="tipo_nomina" onChange={handleValidate}>
             <option value="Seleccione">Seleccione</option>
@@ -770,7 +761,7 @@ export function Movimientos() {
         </div>
 
         {datosMovimiento.tipo_nomina === "Otro" && (
-          <div className="flex flex-col justify-end">
+          <div className="flex flex-col justify-start">
             <Label htmlFor="otro_tipo_nomina">
               Especifique el otro tipo de nómina:
             </Label>
@@ -784,7 +775,7 @@ export function Movimientos() {
         )}
 
         {/* Frecuencia de Nómina */}
-        <div className="flex flex-col justify-end">
+        <div className="flex flex-col justify-start">
           <Label htmlFor="frecuencia_nomina">Frecuencia de nómina</Label>
           <Select
             id="frecuencia_nomina"
@@ -799,7 +790,7 @@ export function Movimientos() {
         </div>
 
         {datosMovimiento.frecuencia_nomina === "Otro" && (
-          <div className="flex flex-col justify-end">
+          <div className="flex flex-col justify-start">
             <Label htmlFor="otra_frecuencia_nomina">
               Especifique la otra frecuencia de nómina:
             </Label>
@@ -812,7 +803,7 @@ export function Movimientos() {
           </div>
         )}
 
-        <div className="flex flex-col justify-end">
+        <div className="flex flex-col justify-start">
           <Label htmlFor="sueldo" errors={errors.sueldo}>
             Nuevo sueldo (Bs.)
           </Label>
@@ -833,12 +824,10 @@ export function Movimientos() {
               <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
             )}
           </div>
-          {errors.sueldo && (
-            <span className="text-sm text-gray-500">{errors.sueldo}</span>
-          )}
+          {errors.sueldo && <Span className="m-0">{errors.sueldo}</Span>}
         </div>
 
-        <div className="flex flex-col justify-end">
+        <div className="flex flex-col justify-start">
           <Label htmlFor="codigo_nomina" errors={errors.codigo_nomina}>
             Código de nómina
           </Label>
@@ -854,9 +843,7 @@ export function Movimientos() {
             )}
           </div>
           {errors.codigo_nomina && (
-            <span className="text-sm text-gray-500">
-              {errors.codigo_nomina}
-            </span>
+            <Span className="m-0">{errors.codigo_nomina}</Span>
           )}
         </div>
       </div>
@@ -867,25 +854,25 @@ export function Movimientos() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div>
           <Span>Número de identificación</Span>
-          <span>
+          <Span>
             {empleado.tipo_identificacion}
             {empleado.numero_identificacion}
-          </span>
+          </Span>
         </div>
 
         <div>
           <Span>Nombre completo</Span>
-          <span>{`${empleado.nombres} ${empleado.apellidos}`}</span>
+          <Span>{`${empleado.nombres} ${empleado.apellidos}`}</Span>
         </div>
 
         <div>
           <Span>Cargo</Span>
-          <span>
+          <Span>
             {empleado?.Cargos_Empleados &&
             empleado.Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion
               ? `${empleado?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} ${empleado?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel}`
               : "-"}
-          </span>
+          </Span>
         </div>
       </div>
       <br />
@@ -928,27 +915,27 @@ export function Movimientos() {
             </div>
           </div>
           {errors.numero_identificacion_supervisor && (
-            <span className="text-sm text-gray-500">
+            <Span className="m-0">
               {errors.numero_identificacion_supervisor}
-            </span>
+            </Span>
           )}
         </div>
 
         <div>
           <Span>Nombre completo</Span>
-          <span>
+          <Span>
             {datosSupervisor.nombres
               ? `${datosSupervisor.nombres} ${datosSupervisor.apellidos}`
               : "-"}
-          </span>
+          </Span>
         </div>
         <div>
           <Span>Cargo</Span>
-          <span>
+          <Span>
             {datosSupervisor.Cargos_Niveles
               ? datosSupervisor?.Cargos_Niveles[0]?.Cargo?.descripcion
               : "-"}
-          </span>
+          </Span>
         </div>
       </div>
 
@@ -987,26 +974,24 @@ export function Movimientos() {
             </div>
           </div>
           {errors.numero_identificacion_gerencia && (
-            <span className="text-sm text-gray-500">
-              {errors.numero_identificacion_gerencia}
-            </span>
+            <Span className="m-0">{errors.numero_identificacion_gerencia}</Span>
           )}
         </div>
         <div>
           <Span>Nombre completo</Span>
-          <span>
+          <Span>
             {datosAprobacionGerencia.nombres
               ? `${datosAprobacionGerencia.nombres} ${datosAprobacionGerencia.apellidos}`
               : "-"}
-          </span>
+          </Span>
         </div>
         <div>
           <Span>Cargo</Span>
-          <span>
+          <Span>
             {datosAprobacionGerencia.Cargos_Niveles
               ? datosAprobacionGerencia?.Cargos_Niveles[0]?.Cargo?.descripcion
               : "-"}
-          </span>
+          </Span>
         </div>
       </div>
       <br />
@@ -1044,26 +1029,24 @@ export function Movimientos() {
             </div>
           </div>
           {errors.numero_identificacion_tthh && (
-            <span className="text-sm text-gray-500">
-              {errors.numero_identificacion_tthh}
-            </span>
+            <Span className="m-0">{errors.numero_identificacion_tthh}</Span>
           )}
         </div>
         <div>
           <Span>Nombre completo</Span>
-          <span>
+          <Span>
             {datosTTHH.nombres
               ? `${datosTTHH.nombres} ${datosTTHH.apellidos}`
               : "-"}
-          </span>
+          </Span>
         </div>
         <div>
           <Span>Cargo</Span>
-          <span>
+          <Span>
             {datosTTHH.Cargos_Niveles
               ? datosTTHH?.Cargos_Niveles[0]?.Cargo?.descripcion
               : "-"}
-          </span>
+          </Span>
         </div>
       </div>
 
@@ -1074,7 +1057,7 @@ export function Movimientos() {
         >
           {/*Es un icono de la libreria react icons */}
           <FaFloppyDisk />
-          <span>Guardar</span>
+          <>Guardar</>
         </Button>
       </div>
     </div>

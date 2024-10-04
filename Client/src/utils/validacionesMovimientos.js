@@ -14,6 +14,8 @@ export default function validations(inputs) {
     numero_identificacion_supervisor,
     numero_identificacion_gerencia,
     numero_identificacion_tthh,
+    vigencia_movimiento_desde,
+    vigencia_movimiento_hasta,
   } = inputs;
 
   if (tipo_identificacion && numero_identificacion) {
@@ -82,6 +84,13 @@ export default function validations(inputs) {
   if (sueldo) {
     if (sueldo.length > 8) {
       errors.sueldo = "El nuevo sueldo no debe tener más de 8 dígitos";
+    }
+  }
+
+  if (vigencia_movimiento_desde && vigencia_movimiento_hasta) {
+    if (vigencia_movimiento_hasta <= vigencia_movimiento_desde) {
+      errors.vigencia_movimiento =
+        "La fecha de vigencia (hasta) no puede ser menor o igual a la (desde)";
     }
   }
 
