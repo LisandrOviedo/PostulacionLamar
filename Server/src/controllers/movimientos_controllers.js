@@ -766,35 +766,35 @@ const traerMovimientoPDF = async (movimiento_id, empleado_id) => {
         {
           titulo_campo: "Código de nómina: ",
           descripcion_campo:
-            movimiento.movimientoAnterior.codigo_nomina || null,
+            movimiento.movimientoAnterior?.codigo_nomina || null,
         },
         {
           titulo_campo: "Cargo actual: ",
-          descripcion_campo: movimiento.movimiento.Cargo_Actual.Cargos_Nivele
-            .Cargo.descripcion
-            ? `${movimiento.movimiento.Cargo_Actual.Cargos_Nivele.Cargo.descripcion} (${movimiento.movimiento.Cargo_Actual.Cargos_Nivele.nivel})`
+          descripcion_campo: movimiento.movimiento.Cargo_Actual?.Cargos_Nivele
+            ?.Cargo?.descripcion
+            ? `${movimiento.movimiento.Cargo_Actual.Cargos_Nivele.Cargo.descripcion} (${movimiento.movimiento.Cargo_Actual?.Cargos_Nivele?.nivel})`
             : null,
         },
         {
           titulo_campo: "Empresa: ",
           descripcion_campo:
-            movimiento.movimiento.Cargo_Actual.Cargos_Nivele.Cargo.Departamento
-              .Empresa.nombre || null,
+            movimiento.movimiento.Cargo_Actual?.Cargos_Nivele?.Cargo
+              ?.Departamento?.Empresa?.nombre || null,
         },
         {
           titulo_campo: "Unidad Organizativa de Adscripción: ",
           descripcion_campo:
-            movimiento.movimiento.Cargo_Actual.Cargos_Nivele.Cargo.Departamento
-              .nombre || null,
+            movimiento.movimiento.Cargo_Actual?.Cargos_Nivele?.Cargo
+              ?.Departamento?.nombre || null,
         },
         {
           titulo_campo: "Fecha de ingreso: ",
           descripcion_campo:
-            movimiento.movimiento.Cargo_Actual.fecha_ingreso || null,
+            movimiento.movimiento.Cargo_Actual?.fecha_ingreso || null,
         },
         {
           titulo_campo: "Antigüedad: ",
-          descripcion_campo: movimiento.movimiento.Cargo_Actual.fecha_ingreso
+          descripcion_campo: movimiento.movimiento.Cargo_Actual?.fecha_ingreso
             ? `${calcularAntiguedad(
                 movimiento.movimiento.Cargo_Actual.fecha_ingreso
               )} días`
@@ -802,26 +802,27 @@ const traerMovimientoPDF = async (movimiento_id, empleado_id) => {
         },
         {
           titulo_campo: "Sueldo actual: ",
-          descripcion_campo: movimiento.movimiento.Cargo_Actual.salario || null,
+          descripcion_campo:
+            movimiento.movimiento.Cargo_Actual?.salario || null,
         },
         {
           titulo_campo: "Tipo de nómina: ",
-          descripcion_campo: movimiento.movimientoAnterior.tipo_nomina || null,
+          descripcion_campo: movimiento.movimientoAnterior?.tipo_nomina || null,
         },
         {
           titulo_campo: "Otro tipo de nómina: ",
           descripcion_campo:
-            movimiento.movimientoAnterior.otro_tipo_nomina || null,
+            movimiento.movimientoAnterior?.otro_tipo_nomina || null,
         },
         {
           titulo_campo: "Frecuencia nómina: ",
           descripcion_campo:
-            movimiento.movimientoAnterior.frecuencia_nomina || null,
+            movimiento.movimientoAnterior?.frecuencia_nomina || null,
         },
         {
           titulo_campo: "Otra frecuencia nómina: ",
           descripcion_campo:
-            movimiento.movimientoAnterior.otra_frecuencia_nomina || null,
+            movimiento.movimientoAnterior?.otra_frecuencia_nomina || null,
         },
       ],
     });
@@ -859,7 +860,7 @@ const traerMovimientoPDF = async (movimiento_id, empleado_id) => {
       titulo: "JUSTIFICACIÓN DEL MOVIMIENTO ORGANIZATIVO",
       contenido: [
         {
-          titulo_campo: "Justificación: ",
+          titulo_campo: "",
           descripcion_campo: movimiento.movimiento.justificacion_movimiento,
         },
       ],
@@ -870,20 +871,17 @@ const traerMovimientoPDF = async (movimiento_id, empleado_id) => {
       contenido: [
         {
           titulo_campo: "Cargo: ",
-          descripcion_campo: movimiento.movimiento.Nuevo_Cargo.Cargo.descripcion
-            ? `${movimiento.movimiento.Nuevo_Cargo.Cargo.descripcion} (${movimiento.movimiento.Nuevo_Cargo.nivel})`
-            : null,
+          descripcion_campo: `${movimiento.movimiento.Nuevo_Cargo.Cargo.descripcion} (${movimiento.movimiento.Nuevo_Cargo.nivel})`,
         },
         {
           titulo_campo: "Empresa: ",
           descripcion_campo:
-            movimiento.movimiento.Nuevo_Cargo.Cargo.Departamento.Empresa
-              .nombre || null,
+            movimiento.movimiento.Nuevo_Cargo.Cargo.Departamento.Empresa.nombre,
         },
         {
           titulo_campo: "Unidad organizativa de adscripción: ",
           descripcion_campo:
-            movimiento.movimiento.Nuevo_Cargo.Cargo.Departamento.nombre || null,
+            movimiento.movimiento.Nuevo_Cargo.Cargo.Departamento.nombre,
         },
         {
           titulo_campo: "Vigencia del movimiento: ",
@@ -930,7 +928,7 @@ const traerMovimientoPDF = async (movimiento_id, empleado_id) => {
         {
           titulo_campo: "Cargo: ",
           descripcion_campo: movimiento.movimiento.Solicitante
-            .Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion
+            .Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion
             ? `${movimiento.movimiento.Solicitante.Cargos_Empleados[0].Cargos_Nivele.Cargo.descripcion} (${movimiento.movimiento.Solicitante.Cargos_Empleados[0].Cargos_Nivele.nivel})`
             : null,
         },
@@ -955,7 +953,7 @@ const traerMovimientoPDF = async (movimiento_id, empleado_id) => {
         {
           titulo_campo: "Cargo: ",
           descripcion_campo: movimiento.movimiento.Supervisor
-            .Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion
+            .Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion
             ? `${movimiento.movimiento.Supervisor.Cargos_Empleados[0].Cargos_Nivele.Cargo.descripcion} (${movimiento.movimiento.Supervisor.Cargos_Empleados[0].Cargos_Nivele.nivel})`
             : null,
         },
@@ -980,7 +978,7 @@ const traerMovimientoPDF = async (movimiento_id, empleado_id) => {
         {
           titulo_campo: "Cargo: ",
           descripcion_campo: movimiento.movimiento.Gerencia.Cargos_Empleados[0]
-            ?.Cargos_Nivele.Cargo.descripcion
+            ?.Cargos_Nivele?.Cargo?.descripcion
             ? `${movimiento.movimiento.Gerencia.Cargos_Empleados[0].Cargos_Nivele.Cargo.descripcion} (${movimiento.movimiento.Gerencia.Cargos_Empleados[0].Cargos_Nivele.nivel})`
             : null,
         },
@@ -1005,7 +1003,7 @@ const traerMovimientoPDF = async (movimiento_id, empleado_id) => {
         {
           titulo_campo: "Cargo: ",
           descripcion_campo: movimiento.movimiento.TTHH.Cargos_Empleados[0]
-            ?.Cargos_Nivele.Cargo.descripcion
+            ?.Cargos_Nivele?.Cargo?.descripcion
             ? `${movimiento.movimiento.TTHH.Cargos_Empleados[0].Cargos_Nivele.Cargo.descripcion} (${movimiento.movimiento.TTHH.Cargos_Empleados[0].Cargos_Nivele.nivel})`
             : null,
         },

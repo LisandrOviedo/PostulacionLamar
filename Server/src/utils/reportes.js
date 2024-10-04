@@ -306,7 +306,7 @@ border: 1px solid #000;
         ${seccion.contenido
           .map(
             (contenido) => `
-<span>${contenido.titulo_campo || ""} ${
+<span>${contenido.titulo_campo || ""}${
               contenido.descripcion_campo || ""
             }</span>`
           )
