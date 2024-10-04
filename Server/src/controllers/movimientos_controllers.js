@@ -15,6 +15,8 @@ const {
 
 const { traerEmpleado } = require("./empleados_controllers");
 
+const { calcularAntiguedad } = require("../utils/formatearFecha");
+
 const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
   if (!paginaActual || !limitePorPagina) {
     throw new Error(`Datos faltantes`);
@@ -740,6 +742,286 @@ const traerMovimiento = async (movimiento_id, empleado_id) => {
   }
 };
 
+const traerMovimientoPDF = async (movimiento_id, empleado_id) => {
+  if (!movimiento_id || !empleado_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  const content = [];
+
+  try {
+    const movimiento = await traerMovimiento(movimiento_id, empleado_id);
+
+    content.push({
+      titulo: "DATOS DEL TRABAJADOR",
+      contenido: [
+        {
+          titulo_campo: "Nombre completo: ",
+          descripcion_campo: `${movimiento.movimiento.Empleado.nombres} ${movimiento.movimiento.Empleado.apellidos}`,
+        },
+        {
+          titulo_campo: "Número de identificación: ",
+          descripcion_campo: `${movimiento.movimiento.Empleado.tipo_identificacion}${movimiento.movimiento.Empleado.numero_identificacion}`,
+        },
+        {
+          titulo_campo: "Código de nómina: ",
+          descripcion_campo:
+            movimiento.movimientoAnterior.codigo_nomina || null,
+        },
+        {
+          titulo_campo: "Cargo actual: ",
+          descripcion_campo: movimiento.movimiento.Cargo_Actual.Cargos_Nivele
+            .Cargo.descripcion
+            ? `${movimiento.movimiento.Cargo_Actual.Cargos_Nivele.Cargo.descripcion} (${movimiento.movimiento.Cargo_Actual.Cargos_Nivele.nivel})`
+            : null,
+        },
+        {
+          titulo_campo: "Empresa: ",
+          descripcion_campo:
+            movimiento.movimiento.Cargo_Actual.Cargos_Nivele.Cargo.Departamento
+              .Empresa.nombre || null,
+        },
+        {
+          titulo_campo: "Unidad Organizativa de Adscripción: ",
+          descripcion_campo:
+            movimiento.movimiento.Cargo_Actual.Cargos_Nivele.Cargo.Departamento
+              .nombre || null,
+        },
+        {
+          titulo_campo: "Fecha de ingreso: ",
+          descripcion_campo:
+            movimiento.movimiento.Cargo_Actual.fecha_ingreso || null,
+        },
+        {
+          titulo_campo: "Antigüedad: ",
+          descripcion_campo: movimiento.movimiento.Cargo_Actual.fecha_ingreso
+            ? `${calcularAntiguedad(
+                movimiento.movimiento.Cargo_Actual.fecha_ingreso
+              )} días`
+            : null,
+        },
+        {
+          titulo_campo: "Sueldo actual: ",
+          descripcion_campo: movimiento.movimiento.Cargo_Actual.salario || null,
+        },
+        {
+          titulo_campo: "Tipo de nómina: ",
+          descripcion_campo: movimiento.movimientoAnterior.tipo_nomina || null,
+        },
+        {
+          titulo_campo: "Otro tipo de nómina: ",
+          descripcion_campo:
+            movimiento.movimientoAnterior.otro_tipo_nomina || null,
+        },
+        {
+          titulo_campo: "Frecuencia nómina: ",
+          descripcion_campo:
+            movimiento.movimientoAnterior.frecuencia_nomina || null,
+        },
+        {
+          titulo_campo: "Otra frecuencia nómina: ",
+          descripcion_campo:
+            movimiento.movimientoAnterior.otra_frecuencia_nomina || null,
+        },
+      ],
+    });
+
+    content.push({
+      titulo: "DETALLES DEL MOVIMIENTO ORGANIZATIVO SOLICITADO",
+      contenido: [
+        {
+          titulo_campo: "Clase de movimiento: ",
+          descripcion_campo:
+            movimiento.movimiento.Clases_Movimiento.descripcion,
+        },
+        {
+          titulo_campo: "Duración de movimiento: ",
+          descripcion_campo: movimiento.movimiento.duracion_movimiento,
+        },
+        {
+          titulo_campo: "Duración de movimiento en días: ",
+          descripcion_campo: movimiento.movimiento.duracion_movimiento_dias,
+        },
+        {
+          titulo_campo: "Requiere periodo de prueba: ",
+          descripcion_campo: movimiento.movimiento.requiere_periodo_prueba
+            ? "Si"
+            : "No",
+        },
+        {
+          titulo_campo: "Duración del periodo de prueba: ",
+          descripcion_campo: movimiento.movimiento.duracion_periodo_prueba,
+        },
+      ],
+    });
+
+    content.push({
+      titulo: "JUSTIFICACIÓN DEL MOVIMIENTO ORGANIZATIVO",
+      contenido: [
+        {
+          titulo_campo: "Justificación: ",
+          descripcion_campo: movimiento.movimiento.justificacion_movimiento,
+        },
+      ],
+    });
+
+    content.push({
+      titulo: "NUEVA CONDICIÓN LABORAL DEL TRABAJADOR",
+      contenido: [
+        {
+          titulo_campo: "Cargo: ",
+          descripcion_campo: movimiento.movimiento.Nuevo_Cargo.Cargo.descripcion
+            ? `${movimiento.movimiento.Nuevo_Cargo.Cargo.descripcion} (${movimiento.movimiento.Nuevo_Cargo.nivel})`
+            : null,
+        },
+        {
+          titulo_campo: "Empresa: ",
+          descripcion_campo:
+            movimiento.movimiento.Nuevo_Cargo.Cargo.Departamento.Empresa
+              .nombre || null,
+        },
+        {
+          titulo_campo: "Unidad organizativa de adscripción: ",
+          descripcion_campo:
+            movimiento.movimiento.Nuevo_Cargo.Cargo.Departamento.nombre || null,
+        },
+        {
+          titulo_campo: "Vigencia del movimiento: ",
+          descripcion_campo: `${movimiento.movimiento.vigencia_movimiento_desde} - ${movimiento.movimiento.vigencia_movimiento_hasta}`,
+        },
+        {
+          titulo_campo: "Tipo de nómina: ",
+          descripcion_campo: movimiento.movimiento.tipo_nomina,
+        },
+        {
+          titulo_campo: "Otro tipo de nómina: ",
+          descripcion_campo: movimiento.movimiento.otro_tipo_nomina,
+        },
+        {
+          titulo_campo: "Frecuencia de nómina: ",
+          descripcion_campo: movimiento.movimiento.frecuencia_nomina,
+        },
+        {
+          titulo_campo: "Otra frecuencia de nómina: ",
+          descripcion_campo: movimiento.movimiento.otra_frecuencia_nomina,
+        },
+        {
+          titulo_campo: "Nuevo sueldo: ",
+          descripcion_campo: movimiento.movimiento.sueldo,
+        },
+        {
+          titulo_campo: "Código de nómina: ",
+          descripcion_campo: movimiento.movimiento.codigo_nomina,
+        },
+      ],
+    });
+
+    content.push({
+      titulo: "DATOS DEL SOLICITANTE",
+      contenido: [
+        {
+          titulo_campo: "Nombre Completo: ",
+          descripcion_campo: `${movimiento.movimiento.Solicitante.nombres} ${movimiento.movimiento.Solicitante.apellidos}`,
+        },
+        {
+          titulo_campo: "Número de identificación: ",
+          descripcion_campo: `${movimiento.movimiento.Solicitante.tipo_identificacion}-${movimiento.movimiento.Solicitante.numero_identificacion}`,
+        },
+        {
+          titulo_campo: "Cargo: ",
+          descripcion_campo: movimiento.movimiento.Solicitante
+            .Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion
+            ? `${movimiento.movimiento.Solicitante.Cargos_Empleados[0].Cargos_Nivele.Cargo.descripcion} (${movimiento.movimiento.Solicitante.Cargos_Empleados[0].Cargos_Nivele.nivel})`
+            : null,
+        },
+        {
+          titulo_campo: "Firma: ",
+          descripcion_campo: "",
+        },
+      ],
+    });
+
+    content.push({
+      titulo: "SUPERVISOR INMEDIATO",
+      contenido: [
+        {
+          titulo_campo: "Nombre Completo: ",
+          descripcion_campo: `${movimiento.movimiento.Supervisor.nombres} ${movimiento.movimiento.Supervisor.apellidos}`,
+        },
+        {
+          titulo_campo: "Número de identificación: ",
+          descripcion_campo: `${movimiento.movimiento.Supervisor.tipo_identificacion}-${movimiento.movimiento.Supervisor.numero_identificacion}`,
+        },
+        {
+          titulo_campo: "Cargo: ",
+          descripcion_campo: movimiento.movimiento.Supervisor
+            .Cargos_Empleados[0]?.Cargos_Nivele.Cargo.descripcion
+            ? `${movimiento.movimiento.Supervisor.Cargos_Empleados[0].Cargos_Nivele.Cargo.descripcion} (${movimiento.movimiento.Supervisor.Cargos_Empleados[0].Cargos_Nivele.nivel})`
+            : null,
+        },
+        {
+          titulo_campo: "Firma: ",
+          descripcion_campo: "",
+        },
+      ],
+    });
+
+    content.push({
+      titulo: "APROBACIÓN GERENCIA DE ÁREA",
+      contenido: [
+        {
+          titulo_campo: "Nombre Completo: ",
+          descripcion_campo: `${movimiento.movimiento.Gerencia.nombres} ${movimiento.movimiento.Gerencia.apellidos}`,
+        },
+        {
+          titulo_campo: "Número de identificación: ",
+          descripcion_campo: `${movimiento.movimiento.Gerencia.tipo_identificacion}-${movimiento.movimiento.Gerencia.numero_identificacion}`,
+        },
+        {
+          titulo_campo: "Cargo: ",
+          descripcion_campo: movimiento.movimiento.Gerencia.Cargos_Empleados[0]
+            ?.Cargos_Nivele.Cargo.descripcion
+            ? `${movimiento.movimiento.Gerencia.Cargos_Empleados[0].Cargos_Nivele.Cargo.descripcion} (${movimiento.movimiento.Gerencia.Cargos_Empleados[0].Cargos_Nivele.nivel})`
+            : null,
+        },
+        {
+          titulo_campo: "Firma: ",
+          descripcion_campo: "",
+        },
+      ],
+    });
+
+    content.push({
+      titulo: "TALENTO HUMANO",
+      contenido: [
+        {
+          titulo_campo: "Nombre Completo: ",
+          descripcion_campo: `${movimiento.movimiento.TTHH.nombres} ${movimiento.movimiento.TTHH.apellidos}`,
+        },
+        {
+          titulo_campo: "Número de identificación: ",
+          descripcion_campo: `${movimiento.movimiento.TTHH.tipo_identificacion}-${movimiento.movimiento.TTHH.numero_identificacion}`,
+        },
+        {
+          titulo_campo: "Cargo: ",
+          descripcion_campo: movimiento.movimiento.TTHH.Cargos_Empleados[0]
+            ?.Cargos_Nivele.Cargo.descripcion
+            ? `${movimiento.movimiento.TTHH.Cargos_Empleados[0].Cargos_Nivele.Cargo.descripcion} (${movimiento.movimiento.TTHH.Cargos_Empleados[0].Cargos_Nivele.nivel})`
+            : null,
+        },
+        {
+          titulo_campo: "Firma: ",
+          descripcion_campo: "",
+        },
+      ],
+    });
+
+    return content;
+  } catch (error) {
+    throw new Error(`Error al crear el movimiento PDF: ${error.message}`);
+  }
+};
+
 const crearMovimiento = async (
   empleado_id,
   cargo_empleado_id,
@@ -1125,6 +1407,7 @@ const inactivarMovimiento = async (movimiento_id) => {
 module.exports = {
   todosLosMovimientos,
   traerMovimiento,
+  traerMovimientoPDF,
   crearMovimiento,
   modificarMovimiento,
   aprobarMovimiento,
