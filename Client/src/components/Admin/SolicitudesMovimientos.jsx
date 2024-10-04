@@ -790,10 +790,13 @@ export function SolicitudesMovimientos() {
                 <b>Duración de movimiento: </b>
                 {movimiento?.movimiento?.duracion_movimiento}
               </Span>
-              <Span>
-                <b>Duración de movimiento: </b>
-                {movimiento?.movimiento?.duracion_movimiento_dias}
-              </Span>
+             
+              {movimiento?.movimiento?.duracion_movimiento === "Temporal" && (
+                <Span>
+                  <b>Duración de movimiento en días: </b>
+                  {movimiento?.movimiento?.duracion_movimiento_dias}
+                </Span>
+              )}
               <Span>
                 <b>Requiere periodo de prueba: </b>
                 {movimiento?.movimiento?.requiere_periodo_prueba ? "Sí" : "No"}
