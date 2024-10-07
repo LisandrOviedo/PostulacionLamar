@@ -917,7 +917,7 @@ export function SolicitudesMovimientos() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b p-4 sm:2">
               <div className="flex flex-col justify-start items-center text-center">
-                <Span className="text-md mb-1">
+                <Span>
                   <b>Datos Del Solicitante</b>
                 </Span>
                 <Span>
@@ -937,7 +937,7 @@ export function SolicitudesMovimientos() {
               </div>
 
               <div className="flex flex-col justify-start items-center text-center">
-                <Span className="text-md mb-1">
+                <Span>
                   <b>Supervisor Inmediato</b>
                 </Span>
                 <Span>
@@ -957,7 +957,7 @@ export function SolicitudesMovimientos() {
               </div>
 
               <div className="flex flex-col justify-start items-center text-center">
-                <Span className="text-md mb-1">
+                <Span>
                   <b>Aprobación Gerencia De Área</b>
                 </Span>
                 <Span>
@@ -977,7 +977,7 @@ export function SolicitudesMovimientos() {
               </div>
 
               <div className="flex flex-col justify-start items-center text-center">
-                <Span className="text-md mb-1">
+                <Span>
                   <b>Talento Humano</b>
                 </Span>
                 <Span>
@@ -996,7 +996,7 @@ export function SolicitudesMovimientos() {
                 </Span>
               </div>
               <div className="flex flex-col justify-start items-center text-center">
-                <Span className="text-md mb-1">
+                <Span>
                   <b>Revisado por: </b>
                 </Span>
                 <Span>
@@ -1014,6 +1014,14 @@ export function SolicitudesMovimientos() {
                     `${movimiento?.movimiento?.RevisadoPor?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.RevisadoPor?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
                 </Span>
               </div>
+              {movimiento?.movimiento?.observaciones && (
+                <div className="flex flex-col justify-start items-center text-center sm:col-span-2">
+                  <Span>
+                    <b>Observaciones: </b>
+                    {movimiento?.movimiento?.observaciones}
+                  </Span>
+                </div>
+              )}
             </div>
           </div>
           {/* <!-- Modal footer --> */}
