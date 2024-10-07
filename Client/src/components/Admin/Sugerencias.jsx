@@ -368,14 +368,12 @@ export function Sugerencias() {
                       key={i}
                       className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                     >
-                      <td className="px-4 py-4">
-                        {sugerencia.Sede.Empresa.nombre}
-                      </td>
-                      <td className="px-4 py-4">{sugerencia.Sede.nombre}</td>
-                      <td className="px-4 py-4">
+                      <td className="p-4">{sugerencia.Sede.Empresa.nombre}</td>
+                      <td className="p-4">{sugerencia.Sede.nombre}</td>
+                      <td className="p-4">
                         {sugerencia.Tipos_Sugerencia.descripcion}
                       </td>
-                      <td className="px-4 py-4">
+                      <td className="p-4">
                         {sugerencia.Empleado?.nombres ? (
                           <>
                             {sugerencia.Empleado?.nombres}{" "}
@@ -385,12 +383,12 @@ export function Sugerencias() {
                           "No revisado"
                         )}
                       </td>
-                      <td className="px-4 py-4">
+                      <td className="p-4">
                         {sugerencia.fecha_revision
                           ? DDMMYYYYHHMM2(sugerencia.fecha_revision)
                           : "No revisado"}
                       </td>
-                      <td className="px-4 py-4 flex gap-2">
+                      <td className="p-4 flex gap-2">
                         <Button
                           className="m-0 w-auto text-xs"
                           onClick={() =>

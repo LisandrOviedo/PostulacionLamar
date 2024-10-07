@@ -229,6 +229,98 @@ border: 1px solid #000;
 `;
 };
 
+const reporteMovimiento = (content) => {
+  const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
+
+  const logo = fs.readFileSync(logoPath).toString("base64");
+
+  return `
+<!DOCTYPE html>
+<html lang="en" style="font-family: sans-serif;">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movimiento</title>
+
+    <style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+h3{
+margin: 0;
+padding: 0;
+}
+
+.linea{
+height: 1px;
+background: black;
+}
+
+.pulgares{
+height: 100px;
+width: 80px;
+border: 1px solid #000;
+}
+
+.foto{
+height: 100px;
+width: 100px;
+border: 1px solid #000;
+}
+</style>
+  </head>
+
+  <body>
+    <div style="display: flex; flex-direction: column;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+    <img src="data:image/png;base64,${logo}" alt="Logo LAMAR" width="100px" />
+    <div style="display: flex; flex-direction: column; align-items: center; font-size: 12px;">
+    <span>GRL-TH-F-012</span>
+    <span>F. Rev.: 17-05-2024</span>
+    <span>Revisión No.: 0</span>
+    <span>${DDMMYYYYHHMM2()}</span>
+    </div>
+      </div>
+      <div style="display: flex; justify-content: center">
+        <h3>MOVIMIENTO</h3>
+      </div>
+      ${content
+        .map(
+          (seccion) => `<br><br>
+      <div style="display: flex; flex-direction: column">
+        <span><b><u>${seccion.titulo}</u></b></span>
+        <br>
+        ${seccion.contenido
+          .map(
+            (contenido) => `
+<span>${contenido.titulo_campo || ""}${
+              contenido.descripcion_campo || ""
+            }</span>`
+          )
+          .join("")}
+      </div>
+      `
+        )
+        .join("")}
+  </body>
+</html>
+`;
+};
+
 module.exports = {
   reporteFichaIngreso,
+  reporteMovimiento,
 };

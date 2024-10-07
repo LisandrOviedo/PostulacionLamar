@@ -1275,12 +1275,12 @@ export function FormularioIngreso() {
                     key={index}
                     className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="px-4 py-4">{edu.grado_instruccion}</td>
-                    <td className="px-4 py-4">{edu.nombre_instituto}</td>
-                    <td className="px-4 py-4">{edu.titulo_obtenido}</td>
-                    <td className="px-4 py-4">{edu.fecha_desde}</td>
-                    <td className="px-4 py-4">{edu.fecha_hasta}</td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">{edu.grado_instruccion}</td>
+                    <td className="p-4">{edu.nombre_instituto}</td>
+                    <td className="p-4">{edu.titulo_obtenido}</td>
+                    <td className="p-4">{edu.fecha_desde}</td>
+                    <td className="p-4">{edu.fecha_hasta}</td>
+                    <td className="p-4">
                       <span
                         className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
                         onClick={() => handleRemoveTitulosObtenidos(index)}
@@ -1367,13 +1367,13 @@ export function FormularioIngreso() {
                     key={i}
                     className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {experiencia.empresa_centro_educativo}
                     </td>
-                    <td className="px-4 py-4">{experiencia.cargo_titulo}</td>
-                    <td className="px-4 py-4">{experiencia.fecha_desde}</td>
-                    <td className="px-4 py-4">{experiencia.fecha_hasta}</td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">{experiencia.cargo_titulo}</td>
+                    <td className="p-4">{experiencia.fecha_desde}</td>
+                    <td className="p-4">{experiencia.fecha_hasta}</td>
+                    <td className="p-4">
                       <span
                         className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
                         onClick={() => handleRemoveTrabajosAnteriores(i)}
@@ -1489,11 +1489,11 @@ export function FormularioIngreso() {
                     key={i}
                     className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="px-4 py-4">{referencia.nombre_apellido}</td>
-                    <td className="px-4 py-4">{referencia.direccion}</td>
-                    <td className="px-4 py-4">{referencia.telefono}</td>
-                    <td className="px-4 py-4">{referencia.ocupacion}</td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">{referencia.nombre_apellido}</td>
+                    <td className="p-4">{referencia.direccion}</td>
+                    <td className="p-4">{referencia.telefono}</td>
+                    <td className="p-4">{referencia.ocupacion}</td>
+                    <td className="p-4">
                       <span
                         className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
                         onClick={() => handleRemoveReferenciaPersonal(i)}
@@ -1667,11 +1667,11 @@ export function FormularioIngreso() {
                     key={i}
                     className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="px-4 py-4">{contacto.nombre_apellido}</td>
-                    <td className="px-4 py-4">{contacto.parentesco}</td>
-                    <td className="px-4 py-4">{contacto.telefono}</td>
-                    <td className="px-4 py-4">{contacto.direccion}</td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">{contacto.nombre_apellido}</td>
+                    <td className="p-4">{contacto.parentesco}</td>
+                    <td className="p-4">{contacto.telefono}</td>
+                    <td className="p-4">{contacto.direccion}</td>
+                    <td className="p-4">
                       <span
                         className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
                         onClick={() => handleRemoveContactoEmergencia(i)}
@@ -2003,7 +2003,7 @@ export function FormularioIngreso() {
             onClick={handleSaveFicha}
           >
             <FaFloppyDisk />
-            <span>Guardar</span>
+            <>Guardar</>
           </Button>
         </div>
       </div>
