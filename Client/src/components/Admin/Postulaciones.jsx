@@ -458,22 +458,22 @@ export function Postulaciones() {
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {curriculo.Empleado.apellidos}{" "}
                       {curriculo.Empleado.nombres}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {curriculo.Empleado.tipo_identificacion}
                       {curriculo.Empleado.numero_identificacion}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {curriculo.Empleado.telefono ||
                         "Sin registrar / No posee"}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {curriculo.Empleado.correo || "Sin registrar / No posee"}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {curriculo.Areas_Interes?.map(
                         (area, index) =>
                           `${area.nombre}${
@@ -483,20 +483,20 @@ export function Postulaciones() {
                           }`
                       )}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {DDMMYYYY(curriculo.updatedAt)}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {curriculo.revisado_por_id
                         ? "Revisado"
                         : "Pendiente por revisar"}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {curriculo.revisado_por_id
                         ? `${curriculo.RevisadoPor.nombres} ${curriculo.RevisadoPor.apellidos} (${curriculo.RevisadoPor.tipo_identificacion}-${curriculo.RevisadoPor.numero_identificacion})`
                         : "Pendiente por revisar"}
                     </td>
-                    <td className="px-4 py-4 flex gap-2 items-center">
+                    <td className="p-4 flex gap-2 items-center">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>

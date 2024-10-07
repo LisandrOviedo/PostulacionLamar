@@ -6,6 +6,7 @@ import {
   getMovimientoDetail,
   putAprobarMovimiento,
   putDenegarMovimiento,
+  postMovimientoPDF,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
@@ -22,7 +23,7 @@ import {
   resetSedesActivas,
 } from "../../redux/sedes/sedesActions";
 
-import { Button, Input, Label, Select, Title } from "../UI";
+import { Button, Input, Label, Select, Span, Title } from "../UI";
 
 import {
   calcularPaginasARenderizar,
@@ -78,6 +79,8 @@ export function SolicitudesMovimientos() {
     empresa_id: filtros.empresa_id || "Seleccione",
     sede_id: filtros.sede_id || "Seleccione",
   });
+
+  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const handleChangePagination = (e) => {
     const { value } = e.target;
@@ -168,7 +171,9 @@ export function SolicitudesMovimientos() {
   }, [filters.empresa_id]);
 
   const handleVerDetalles = (movimiento_id) => {
-    setShowModal(true);
+    if (!showModal) {
+      setShowModal(true);
+    }
 
     dispatch(getMovimientoDetail(token, movimiento_id, empleado.empleado_id));
   };
@@ -248,6 +253,9 @@ export function SolicitudesMovimientos() {
         empleado.empleado_id,
         text
       );
+
+      handleFind();
+      handleVerDetalles(movimiento_id);
     }
   };
 
@@ -270,6 +278,9 @@ export function SolicitudesMovimientos() {
         empleado.empleado_id,
         text
       );
+
+      handleFind();
+      handleVerDetalles(movimiento_id);
     }
   };
 
@@ -297,6 +308,32 @@ export function SolicitudesMovimientos() {
         return { ...updatedFilters, [value]: valueBuscarPor };
       });
     }
+  };
+
+  const handleVerDetallesPDF = (movimiento_id, identificacion) => {
+    dispatch(
+      postMovimientoPDF(
+        token,
+        movimiento_id,
+        empleado.empleado_id,
+        identificacion
+      )
+    ).then((response) => {
+      Swal.fire({
+        text: `Movimiento del empleado ${identificacion} generado ¿Deseas abrirlo?`,
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: "No",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${response.data}`;
+          window.open(URL_GET_PDF, "_blank");
+        }
+      });
+    });
   };
 
   return (
@@ -553,25 +590,25 @@ export function SolicitudesMovimientos() {
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {movimiento.Empleado.apellidos}{" "}
                       {movimiento.Empleado.nombres}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {movimiento.Empleado.tipo_identificacion}
                       {movimiento.Empleado.numero_identificacion}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {movimiento.Clases_Movimiento.descripcion}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {DDMMYYYYHHMM2(movimiento.createdAt)}
                     </td>
-                    <td className="px-4 py-4">{movimiento.estado_solicitud}</td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">{movimiento.estado_solicitud}</td>
+                    <td className="p-4">
                       {DDMMYYYYHHMM2(movimiento.updatedAt)}
                     </td>
-                    <td className="px-4 py-4 flex gap-2">
+                    <td className="p-4 flex gap-2">
                       <Button
                         className="m-0 w-auto text-xs"
                         onClick={() =>
@@ -579,6 +616,17 @@ export function SolicitudesMovimientos() {
                         }
                       >
                         Detalles
+                      </Button>
+                      <Button
+                        className="m-0 w-auto text-xs bg-red-600 hover:bg-red-600/[.5] text-white"
+                        onClick={() =>
+                          handleVerDetallesPDF(
+                            movimiento.movimiento_id,
+                            `${movimiento.Empleado.tipo_identificacion}${movimiento.Empleado.numero_identificacion}`
+                          )
+                        }
+                      >
+                        PDF
                       </Button>
                     </td>
                   </tr>
@@ -649,54 +697,61 @@ export function SolicitudesMovimientos() {
       <div
         className={
           showModal
-            ? "fixed z-[1000] flex items-center justify-center w-full sm:w-[80%] h-auto max-h-[80vh] text-sm md:text-base"
+            ? "fixed z-[1000] flex items-center justify-center w-full sm:w-[80%] max-h-[70vh] text-sm md:text-base"
             : "hidden"
         }
       >
         {/* <!-- Modal content --> */}
         <div className="bg-gray-400 rounded-lg border-2 border-white">
           {/* <!-- Modal header --> */}
-          <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-            <div className="flex flex-col">
-              <span className="font-bold">
+          <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t flex-col sm:flex-row">
+            <div className="flex flex-col items-center sm:items-start">
+              <Span className="font-bold">
                 {`${movimiento?.movimiento?.Empleado?.Empresa?.nombre} (${movimiento?.movimiento?.Empleado?.Empresa?.Sedes[0]?.nombre})`}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 {`${movimiento?.movimiento?.Empleado?.nombres} ${movimiento?.movimiento?.Empleado?.apellidos}`}
-              </span>
-
-              <span>
+              </Span>
+              <Span>
                 {`${movimiento?.movimiento?.Empleado?.tipo_identificacion}-${movimiento?.movimiento?.Empleado?.numero_identificacion}`}
-              </span>
+              </Span>
             </div>
 
-            <div className="flex gap-2 flex-col sm:flex-row">
-              {/*  */}
-
-              {movimiento.estado_solicitud === "Pendiente por revisar" ||
-              movimiento.estado_solicitud === "Revisado" ? (
+            <div className="flex gap-2 items-center">
+              {movimiento?.movimiento?.estado_solicitud ===
+                "Pendiente por revisar" ||
+              movimiento?.movimiento?.estado_solicitud === "Revisado" ? (
                 <>
                   <Button
-                    className="m-0 w-auto text-xs sm:text-sm bg-green-600 hover:bg-green-700"
+                    className="m-0 w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
                     onClick={() =>
-                      handleAprobarMovimiento(movimiento.movimiento_id)
+                      handleAprobarMovimiento(
+                        movimiento.movimiento.movimiento_id
+                      )
                     }
                   >
                     Aprobar
                   </Button>
                   <Button
-                    className="m-0 w-auto text-xs sm:text-sm bg-red-600 hover:bg-red-700"
+                    className="m-0 w-auto text-xs bg-red-600 hover:bg-red-600/[.5]"
                     onClick={() =>
-                      handleDenegarMovimiento(movimiento.movimiento_id)
+                      handleDenegarMovimiento(
+                        movimiento.movimiento.movimiento_id
+                      )
                     }
                   >
                     Denegar
                   </Button>
                 </>
-              ) : null}
+              ) : (
+                <Span className="m-0">
+                  <b>Estado Solicitud: </b>
+                  {movimiento?.movimiento?.estado_solicitud}
+                </Span>
+              )}
 
               <Button
-                className="m-0 w-auto text-xs sm:text-sm"
+                className="m-0 w-auto text-xs"
                 onClick={handleCerrarModal}
               >
                 Cerrar
@@ -708,257 +763,265 @@ export function SolicitudesMovimientos() {
 
           <div className="overflow-y-auto max-h-[60vh]" ref={modalContentRef}>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
-              <span>
+              <Span>
                 <b>Código de nómina: </b>
                 {movimiento?.movimientoAnterior?.codigo_nomina}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Cargo actual: </b>
                 {movimiento?.movimiento?.Cargo_Actual?.Cargos_Nivele?.Cargo
                   ?.descripcion &&
                   `${movimiento?.movimiento?.Cargo_Actual?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.Cargo_Actual?.Cargos_Nivele?.nivel})`}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Unidad organizativa de adscripción: </b>
                 {
                   movimiento?.movimiento?.Cargo_Actual?.Cargos_Nivele?.Cargo
                     ?.Departamento?.nombre
                 }
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Fecha de ingreso: </b>
                 {movimiento?.movimiento?.Cargo_Actual?.fecha_ingreso}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Antiguedad: </b>
                 {movimiento?.movimiento?.Cargo_Actual?.fecha_ingreso &&
                   `${calcularAntiguedad(
                     movimiento?.movimiento?.Cargo_Actual?.fecha_ingreso
                   )} días`}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Sueldo actual: </b>
                 {movimiento?.movimiento?.Cargo_Actual?.salario &&
                   `Bs. ${movimiento?.movimiento?.Cargo_Actual?.salario}`}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Tipo de nómina: </b>
                 {movimiento?.movimientoAnterior?.tipo_nomina}
-              </span>
+              </Span>
               {movimiento?.movimientoAnterior?.tipo_nomina === "Otro" && (
-                <span>
+                <Span>
                   <b>Otro tipo de nómina: </b>
                   {movimiento?.movimientoAnterior?.otro_tipo_nomina}
-                </span>
+                </Span>
               )}
-              <span>
+              <Span>
                 <b>Frecuencia de nómina: </b>
                 {movimiento?.movimientoAnterior?.frecuencia_nomina}
-              </span>
+              </Span>
               {movimiento?.movimientoAnterior?.frecuencia_nomina === "Otro" && (
-                <span>
+                <Span>
                   <b>Otra frecuencia de nómina: </b>
                   {movimiento?.movimientoAnterior?.otra_frecuencia_nomina}
-                </span>
+                </Span>
               )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
-              <span className="mx-auto text-md sm:col-span-2 md:col-span-3">
+              <Span className="mx-auto text-md sm:col-span-2 md:col-span-3">
                 <b>Detalle del Movimiento Organizativo</b>
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Clase de movimiento: </b>
                 {movimiento?.movimiento?.Clases_Movimiento?.descripcion}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Duración de movimiento: </b>
                 {movimiento?.movimiento?.duracion_movimiento}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Duración de movimiento: </b>
                 {movimiento?.movimiento?.duracion_movimiento_dias}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Requiere periodo de prueba: </b>
                 {movimiento?.movimiento?.requiere_periodo_prueba ? "Sí" : "No"}
-              </span>
+              </Span>
               {movimiento?.movimiento?.requiere_periodo_prueba && (
-                <span>
+                <Span>
                   <b>Duración de periodo de prueba en días: </b>
                   {movimiento?.movimiento?.duracion_periodo_prueba &&
                     `${movimiento?.movimiento?.duracion_periodo_prueba} días`}
-                </span>
+                </Span>
               )}
-              <span className="sm:col-span-2 md:col-span-3">
+              <Span className="sm:col-span-2 md:col-span-3">
                 <b>Justificación del movimiento: </b>
                 {movimiento?.movimiento?.justificacion_movimiento}
-              </span>
+              </Span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
-              <span className="mx-auto text-md sm:col-span-2 md:col-span-3">
+              <Span className="mx-auto text-md sm:col-span-2 md:col-span-3">
                 <b>Nueva Condición Laboral Del Trabajador</b>
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Empresa: </b>
                 {
                   movimiento?.movimiento?.Nuevo_Cargo?.Cargo?.Departamento
                     ?.Empresa?.nombre
                 }
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Departamento: </b>
                 {
                   movimiento?.movimiento?.Nuevo_Cargo?.Cargo?.Departamento
                     ?.nombre
                 }
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Cargo: </b>
                 {movimiento?.movimiento?.Nuevo_Cargo?.Cargo?.descripcion}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Nivel del cargo: </b>
                 {movimiento?.movimiento?.Nuevo_Cargo?.nivel}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Vigencia del movimiento (fecha desde): </b>
                 {movimiento?.movimiento?.vigencia_movimiento_desde}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Vigencia del movimiento (fecha hasta): </b>
                 {movimiento?.movimiento?.vigencia_movimiento_hasta}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Tipo de nómina: </b>
                 {movimiento?.movimiento?.tipo_nomina}
-              </span>
+              </Span>
               {movimiento?.movimiento?.tipo_nomina === "Otro" && (
-                <span>
+                <Span>
                   <b>Otro tipo de nómina: </b>
                   {movimiento?.movimiento?.otro_tipo_nomina}
-                </span>
+                </Span>
               )}
-              <span>
+              <Span>
                 <b>Frecuencia de nómina: </b>
                 {movimiento?.movimiento?.frecuencia_nomina}
-              </span>
+              </Span>
               {movimiento?.movimiento?.frecuencia_nomina === "Otro" && (
-                <span>
+                <Span>
                   <b>Otra frecuencia de nómina: </b>
                   {movimiento?.movimiento?.otra_frecuencia_nomina}
-                </span>
+                </Span>
               )}
-              <span>
+              <Span>
                 <b>Nuevo sueldo: </b>
                 {movimiento?.movimiento?.sueldo &&
                   `Bs. ${movimiento?.movimiento?.sueldo}`}
-              </span>
-              <span>
+              </Span>
+              <Span>
                 <b>Código de nómina: </b>
                 {movimiento?.movimiento?.codigo_nomina}
-              </span>
+              </Span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b p-4 sm:2">
-              <div className="flex flex-col justify-center items-center text-center">
-                <span className="text-md mb-1">
+              <div className="flex flex-col justify-start items-center text-center">
+                <Span>
                   <b>Datos Del Solicitante</b>
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.Solicitante?.nombres}{" "}
                   {movimiento?.movimiento?.Solicitante?.apellidos}
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.Solicitante?.tipo_identificacion}
                   {"-"}
                   {movimiento?.movimiento?.Solicitante?.numero_identificacion}
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.Solicitante?.Cargos_Empleados[0]
                     ?.Cargos_Nivele?.Cargo?.descripcion &&
                     `${movimiento?.movimiento?.Solicitante?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.Solicitante?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
-                </span>
+                </Span>
               </div>
 
-              <div className="flex flex-col justify-center items-center text-center">
-                <span className="text-md mb-1">
+              <div className="flex flex-col justify-start items-center text-center">
+                <Span>
                   <b>Supervisor Inmediato</b>
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.Supervisor?.nombres}{" "}
                   {movimiento?.movimiento?.Supervisor?.apellidos}
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.Supervisor?.tipo_identificacion}
                   {"-"}
                   {movimiento?.movimiento?.Supervisor?.numero_identificacion}
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.Supervisor?.Cargos_Empleados[0]
                     ?.Cargos_Nivele?.Cargo?.descripcion &&
                     `${movimiento?.movimiento?.Supervisor?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.Supervisor?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
-                </span>
+                </Span>
               </div>
 
-              <div className="flex flex-col justify-center items-center text-center">
-                <span className="text-md mb-1">
+              <div className="flex flex-col justify-start items-center text-center">
+                <Span>
                   <b>Aprobación Gerencia De Área</b>
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.Gerencia?.nombres} {""}
                   {movimiento?.movimiento?.Gerencia?.apellidos}
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.Gerencia?.tipo_identificacion}
                   {"-"}
                   {movimiento?.movimiento?.Gerencia?.numero_identificacion}
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.Gerencia?.Cargos_Empleados[0]
                     ?.Cargos_Nivele?.Cargo?.descripcion &&
                     `${movimiento?.movimiento?.Gerencia?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.Gerencia?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
-                </span>
+                </Span>
               </div>
 
-              <div className="flex flex-col justify-center items-center text-center">
-                <span className="text-md mb-1">
+              <div className="flex flex-col justify-start items-center text-center">
+                <Span>
                   <b>Talento Humano</b>
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.TTHH?.nombres} {""}
                   {movimiento?.movimiento?.TTHH?.apellidos}
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.TTHH?.tipo_identificacion}
                   {"-"}
                   {movimiento?.movimiento?.TTHH?.numero_identificacion}
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.TTHH?.Cargos_Empleados[0]
                     ?.Cargos_Nivele?.Cargo?.descripcion &&
                     `${movimiento?.movimiento?.TTHH?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.TTHH?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
-                </span>
+                </Span>
               </div>
-              <div className="flex flex-col justify-center items-center text-center">
-                <span className="text-md mb-1">
+              <div className="flex flex-col justify-start items-center text-center">
+                <Span>
                   <b>Revisado por: </b>
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.RevisadoPor?.nombres}{" "}
                   {movimiento?.movimiento?.RevisadoPor?.apellidos}
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.RevisadoPor?.tipo_identificacion}
                   {"-"}
                   {movimiento?.movimiento?.RevisadoPor?.numero_identificacion}
-                </span>
-                <span>
+                </Span>
+                <Span>
                   {movimiento?.movimiento?.RevisadoPor?.Cargos_Empleados[0]
                     ?.Cargos_Nivele?.Cargo?.descripcion &&
                     `${movimiento?.movimiento?.RevisadoPor?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.RevisadoPor?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
-                </span>
+                </Span>
               </div>
+              {movimiento?.movimiento?.observaciones && (
+                <div className="flex flex-col justify-start items-center text-center sm:col-span-2">
+                  <Span>
+                    <b>Observaciones: </b>
+                    {movimiento?.movimiento?.observaciones}
+                  </Span>
+                </div>
+              )}
             </div>
           </div>
           {/* <!-- Modal footer --> */}
