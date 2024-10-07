@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Webcam from "react-webcam";
 
@@ -44,9 +44,21 @@ import {
 
 import { saveFichaIngreso } from "../../redux/fichasIngresos/fichasIngresosActions";
 
-import { Button, CheckBox, Input, Label, Select, Title, Hr } from "../UI";
+import {
+  Button,
+  CheckBox,
+  Input,
+  Label,
+  Select,
+  Span,
+  TextArea,
+  Title,
+  Hr,
+} from "../UI";
 
-import { FaFloppyDisk, FaCircleInfo } from "react-icons/fa6";
+import { FaFloppyDisk } from "react-icons/fa6";
+
+import { IoCameraOutline, IoCameraReverseOutline } from "react-icons/io5";
 
 import { YYYYMMDD } from "../../utils/formatearFecha";
 import validations from "../../utils/validacionesAcceso";
@@ -59,17 +71,23 @@ export function FormularioIngreso() {
   const token = useSelector((state) => state.empleados.token);
 
   const etnias_activas = useSelector((state) => state.etnias.etnias_activas);
+
   const empleado = useSelector((state) => state.empleados.empleado);
+
   const paises_activos = useSelector((state) => state.paises.paises_activos);
+
   const estados_residencia = useSelector(
     (state) => state.estados.estados_residencia
   );
+
   const estados_nacimiento = useSelector(
     (state) => state.estados.estados_nacimiento
   );
+
   const municipios_activos = useSelector(
     (state) => state.municipios.municipios_activos
   );
+
   const parroquias_activas = useSelector(
     (state) => state.parroquias.parroquias_activas
   );
@@ -77,10 +95,13 @@ export function FormularioIngreso() {
   const empresas_activas = useSelector(
     (state) => state.empresas.empresas_activas
   );
+
   const departamentos_activos = useSelector(
     (state) => state.departamentos.departamentos_activos
   );
+
   const cargos_activos = useSelector((state) => state.cargos.cargos_activos);
+
   const cargos_niveles_activos = useSelector(
     (state) => state.cargos_niveles.cargos_niveles_activos
   );
@@ -88,6 +109,12 @@ export function FormularioIngreso() {
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const [errors, setErrors] = useState({});
+
+  const [imagenEmpleado, setImagenEmpleado] = useState(null);
+
+  const [facingMode, setFacingMode] = useState("environment");
+
+  const webCamRef = useRef(null);
 
   const [datosIngreso, setDatosIngreso] = useState({
     tipo_identificacion: "V",
@@ -688,6 +715,30 @@ export function FormularioIngreso() {
       window.scroll(0, 0);
       window.location.reload();
     });
+  };
+
+  const tomarFoto = () => {
+    const imageSrc = webCamRef.current.getScreenshot();
+
+    setImagenEmpleado(imageSrc);
+
+    console.log(imageSrc);
+  };
+
+  const cambiarCamara = () => {
+    facingMode === "user"
+      ? setFacingMode("environment")
+      : setFacingMode("user");
+  };
+
+  const descargarImagen = () => {
+    const a = document.createElement("a");
+
+    a.href = imagenEmpleado;
+
+    a.download = "prueba.png";
+
+    a.click();
   };
 
   return (
@@ -1960,7 +2011,7 @@ export function FormularioIngreso() {
             </div>
             <div>
               <Label htmlFor="salario" className="flex">
-                Salario <FaCircleInfo className="ml-2 text-gray-600" />
+                Salario
               </Label>
               {/* rango_salario se asignara al min y max del input, ademas debe mostrarse al administrador */}
               <Input id="salario" name="salario" onChange={handleValidate} />
@@ -1977,23 +2028,70 @@ export function FormularioIngreso() {
             </div>
             <div className="col-span-1 sm:col-span-2 md:col-span-3">
               <Label htmlFor="observaciones">Observaciones</Label>
-              <textarea
+              <TextArea
                 id="observaciones"
                 name="observaciones"
-                className="bg-gray-50 border border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-[#002846] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 type="textarea"
                 rows="3"
-                maxLength="255"
                 onChange={handleValidate}
               />
             </div>
 
-            <div className="col-span-1 sm:col-span-2 md:col-span-3">
-              <span className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Foto empleado
-              </span>
-              <Webcam className="sm:w-2/4 md:w-1/4 mx-auto" />
-            </div>
+            {/* <div className="col-span-1 sm:col-span-2 md:col-span-3">
+              <Span>Foto empleado</Span>
+              <div className="flex flex-col items-center gap-2">
+                {imagenEmpleado ? (
+                  <>
+                    <img
+                      src={imagenEmpleado}
+                      alt="Imagen Del Empleado"
+                      className="sm:w-2/4 md:w-1/4"
+                    />
+                    <Button
+                      className="m-0 w-auto text-xs bg-red-600 hover:bg-red-600/[.5]"
+                      onClick={() => setImagenEmpleado(null)}
+                    >
+                      Volver a tomar
+                    </Button>
+                    <Button
+                      className="m-0 w-auto text-xs bg-red-600 hover:bg-red-600/[.5]"
+                      onClick={descargarImagen}
+                    >
+                      Descargar
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Webcam
+                      className="sm:w-2/4 md:w-1/4 flex flex-col"
+                      audio={false}
+                      screenshotFormat="image/png"
+                      ref={webCamRef}
+                      videoConstraints={{
+                        facingMode: facingMode,
+                      }}
+                    />
+
+                    <div className="flex gap-2">
+                      <Button
+                        className="m-0 w-auto flex items-center justify-center gap-2"
+                        onClick={cambiarCamara}
+                      >
+                        <IoCameraReverseOutline />
+                        <>Cambiar cámara</>
+                      </Button>
+                      <Button
+                        className="m-0 w-auto bg-green-600 hover:bg-green-600/[.5] flex items-center justify-center gap-2"
+                        onClick={tomarFoto}
+                      >
+                        <IoCameraOutline />
+                        <>Tomar foto</>
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div> */}
           </div>
         </div>
 
