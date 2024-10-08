@@ -2,6 +2,7 @@ const { Router } = require("express");
 const {
   getMovimientos,
   getMovimiento,
+  getMovimientoPDF,
   postMovimiento,
   putMovimiento,
   putAprobarMovimiento,
@@ -17,6 +18,7 @@ movimientos.get("/detalle", authenticateToken, getMovimiento);
 
 movimientos.post("/", authenticateToken, postMovimiento);
 movimientos.post("/allMovimientos", authenticateToken, getMovimientos);
+movimientos.post("/detalle", authenticateToken, getMovimientoPDF);
 
 movimientos.put("/modificar", authenticateToken, putMovimiento);
 movimientos.put("/aprobar", authenticateToken, putAprobarMovimiento);

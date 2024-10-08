@@ -6,6 +6,7 @@ import {
   getMovimientoDetail,
   putAprobarMovimiento,
   putDenegarMovimiento,
+  postMovimientoPDF,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
@@ -78,6 +79,8 @@ export function SolicitudesMovimientos() {
     empresa_id: filtros.empresa_id || "Seleccione",
     sede_id: filtros.sede_id || "Seleccione",
   });
+
+  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const handleChangePagination = (e) => {
     const { value } = e.target;
@@ -305,6 +308,32 @@ export function SolicitudesMovimientos() {
         return { ...updatedFilters, [value]: valueBuscarPor };
       });
     }
+  };
+
+  const handleVerDetallesPDF = (movimiento_id, identificacion) => {
+    dispatch(
+      postMovimientoPDF(
+        token,
+        movimiento_id,
+        empleado.empleado_id,
+        identificacion
+      )
+    ).then((response) => {
+      Swal.fire({
+        text: `Movimiento del empleado ${identificacion} generado ¿Deseas abrirlo?`,
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: "No",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${response.data}`;
+          window.open(URL_GET_PDF, "_blank");
+        }
+      });
+    });
   };
 
   return (
@@ -561,25 +590,25 @@ export function SolicitudesMovimientos() {
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {movimiento.Empleado.apellidos}{" "}
                       {movimiento.Empleado.nombres}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {movimiento.Empleado.tipo_identificacion}
                       {movimiento.Empleado.numero_identificacion}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {movimiento.Clases_Movimiento.descripcion}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {DDMMYYYYHHMM2(movimiento.createdAt)}
                     </td>
-                    <td className="px-4 py-4">{movimiento.estado_solicitud}</td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">{movimiento.estado_solicitud}</td>
+                    <td className="p-4">
                       {DDMMYYYYHHMM2(movimiento.updatedAt)}
                     </td>
-                    <td className="px-4 py-4 flex gap-2">
+                    <td className="p-4 flex gap-2">
                       <Button
                         className="m-0 w-auto text-xs"
                         onClick={() =>
@@ -587,6 +616,17 @@ export function SolicitudesMovimientos() {
                         }
                       >
                         Detalles
+                      </Button>
+                      <Button
+                        className="m-0 w-auto text-xs bg-red-600 hover:bg-red-600/[.5] text-white"
+                        onClick={() =>
+                          handleVerDetallesPDF(
+                            movimiento.movimiento_id,
+                            `${movimiento.Empleado.tipo_identificacion}${movimiento.Empleado.numero_identificacion}`
+                          )
+                        }
+                      >
+                        PDF
                       </Button>
                     </td>
                   </tr>
@@ -657,15 +697,15 @@ export function SolicitudesMovimientos() {
       <div
         className={
           showModal
-            ? "fixed z-[1000] flex items-center justify-center w-full sm:w-[80%] h-auto max-h-[80vh] text-sm md:text-base"
+            ? "fixed z-[1000] flex items-center justify-center w-full sm:w-[80%] max-h-[70vh] text-sm md:text-base"
             : "hidden"
         }
       >
         {/* <!-- Modal content --> */}
         <div className="bg-gray-400 rounded-lg border-2 border-white">
           {/* <!-- Modal header --> */}
-          <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-            <div className="flex flex-col">
+          <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t flex-col sm:flex-row">
+            <div className="flex flex-col items-center sm:items-start">
               <Span className="font-bold">
                 {`${movimiento?.movimiento?.Empleado?.Empresa?.nombre} (${movimiento?.movimiento?.Empleado?.Empresa?.Sedes[0]?.nombre})`}
               </Span>
@@ -677,13 +717,13 @@ export function SolicitudesMovimientos() {
               </Span>
             </div>
 
-            <div className="flex gap-2 flex-col sm:flex-row items-center">
+            <div className="flex gap-2 items-center">
               {movimiento?.movimiento?.estado_solicitud ===
                 "Pendiente por revisar" ||
               movimiento?.movimiento?.estado_solicitud === "Revisado" ? (
                 <>
                   <Button
-                    className="m-0 w-auto text-xs bg-green-600 hover:bg-green-700"
+                    className="m-0 w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
                     onClick={() =>
                       handleAprobarMovimiento(
                         movimiento.movimiento.movimiento_id
@@ -693,7 +733,7 @@ export function SolicitudesMovimientos() {
                     Aprobar
                   </Button>
                   <Button
-                    className="m-0 w-auto text-xs bg-red-600 hover:bg-red-700"
+                    className="m-0 w-auto text-xs bg-red-600 hover:bg-red-600/[.5]"
                     onClick={() =>
                       handleDenegarMovimiento(
                         movimiento.movimiento.movimiento_id
@@ -705,7 +745,7 @@ export function SolicitudesMovimientos() {
                 </>
               ) : (
                 <Span className="m-0">
-                  <b>Estado Solicitud:</b>{" "}
+                  <b>Estado Solicitud: </b>
                   {movimiento?.movimiento?.estado_solicitud}
                 </Span>
               )}
@@ -880,7 +920,7 @@ export function SolicitudesMovimientos() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b p-4 sm:2">
               <div className="flex flex-col justify-start items-center text-center">
-                <Span className="text-md mb-1">
+                <Span>
                   <b>Datos Del Solicitante</b>
                 </Span>
                 <Span>
@@ -900,7 +940,7 @@ export function SolicitudesMovimientos() {
               </div>
 
               <div className="flex flex-col justify-start items-center text-center">
-                <Span className="text-md mb-1">
+                <Span>
                   <b>Supervisor Inmediato</b>
                 </Span>
                 <Span>
@@ -920,7 +960,7 @@ export function SolicitudesMovimientos() {
               </div>
 
               <div className="flex flex-col justify-start items-center text-center">
-                <Span className="text-md mb-1">
+                <Span>
                   <b>Aprobación Gerencia De Área</b>
                 </Span>
                 <Span>
@@ -940,7 +980,7 @@ export function SolicitudesMovimientos() {
               </div>
 
               <div className="flex flex-col justify-start items-center text-center">
-                <Span className="text-md mb-1">
+                <Span>
                   <b>Talento Humano</b>
                 </Span>
                 <Span>
@@ -959,7 +999,7 @@ export function SolicitudesMovimientos() {
                 </Span>
               </div>
               <div className="flex flex-col justify-start items-center text-center">
-                <Span className="text-md mb-1">
+                <Span>
                   <b>Revisado por: </b>
                 </Span>
                 <Span>
@@ -977,6 +1017,14 @@ export function SolicitudesMovimientos() {
                     `${movimiento?.movimiento?.RevisadoPor?.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo?.descripcion} (${movimiento?.movimiento?.RevisadoPor?.Cargos_Empleados[0]?.Cargos_Nivele?.nivel})`}
                 </Span>
               </div>
+              {movimiento?.movimiento?.observaciones && (
+                <div className="flex flex-col justify-start items-center text-center sm:col-span-2">
+                  <Span>
+                    <b>Observaciones: </b>
+                    {movimiento?.movimiento?.observaciones}
+                  </Span>
+                </div>
+              )}
             </div>
           </div>
           {/* <!-- Modal footer --> */}

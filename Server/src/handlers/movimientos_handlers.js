@@ -1,12 +1,21 @@
 const {
   todosLosMovimientos,
   traerMovimiento,
+  traerMovimientoPDF,
   crearMovimiento,
   modificarMovimiento,
   aprobarMovimiento,
   denegarMovimiento,
   inactivarMovimiento,
 } = require("../controllers/movimientos_controllers");
+
+const { reporteMovimiento } = require("../utils/reportes");
+
+const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
+
+const path = require("path");
+
+const puppeteer = require("puppeteer");
 
 const getMovimientos = async (req, res) => {
   const { filtros, paginaActual, limitePorPagina } = req.body;
@@ -31,6 +40,57 @@ const getMovimiento = async (req, res) => {
     const response = await traerMovimiento(movimiento_id, empleado_id);
 
     return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const getMovimientoPDF = async (req, res) => {
+  const { movimiento_id, empleado_id, identificacion } = req.body;
+  const filename = `Movimiento ${movimiento_id}.pdf`;
+
+  try {
+    // Genera el contenido del PDF
+    const content = await traerMovimientoPDF(movimiento_id, empleado_id);
+
+    const dest_path = path.join(
+      __dirname,
+      `../../public/documentosEmpleados/${identificacion}`
+    );
+
+    crearCarpetaSiNoExiste(dest_path);
+
+    const pdf_path = path.join(
+      __dirname,
+      `../../public/documentosEmpleados/${identificacion}/${filename}`
+    );
+
+    const browser = await puppeteer.launch();
+
+    const page = await browser.newPage();
+
+    await page.setContent(reporteMovimiento(content), {
+      waitUntil: "domcontentloaded",
+    });
+
+    await page.pdf({
+      format: "A4",
+      path: pdf_path,
+      printBackground: true,
+      margin: {
+        top: "30px",
+        right: "50px",
+        bottom: "30px",
+        left: "50px",
+      },
+      displayHeaderFooter: true,
+      footerTemplate:
+        '<div style="text-align: right; width: 297mm; font-size: 10px;"><span style="margin-right: 1cm;"><span class="pageNumber"></span> de <span class="totalPages"></span></span></div>',
+    });
+
+    await browser.close();
+
+    return res.status(201).json(filename);
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
@@ -197,6 +257,7 @@ const deleteMovimiento = async (req, res) => {
 module.exports = {
   getMovimientos,
   getMovimiento,
+  getMovimientoPDF,
   postMovimiento,
   putMovimiento,
   putAprobarMovimiento,
