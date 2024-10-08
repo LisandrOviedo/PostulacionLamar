@@ -92,7 +92,7 @@ export function BarraNavegacion() {
   }, [pathname]);
 
   useEffect(() => {
-    const resultadoMenu = organizedMenus();
+    const resultadoMenu = organizedMenus(empleado?.Role?.Menus);
 
     setMenu(resultadoMenu);
   }, []);
@@ -119,29 +119,87 @@ export function BarraNavegacion() {
     };
   }, [empleado]);
 
-  const organizedMenus = () => {
-    const menus = empleado?.Role?.Menus;
+  const organizedMenus = (menu) => {
+    const buildMenuTree = (menuItems) => {
+      const menuMap = new Map();
 
-    const menusResultado = menus.reduce((acc, menu) => {
-      if (menu.padre_id === null) {
-        // Si es un menú padre, lo agregamos
-        acc.push({ ...menu, subMenus: [] });
-      } else {
-        // Si es un submenú, lo agregamos a su padre correspondiente
-        const parentMenu = acc.find((m) => m.menu_id === menu.padre_id);
-        if (parentMenu) {
-          // Agrega el submenú y lo ordena
-          parentMenu.subMenus.push(menu);
-          parentMenu.subMenus.sort((a, b) => a.orden - b.orden); // Ordena submenús
+      // Crear un mapa de menús
+      menuItems.forEach((item) => {
+        menuMap.set(item.menu_id, { ...item, subMenus: [] });
+      });
+
+      const result = [];
+
+      // Construir la jerarquía
+      menuItems.forEach((item) => {
+        if (item.padre_id === null) {
+          result.push(menuMap.get(item.menu_id));
+        } else {
+          const parent = menuMap.get(item.padre_id);
+          if (parent) {
+            parent.subMenus.push(menuMap.get(item.menu_id));
+          }
         }
-      }
-      return acc;
-    }, []);
+      });
 
-    // Primero, ordena los menús por el atributo 'orden'
-    const sortedMenus = [...menusResultado].sort((a, b) => a.orden - b.orden);
+      return result;
+    };
+
+    // Crear el árbol de menús
+    const menusResultado = buildMenuTree(menu);
+
+    // Ordenar los menús por el atributo 'orden'
+    const sortedMenus = menusResultado.sort((a, b) => a.orden - b.orden);
+
+    // Ordenar los submenús y sub-submenús de forma recursiva
+    const sortSubMenus = (menus) => {
+      menus.forEach((menu) => {
+        menu.subMenus.sort((a, b) => a.orden - b.orden);
+        sortSubMenus(menu.subMenus); // Llamada recursiva
+      });
+    };
+
+    sortSubMenus(sortedMenus);
 
     return sortedMenus;
+  };
+
+  const renderMenu = (menu) => {
+    return menu.map((menuItem) => (
+      <li key={menuItem.menu_id}>
+        {menuItem.subMenus.length > 0 ? (
+          <>
+            <div
+              onClick={() => toggleMenu(menuItem.menu_id)}
+              data-index={menuItem.menu_id}
+              className="hover:text-[#F0C95C]"
+            >
+              <span>{menuItem.titulo}</span>
+            </div>
+            <ul
+              className={
+                isOpen[menuItem.menu_id]
+                  ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
+                  : "hidden"
+              }
+            >
+              {renderMenu(menuItem.subMenus)} {/* Llamada recursiva */}
+            </ul>
+          </>
+        ) : (
+          <Link
+            to={menuItem.ruta}
+            className="text-white hover:text-[#F0C95C]"
+            onClick={() => {
+              toggleMenuBurger();
+              toggleMenu({});
+            }}
+          >
+            {menuItem.titulo}
+          </Link>
+        )}
+      </li>
+    ));
   };
 
   return (
@@ -350,51 +408,53 @@ export function BarraNavegacion() {
               ) : (
                 // ADMINISTRADORES
 
-                menu?.map((menu) =>
-                  menu.subMenus.length > 0 ? (
-                    <li key={menu.menu_id}>
-                      <div
-                        onClick={() => toggleMenu(menu.menu_id)}
-                        data-index={menu.menu_id}
-                        className="hover:text-[#F0C95C]"
-                      >
-                        <span>{menu.titulo}</span>
-                      </div>
-                      <ul
-                        className={
-                          isOpen[menu.menu_id]
-                            ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
-                            : "hidden"
-                        }
-                      >
-                        {menu.subMenus.map((submenu) => (
-                          <li key={submenu.menu_id}>
-                            <Link
-                              to={submenu.ruta}
-                              className="text-white hover:text-[#F0C95C] text-sm"
-                              onClick={toggleMenuBurger}
-                            >
-                              {submenu.titulo}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
-                  ) : (
-                    <li key={menu.menu_id}>
-                      <Link
-                        to={menu.ruta}
-                        className="text-white hover:text-[#F0C95C]"
-                        onClick={() => {
-                          toggleMenuBurger();
-                          toggleMenu({});
-                        }}
-                      >
-                        {menu.titulo}
-                      </Link>
-                    </li>
-                  )
-                )
+                renderMenu(menu)
+
+                // menu?.map((menu) =>
+                //   menu.subMenus.length > 0 ? (
+                //     <li key={menu.menu_id}>
+                //       <div
+                //         onClick={() => toggleMenu(menu.menu_id)}
+                //         data-index={menu.menu_id}
+                //         className="hover:text-[#F0C95C]"
+                //       >
+                //         <span>{menu.titulo}</span>
+                //       </div>
+                //       <ul
+                //         className={
+                //           isOpen[menu.menu_id]
+                //             ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
+                //             : "hidden"
+                //         }
+                //       >
+                //         {menu.subMenus.map((submenu) => (
+                //           <li key={submenu.menu_id}>
+                //             <Link
+                //               to={submenu.ruta}
+                //               className="text-white hover:text-[#F0C95C] text-sm"
+                //               onClick={toggleMenuBurger}
+                //             >
+                //               {submenu.titulo}
+                //             </Link>
+                //           </li>
+                //         ))}
+                //       </ul>
+                //     </li>
+                //   ) : (
+                //     <li key={menu.menu_id}>
+                //       <Link
+                //         to={menu.ruta}
+                //         className="text-white hover:text-[#F0C95C]"
+                //         onClick={() => {
+                //           toggleMenuBurger();
+                //           toggleMenu({});
+                //         }}
+                //       >
+                //         {menu.titulo}
+                //       </Link>
+                //     </li>
+                //   )
+                // )
               )}
 
               <li>
