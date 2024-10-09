@@ -393,6 +393,18 @@ export function BarraNavegacion() {
                   </li>
                   <li>
                     <Link
+                      to="/admin/liquidaciones"
+                      className="text-white hover:text-[#F0C95C]"
+                      onClick={() => {
+                        toggleMenuBurger();
+                        toggleMenu({});
+                      }}
+                    >
+                      Liquidaciones
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       to="/admin/sugerencias"
                       className="text-white hover:text-[#F0C95C]"
                       onClick={() => {
