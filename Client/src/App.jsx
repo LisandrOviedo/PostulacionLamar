@@ -26,6 +26,7 @@ import {
   PruebasEmpleados,
   SolicitudesMovimientos,
   Sugerencias,
+  Liquidaciones,
 } from "./components/";
 
 import {
@@ -116,6 +117,12 @@ function App() {
             <Route
               path="/admin/solicitudesMovimientos"
               element={<SolicitudesMovimientos />}
+            />
+
+            <Route path="/admin/liquidaciones" element={<Liquidaciones />} />
+            <Route
+              path="/admin/liquidaciones"
+              element={<Liquidaciones />}
             />
 
             <Route path="/admin/sugerencias" element={<Sugerencias />} />
