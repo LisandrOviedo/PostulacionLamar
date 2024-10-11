@@ -15,13 +15,14 @@ import { AccesoAdmin } from "./Admin/AccesoAdmin";
 import { DetalleEmpleado } from "./Admin/DetalleEmpleado";
 import { Empleados } from "./Admin/Empleados";
 import { FormularioIngreso } from "./Admin/FormularioIngreso";
+import { Liquidaciones } from "./Admin/Liquidaciones";
 import { Movimientos } from "./Admin/Movimientos";
 import { PanelAdmin } from "./Admin/PanelAdmin";
 import { Postulaciones } from "./Admin/Postulaciones";
 import { PruebasEmpleados } from "./Admin/PruebasEmpleados";
+import { Roles_Permisologia } from "./Admin/Roles_Permisologia";
 import { Sugerencias } from "./Admin/Sugerencias";
 import { SolicitudesMovimientos } from "./Admin/SolicitudesMovimientos";
-import { Liquidaciones} from "./Admin/Liquidaciones";
 
 export {
   AccesoEmpleado,
@@ -40,12 +41,12 @@ export {
   DetalleEmpleado,
   Empleados,
   FormularioIngreso,
+  Liquidaciones,
   Movimientos,
   PanelAdmin,
   Postulaciones,
   PruebasEmpleados,
+  Roles_Permisologia,
   SolicitudesMovimientos,
-  Liquidaciones,
-  Sugerencias
-  
+  Sugerencias,
 };
