@@ -403,6 +403,19 @@ export function BarraNavegacion() {
                       Liquidaciones
                     </Link>
                   </li>
+                  
+                  <li>
+                    <Link
+                      to="/admin/rolesPermisologia"
+                      className="text-white hover:text-[#F0C95C]"
+                      onClick={() => {
+                        toggleMenuBurger();
+                        toggleMenu({});
+                      }}
+                    >
+                      Roles y Permisología
+                    </Link>
+                  </li>
                   <li>
                     <Link
                       to="/admin/sugerencias"
@@ -412,10 +425,12 @@ export function BarraNavegacion() {
                         toggleMenu({});
                       }}
                     >
+                      
                       Sugerencias
                     </Link>
                   </li>
                 </>
+                
               )}
 
               <li>
