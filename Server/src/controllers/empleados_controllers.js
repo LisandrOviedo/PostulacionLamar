@@ -350,6 +350,10 @@ const traerEmpleadoExistencia = async (
       order: [[Movimientos, "createdAt", "DESC"]],
     });
 
+    if (!empleado.activo) {
+      throw new Error(`Ese empleado se encuentra inactivo`);
+    }
+
     if (empleado) {
       return empleado;
     }
