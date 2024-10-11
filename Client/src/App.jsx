@@ -27,6 +27,7 @@ import {
   SolicitudesMovimientos,
   Sugerencias,
   Liquidaciones,
+  Roles_Permisologia
 } from "./components/";
 
 import {
@@ -122,6 +123,11 @@ function App() {
             <Route path="/admin/liquidaciones" element={<Liquidaciones />} />
             <Route
               path="/admin/liquidaciones"
+              element={<Liquidaciones />}
+            />
+              <Route path="/admin/rolesPermisologia" element={<Roles_Permisologia />} />
+            <Route
+              path="/admin/rolesPermisologia"
               element={<Liquidaciones />}
             />
 
