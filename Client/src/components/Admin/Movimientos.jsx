@@ -368,14 +368,18 @@ export function Movimientos() {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Title>Movimientos</Title>
       </div>
+      <br />
       <Hr />
-
+      <br />
+      <Span className="text-center m-0 text-red-600">
+        (*) Campos obligatorios
+      </Span>
       <div className="flex flex-col place-content-between my-6">
         <Label
           htmlFor="numero_identificacion"
           errors={errors.numero_identificacion}
         >
-          Número de identificación
+          Número de identificación *
         </Label>
 
         <div className="flex gap-2 items-center">
@@ -519,7 +523,7 @@ export function Movimientos() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         {/* Clase de Movimiento */}
         <div>
-          <Label htmlFor="clase_movimiento_id">Clase de movimiento</Label>
+          <Label htmlFor="clase_movimiento_id">Clase de movimiento *</Label>
           <Select
             id="clase_movimiento_id"
             name="clase_movimiento_id"
@@ -540,7 +544,7 @@ export function Movimientos() {
           </Select>
         </div>
         <div>
-          <Label htmlFor="duracion_movimiento">Duración de movimiento</Label>
+          <Label htmlFor="duracion_movimiento">Duración de movimiento *</Label>
           <Select
             id="duracion_movimiento"
             name="duracion_movimiento"
@@ -555,7 +559,7 @@ export function Movimientos() {
         {datosMovimiento.duracion_movimiento === "Temporal" && (
           <div>
             <Label htmlFor="duracion_movimiento_dias">
-              Duración de movimiento (días)
+              Duración de movimiento (días) *
             </Label>
             <Input
               id="duracion_movimiento_dias"
@@ -580,7 +584,7 @@ export function Movimientos() {
         {datosMovimiento.requiere_periodo_prueba && (
           <div>
             <Label htmlFor="duracion_periodo_prueba">
-              Duración de periodo de prueba (días)
+              Duración de periodo de prueba (días) *
             </Label>
             <Input
               id="duracion_periodo_prueba"
@@ -594,7 +598,10 @@ export function Movimientos() {
           </div>
         )}
         <div className="sm:col-span-2 md:col-span-3">
-          <Label htmlFor="justificacion_movimiento">
+          <Label
+            htmlFor="justificacion_movimiento"
+            errors={errors.justificacion_movimiento}
+          >
             Justificación del movimiento organizativo
           </Label>
           <TextArea
@@ -602,7 +609,11 @@ export function Movimientos() {
             name="justificacion_movimiento"
             onChange={handleValidate}
             rows="5"
+            errors={errors.justificacion_movimiento}
           />
+          {errors.justificacion_movimiento && (
+            <Span className="m-0">{errors.justificacion_movimiento}</Span>
+          )}
         </div>
       </div>
       <br />
@@ -612,7 +623,7 @@ export function Movimientos() {
         {/* Nueva Condición Laboral del Trabajador */}
 
         <div className="flex flex-col justify-start">
-          <Label htmlFor="empresa_id">Empresa</Label>
+          <Label htmlFor="empresa_id">Empresa *</Label>
 
           <Select
             className="w-full"
@@ -641,7 +652,7 @@ export function Movimientos() {
         </div>
 
         <div className="flex flex-col justify-start">
-          <Label htmlFor="departamento_id">Departamento</Label>
+          <Label htmlFor="departamento_id">Departamento *</Label>
           <Select
             className="w-full"
             id="departamento_id"
@@ -666,7 +677,7 @@ export function Movimientos() {
           </Select>
         </div>
         <div className="flex flex-col justify-start">
-          <Label htmlFor="cargo_id">Cargo</Label>
+          <Label htmlFor="cargo_id">Cargo *</Label>
           <Select
             className="w-full"
             id="cargo_id"
@@ -691,7 +702,7 @@ export function Movimientos() {
           </Select>
         </div>
         <div className="flex flex-col justify-start">
-          <Label htmlFor="cargo_nivel_id">Nivel del cargo</Label>
+          <Label htmlFor="cargo_nivel_id">Nivel del cargo *</Label>
           <Select
             className="w-full"
             id="cargo_nivel_id"
@@ -720,7 +731,7 @@ export function Movimientos() {
             htmlFor="vigencia_movimiento_desde"
             errors={errors.vigencia_movimiento}
           >
-            Vigencia del movimiento (fecha desde)
+            Vigencia del movimiento (fecha desde) *
           </Label>
           <Date
             id="vigencia_movimiento_desde"
@@ -749,7 +760,7 @@ export function Movimientos() {
 
         {/* Tipo de Nómina */}
         <div className="flex flex-col justify-start">
-          <Label htmlFor="tipo_nomina">Tipo de nómina</Label>
+          <Label htmlFor="tipo_nomina">Tipo de nómina *</Label>
           <Select id="tipo_nomina" name="tipo_nomina" onChange={handleValidate}>
             <option value="Seleccione">Seleccione</option>
             <option value="Empleados">Empleados</option>
@@ -774,7 +785,7 @@ export function Movimientos() {
 
         {/* Frecuencia de Nómina */}
         <div className="flex flex-col justify-start">
-          <Label htmlFor="frecuencia_nomina">Frecuencia de nómina</Label>
+          <Label htmlFor="frecuencia_nomina">Frecuencia de nómina *</Label>
           <Select
             id="frecuencia_nomina"
             name="frecuencia_nomina"
@@ -884,7 +895,7 @@ export function Movimientos() {
             htmlFor="numero_identificacion_supervisor"
             errors={errors.numero_identificacion_supervisor}
           >
-            Número de identificación
+            Número de identificación *
           </Label>
           <div className="flex justify-between gap-2">
             <Select
@@ -943,7 +954,7 @@ export function Movimientos() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div>
           <Label htmlFor="numero_identificacion_gerencia">
-            Número de identificación
+            Número de identificación *
           </Label>
           <div className="flex justify-between gap-2">
             <Select
@@ -999,7 +1010,7 @@ export function Movimientos() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div>
           <Label htmlFor="numero_identificacion_tthh">
-            Número de identificación
+            Número de identificación *
           </Label>
           <div className="flex justify-between gap-2">
             <Select

@@ -2536,14 +2536,20 @@ export function FormularioIngreso() {
               />
             </div>
             <div className="col-span-1 sm:col-span-2 md:col-span-3">
-              <Label htmlFor="observaciones">Observaciones</Label>
+              <Label htmlFor="observaciones" errors={errors.observaciones}>
+                Observaciones
+              </Label>
               <TextArea
                 id="observaciones"
                 name="observaciones"
                 type="textarea"
                 rows="3"
                 onChange={handleValidate}
+                errors={errors.observaciones}
               />
+              {errors.observaciones && (
+                <Span className="m-0">{errors.observaciones}</Span>
+              )}
             </div>
 
             {/* <div className="col-span-1 sm:col-span-2 md:col-span-3">

@@ -52,6 +52,7 @@ export default function validations(inputs) {
     numero_identificacion_tercero,
     nombre_apellido_tercero,
     salario,
+    observaciones,
   } = inputs;
 
   if (tipo_identificacion && numero_identificacion) {
@@ -320,6 +321,13 @@ export default function validations(inputs) {
   if (salario) {
     if (salario.length > 8) {
       errors.salario = "El salario no debe tener más de 8 dígitos";
+    }
+  }
+
+  if (observaciones) {
+    if (!regexNumerosLetrasGuionesApostrofes.test(observaciones)) {
+      errors.observaciones =
+        "Las observaciones solo pueden contener letras, números, espacios, guiones o apóstofres";
     }
   }
 
