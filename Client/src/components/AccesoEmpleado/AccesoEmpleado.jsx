@@ -1,11 +1,12 @@
-import { clsx } from "clsx";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import validations from "../../utils/validacionesAcceso";
 
-import { Button, Input, Label, Radio, Title } from "../UI";
+import { Button, Input, Label, Select, Span, Title } from "../UI";
+
+import { MdCancel } from "react-icons/md";
 
 import { getLogin } from "../../redux/empleados/empleadosActions";
 
@@ -20,8 +21,6 @@ export function AccesoEmpleado() {
 
   const [data, setData] = useState({
     tipo_identificacion: "V",
-    numero_identificacion: "",
-    clave: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -34,28 +33,13 @@ export function AccesoEmpleado() {
   const handleLogin = () => {
     const { tipo_identificacion, numero_identificacion, clave } = data;
 
-    dispatch(getLogin(tipo_identificacion, numero_identificacion, clave))
-      .then(() => {
-        // Acciones a realizar después de que se resuelva la promesa exitosamente
-      })
-      .catch((error) => {
-        return error;
-      });
+    dispatch(getLogin(tipo_identificacion, numero_identificacion, clave));
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       const continuar = document.getElementById("btn_continuar");
       continuar.click();
-    }
-  };
-
-  const handleOnChange = (e) => {
-    const { name, value } = e.target;
-    setData({ ...data, [name]: value });
-
-    if (name !== "tipo_identificacion") {
-      setErrors(validations({ ...data, [name]: value }));
     }
   };
 
@@ -107,6 +91,13 @@ export function AccesoEmpleado() {
     });
   };
 
+  const handleValidate = (e) => {
+    const { name, value } = e.target;
+
+    setData({ ...data, [name]: value });
+    setErrors(validations({ ...data, [name]: value }));
+  };
+
   return (
     <div className="flex mt-14 sm:mt-0 sm:h-screen flex-col items-center justify-center">
       <div className="flex flex-col items-center justify-center">
@@ -121,85 +112,62 @@ export function AccesoEmpleado() {
           </Title>
         </div>
       </div>
-
-      <div className="mt-10 w-[70%] sm:w-[50%] md:w-[40%] lg:w-[30%] space-y-6">
-        <div className="flex justify-center gap-x-4">
-          <div className="flex items-center gap-x-2">
-            <Radio
-              id="venezolano"
-              name="tipo_identificacion"
-              value="V"
-              onChange={handleOnChange}
-              defaultChecked={true}
-            />
-            <Label htmlFor="venezolano" className="mb-0">
-              Venezolano
-            </Label>
-          </div>
-          <div className="flex items-center gap-x-2">
-            <Radio
-              id="extranjero"
-              name="tipo_identificacion"
-              value="E"
-              onChange={handleOnChange}
-            />
-            <Label htmlFor="extranjero" className="mb-0">
-              Extranjero
-            </Label>
-          </div>
-        </div>
+      <div className="mt-10 w-[80%] sm:w-[50%] md:w-[40%] lg:w-[30%] space-y-6">
         <div>
-          <Label htmlFor="numero_identificacion">
-            Número de identificación
+          <Label
+            htmlFor="numero_identificacion"
+            errors={errors.numero_identificacion}
+          >
+            Número de identificación *
           </Label>
-          <div className="mt-2">
-            <Input
-              id="numero_identificacion"
-              name="numero_identificacion"
-              type="number"
-              placeholder="123456789"
-              onChange={handleOnChange}
-              onKeyDown={handleKeyDown}
-              minLength="1"
-              maxLength="9"
-              required
-            />
-            {errors.numero_identificacion && (
-              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-                {errors.numero_identificacion}
-              </p>
-            )}
-          </div>
-        </div>
-        <div>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="clave">Contraseña</Label>
-            <div className="text-sm">
-              <a
-                className="cursor-pointer font-semibold text-[#002846] hover:text-blue-800 text-xs sm:text-sm ml-2 sm:ml-0"
-                onClick={handleHelp}
-              >
-                ¿Olvidó su contraseña?
-              </a>
+          <div className="flex justify-between gap-2">
+            <Select
+              className="w-auto"
+              name="tipo_identificacion"
+              value={data.tipo_identificacion}
+              onChange={handleValidate}
+            >
+              <option value="V">V</option>
+              <option value="E">E</option>
+            </Select>
+
+            <div className="relative w-full">
+              <Input
+                id="numero_identificacion"
+                name="numero_identificacion"
+                value={data.numero_identificacion}
+                errors={errors.numero_identificacion}
+                onChange={handleValidate}
+                onKeyDown={handleKeyDown}
+                maxLength="20"
+              />
+              {errors.numero_identificacion && (
+                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+              )}
             </div>
           </div>
-          <div className="mt-2">
-            <Input
-              id="clave"
-              name="clave"
-              type="password"
-              placeholder="********"
-              onChange={handleOnChange}
-              onKeyDown={handleKeyDown}
-              minLength="1"
-              required
-            />
-            {errors.clave && (
-              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-                {errors.clave}
-              </p>
-            )}
+          {errors.numero_identificacion && (
+            <Span className="m-0">{errors.numero_identificacion}</Span>
+          )}
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-1 gap-4 sm:gap-0">
+            <Label htmlFor="clave">Contraseña</Label>
+            <a
+              className="cursor-pointer font-semibold text-[#002846] hover:text-[#002846]/[.5] text-xs sm:text-sm"
+              onClick={handleHelp}
+            >
+              ¿Olvidó su contraseña?
+            </a>
           </div>
+          <Input
+            id="clave"
+            name="clave"
+            type="password"
+            placeholder="********"
+            onChange={handleValidate}
+            onKeyDown={handleKeyDown}
+          />
         </div>
         <div className="flex items-center justify-center">
           <Button
@@ -211,13 +179,13 @@ export function AccesoEmpleado() {
               !data.numero_identificacion ||
               !data.clave
             }
-            className={clsx("", {
-              "opacity-50":
-                Object.keys(errors).length ||
+            className={`${
+              (Object.keys(errors).length ||
                 !data.tipo_identificacion ||
                 !data.numero_identificacion ||
-                !data.clave,
-            })}
+                !data.clave) &&
+              "opacity-50"
+            }`}
           >
             Acceder
           </Button>
