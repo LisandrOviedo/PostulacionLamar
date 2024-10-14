@@ -118,7 +118,7 @@ export function AccesoEmpleado() {
             htmlFor="numero_identificacion"
             errors={errors.numero_identificacion}
           >
-            Número de identificación *
+            Número de identificación
           </Label>
           <div className="flex justify-between gap-2">
             <Select
