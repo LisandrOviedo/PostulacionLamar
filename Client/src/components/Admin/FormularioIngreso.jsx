@@ -2079,6 +2079,7 @@ export function FormularioIngreso() {
                 <option value="Abuelo(a)">Abuelo(a)</option>
                 <option value="Amigo(a)">Amigo(a)</option>
                 <option value="Conyuge">Conyuge</option>
+                <option value="Cuñado(a)">Cuñado(a)</option>
                 <option value="Hermano(a)">Hermano(a)</option>
                 <option value="Hijo(a)">Hijo(a)</option>
                 <option value="Madre">Madre</option>
@@ -2086,7 +2087,9 @@ export function FormularioIngreso() {
                 <option value="Padre">Padre</option>
                 <option value="Primo(a)">Primo(a)</option>
                 <option value="Sobrino(a)">Sobrino(a)</option>
-                <option value="Tio(a)">Tio(a)</option>
+                <option value="Suegro(a)">Suegro(a)</option>
+                <option value="Tío(a)">Tío(a)</option>
+                <option value="Vecino(a)">Vecino(a)</option>
               </Select>
             </div>
             <div>
