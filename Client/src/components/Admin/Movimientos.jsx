@@ -723,7 +723,6 @@ export function Movimientos() {
             Vigencia del movimiento (fecha desde)
           </Label>
           <Date
-            type="date"
             id="vigencia_movimiento_desde"
             name="vigencia_movimiento_desde"
             onChange={handleValidate}
@@ -738,7 +737,6 @@ export function Movimientos() {
             Vigencia del movimiento (fecha hasta)
           </Label>
           <Date
-            type="date"
             id="vigencia_movimiento_hasta"
             name="vigencia_movimiento_hasta"
             onChange={handleValidate}
