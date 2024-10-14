@@ -19,6 +19,7 @@ import {
   Input,
   Label,
   Select,
+  Span,
   TextArea,
   Title,
 } from "../UI";
@@ -26,6 +27,8 @@ import {
 import { YYYYMMDD } from "../../utils/formatearFecha";
 
 import validations from "../../utils/validacionesCurriculo";
+
+import { MdCancel } from "react-icons/md";
 
 import Swal from "sweetalert2";
 
@@ -67,6 +70,7 @@ export function CrearCurriculo() {
   });
 
   const [errors, setErrors] = useState({});
+  const [inputsToValidate, setInputsToValidate] = useState({});
 
   const [isHidden, setIsHidden] = useState(true);
   const [isHiddenIdioma, setIsHiddenIdioma] = useState(true);
@@ -129,12 +133,6 @@ export function CrearCurriculo() {
 
   const handleIdiomaSelected = (e) => {
     const { value } = e.target;
-
-    const nivel_idioma = document.getElementById("nivel_idioma");
-
-    if (nivel_idioma.selectedIndex !== 0) {
-      nivel_idioma.selectedIndex = 0;
-    }
 
     if (value === "Ninguno") {
       setIsHiddenIdioma(true);
@@ -480,68 +478,63 @@ export function CrearCurriculo() {
   const handleValidate = (e) => {
     const { name, value } = e.target;
 
-    setErrors(validations({ ...errors, [name]: value }));
+    setInputsToValidate({ ...inputsToValidate, [name]: value });
+
+    setErrors(validations({ ...inputsToValidate, [name]: value }));
   };
 
   const handleValidateDate = (e) => {
-    const fecha_desde_titulo_obtenido = document.getElementById(
-      "fecha_desde_titulo_obtenido"
-    );
-    const fecha_hasta_titulo_obtenido = document.getElementById(
-      "fecha_hasta_titulo_obtenido"
-    );
-    const fecha_desde_experiencia = document.getElementById(
-      "fecha_desde_experiencia"
-    );
-    const fecha_hasta_experiencia = document.getElementById(
-      "fecha_hasta_experiencia"
-    );
-
-    if (
-      fecha_desde_titulo_obtenido.value &&
-      fecha_hasta_titulo_obtenido.value &&
-      fecha_desde_titulo_obtenido.value >= fecha_hasta_titulo_obtenido.value
-    ) {
-      Swal.fire({
-        title: "Oops...",
-        text: `La "fecha desde" del título obtenido no puede ser igual o menor que la "fecha hasta"`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 3000,
-      });
-
-      fecha_desde_titulo_obtenido.value = null;
-      fecha_hasta_titulo_obtenido.value = null;
-      return;
-    }
-
-    if (
-      fecha_desde_experiencia.value &&
-      fecha_hasta_experiencia.value &&
-      fecha_desde_experiencia.value >= fecha_hasta_experiencia.value
-    ) {
-      Swal.fire({
-        title: "Oops...",
-        text: `La "fecha desde" de la experiencia no puede ser igual o menor que la "fecha hasta"`,
-        icon: "error",
-        showConfirmButton: false,
-        timer: 3000,
-      });
-
-      fecha_desde_experiencia.value = null;
-      fecha_hasta_experiencia.value = null;
-      return;
-    }
-
-    const { name, value } = e.target;
-
-    const fecha_actual = YYYYMMDD();
-
-    if (value > fecha_actual) {
-      const input = document.getElementById(name);
-
-      input.value = fecha_actual;
-    }
+    // const fecha_desde_titulo_obtenido = document.getElementById(
+    //   "fecha_desde_titulo_obtenido"
+    // );
+    // const fecha_hasta_titulo_obtenido = document.getElementById(
+    //   "fecha_hasta_titulo_obtenido"
+    // );
+    // const fecha_desde_experiencia = document.getElementById(
+    //   "fecha_desde_experiencia"
+    // );
+    // const fecha_hasta_experiencia = document.getElementById(
+    //   "fecha_hasta_experiencia"
+    // );
+    // if (
+    //   fecha_desde_titulo_obtenido.value &&
+    //   fecha_hasta_titulo_obtenido.value &&
+    //   fecha_desde_titulo_obtenido.value >= fecha_hasta_titulo_obtenido.value
+    // ) {
+    //   Swal.fire({
+    //     title: "Oops...",
+    //     text: `La "fecha desde" del título obtenido no puede ser igual o menor que la "fecha hasta"`,
+    //     icon: "error",
+    //     showConfirmButton: false,
+    //     timer: 3000,
+    //   });
+    //   fecha_desde_titulo_obtenido.value = null;
+    //   fecha_hasta_titulo_obtenido.value = null;
+    //   return;
+    // }
+    // if (
+    //   fecha_desde_experiencia.value &&
+    //   fecha_hasta_experiencia.value &&
+    //   fecha_desde_experiencia.value >= fecha_hasta_experiencia.value
+    // ) {
+    //   Swal.fire({
+    //     title: "Oops...",
+    //     text: `La "fecha desde" de la experiencia no puede ser igual o menor que la "fecha hasta"`,
+    //     icon: "error",
+    //     showConfirmButton: false,
+    //     timer: 3000,
+    //   });
+    //   fecha_desde_experiencia.value = null;
+    //   fecha_hasta_experiencia.value = null;
+    //   return;
+    // }
+    // const fecha_actual = YYYYMMDD();
+    // if (value > fecha_actual) {
+    //   const input = document.getElementById(name);
+    //   input.value = fecha_actual;
+    // }
+    // const { name, value } = e.target;
+    // setErrors(validations({ ...datosCurriculo, [name]: value }));
   };
 
   return (
@@ -550,8 +543,8 @@ export function CrearCurriculo() {
       <br />
       <Hr />
       <br />
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
-        <div className="flex flex-col place-content-between">
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 mb-5 items-start">
+        <div>
           <Label htmlFor="grado_instruccion">Grado de instrucción</Label>
           <Select
             id="grado_instruccion"
@@ -565,64 +558,96 @@ export function CrearCurriculo() {
             <option value="Postgrado">Postgrado</option>
           </Select>
         </div>
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="fecha_desde_titulo_obtenido">Fecha desde</Label>
+        <div>
+          <Label
+            htmlFor="fecha_desde_titulo_obtenido"
+            errors={errors.fecha_titulo_obtenido}
+          >
+            Fecha desde
+          </Label>
           <Date
             id="fecha_desde_titulo_obtenido"
             name="fecha_desde_titulo_obtenido"
-            type="date"
             max={YYYYMMDD()}
-            onChange={handleValidateDate}
+            onChange={handleValidate}
+            errors={errors.fecha_titulo_obtenido}
           />
         </div>
-        <div className="flex flex-col place-content-between">
-          <Label htmlFor="fecha_hasta_titulo_obtenido">Fecha hasta</Label>
+        <div>
+          <Label
+            htmlFor="fecha_hasta_titulo_obtenido"
+            errors={errors.fecha_titulo_obtenido}
+          >
+            Fecha hasta
+          </Label>
           <Date
             id="fecha_hasta_titulo_obtenido"
             name="fecha_hasta_titulo_obtenido"
-            type="date"
             max={YYYYMMDD()}
-            onChange={handleValidateDate}
+            onChange={handleValidate}
+            errors={errors.fecha_titulo_obtenido}
           />
+          {errors.fecha_titulo_obtenido && (
+            <Span className="m-0">{errors.fecha_titulo_obtenido}</Span>
+          )}
         </div>
-        <div className="md:col-span-2 flex flex-col place-content-between">
-          <Label htmlFor="nombre_instituto">Nombre instituto</Label>
-          <div className="flex gap-4 w-full items-start">
+        <div className="md:col-span-2">
+          <Label htmlFor="nombre_instituto" errors={errors.nombre_instituto}>
+            Nombre instituto
+          </Label>
+
+          <div className="relative w-full">
             <Input
               id="nombre_instituto"
               type="text"
               name="nombre_instituto"
               onChange={handleValidate}
               placeholder="Ingrese el nombre del instituto"
+              errors={errors.nombre_instituto}
             />
             {errors.nombre_instituto && (
-              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-                {errors.nombre_instituto}
-              </p>
+              <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
             )}
           </div>
+          {errors.nombre_instituto && (
+            <Span className="m-0">{errors.nombre_instituto}</Span>
+          )}
         </div>
-        <div className="md:col-span-2 flex flex-col place-content-between">
-          <Label htmlFor="titulo_obtenido">Título obtenido</Label>
-          <div className="flex gap-4 w-full items-start">
+        <div className="md:col-span-2">
+          <Label htmlFor="titulo_obtenido" errors={errors.titulo_obtenido}>
+            Título obtenido
+          </Label>
+          <div className="relative w-full">
             <Input
               id="titulo_obtenido"
               type="text"
               name="titulo_obtenido"
               onChange={handleValidate}
               placeholder="Ingrese el nombre del título"
+              errors={errors.titulo_obtenido}
             />
+
             {errors.titulo_obtenido && (
-              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-                {errors.titulo_obtenido}
-              </p>
+              <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
             )}
-            <Button onClick={handleAddTituloObtenido} className="m-0 w-auto">
-              Agregar
-            </Button>
           </div>
+          {errors.titulo_obtenido && (
+            <Span className="m-0">{errors.titulo_obtenido}</Span>
+          )}
         </div>
-        <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
+        {!errors.fecha_titulo_obtenido &&
+          !errors.nombre_instituto &&
+          !errors.titulo_obtenido && (
+            <div className="flex h-full items-end">
+              <Button
+                onClick={handleAddTituloObtenido}
+                className="m-0 sm:w-auto"
+              >
+                Agregar título obtenido
+              </Button>
+            </div>
+          )}
+        <div className="sm:col-span-2 md:col-span-3 overflow-x-auto shadow-md rounded-lg">
           <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
             <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
               <tr className="text-white">
@@ -678,39 +703,42 @@ export function CrearCurriculo() {
             </tbody>
           </table>
         </div>
-        <div className="flex flex-col place-content-between md:col-span-2 lg:col-span-1">
-          <Label htmlFor="area_interes_id">
+        <div>
+          <Label
+            htmlFor="area_interes_id"
+            className={`${isLoad.areas_interes ? null : "text-red-600"}`}
+          >
             Indica cuál es tu área de interés laboral
           </Label>
-          <div className="flex gap-4 w-full items-start">
-            <Select
-              id="area_interes_id"
-              name="area_interes_id"
-              className={`inline-block ${
-                isLoad.areas_interes ? null : "border-red-500"
-              }`}
-            >
-              {areas_interes_activas?.length
-                ? areas_interes_activas?.map(
-                    (area, i) =>
-                      area.activo && (
-                        <option
-                          key={i}
-                          name={area.nombre}
-                          value={area.area_interes_id}
-                        >
-                          {area.nombre}
-                        </option>
-                      )
-                  )
-                : null}
-            </Select>
-            <Button className="m-0 w-auto" onClick={handleAddArea}>
-              Agregar
-            </Button>
-          </div>
+          <Select
+            id="area_interes_id"
+            name="area_interes_id"
+            className={`inline-block ${
+              isLoad.areas_interes ? null : "border-red-600"
+            }`}
+          >
+            {areas_interes_activas?.length
+              ? areas_interes_activas?.map(
+                  (area, i) =>
+                    area.activo && (
+                      <option
+                        key={i}
+                        name={area.nombre}
+                        value={area.area_interes_id}
+                      >
+                        {area.nombre}
+                      </option>
+                    )
+                )
+              : null}
+          </Select>
         </div>
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex h-full items-end">
+          <Button className="m-0 sm:w-auto" onClick={handleAddArea}>
+            Agregar área de interés
+          </Button>
+        </div>
+        <div className="flex gap-2 justify-center items-center h-full">
           <CheckBox
             id="disponibilidad_viajar"
             name="disponibilidad_viajar"
@@ -721,18 +749,21 @@ export function CrearCurriculo() {
             ¿Posees disponibilidad para viajar?
           </Label>
         </div>
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex gap-2 justify-center items-center h-full">
           <CheckBox
             id="disponibilidad_cambio_residencia"
             name="disponibilidad_cambio_residencia"
             checked={datosCurriculo.disponibilidad_cambio_residencia}
             onChange={handleCheckedChangeCurriculo}
           />
-          <Label className="select-none" htmlFor="disponibilidad_cambio_residencia">
+          <Label
+            className="select-none"
+            htmlFor="disponibilidad_cambio_residencia"
+          >
             ¿Posees disponibilidad para cambio de residencia?
           </Label>
         </div>
-        <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
+        <div className="sm:col-span-2 md:col-span-3 overflow-x-auto shadow-md rounded-lg">
           <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
             <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
               <tr className="text-white">
@@ -766,9 +797,9 @@ export function CrearCurriculo() {
             </tbody>
           </table>
         </div>
-        <div className="flex flex-col place-content-between">
+        <div>
           <Label htmlFor="tipo">
-            ¿Posees experiencia laboral o realizaste algún curso?
+            ¿Posee experiencia laboral o realizó algún curso?
           </Label>
           <Select id="tipo" name="tipo" onChange={handleTipoExpSelected}>
             <option value="Ninguno">Ninguno</option>
@@ -776,88 +807,103 @@ export function CrearCurriculo() {
             <option value="Curso">Experiencia Curso</option>
           </Select>
         </div>
-        <div
-          className={` ${
-            isHidden
-              ? "hidden"
-              : "flex flex-col place-content-between md:col-span-2 lg:col-span-1"
-          }`}
-        >
-          <Label htmlFor="cargo_titulo">
-            Cargo laboral o título conseguido (Agregar todos uno por uno)
-          </Label>
-          <div className="flex gap-4 w-full items-center">
-            <Input
-              id="cargo_titulo"
-              type="text"
-              name="cargo_titulo"
-              onChange={handleValidate}
-              placeholder="Ingrese el nombre del cargo o título"
-            />
-            {errors.cargo_titulo && (
-              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-                {errors.cargo_titulo}
-              </p>
-            )}
-          </div>
-        </div>
-        <div
-          className={` ${
-            isHidden ? "hidden" : "flex flex-col place-content-between"
-          }`}
-        >
-          <Label htmlFor="fecha_desde_experiencia">Fecha desde</Label>
-          <Date
-            id="fecha_desde_experiencia"
-            name="fecha_desde_experiencia"
-            type="date"
-            max={YYYYMMDD()}
-            onChange={handleValidateDate}
-          />
-        </div>
-        <div
-          className={` ${
-            isHidden ? "hidden" : "flex flex-col place-content-between"
-          }`}
-        >
-          <Label htmlFor="fecha_hasta_experiencia">Fecha hasta</Label>
-          <Date
-            id="fecha_hasta_experiencia"
-            name="fecha_hasta_experiencia"
-            type="date"
-            max={YYYYMMDD()}
-            onChange={handleValidateDate}
-          />
-        </div>
-        <div
-          className={` ${
-            isHidden
-              ? "hidden"
-              : "flex flex-col place-content-between md:col-span-2"
-          }`}
-        >
-          <Label htmlFor="empresa_centro_educativo">
-            Nombre de la empresa / centro educativo
-          </Label>
-          <div className="flex gap-4 w-full items-center">
-            <Input
-              id="empresa_centro_educativo"
-              type="text"
-              name="empresa_centro_educativo"
-              onChange={handleValidate}
-              placeholder="Ingrese el nombre de la empresa / centro educativo"
-            />
-            {errors.empresa_centro_educativo && (
-              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-                {errors.empresa_centro_educativo}
-              </p>
-            )}
-            <Button onClick={handleAddExperiencia} className="m-0 w-auto">
-              Agregar
-            </Button>
-          </div>
-        </div>
-        <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
+
+        {!isHidden && (
+          <>
+            <div>
+              <Label htmlFor="cargo_titulo" errors={errors.cargo_titulo}>
+                Cargo laboral o título conseguido
+              </Label>
+              <div className="relative w-full">
+                <Input
+                  id="cargo_titulo"
+                  type="text"
+                  name="cargo_titulo"
+                  onChange={handleValidate}
+                  placeholder="Ingrese el nombre del cargo o título"
+                  errors={errors.cargo_titulo}
+                />
+                {errors.cargo_titulo && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.cargo_titulo && (
+                <Span className="m-0">{errors.cargo_titulo}</Span>
+              )}
+            </div>
+            <div>
+              <Label
+                htmlFor="fecha_desde_experiencia"
+                errors={errors.fecha_experiencia}
+              >
+                Fecha desde
+              </Label>
+              <Date
+                id="fecha_desde_experiencia"
+                name="fecha_desde_experiencia"
+                max={YYYYMMDD()}
+                onChange={handleValidate}
+                errors={errors.fecha_experiencia}
+              />
+            </div>
+            <div>
+              <Label
+                htmlFor="fecha_hasta_experiencia"
+                errors={errors.fecha_experiencia}
+              >
+                Fecha hasta
+              </Label>
+              <Date
+                id="fecha_hasta_experiencia"
+                name="fecha_hasta_experiencia"
+                max={YYYYMMDD()}
+                onChange={handleValidate}
+                errors={errors.fecha_experiencia}
+              />
+              {errors.fecha_experiencia && (
+                <Span className="m-0">{errors.fecha_experiencia}</Span>
+              )}
+            </div>
+            <div>
+              <Label
+                htmlFor="empresa_centro_educativo"
+                errors={errors.empresa_centro_educativo}
+              >
+                Nombre de la empresa / centro educativo
+              </Label>
+              <div className="relative w-full">
+                <Input
+                  id="empresa_centro_educativo"
+                  type="text"
+                  name="empresa_centro_educativo"
+                  onChange={handleValidate}
+                  placeholder="Ingrese el nombre de la empresa / centro educativo"
+                  errors={errors.empresa_centro_educativo}
+                />
+                {errors.empresa_centro_educativo && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.empresa_centro_educativo && (
+                <Span className="m-0">{errors.empresa_centro_educativo}</Span>
+              )}
+            </div>
+            {!errors.cargo_titulo &&
+              !errors.fecha_experiencia &&
+              !errors.empresa_centro_educativo && (
+                <div className="flex h-full items-end">
+                  <Button
+                    onClick={handleAddExperiencia}
+                    className="m-0 sm:w-auto"
+                  >
+                    Agregar experiencia
+                  </Button>
+                </div>
+              )}
+          </>
+        )}
+
+        <div className="sm:col-span-2 md:col-span-3 overflow-x-auto shadow-md rounded-lg">
           <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
             <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
               <tr className="text-white">
@@ -911,7 +957,7 @@ export function CrearCurriculo() {
             </tbody>
           </table>
         </div>
-        <div className="flex flex-col place-content-between">
+        <div>
           <Label htmlFor="idiomas">Conocimiento de idiomas</Label>
           <Select id="idiomas" name="idiomas" onChange={handleIdiomaSelected}>
             <option value="Ninguno">Ninguno</option>
@@ -931,24 +977,26 @@ export function CrearCurriculo() {
               : null}
           </Select>
         </div>
-        <div
-          className={`flex flex-col place-content-between ${
-            isHiddenIdioma ? "hidden" : null
-          }`}
-        >
-          <Label htmlFor="idiomas">Nivel del idioma</Label>
-          <div className="flex gap-2">
-            <Select id="nivel_idioma" name="nivel_idioma">
-              <option value="Principiante">Principiante</option>
-              <option value="Intermedio">Intermedio</option>
-              <option value="Avanzado">Avanzado</option>
-            </Select>
-            <Button onClick={handleAddIdioma} className="m-0 w-auto">
-              Agregar
-            </Button>
-          </div>
-        </div>
-        <div className="md:col-span-3 overflow-x-auto shadow-md rounded-lg">
+        {!isHiddenIdioma && (
+          <>
+            <div>
+              <Label htmlFor="idiomas">Nivel del idioma</Label>
+
+              <Select id="nivel_idioma" name="nivel_idioma">
+                <option value="Principiante">Principiante</option>
+                <option value="Intermedio">Intermedio</option>
+                <option value="Avanzado">Avanzado</option>
+              </Select>
+            </div>
+            <div className="flex h-full items-end">
+              <Button onClick={handleAddIdioma} className="m-0 sm:w-auto">
+                Agregar idioma
+              </Button>
+            </div>
+          </>
+        )}
+
+        <div className="sm:col-span-2 md:col-span-3 overflow-x-auto shadow-md rounded-lg">
           <table className="w-full mx-auto text-sm text-left rtl:text-right dark:text-gray-400">
             <thead className="text-xs uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
               <tr className="text-white">
@@ -986,8 +1034,13 @@ export function CrearCurriculo() {
             </tbody>
           </table>
         </div>
-        <div className="md:col-span-3 flex flex-col place-content-between">
-          <Label htmlFor="habilidades_tecnicas">Habilidades técnicas</Label>
+        <div className="sm:col-span-2 md:col-span-3">
+          <Label
+            htmlFor="habilidades_tecnicas"
+            errors={errors.habilidades_tecnicas}
+          >
+            Habilidades técnicas
+          </Label>
           <div className="mt-2">
             <TextArea
               id="habilidades_tecnicas"
@@ -996,15 +1049,20 @@ export function CrearCurriculo() {
               placeholder="Escribe tus habilidades técnicas"
               onChange={handleInputChangeCurriculo}
               value={datosCurriculo.habilidades_tecnicas}
+              errors={errors.habilidades_tecnicas}
             />
             {errors.habilidades_tecnicas && (
-              <p className="text-xs sm:text-sm text-red-700 font-bold text-center">
-                {errors.habilidades_tecnicas}
-              </p>
+              <Span className="m-0">{errors.habilidades_tecnicas}</Span>
             )}
           </div>
         </div>
-        <div className="md:col-span-3 flex justify-center items-center">
+
+        <div
+          className={`md:col-span-3 flex justify-center items-center ${
+            Object.keys(errors).length && "opacity-50"
+          }`}
+          disabled={Object.keys(errors).length}
+        >
           <Button className="m-0 w-auto" onClick={handleSaveCurriculo}>
             Guardar Cambios
           </Button>
