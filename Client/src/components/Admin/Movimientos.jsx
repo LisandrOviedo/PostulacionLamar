@@ -1083,7 +1083,10 @@ export function Movimientos() {
 
       <div className="mx-auto sm:col-span-2 md:col-span-3">
         <Button
-          className="w-auto flex items-center gap-2"
+          className={`w-auto flex items-center gap-2 ${
+            Object.keys(errors).length && "opacity-50"
+          }`}
+          disabled={Object.keys(errors).length}
           onClick={handlePostMovimiento}
         >
           {/*Es un icono de la libreria react icons */}
