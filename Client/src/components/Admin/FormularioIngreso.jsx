@@ -1,5 +1,3 @@
-import { clsx } from "clsx";
-
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import Webcam from "react-webcam";
@@ -65,6 +63,8 @@ import { FaFloppyDisk } from "react-icons/fa6";
 
 import { MdCancel } from "react-icons/md";
 
+import { BiSolidShow, BiSolidHide } from "react-icons/bi";
+
 import {
   YYYYMMDD,
   calcularMaxFechaNacimiento,
@@ -114,15 +114,17 @@ export function FormularioIngreso() {
     (state) => state.cargos_niveles.cargos_niveles_activos
   );
 
-  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
+  // const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const [errors, setErrors] = useState({});
 
-  const [imagenEmpleado, setImagenEmpleado] = useState(null);
+  const [showSalario, setShowSalario] = useState(true);
 
-  const [facingMode, setFacingMode] = useState("environment");
+  // const [imagenEmpleado, setImagenEmpleado] = useState(null);
 
-  const webCamRef = useRef(null);
+  // const [facingMode, setFacingMode] = useState("environment");
+
+  // const webCamRef = useRef(null);
 
   const [datosIngreso, setDatosIngreso] = useState({
     tipo_identificacion: "V",
@@ -2522,9 +2524,19 @@ export function FormularioIngreso() {
                   value={datosIngreso.salario}
                   type="number"
                   min="1"
+                  className={`${!showSalario && "text-transparent"}`}
                 />
-                {errors.salario && (
-                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+
+                {!showSalario ? (
+                  <BiSolidShow
+                    className="absolute right-6 top-[30%] text-xl"
+                    onClick={() => setShowSalario(!showSalario)}
+                  />
+                ) : (
+                  <BiSolidHide
+                    className="absolute right-6 top-[30%] text-xl"
+                    onClick={() => setShowSalario(!showSalario)}
+                  />
                 )}
               </div>
               {errors.salario && <Span className="m-0">{errors.salario}</Span>}

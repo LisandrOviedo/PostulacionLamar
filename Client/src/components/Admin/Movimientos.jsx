@@ -46,6 +46,8 @@ import { FaMagnifyingGlass, FaFloppyDisk } from "react-icons/fa6";
 
 import validations from "../../utils/validacionesMovimientos";
 
+import { BiSolidShow, BiSolidHide } from "react-icons/bi";
+
 import { MdCancel } from "react-icons/md";
 
 import { calcularAntiguedad } from "../../utils/formatearFecha";
@@ -99,6 +101,9 @@ export function Movimientos() {
     numero_identificacion_gerencia: "",
     numero_identificacion_tthh: "",
   });
+
+  const [showSalario, setShowSalario] = useState(true);
+  const [showSalarioActual, setShowSalarioActual] = useState(false);
 
   const [datosEmpleado, setDatosEmpleado] = useState({});
   const [datosSupervisor, setDatosSupervisor] = useState({});
@@ -397,7 +402,6 @@ export function Movimientos() {
             <Input
               id="numero_identificacion"
               name="numero_identificacion"
-              className="pr-8"
               value={datosMovimiento.numero_identificacion}
               onChange={handleValidate}
               errors={errors.numero_identificacion}
@@ -488,12 +492,27 @@ export function Movimientos() {
             </div>
 
             <div>
-              <Span>Sueldo actual</Span>
               <Span>
-                {datosEmpleado?.Cargos_Empleados[0]?.salario
-                  ? `Bs. ${datosEmpleado?.Cargos_Empleados[0]?.salario}`
-                  : "-"}
+                Sueldo actual{" "}
+                {!showSalarioActual ? (
+                  <BiSolidShow
+                    className="inline text-xl"
+                    onClick={() => setShowSalarioActual(!showSalarioActual)}
+                  />
+                ) : (
+                  <BiSolidHide
+                    className="inline text-xl"
+                    onClick={() => setShowSalarioActual(!showSalarioActual)}
+                  />
+                )}
               </Span>
+              {showSalarioActual && (
+                <Span>
+                  {datosEmpleado?.Cargos_Empleados[0]?.salario
+                    ? `Bs. ${datosEmpleado?.Cargos_Empleados[0]?.salario}`
+                    : "-"}
+                </Span>
+              )}
             </div>
 
             <div>
@@ -817,21 +836,24 @@ export function Movimientos() {
             Nuevo sueldo (Bs.)
           </Label>
 
-          <div className="relative">
+          <div className="relative w-full">
             <Input
               id="sueldo"
               name="sueldo"
               onChange={handleValidate} // Esta línea llama a tu función de validación
               onBlur={handleConvertirADecimales}
               errors={errors.sueldo}
-              className="pr-8" // padding a la derecha para que no tenga conflicto con el icono de validacion
               value={datosMovimiento.sueldo}
               type="number"
               min="1"
+              className={`${!showSalario && "text-transparent"}`}
             />
-            {errors.sueldo && (
-              <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
-            )}
+            <span
+              className="absolute right-6 top-[30%] text-xl"
+              onClick={() => setShowSalario(!showSalario)}
+            >
+              {!showSalario ? <BiSolidShow /> : <BiSolidHide />}
+            </span>
           </div>
           {errors.sueldo && <Span className="m-0">{errors.sueldo}</Span>}
         </div>
@@ -840,7 +862,7 @@ export function Movimientos() {
           <Label htmlFor="codigo_nomina" errors={errors.codigo_nomina}>
             Código de nómina
           </Label>
-          <div className="relative">
+          <div className="relative w-full">
             <Input
               id="codigo_nomina"
               name="codigo_nomina"
