@@ -21,6 +21,7 @@ export function AccesoEmpleado() {
 
   const [data, setData] = useState({
     tipo_identificacion: "V",
+    numero_identificacion: "",
   });
 
   const [errors, setErrors] = useState({});
