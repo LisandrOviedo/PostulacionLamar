@@ -17,24 +17,39 @@ import Swal from "sweetalert2";
 
 export function BarraNavegacion() {
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState({});
+
   const [isOpenBurger, setIsOpenBurger] = useState(false);
   const [isOpenNotif, setIsOpenNotif] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+
+  const [showSubMenu, setShowSubMenu] = useState({});
 
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const toggleMenu = (index) => {
-    if (isOpen.hasOwnProperty(index)) {
-      setIsOpen({});
-      return;
+  const toggleMenu = (menu_id) => {
+    if (showSubMenu.hasOwnProperty(menu_id)) {
+      if (showSubMenu[menu_id]) {
+        setShowSubMenu((prev) => {
+          let obj = { ...prev };
+          delete obj[menu_id];
+          return obj;
+        });
+      } else {
+        setShowSubMenu((prev) => {
+          let obj = { ...prev };
+          obj[menu_id] = true;
+          return obj;
+        });
+      }
+    } else {
+      setShowSubMenu((prev) => {
+        let obj = { ...prev };
+        obj[menu_id] = true;
+        return obj;
+      });
     }
-
-    setIsOpen({
-      [index]: [index],
-    });
   };
 
   const toggleMenuBurger = () => {
@@ -169,30 +184,30 @@ export function BarraNavegacion() {
       <li key={menuItem.menu_id}>
         {menuItem.subMenus.length > 0 ? (
           <>
-            <div
+            <span
               onClick={() => toggleMenu(menuItem.menu_id)}
-              data-index={menuItem.menu_id}
-              className="hover:text-[#F0C95C]"
+              className="hover:text-[#F0C95C] block cursor-pointer"
             >
-              <span>{menuItem.titulo}</span>
+              {menuItem.titulo}
+            </span>
+            <div>
+              <ul
+                className={
+                  showSubMenu[menuItem.menu_id]
+                    ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
+                    : "hidden"
+                }
+              >
+                {renderMenu(menuItem.subMenus)} {/* Llamada recursiva */}
+              </ul>
             </div>
-            <ul
-              className={
-                isOpen[menuItem.menu_id]
-                  ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
-                  : "hidden"
-              }
-            >
-              {renderMenu(menuItem.subMenus)} {/* Llamada recursiva */}
-            </ul>
           </>
         ) : (
           <Link
             to={menuItem.ruta}
-            className="text-white hover:text-[#F0C95C]"
+            className="text-white hover:text-[#F0C95C] block"
             onClick={() => {
               toggleMenuBurger();
-              toggleMenu({});
             }}
           >
             {menuItem.titulo}
@@ -205,17 +220,12 @@ export function BarraNavegacion() {
   return (
     <div className="w-full fixed top-0 select-none z-[999]">
       <nav className="bg-[#002846] p-1 flex items-center justify-between">
-        <div className="text-white flex items-center sm:hover:opacity-80 cursor-pointer gap-1">
-          <LogoHorizontal
-            onClick={toggleMenuBurger}
-            className="w-20 sm:w-24 ml-2"
-          />
-          <img
-            onClick={toggleMenuBurger}
-            src="./Menu.svg"
-            alt="Menu"
-            className="w-6"
-          />
+        <div
+          onClick={toggleMenuBurger}
+          className="text-white flex items-center sm:hover:opacity-85 cursor-pointer gap-1"
+        >
+          <LogoHorizontal className="w-20 sm:w-24 ml-2" />
+          <img src="./Menu.svg" alt="Menu" className="w-6" />
         </div>
 
         <div className="flex items-center space-x-4 mr-6">
@@ -284,7 +294,7 @@ export function BarraNavegacion() {
       >
         <div className="h-full overflow-y-auto scroll-smooth pb-[20vh]">
           <nav>
-            <ul className="space-y-2 cursor-pointer flex flex-col gap-2 text-center">
+            <ul className="space-y-2 flex flex-col gap-2 text-center">
               <li>
                 <div
                   onClick={toggleMenuBurger}
@@ -305,161 +315,116 @@ export function BarraNavegacion() {
                   to={
                     !pathname.startsWith("/admin/") ? "/inicio" : "/admin/panel"
                   }
-                  className="text-white hover:text-[#F0C95C]"
+                  className="text-white hover:text-[#F0C95C] block"
                   onClick={() => {
                     toggleMenuBurger();
-                    toggleMenu({});
                   }}
                 >
                   Inicio
                 </Link>
               </li>
+
               <li>
-                <div
-                  onClick={() => toggleMenu(0)}
-                  data-index={0}
-                  className="hover:text-[#F0C95C]"
+                <span
+                  onClick={() => toggleMenu("mi_perfil")}
+                  className="hover:text-[#F0C95C] block cursor-pointer"
                 >
-                  <span>Mi Perfil</span>
+                  Mi Perfil
+                </span>
+                <div>
+                  <ul
+                    className={
+                      showSubMenu["mi_perfil"]
+                        ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
+                        : "hidden"
+                    }
+                  >
+                    <li>
+                      <Link
+                        to={
+                          !pathname.startsWith("/admin/")
+                            ? "/miPerfil/datosPersonales"
+                            : "/admin/miPerfil/datosPersonales"
+                        }
+                        className="text-white hover:text-[#F0C95C] text-sm block"
+                        onClick={toggleMenuBurger}
+                      >
+                        Datos personales
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={
+                          !pathname.startsWith("/admin/")
+                            ? "/miPerfil/actualizarClave"
+                            : "/admin/miPerfil/actualizarClave"
+                        }
+                        className="text-white hover:text-[#F0C95C] text-sm block"
+                        onClick={toggleMenuBurger}
+                      >
+                        Actualizar contraseña
+                      </Link>
+                    </li>
+                  </ul>
                 </div>
-                <ul
-                  className={
-                    isOpen[0]
-                      ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
-                      : "hidden"
-                  }
-                >
-                  <li>
-                    <Link
-                      to={
-                        !pathname.startsWith("/admin/")
-                          ? "/miPerfil/datosPersonales"
-                          : "/admin/miPerfil/datosPersonales"
-                      }
-                      className="text-white hover:text-[#F0C95C] text-sm"
-                      onClick={toggleMenuBurger}
-                    >
-                      Datos personales
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={
-                        !pathname.startsWith("/admin/")
-                          ? "/miPerfil/actualizarClave"
-                          : "/admin/miPerfil/actualizarClave"
-                      }
-                      className="text-white hover:text-[#F0C95C] text-sm"
-                      onClick={toggleMenuBurger}
-                    >
-                      Actualizar contraseña
-                    </Link>
-                  </li>
-                </ul>
               </li>
               {!pathname.startsWith("/admin/") ? (
                 // EMPLEADOS
                 <>
                   <li>
-                    <div
-                      onClick={() => toggleMenu(1)}
-                      data-index={1}
-                      className="hover:text-[#F0C95C]"
+                    <span
+                      onClick={() => toggleMenu("perfil_profesional")}
+                      className="hover:text-[#F0C95C] block cursor-pointer"
                     >
-                      <span>Perfil Profesional</span>
+                      Perfil Profesional
+                    </span>
+                    <div>
+                      <ul
+                        className={
+                          showSubMenu["perfil_profesional"]
+                            ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
+                            : "hidden"
+                        }
+                      >
+                        <li>
+                          <Link
+                            to="/perfilProfesional/info"
+                            className="text-white hover:text-[#F0C95C] text-sm block"
+                            onClick={toggleMenuBurger}
+                          >
+                            Actualizar Perfil
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/perfilProfesional/misDocumentos"
+                            className="text-white hover:text-[#F0C95C] text-sm block"
+                            onClick={toggleMenuBurger}
+                          >
+                            Anexar documentos
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/perfilProfesional/pruebaKostick"
+                            className="text-white hover:text-[#F0C95C] text-sm block"
+                            onClick={toggleMenuBurger}
+                          >
+                            Aplicar Test de Valoración Actitudinal
+                          </Link>
+                        </li>
+                      </ul>
                     </div>
-                    <ul
-                      className={
-                        isOpen[1]
-                          ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
-                          : "hidden"
-                      }
-                    >
-                      <li>
-                        <Link
-                          to="/perfilProfesional/info"
-                          className="text-white hover:text-[#F0C95C] text-sm"
-                          onClick={toggleMenuBurger}
-                        >
-                          Actualizar Perfil
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/perfilProfesional/misDocumentos"
-                          className="text-white hover:text-[#F0C95C] text-sm"
-                          onClick={toggleMenuBurger}
-                        >
-                          Anexar documentos
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/perfilProfesional/pruebaKostick"
-                          className="text-white hover:text-[#F0C95C] text-sm"
-                          onClick={toggleMenuBurger}
-                        >
-                          Aplicar Test de Valoración Actitudinal
-                        </Link>
-                      </li>
-                    </ul>
                   </li>
                 </>
               ) : (
                 // ADMINISTRADORES
-
                 renderMenu(menu)
-
-                // menu?.map((menu) =>
-                //   menu.subMenus.length > 0 ? (
-                //     <li key={menu.menu_id}>
-                //       <div
-                //         onClick={() => toggleMenu(menu.menu_id)}
-                //         data-index={menu.menu_id}
-                //         className="hover:text-[#F0C95C]"
-                //       >
-                //         <span>{menu.titulo}</span>
-                //       </div>
-                //       <ul
-                //         className={
-                //           isOpen[menu.menu_id]
-                //             ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
-                //             : "hidden"
-                //         }
-                //       >
-                //         {menu.subMenus.map((submenu) => (
-                //           <li key={submenu.menu_id}>
-                //             <Link
-                //               to={submenu.ruta}
-                //               className="text-white hover:text-[#F0C95C] text-sm"
-                //               onClick={toggleMenuBurger}
-                //             >
-                //               {submenu.titulo}
-                //             </Link>
-                //           </li>
-                //         ))}
-                //       </ul>
-                //     </li>
-                //   ) : (
-                //     <li key={menu.menu_id}>
-                //       <Link
-                //         to={menu.ruta}
-                //         className="text-white hover:text-[#F0C95C]"
-                //         onClick={() => {
-                //           toggleMenuBurger();
-                //           toggleMenu({});
-                //         }}
-                //       >
-                //         {menu.titulo}
-                //       </Link>
-                //     </li>
-                //   )
-                // )
               )}
 
               <li>
                 <Link
-                  className="text-white hover:text-[#F0C95C]"
+                  className="text-white hover:text-[#F0C95C] block"
                   onClick={logout}
                 >
                   Cerrar Sesión
