@@ -176,7 +176,7 @@ export default function validations(inputs) {
   }
 
   if (fecha_desde_titulo && fecha_hasta_titulo) {
-    if (fecha_hasta_titulo <= fecha_desde_titulo) {
+    if (fecha_hasta_titulo < fecha_desde_titulo) {
       errors.fecha_titulo =
         "La (fecha hasta) del título obtenido no puede ser igual o menor que la (fecha desde)";
     }

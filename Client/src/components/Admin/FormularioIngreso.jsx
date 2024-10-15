@@ -67,6 +67,7 @@ import { BiSolidShow, BiSolidHide } from "react-icons/bi";
 
 import {
   YYYYMMDD,
+  YYYYMM,
   calcularMaxFechaNacimiento,
 } from "../../utils/formatearFecha";
 import validations from "../../utils/validacionesFormularioIngreso";
@@ -394,6 +395,10 @@ export function FormularioIngreso() {
 
     setDatosIngreso({
       ...datosIngreso,
+      fecha_desde_titulo: "",
+      fecha_hasta_titulo: "",
+      nombre_instituto: "",
+      titulo_obtenido: "",
       titulos_obtenidos: [
         ...datosIngreso.titulos_obtenidos,
         {
@@ -405,6 +410,8 @@ export function FormularioIngreso() {
         },
       ],
     });
+
+    setErrors(validations({ ...datosIngreso }));
 
     input_grado_instruccion.value = "Primaria";
     input_fecha_desde.value = null;
@@ -460,6 +467,10 @@ export function FormularioIngreso() {
 
     setDatosIngreso({
       ...datosIngreso,
+      fecha_desde_experiencia: "",
+      fecha_hasta_experiencia: "",
+      empresa_centro_educativo: "",
+      cargo_titulo: "",
       experiencias: [
         ...datosIngreso.experiencias,
         {
@@ -471,6 +482,8 @@ export function FormularioIngreso() {
         },
       ],
     });
+
+    setErrors(validations({ ...datosIngreso }));
 
     cargo_titulo.value = null;
     empresa_centro_educativo.value = null;
@@ -1491,9 +1504,10 @@ export function FormularioIngreso() {
                 Desde
               </Label>
               <Date
+                type="month"
                 id="fecha_desde_titulo"
                 name="fecha_desde_titulo"
-                max={YYYYMMDD()}
+                max={YYYYMM()}
                 errors={errors.fecha_titulo}
                 onChange={handleValidate}
               />
@@ -1503,9 +1517,10 @@ export function FormularioIngreso() {
                 Hasta
               </Label>
               <Date
+                type="month"
                 id="fecha_hasta_titulo"
                 name="fecha_hasta_titulo"
-                max={YYYYMMDD()}
+                max={YYYYMM()}
                 errors={errors.fecha_titulo}
                 onChange={handleValidate}
               />
