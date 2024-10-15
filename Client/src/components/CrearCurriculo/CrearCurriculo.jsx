@@ -24,7 +24,7 @@ import {
   Title,
 } from "../UI";
 
-import { YYYYMMDD } from "../../utils/formatearFecha";
+import { YYYYMMDD, YYYYMM } from "../../utils/formatearFecha";
 
 import validations from "../../utils/validacionesCurriculo";
 
@@ -310,6 +310,10 @@ export function CrearCurriculo() {
       ],
     });
 
+    setInputsToValidate({});
+
+    setErrors(validations({ ...inputsToValidate }));
+
     input_grado_instruccion.value = "Primaria";
     input_fecha_desde.value = null;
     input_fecha_hasta.value = null;
@@ -380,6 +384,10 @@ export function CrearCurriculo() {
         },
       ],
     });
+
+    setInputsToValidate({});
+
+    setErrors(validations({ ...inputsToValidate }));
 
     cargo_titulo.value = null;
     empresa_centro_educativo.value = null;
@@ -483,60 +491,6 @@ export function CrearCurriculo() {
     setErrors(validations({ ...inputsToValidate, [name]: value }));
   };
 
-  const handleValidateDate = (e) => {
-    // const fecha_desde_titulo_obtenido = document.getElementById(
-    //   "fecha_desde_titulo_obtenido"
-    // );
-    // const fecha_hasta_titulo_obtenido = document.getElementById(
-    //   "fecha_hasta_titulo_obtenido"
-    // );
-    // const fecha_desde_experiencia = document.getElementById(
-    //   "fecha_desde_experiencia"
-    // );
-    // const fecha_hasta_experiencia = document.getElementById(
-    //   "fecha_hasta_experiencia"
-    // );
-    // if (
-    //   fecha_desde_titulo_obtenido.value &&
-    //   fecha_hasta_titulo_obtenido.value &&
-    //   fecha_desde_titulo_obtenido.value >= fecha_hasta_titulo_obtenido.value
-    // ) {
-    //   Swal.fire({
-    //     title: "Oops...",
-    //     text: `La "fecha desde" del título obtenido no puede ser igual o menor que la "fecha hasta"`,
-    //     icon: "error",
-    //     showConfirmButton: false,
-    //     timer: 3000,
-    //   });
-    //   fecha_desde_titulo_obtenido.value = null;
-    //   fecha_hasta_titulo_obtenido.value = null;
-    //   return;
-    // }
-    // if (
-    //   fecha_desde_experiencia.value &&
-    //   fecha_hasta_experiencia.value &&
-    //   fecha_desde_experiencia.value >= fecha_hasta_experiencia.value
-    // ) {
-    //   Swal.fire({
-    //     title: "Oops...",
-    //     text: `La "fecha desde" de la experiencia no puede ser igual o menor que la "fecha hasta"`,
-    //     icon: "error",
-    //     showConfirmButton: false,
-    //     timer: 3000,
-    //   });
-    //   fecha_desde_experiencia.value = null;
-    //   fecha_hasta_experiencia.value = null;
-    //   return;
-    // }
-    // const fecha_actual = YYYYMMDD();
-    // if (value > fecha_actual) {
-    //   const input = document.getElementById(name);
-    //   input.value = fecha_actual;
-    // }
-    // const { name, value } = e.target;
-    // setErrors(validations({ ...datosCurriculo, [name]: value }));
-  };
-
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white">
       <Title>Perfil Profesional</Title>
@@ -566,9 +520,10 @@ export function CrearCurriculo() {
             Fecha desde
           </Label>
           <Date
+            type="month"
             id="fecha_desde_titulo_obtenido"
             name="fecha_desde_titulo_obtenido"
-            max={YYYYMMDD()}
+            max={YYYYMM()}
             onChange={handleValidate}
             errors={errors.fecha_titulo_obtenido}
           />
@@ -581,9 +536,10 @@ export function CrearCurriculo() {
             Fecha hasta
           </Label>
           <Date
+            type="month"
             id="fecha_hasta_titulo_obtenido"
             name="fecha_hasta_titulo_obtenido"
-            max={YYYYMMDD()}
+            max={YYYYMM()}
             onChange={handleValidate}
             errors={errors.fecha_titulo_obtenido}
           />

@@ -20,6 +20,16 @@ export const YYYYMMDD = () => {
   return formattedDate;
 };
 
+export const YYYYMM = () => {
+  const isoDateString = new Date();
+  const isoDate = new Date(isoDateString);
+  const month = String(isoDate.getMonth() + 1).padStart(2, "0");
+  const year = String(isoDate.getFullYear());
+  const formattedDate = `${year}-${month}`;
+
+  return formattedDate;
+};
+
 export const calcularEdad = (edad) => {
   const today = new Date();
   const birthDate = new Date(edad);
