@@ -46,6 +46,8 @@ import { FaMagnifyingGlass, FaFloppyDisk } from "react-icons/fa6";
 
 import validations from "../../utils/validacionesMovimientos";
 
+import { BiSolidShow, BiSolidHide } from "react-icons/bi";
+
 import { MdCancel } from "react-icons/md";
 
 import { calcularAntiguedad } from "../../utils/formatearFecha";
@@ -99,6 +101,9 @@ export function Movimientos() {
     numero_identificacion_gerencia: "",
     numero_identificacion_tthh: "",
   });
+
+  const [showSalario, setShowSalario] = useState(true);
+  const [showSalarioActual, setShowSalarioActual] = useState(false);
 
   const [datosEmpleado, setDatosEmpleado] = useState({});
   const [datosSupervisor, setDatosSupervisor] = useState({});
@@ -368,14 +373,18 @@ export function Movimientos() {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Title>Movimientos</Title>
       </div>
+      <br />
       <Hr />
-
+      <br />
+      <Span className="text-center m-0 text-red-600">
+        (*) Campos obligatorios
+      </Span>
       <div className="flex flex-col place-content-between my-6">
         <Label
           htmlFor="numero_identificacion"
           errors={errors.numero_identificacion}
         >
-          Número de identificación
+          Número de identificación *
         </Label>
 
         <div className="flex gap-2 items-center">
@@ -393,7 +402,6 @@ export function Movimientos() {
             <Input
               id="numero_identificacion"
               name="numero_identificacion"
-              className="pr-8"
               value={datosMovimiento.numero_identificacion}
               onChange={handleValidate}
               errors={errors.numero_identificacion}
@@ -484,12 +492,27 @@ export function Movimientos() {
             </div>
 
             <div>
-              <Span>Sueldo actual</Span>
               <Span>
-                {datosEmpleado?.Cargos_Empleados[0]?.salario
-                  ? `Bs. ${datosEmpleado?.Cargos_Empleados[0]?.salario}`
-                  : "-"}
+                Sueldo actual{" "}
+                {!showSalarioActual ? (
+                  <BiSolidShow
+                    className="inline text-xl"
+                    onClick={() => setShowSalarioActual(!showSalarioActual)}
+                  />
+                ) : (
+                  <BiSolidHide
+                    className="inline text-xl"
+                    onClick={() => setShowSalarioActual(!showSalarioActual)}
+                  />
+                )}
               </Span>
+              {showSalarioActual && (
+                <Span>
+                  {datosEmpleado?.Cargos_Empleados[0]?.salario
+                    ? `Bs. ${datosEmpleado?.Cargos_Empleados[0]?.salario}`
+                    : "-"}
+                </Span>
+              )}
             </div>
 
             <div>
@@ -519,7 +542,7 @@ export function Movimientos() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         {/* Clase de Movimiento */}
         <div>
-          <Label htmlFor="clase_movimiento_id">Clase de movimiento</Label>
+          <Label htmlFor="clase_movimiento_id">Clase de movimiento *</Label>
           <Select
             id="clase_movimiento_id"
             name="clase_movimiento_id"
@@ -540,7 +563,7 @@ export function Movimientos() {
           </Select>
         </div>
         <div>
-          <Label htmlFor="duracion_movimiento">Duración de movimiento</Label>
+          <Label htmlFor="duracion_movimiento">Duración de movimiento *</Label>
           <Select
             id="duracion_movimiento"
             name="duracion_movimiento"
@@ -555,7 +578,7 @@ export function Movimientos() {
         {datosMovimiento.duracion_movimiento === "Temporal" && (
           <div>
             <Label htmlFor="duracion_movimiento_dias">
-              Duración de movimiento (días)
+              Duración de movimiento (días) *
             </Label>
             <Input
               id="duracion_movimiento_dias"
@@ -580,7 +603,7 @@ export function Movimientos() {
         {datosMovimiento.requiere_periodo_prueba && (
           <div>
             <Label htmlFor="duracion_periodo_prueba">
-              Duración de periodo de prueba (días)
+              Duración de periodo de prueba (días) *
             </Label>
             <Input
               id="duracion_periodo_prueba"
@@ -594,7 +617,10 @@ export function Movimientos() {
           </div>
         )}
         <div className="sm:col-span-2 md:col-span-3">
-          <Label htmlFor="justificacion_movimiento">
+          <Label
+            htmlFor="justificacion_movimiento"
+            errors={errors.justificacion_movimiento}
+          >
             Justificación del movimiento organizativo
           </Label>
           <TextArea
@@ -602,7 +628,11 @@ export function Movimientos() {
             name="justificacion_movimiento"
             onChange={handleValidate}
             rows="5"
+            errors={errors.justificacion_movimiento}
           />
+          {errors.justificacion_movimiento && (
+            <Span className="m-0">{errors.justificacion_movimiento}</Span>
+          )}
         </div>
       </div>
       <br />
@@ -612,7 +642,7 @@ export function Movimientos() {
         {/* Nueva Condición Laboral del Trabajador */}
 
         <div className="flex flex-col justify-start">
-          <Label htmlFor="empresa_id">Empresa</Label>
+          <Label htmlFor="empresa_id">Empresa *</Label>
 
           <Select
             className="w-full"
@@ -641,7 +671,7 @@ export function Movimientos() {
         </div>
 
         <div className="flex flex-col justify-start">
-          <Label htmlFor="departamento_id">Departamento</Label>
+          <Label htmlFor="departamento_id">Departamento *</Label>
           <Select
             className="w-full"
             id="departamento_id"
@@ -666,7 +696,7 @@ export function Movimientos() {
           </Select>
         </div>
         <div className="flex flex-col justify-start">
-          <Label htmlFor="cargo_id">Cargo</Label>
+          <Label htmlFor="cargo_id">Cargo *</Label>
           <Select
             className="w-full"
             id="cargo_id"
@@ -691,7 +721,7 @@ export function Movimientos() {
           </Select>
         </div>
         <div className="flex flex-col justify-start">
-          <Label htmlFor="cargo_nivel_id">Nivel del cargo</Label>
+          <Label htmlFor="cargo_nivel_id">Nivel del cargo *</Label>
           <Select
             className="w-full"
             id="cargo_nivel_id"
@@ -720,10 +750,9 @@ export function Movimientos() {
             htmlFor="vigencia_movimiento_desde"
             errors={errors.vigencia_movimiento}
           >
-            Vigencia del movimiento (fecha desde)
+            Vigencia del movimiento (fecha desde) *
           </Label>
           <Date
-            type="date"
             id="vigencia_movimiento_desde"
             name="vigencia_movimiento_desde"
             onChange={handleValidate}
@@ -738,7 +767,6 @@ export function Movimientos() {
             Vigencia del movimiento (fecha hasta)
           </Label>
           <Date
-            type="date"
             id="vigencia_movimiento_hasta"
             name="vigencia_movimiento_hasta"
             onChange={handleValidate}
@@ -751,7 +779,7 @@ export function Movimientos() {
 
         {/* Tipo de Nómina */}
         <div className="flex flex-col justify-start">
-          <Label htmlFor="tipo_nomina">Tipo de nómina</Label>
+          <Label htmlFor="tipo_nomina">Tipo de nómina *</Label>
           <Select id="tipo_nomina" name="tipo_nomina" onChange={handleValidate}>
             <option value="Seleccione">Seleccione</option>
             <option value="Empleados">Empleados</option>
@@ -776,7 +804,7 @@ export function Movimientos() {
 
         {/* Frecuencia de Nómina */}
         <div className="flex flex-col justify-start">
-          <Label htmlFor="frecuencia_nomina">Frecuencia de nómina</Label>
+          <Label htmlFor="frecuencia_nomina">Frecuencia de nómina *</Label>
           <Select
             id="frecuencia_nomina"
             name="frecuencia_nomina"
@@ -808,21 +836,24 @@ export function Movimientos() {
             Nuevo sueldo (Bs.)
           </Label>
 
-          <div className="relative">
+          <div className="relative w-full">
             <Input
               id="sueldo"
               name="sueldo"
               onChange={handleValidate} // Esta línea llama a tu función de validación
               onBlur={handleConvertirADecimales}
               errors={errors.sueldo}
-              className="pr-8" // padding a la derecha para que no tenga conflicto con el icono de validacion
               value={datosMovimiento.sueldo}
               type="number"
               min="1"
+              className={`${!showSalario && "text-transparent"}`}
             />
-            {errors.sueldo && (
-              <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
-            )}
+            <span
+              className="absolute right-6 top-[30%] text-xl"
+              onClick={() => setShowSalario(!showSalario)}
+            >
+              {!showSalario ? <BiSolidShow /> : <BiSolidHide />}
+            </span>
           </div>
           {errors.sueldo && <Span className="m-0">{errors.sueldo}</Span>}
         </div>
@@ -831,7 +862,7 @@ export function Movimientos() {
           <Label htmlFor="codigo_nomina" errors={errors.codigo_nomina}>
             Código de nómina
           </Label>
-          <div className="relative">
+          <div className="relative w-full">
             <Input
               id="codigo_nomina"
               name="codigo_nomina"
@@ -886,7 +917,7 @@ export function Movimientos() {
             htmlFor="numero_identificacion_supervisor"
             errors={errors.numero_identificacion_supervisor}
           >
-            Número de identificación
+            Número de identificación *
           </Label>
           <div className="flex justify-between gap-2">
             <Select
@@ -945,7 +976,7 @@ export function Movimientos() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div>
           <Label htmlFor="numero_identificacion_gerencia">
-            Número de identificación
+            Número de identificación *
           </Label>
           <div className="flex justify-between gap-2">
             <Select
@@ -1001,7 +1032,7 @@ export function Movimientos() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div>
           <Label htmlFor="numero_identificacion_tthh">
-            Número de identificación
+            Número de identificación *
           </Label>
           <div className="flex justify-between gap-2">
             <Select
@@ -1052,7 +1083,10 @@ export function Movimientos() {
 
       <div className="mx-auto sm:col-span-2 md:col-span-3">
         <Button
-          className="w-auto flex items-center gap-2"
+          className={`w-auto flex items-center gap-2 ${
+            Object.keys(errors).length && "opacity-50"
+          }`}
+          disabled={Object.keys(errors).length}
           onClick={handlePostMovimiento}
         >
           {/*Es un icono de la libreria react icons */}

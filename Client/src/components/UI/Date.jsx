@@ -8,10 +8,11 @@ export const Date = ({ className, errors, ...props }) => {
         clsx(
           `bg-gray-50 border ${
             errors ? "border-[#ff1a1a]" : "border-gray-400"
-          } text-gray-900 text-sm rounded-lg focus:ring-[#002846] block w-full p-2.5`,
+          } text-gray-900 text-sm rounded-lg block w-full p-2.5 outline-none`,
           className
         )
       )}
+      type="date"
       autoComplete="off"
       {...props}
     />

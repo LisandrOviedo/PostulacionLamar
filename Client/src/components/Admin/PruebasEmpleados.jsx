@@ -9,12 +9,14 @@ import {
   deleteFiltros,
 } from "../../redux/pruebasEmpleados/pruebasEmpleadosActions";
 
-import { Button, Input, Label, Select, Title } from "../UI";
+import { Button, Date, Input, Label, Select, Span, Title } from "../UI";
 
 import {
   calcularPaginasARenderizar,
   infoPaginador,
 } from "../../utils/paginacion";
+
+import validations from "../../utils/validacionesPruebasEmpleados";
 
 import { DDMMYYYY } from "../../utils/formatearFecha";
 
@@ -43,6 +45,8 @@ export function PruebasEmpleados() {
 
   const filtros = useSelector((state) => state.pruebas_empleados.filtros);
 
+  const [errors, setErrors] = useState({});
+
   const [filters, setFilters] = useState({
     numero_identificacion: filtros.numero_identificacion || "",
     apellidos: filtros.apellidos || "",
@@ -50,6 +54,8 @@ export function PruebasEmpleados() {
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
     empresa_id: empleado.empresa_id,
+    fecha_desde: filtros.fecha_desde || "",
+    fecha_hasta: filtros.fecha_hasta || "",
   });
 
   const handleChangePagination = (e) => {
@@ -66,6 +72,8 @@ export function PruebasEmpleados() {
     const { name, value } = e.target;
 
     setFilters({ ...filters, [name]: value });
+
+    setErrors(validations({ ...filters, [name]: value }));
   };
 
   const handleChangeFiltersInput = (e) => {
@@ -106,13 +114,32 @@ export function PruebasEmpleados() {
       orden_campo: "",
       orden_por: "",
       empresa_id: empleado.empresa_id,
+      fecha_desde: "",
+      fecha_hasta: "",
     });
+
+    setErrors(
+      validations({
+        numero_identificacion: "",
+        apellidos: "",
+        prueba: "",
+        orden_campo: "",
+        orden_por: "",
+        empresa_id: empleado.empresa_id,
+        fecha_desde: "",
+        fecha_hasta: "",
+      })
+    );
 
     const buscarPor = document.getElementById("buscar_por");
     const inputSearch = document.getElementById("input_search");
+    const fecha_desde = document.getElementById("fecha_desde");
+    const fecha_hasta = document.getElementById("fecha_hasta");
 
     buscarPor.selectedIndex = 0;
-    inputSearch.value = "";
+    inputSearch.value = null;
+    fecha_desde.value = null;
+    fecha_hasta.value = null;
 
     dispatch(deleteFiltros());
   };
@@ -208,8 +235,8 @@ export function PruebasEmpleados() {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Title>Pruebas de Empleados</Title>
       </div>
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
-        <div className="flex flex-col place-content-between">
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
+        <div>
           <Label htmlFor="buscar_por">Buscar por</Label>
           <Select
             id="buscar_por"
@@ -225,7 +252,7 @@ export function PruebasEmpleados() {
             <option value="apellidos">Apellidos</option>
           </Select>
         </div>
-        <div className="flex w-full items-end">
+        <div className="flex items-end">
           <Input
             type="text"
             id="input_search"
@@ -240,7 +267,7 @@ export function PruebasEmpleados() {
             }
           />
         </div>
-        <div className="flex flex-col place-content-between">
+        <div>
           <Label htmlFor="prueba">Filtrar por prueba</Label>
           <Select
             id="prueba"
@@ -252,7 +279,32 @@ export function PruebasEmpleados() {
             <option value="Kostick">Kostick</option>
           </Select>
         </div>
-        <div className="flex flex-col place-content-between">
+        <div>
+          <Label htmlFor="fecha_desde" errors={errors.fechas}>
+            Fecha desde
+          </Label>
+          <Date
+            id="fecha_desde"
+            type="datetime-local"
+            name="fecha_desde"
+            onChange={handleChangeFilters}
+            errors={errors.fechas}
+          />
+        </div>
+        <div>
+          <Label htmlFor="fecha_hasta" errors={errors.fechas}>
+            Fecha hasta
+          </Label>
+          <Date
+            id="fecha_hasta"
+            type="datetime-local"
+            name="fecha_hasta"
+            onChange={handleChangeFilters}
+            errors={errors.fechas}
+          />
+          {errors.fechas && <Span className="m-0">{errors.fechas}</Span>}
+        </div>
+        <div>
           <Label htmlFor="limitePorPagina">Límite por página</Label>
           <Select
             id="limitePorPagina"
@@ -269,17 +321,23 @@ export function PruebasEmpleados() {
         <div
           id="tabla"
           ref={tableRef}
-          className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start gap-2"
+          className="flex justify-center sm:col-span-2 md:col-span-3 gap-2"
         >
-          <Button className="m-0 w-auto" onClick={handleFind}>
-            Buscar
-          </Button>
+          <div
+            className={`${Object.keys(errors).length && "opacity-50"}`}
+            disabled={Object.keys(errors).length}
+          >
+            <Button className="m-0 w-auto" onClick={handleFind}>
+              Buscar
+            </Button>
+          </div>
+
           <Button className="m-0 w-auto" onClick={handleResetFilters}>
             Restablecer Filtros
           </Button>
         </div>
       </div>
-      <div className="mt-8 sm:mx-auto w-full">
+      <div className="mt-6 sm:mx-auto w-full">
         <div className=" overflow-x-auto shadow-md rounded-lg">
           <table
             id="tabla"

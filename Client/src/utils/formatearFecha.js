@@ -20,6 +20,16 @@ export const YYYYMMDD = () => {
   return formattedDate;
 };
 
+export const YYYYMM = () => {
+  const isoDateString = new Date();
+  const isoDate = new Date(isoDateString);
+  const month = String(isoDate.getMonth() + 1).padStart(2, "0");
+  const year = String(isoDate.getFullYear());
+  const formattedDate = `${year}-${month}`;
+
+  return formattedDate;
+};
+
 export const calcularEdad = (edad) => {
   const today = new Date();
   const birthDate = new Date(edad);
@@ -53,11 +63,21 @@ export const DDMMYYYYHHMM2 = (fecha) => {
 
 export const calcularAntiguedad = (fecha_ingreso) => {
   const fecha_actual = new Date(); // fecha actual del sistema
-    const fechaIngreso = new Date(fecha_ingreso); // convertir fecha de ingreso a objeto Date
-    // calcular la diferencia en milisegundos
-    const diferencia = fecha_actual - fechaIngreso;
-    // convertir milisegundos a días
-    const antiguedad = Math.floor(diferencia / (1000 * 60 * 60 * 24));
-    
-    return antiguedad;
+  const fechaIngreso = new Date(fecha_ingreso); // convertir fecha de ingreso a objeto Date
+  // calcular la diferencia en milisegundos
+  const diferencia = fecha_actual - fechaIngreso;
+  // convertir milisegundos a días
+  const antiguedad = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+
+  return antiguedad;
+};
+
+export const calcularMaxFechaNacimiento = () => {
+  // Función para calcular la fecha máxima permitida (18 años atrás)
+
+  const fechaActual = new Date();
+  const fechaMaxima = new Date(
+    fechaActual.setFullYear(fechaActual.getFullYear() - 18)
+  );
+  return fechaMaxima.toISOString().split("T")[0]; // Formato YYYY-MM-DD
 };
