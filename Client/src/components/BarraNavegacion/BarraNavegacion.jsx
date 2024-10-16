@@ -200,7 +200,7 @@ export function BarraNavegacion() {
             <ul
               className={
                 showSubMenu[menuItem.menu_id]
-                  ? "flex flex-col gap-2 my-3 p-1 border rounded-3xl text-sm"
+                  ? "flex flex-col gap-1 my-3 p-1 border rounded-3xl text-sm"
                   : "hidden"
               }
             >
