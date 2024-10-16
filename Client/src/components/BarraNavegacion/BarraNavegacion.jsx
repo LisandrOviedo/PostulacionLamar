@@ -13,6 +13,8 @@ import { getSugerenciasActivasNoRevisadas } from "../../redux/sugerencias/sugere
 
 import { LogoHorizontal } from "../UI";
 
+import { IoMdArrowDropup, IoMdArrowDropdown } from "react-icons/io";
+
 import Swal from "sweetalert2";
 
 export function BarraNavegacion() {
@@ -189,18 +191,21 @@ export function BarraNavegacion() {
               className="hover:text-[#F0C95C] block cursor-pointer"
             >
               {menuItem.titulo}
+              {showSubMenu[menuItem.menu_id] ? (
+                <IoMdArrowDropup className="inline" />
+              ) : (
+                <IoMdArrowDropdown className="inline" />
+              )}
             </span>
-            <div>
-              <ul
-                className={
-                  showSubMenu[menuItem.menu_id]
-                    ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
-                    : "hidden"
-                }
-              >
-                {renderMenu(menuItem.subMenus)} {/* Llamada recursiva */}
-              </ul>
-            </div>
+            <ul
+              className={
+                showSubMenu[menuItem.menu_id]
+                  ? "flex flex-col gap-2 my-3 p-1 border rounded-3xl text-sm"
+                  : "hidden"
+              }
+            >
+              {renderMenu(menuItem.subMenus)} {/* Llamada recursiva */}
+            </ul>
           </>
         ) : (
           <Link
@@ -330,93 +335,98 @@ export function BarraNavegacion() {
                   className="hover:text-[#F0C95C] block cursor-pointer"
                 >
                   Mi Perfil
+                  {showSubMenu["mi_perfil"] ? (
+                    <IoMdArrowDropup className="inline" />
+                  ) : (
+                    <IoMdArrowDropdown className="inline" />
+                  )}
                 </span>
-                <div>
+
+                <ul
+                  className={
+                    showSubMenu["mi_perfil"]
+                      ? "flex flex-col gap-1 my-3 p-1 border rounded-3xl text-sm"
+                      : "hidden"
+                  }
+                >
+                  <li>
+                    <Link
+                      to={
+                        !pathname.startsWith("/admin/")
+                          ? "/miPerfil/datosPersonales"
+                          : "/admin/miPerfil/datosPersonales"
+                      }
+                      className="text-white hover:text-[#F0C95C] block"
+                      onClick={toggleMenuBurger}
+                    >
+                      Datos personales
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={
+                        !pathname.startsWith("/admin/")
+                          ? "/miPerfil/actualizarClave"
+                          : "/admin/miPerfil/actualizarClave"
+                      }
+                      className="text-white hover:text-[#F0C95C] block"
+                      onClick={toggleMenuBurger}
+                    >
+                      Actualizar contraseña
+                    </Link>
+                  </li>
+                </ul>
+              </li>
+              {!pathname.startsWith("/admin/") ? (
+                // EMPLEADOS
+                <li>
+                  <span
+                    onClick={() => toggleMenu("perfil_profesional")}
+                    className="hover:text-[#F0C95C] block cursor-pointer"
+                  >
+                    Perfil Profesional
+                    {showSubMenu["perfil_profesional"] ? (
+                      <IoMdArrowDropup className="inline" />
+                    ) : (
+                      <IoMdArrowDropdown className="inline" />
+                    )}
+                  </span>
                   <ul
                     className={
-                      showSubMenu["mi_perfil"]
-                        ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
+                      showSubMenu["perfil_profesional"]
+                        ? "flex flex-col gap-1 my-3 p-1 border rounded-3xl text-sm"
                         : "hidden"
                     }
                   >
                     <li>
                       <Link
-                        to={
-                          !pathname.startsWith("/admin/")
-                            ? "/miPerfil/datosPersonales"
-                            : "/admin/miPerfil/datosPersonales"
-                        }
-                        className="text-white hover:text-[#F0C95C] text-sm block"
+                        to="/perfilProfesional/info"
+                        className="text-white hover:text-[#F0C95C] block"
                         onClick={toggleMenuBurger}
                       >
-                        Datos personales
+                        Actualizar Perfil
                       </Link>
                     </li>
                     <li>
                       <Link
-                        to={
-                          !pathname.startsWith("/admin/")
-                            ? "/miPerfil/actualizarClave"
-                            : "/admin/miPerfil/actualizarClave"
-                        }
-                        className="text-white hover:text-[#F0C95C] text-sm block"
+                        to="/perfilProfesional/misDocumentos"
+                        className="text-white hover:text-[#F0C95C] block"
                         onClick={toggleMenuBurger}
                       >
-                        Actualizar contraseña
+                        Anexar documentos
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/perfilProfesional/pruebaKostick"
+                        className="text-white hover:text-[#F0C95C] block"
+                        onClick={toggleMenuBurger}
+                      >
+                        Aplicar Test de Valoración Actitudinal
                       </Link>
                     </li>
                   </ul>
-                </div>
-              </li>
-              {!pathname.startsWith("/admin/") ? (
-                // EMPLEADOS
-                <>
-                  <li>
-                    <span
-                      onClick={() => toggleMenu("perfil_profesional")}
-                      className="hover:text-[#F0C95C] block cursor-pointer"
-                    >
-                      Perfil Profesional
-                    </span>
-                    <div>
-                      <ul
-                        className={
-                          showSubMenu["perfil_profesional"]
-                            ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
-                            : "hidden"
-                        }
-                      >
-                        <li>
-                          <Link
-                            to="/perfilProfesional/info"
-                            className="text-white hover:text-[#F0C95C] text-sm block"
-                            onClick={toggleMenuBurger}
-                          >
-                            Actualizar Perfil
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            to="/perfilProfesional/misDocumentos"
-                            className="text-white hover:text-[#F0C95C] text-sm block"
-                            onClick={toggleMenuBurger}
-                          >
-                            Anexar documentos
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            to="/perfilProfesional/pruebaKostick"
-                            className="text-white hover:text-[#F0C95C] text-sm block"
-                            onClick={toggleMenuBurger}
-                          >
-                            Aplicar Test de Valoración Actitudinal
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
-                </>
+                </li>
               ) : (
                 // ADMINISTRADORES
                 renderMenu(menu)
