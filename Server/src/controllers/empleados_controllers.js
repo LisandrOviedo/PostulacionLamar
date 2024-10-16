@@ -26,6 +26,8 @@ const {
   Datos_Bancarios,
   Movimientos,
   Clases_Movimientos,
+  Menus,
+  Roles_Menus,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
@@ -114,6 +116,18 @@ const traerEmpleado = async (empleado_id) => {
         {
           model: Roles,
           attributes: ["nombre", "descripcion"],
+          include: [
+            {
+              model: Menus,
+              through: { attributes: ["rol_menu_id"] },
+              include: [
+                {
+                  model: Menus,
+                  as: "Padre",
+                },
+              ],
+            },
+          ],
         },
         {
           model: Empresas,
