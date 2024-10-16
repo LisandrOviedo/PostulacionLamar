@@ -36,6 +36,7 @@ const sugerencias = require("./sugerencias_routes");
 const clases_movimientos = require("./clases_movimientos_routes");
 const tipos_sugerencias = require("./tipos_sugerencias_routes");
 const titulos_obtenidos = require("./titulos_obtenidos_routes");
+const vacantes = require("./vacantes_routes");
 
 const router = Router();
 
@@ -75,5 +76,6 @@ router.use("/tthh/sugerencias", sugerencias);
 router.use("/tthh/clases_movimientos", clases_movimientos);
 router.use("/tthh/tipos_sugerencias", tipos_sugerencias);
 router.use("/tthh/titulos_obtenidos", titulos_obtenidos);
+router.use("/tthh/vacantes", vacantes);
 
 module.exports = router;
