@@ -29,8 +29,7 @@ export default function validations(inputs) {
     } else if (confirmarClave.length !== 4) {
       errors.confirmarClave = "Su clave debe ser de 4 dígitos";
     } else if (claveNueva !== confirmarClave) {
-      errors.confirmarClave =
-        "La clave nueva y la confirmación de clave deben ser iguales";
+      errors.confirmarClave = " Las contraseñas deben ser iguales";
     }
   }
 

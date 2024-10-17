@@ -22,6 +22,7 @@ import sedes from "./sedes/sedesSlices";
 import sugerencias from "./sugerencias/sugerenciasSlices";
 import sugerencias_pred from "./sugerenciasPred/sugerenciasPredSlices";
 import tipos_sugerencias from "./tiposSugerencias/tiposSugerenciasSlices";
+import roles from "./roles/rolesSlices";
 
 // Configuración de Redux Persist
 const persistConfig = {
@@ -52,6 +53,7 @@ const rootReducer = combineReducers({
   sugerencias: sugerencias,
   sugerencias_pred: sugerencias_pred,
   tipos_sugerencias: tipos_sugerencias,
+  roles: roles,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

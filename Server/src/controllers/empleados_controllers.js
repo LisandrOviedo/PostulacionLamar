@@ -53,14 +53,54 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
         attributes: {
           exclude: ["rol_id", "clave"],
         },
-        include: {
-          model: Fichas_Ingresos,
-          attributes: ["ficha_ingreso_id"],
-          where: {
-            activo: true,
+        include: [
+          {
+            model: Fichas_Ingresos,
+            attributes: ["ficha_ingreso_id"],
+            where: {
+              activo: true,
+            },
+            required: false,
           },
-          required: false,
-        },
+          {
+            model: Roles,
+            attributes: ["nombre", "descripcion"],
+          },
+          {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "fecha_ingreso", "fecha_egreso"],
+            where: { activo: true },
+            required: false,
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
         where: {
           empresa_id: filtros.empresa_id,
           [Op.and]: [
