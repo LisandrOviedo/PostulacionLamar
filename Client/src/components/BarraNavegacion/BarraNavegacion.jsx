@@ -106,13 +106,11 @@ export function BarraNavegacion() {
         }
       });
     }
-  }, [pathname]);
 
-  useEffect(() => {
     const resultadoMenu = organizedMenus(empleado?.Role?.Menus);
 
     setMenu(resultadoMenu);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -137,6 +135,10 @@ export function BarraNavegacion() {
   }, [empleado]);
 
   const organizedMenus = (menu) => {
+    const filteredMenu = pathname.startsWith("/admin/")
+      ? menu.filter((item) => item.ruta_admin === true)
+      : menu.filter((item) => item.ruta_admin === false);
+
     const buildMenuTree = (menuItems) => {
       const menuMap = new Map();
 
@@ -163,7 +165,7 @@ export function BarraNavegacion() {
     };
 
     // Crear el árbol de menús
-    const menusResultado = buildMenuTree(menu);
+    const menusResultado = buildMenuTree(filteredMenu);
 
     // Ordenar los menús por el atributo 'orden'
     const sortedMenus = menusResultado.sort((a, b) => a.orden - b.orden);
@@ -379,54 +381,48 @@ export function BarraNavegacion() {
               </li>
               {!pathname.startsWith("/admin/") ? (
                 // EMPLEADOS
-                <li>
-                  <span
-                    onClick={() => toggleMenu("perfil_profesional")}
-                    className="hover:text-[#F0C95C] block cursor-pointer"
-                  >
-                    Perfil Profesional
-                    {showSubMenu["perfil_profesional"] ? (
-                      <IoMdArrowDropup className="inline" />
-                    ) : (
-                      <IoMdArrowDropdown className="inline" />
-                    )}
-                  </span>
-                  <ul
-                    className={
-                      showSubMenu["perfil_profesional"]
-                        ? "flex flex-col gap-1 my-3 p-1 border rounded-3xl text-sm"
-                        : "hidden"
-                    }
-                  >
-                    <li>
-                      <Link
-                        to="/perfilProfesional/info"
-                        className="text-white hover:text-[#F0C95C] block"
-                        onClick={toggleMenuBurger}
-                      >
-                        Actualizar Perfil
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        to="/perfilProfesional/misDocumentos"
-                        className="text-white hover:text-[#F0C95C] block"
-                        onClick={toggleMenuBurger}
-                      >
-                        Anexar documentos
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        to="/perfilProfesional/pruebaKostick"
-                        className="text-white hover:text-[#F0C95C] block"
-                        onClick={toggleMenuBurger}
-                      >
-                        Aplicar Test de Valoración Actitudinal
-                      </Link>
-                    </li>
-                  </ul>
-                </li>
+                <>
+                  <li>
+                    <span
+                      onClick={() => toggleMenu("perfil_profesional")}
+                      className="hover:text-[#F0C95C] block cursor-pointer"
+                    >
+                      Perfil Profesional
+                      {showSubMenu["perfil_profesional"] ? (
+                        <IoMdArrowDropup className="inline" />
+                      ) : (
+                        <IoMdArrowDropdown className="inline" />
+                      )}
+                    </span>
+                    <ul
+                      className={
+                        showSubMenu["perfil_profesional"]
+                          ? "flex flex-col gap-1 my-3 p-1 border rounded-3xl text-sm"
+                          : "hidden"
+                      }
+                    >
+                      <li>
+                        <Link
+                          to="/perfilProfesional/info"
+                          className="text-white hover:text-[#F0C95C] block"
+                          onClick={toggleMenuBurger}
+                        >
+                          Actualizar Perfil
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/perfilProfesional/misDocumentos"
+                          className="text-white hover:text-[#F0C95C] block"
+                          onClick={toggleMenuBurger}
+                        >
+                          Anexar documentos
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
+                  {renderMenu(menu)}
+                </>
               ) : (
                 // ADMINISTRADORES
                 renderMenu(menu)

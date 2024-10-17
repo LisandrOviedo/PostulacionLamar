@@ -47,7 +47,7 @@ export function AccesoAdmin() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    if (empleado.activo && empleado.Role?.nombre === "admin") {
+    if (empleado.activo && empleado.Role.acceso_admin) {
       return navigate("/admin/panel");
     }
 
@@ -66,12 +66,12 @@ export function AccesoAdmin() {
 
     if (empleado?.changePassword) {
       return navigate("/miPerfil/actualizarClaveTemporal");
-    } else if (empleado.activo && empleado.Role?.nombre === "empleado") {
+    } else if (empleado.activo && !empleado.Role.acceso_admin) {
       Swal.fire({
         text: "Datos incorrectos",
         icon: "error",
       });
-    } else if (empleado.activo && empleado.Role?.nombre === "admin") {
+    } else if (empleado.activo && empleado.Role.acceso_admin) {
       Swal.fire({
         title: "¡Bienvenido!",
         text: "Sesión iniciada correctamente",

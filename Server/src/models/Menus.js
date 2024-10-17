@@ -24,6 +24,10 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER(2),
       allowNull: false,
     },
+    ruta_admin: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     icono: {
       type: DataTypes.STRING,
       allowNull: true,

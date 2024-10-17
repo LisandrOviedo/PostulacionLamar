@@ -6,7 +6,7 @@ export const ProteccionAdmin = () => {
 
   const location = useLocation();
 
-  return userState.empleado_id && userState.Role.nombre !== "empleado" ? (
+  return userState.empleado_id && userState.Role.acceso_admin ? (
     <Outlet />
   ) : (
     <Navigate replace to="/admin/acceso" state={{ from: location }} />

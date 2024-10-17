@@ -54,6 +54,7 @@ const cargarRoles = async () => {
           {
             nombre: rol.nombre,
             descripcion: rol.descripcion,
+            acceso_admin: rol.acceso_admin || false,
           },
           { transaction: t }
         );

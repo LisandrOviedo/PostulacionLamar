@@ -115,7 +115,7 @@ const traerEmpleado = async (empleado_id) => {
       include: [
         {
           model: Roles,
-          attributes: ["nombre", "descripcion"],
+          attributes: ["nombre", "descripcion", "acceso_admin"],
           include: [
             {
               model: Menus,
@@ -412,7 +412,7 @@ const login = async (tipo_identificacion, numero_identificacion, clave) => {
       include: [
         {
           model: Roles,
-          attributes: ["rol_id", "nombre"],
+          attributes: ["rol_id", "nombre", "acceso_admin"],
         },
       ],
     });

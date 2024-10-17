@@ -1,9 +1,10 @@
 const roles = [
   {
-    nombre: "admin",
-    descripcion: "Administrador",
+    nombre: "Admin Global",
+    descripcion: "Administrador Global",
+    acceso_admin: true,
   },
-  { nombre: "empleado", descripcion: "Empleado" },
+  { nombre: "Empleado", descripcion: "Empleado" },
 ];
 
 module.exports = {

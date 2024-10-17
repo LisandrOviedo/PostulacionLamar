@@ -2414,7 +2414,7 @@ export function FormularioIngreso() {
             <div>
               <Label htmlFor="empresa_id">Empresa *</Label>
 
-              {empleado.Role.nombre !== "admin" ? (
+              {empleado.Role.nombre !== "Admin Global" ? (
                 <Input
                   id="empresa_id"
                   name="empresa_id"
