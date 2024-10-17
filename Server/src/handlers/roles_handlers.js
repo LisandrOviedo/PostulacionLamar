@@ -4,6 +4,7 @@ const {
   crearRol,
   modificarRol,
   inactivarRol,
+  cambiarRolEmpleado,
 } = require("../controllers/roles_controllers");
 
 const getRoles = async (req, res) => {
@@ -64,10 +65,23 @@ const deleteRol = async (req, res) => {
   }
 };
 
+const putCambiarRolEmpleado = async (req, res) => {
+  const { rol_id, empleado_id } = req.body;
+
+  try {
+    const response = await cambiarRolEmpleado(rol_id, empleado_id);
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getRoles,
   getRol,
   postRol,
   putRol,
   deleteRol,
+  putCambiarRolEmpleado,
 };
