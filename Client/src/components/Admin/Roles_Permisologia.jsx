@@ -519,8 +519,6 @@ export function Roles_Permisologia() {
                     {empleadoDetail.apellidos}
                   </Span>
                   <div className="mt-2">
-                    {" "}
-                    {/* Agregado div para separar visualmente */}
                     <Span>
                       <b>Número de identificación:</b>{" "}
                       {empleado.tipo_identificacion}{" "}
@@ -528,16 +526,18 @@ export function Roles_Permisologia() {
                     </Span>
                   </div>
                 </div>
-                <Button
-                  className="m-0 w-auto text-xs"
-                  onClick={handleCerrarModal}
-                >
-                  Cerrar
-                </Button>
+                <div className="flex flex-col items-end">
+                  <Button
+                    className="m-0 w-auto text-xs"
+                    onClick={handleCerrarModal}
+                  >
+                    Cerrar
+                  </Button>
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="flex flex-col items-center p-5 space-y-3">
                 <Span>
                   <b>Cargo actual</b>
@@ -574,6 +574,7 @@ export function Roles_Permisologia() {
                 </Span>
                 <Span>{empleado.Role.descripcion}</Span>
               </div>
+
               <div className="flex flex-col items-center p-5 space-y-3">
                 <Span>
                   <b>Últ.Modif</b>
@@ -582,44 +583,38 @@ export function Roles_Permisologia() {
               </div>
             </div>
 
-            {/* <!-- Cuerpo del modal --> */}
-            <div className="flex flex-col p-5 border-b border-white">
-              <div
-                className="overflow-y-auto max-h-[60vh]"
-                ref={modalContentRef}
-              >
-                <div className="border-b border-white pb-2 mb-2">
-                  {/* Línea visible */}
+            {/* Cuerpo del modal */}
+
+            <div className="overflow-y-auto max-h-[60vh]" ref={modalContentRef}>
+              <div className="border-b border-white pb-2 mb-2"></div>
+              <div className="flex flex-col mb-2">
+                <Label htmlFor="rol_id">
+                  <b>Lista de roles</b>
+                </Label>
+              </div>
+              <div className="grid grid-cols-2">
+                <div className="flex flex-col">
+                  <Select id="rol_id" name="rol_id" onChange={handleValidate}>
+                    <option value="Seleccione">Seleccione</option>
+                    {roles.length > 0 &&
+                      roles.map((rol) => (
+                        <option key={rol.rol_id} value={rol.rol_id}>
+                          {rol.descripcion}
+                        </option>
+                      ))}
+                  </Select>
                 </div>
-                <div className="flex flex-col mb-2">
-                  <Label htmlFor="rol_id">
-                    <b>Lista de roles</b>
-                  </Label>
-                </div>
-                <div className="grid grid-cols-2">
-                  <div className="flex flex-col">
-                    <Select id="rol_id" name="rol_id" onChange={handleValidate}>
-                      <option value="Seleccione">Seleccione</option>
-                      {roles.length > 0 &&
-                        roles.map((rol) => (
-                          <option key={rol.rol_id} value={rol.rol_id}>
-                            {rol.descripcion}
-                          </option>
-                        ))}
-                    </Select>
-                  </div>
-                  <div className="flex items-start justify-end">
-                    <Button
-                      className="m-0 w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
-                      onClick={handleGuardarRol}
-                    >
-                      Guardar
-                    </Button>
-                  </div>
+                <div className="flex flex-col justify-end items-end h-full">
+                  <Button
+                    className="m-0 w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
+                    onClick={handleGuardarRol}
+                  >
+                    Guardar
+                  </Button>
                 </div>
               </div>
-              {/* <!-- Modal footer --> */}
             </div>
+            {/* <!-- Modal footer --> */}
           </div>
         </div>
       )}
