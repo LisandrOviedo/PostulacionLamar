@@ -5,6 +5,7 @@ const {
   postRol,
   putRol,
   deleteRol,
+  putCambiarRolEmpleado,
 } = require("../handlers/roles_handlers");
 
 const { authenticateToken } = require("../auth/index");
@@ -18,5 +19,6 @@ roles.post("/", authenticateToken, postRol);
 
 roles.put("/modificar", authenticateToken, putRol);
 roles.put("/inactivar", authenticateToken, deleteRol);
+roles.put("/cambiarRolEmpleado", authenticateToken, putCambiarRolEmpleado);
 
 module.exports = roles;
