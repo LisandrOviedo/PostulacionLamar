@@ -57,7 +57,7 @@ const getEmpleadoExistencia = async (req, res) => {
 };
 
 const getLogin = async (req, res) => {
-  const { tipo_identificacion, numero_identificacion, clave } = req.query;
+  const { tipo_identificacion, numero_identificacion, clave } = req.body;
 
   try {
     const response = await login(

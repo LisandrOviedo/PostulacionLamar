@@ -1,23 +1,21 @@
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define("Roles", {
-    rol_id: {
+  sequelize.define("Roles_Menus", {
+    rol_menu_id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    nombre: {
-      type: DataTypes.STRING,
+    rol_id: {
+      // Campo relacionado
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    descripcion: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    acceso_admin: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
+    menu_id: {
+      // Campo relacionado
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     activo: {
       type: DataTypes.BOOLEAN,

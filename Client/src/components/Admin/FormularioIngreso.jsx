@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Webcam from "react-webcam";
+// import Webcam from "react-webcam";
 
 import { getAllEtniasActivas } from "../../redux/etnias/etniasActions";
 
@@ -47,6 +47,7 @@ import { saveFichaIngreso } from "../../redux/fichasIngresos/fichasIngresosActio
 import {
   Button,
   CheckBox,
+  Date,
   Input,
   Label,
   Select,
@@ -58,10 +59,18 @@ import {
 
 import { FaFloppyDisk } from "react-icons/fa6";
 
-import { IoCameraOutline, IoCameraReverseOutline } from "react-icons/io5";
+// import { IoCameraOutline, IoCameraReverseOutline } from "react-icons/io5";
 
-import { YYYYMMDD } from "../../utils/formatearFecha";
-import validations from "../../utils/validacionesAcceso";
+import { MdCancel } from "react-icons/md";
+
+import { BiSolidShow, BiSolidHide } from "react-icons/bi";
+
+import {
+  YYYYMMDD,
+  YYYYMM,
+  calcularMaxFechaNacimiento,
+} from "../../utils/formatearFecha";
+import validations from "../../utils/validacionesFormularioIngreso";
 
 import Swal from "sweetalert2";
 
@@ -106,15 +115,17 @@ export function FormularioIngreso() {
     (state) => state.cargos_niveles.cargos_niveles_activos
   );
 
-  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
+  // const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const [errors, setErrors] = useState({});
 
-  const [imagenEmpleado, setImagenEmpleado] = useState(null);
+  const [showSalario, setShowSalario] = useState(true);
 
-  const [facingMode, setFacingMode] = useState("environment");
+  // const [imagenEmpleado, setImagenEmpleado] = useState(null);
 
-  const webCamRef = useRef(null);
+  // const [facingMode, setFacingMode] = useState("environment");
+
+  // const webCamRef = useRef(null);
 
   const [datosIngreso, setDatosIngreso] = useState({
     tipo_identificacion: "V",
@@ -140,6 +151,10 @@ export function FormularioIngreso() {
     entidad_bancaria: "100% Banco",
     tipo_cuenta: "Corriente",
     fecha_ingreso: YYYYMMDD(),
+    posee_licencia_conducir: false,
+    posee_carta_medica: false,
+    tiene_parientes_empresa: false,
+    salario: "",
   });
 
   useEffect(() => {
@@ -292,6 +307,7 @@ export function FormularioIngreso() {
       });
     } else {
       setDatosIngreso({ ...datosIngreso, [name]: value });
+      setErrors(validations({ ...datosIngreso, [name]: value }));
     }
   };
 
@@ -379,6 +395,10 @@ export function FormularioIngreso() {
 
     setDatosIngreso({
       ...datosIngreso,
+      fecha_desde_titulo: "",
+      fecha_hasta_titulo: "",
+      nombre_instituto: "",
+      titulo_obtenido: "",
       titulos_obtenidos: [
         ...datosIngreso.titulos_obtenidos,
         {
@@ -390,6 +410,8 @@ export function FormularioIngreso() {
         },
       ],
     });
+
+    setErrors(validations({ ...datosIngreso }));
 
     input_grado_instruccion.value = "Primaria";
     input_fecha_desde.value = null;
@@ -445,6 +467,10 @@ export function FormularioIngreso() {
 
     setDatosIngreso({
       ...datosIngreso,
+      fecha_desde_experiencia: "",
+      fecha_hasta_experiencia: "",
+      empresa_centro_educativo: "",
+      cargo_titulo: "",
       experiencias: [
         ...datosIngreso.experiencias,
         {
@@ -457,6 +483,8 @@ export function FormularioIngreso() {
       ],
     });
 
+    setErrors(validations({ ...datosIngreso }));
+
     cargo_titulo.value = null;
     empresa_centro_educativo.value = null;
     fecha_desde_experiencia.value = null;
@@ -467,7 +495,7 @@ export function FormularioIngreso() {
     const nombre_apellido = document.getElementById(
       "nombre_apellido_referencia"
     );
-    const direccion = document.getElementById("direccion");
+    const direccion = document.getElementById("direccion_referencia");
     const telefono = document.getElementById("telefono_referencia");
     const ocupacion = document.getElementById("ocupacion");
 
@@ -717,29 +745,41 @@ export function FormularioIngreso() {
     });
   };
 
-  const tomarFoto = () => {
-    const imageSrc = webCamRef.current.getScreenshot();
+  const handleConvertirADecimales = (e) => {
+    const { name, value } = e.target;
 
-    setImagenEmpleado(imageSrc);
+    if (value) {
+      const numeroFormateado = Number.parseFloat(value).toFixed(2);
 
-    console.log(imageSrc);
+      setDatosIngreso({ ...datosIngreso, [name]: numeroFormateado });
+
+      setErrors(validations({ ...datosIngreso, [name]: numeroFormateado }));
+    }
   };
 
-  const cambiarCamara = () => {
-    facingMode === "user"
-      ? setFacingMode("environment")
-      : setFacingMode("user");
-  };
+  // const tomarFoto = () => {
+  //   const imageSrc = webCamRef.current.getScreenshot();
 
-  const descargarImagen = () => {
-    const a = document.createElement("a");
+  //   setImagenEmpleado(imageSrc);
 
-    a.href = imagenEmpleado;
+  //   console.log(imageSrc);
+  // };
 
-    a.download = "prueba.png";
+  // const cambiarCamara = () => {
+  //   facingMode === "user"
+  //     ? setFacingMode("environment")
+  //     : setFacingMode("user");
+  // };
 
-    a.click();
-  };
+  // const descargarImagen = () => {
+  //   const a = document.createElement("a");
+
+  //   a.href = imagenEmpleado;
+
+  //   a.download = "prueba.png";
+
+  //   a.click();
+  // };
 
   return (
     <div className="mt-24 sm:mt-32 items-center px-6 lg:px-8">
@@ -749,12 +789,19 @@ export function FormularioIngreso() {
       <br />
       <Hr />
       <br />
+      <Span className="text-center m-0 text-red-600">
+        (*) Campos obligatorios
+      </Span>
+      <br />
       <div className="w-full">
         {/* Información Personal */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end ">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start">
           <div>
-            <Label htmlFor="numero_identificacion">
-              Número de identificación
+            <Label
+              htmlFor="numero_identificacion"
+              errors={errors.numero_identificacion}
+            >
+              Número de identificación *
             </Label>
             <div className="flex justify-between gap-2">
               <Select
@@ -767,29 +814,59 @@ export function FormularioIngreso() {
                 <option value="E">E</option>
               </Select>
 
-              <Input
-                id="numero_identificacion"
-                name="numero_identificacion"
-                min="0"
-                value={datosIngreso.numero_identificacion}
-                onChange={handleValidate}
-                onBlur={handleEmpleadoExiste}
-              />
+              <div className="relative w-full">
+                <Input
+                  id="numero_identificacion"
+                  name="numero_identificacion"
+                  value={datosIngreso.numero_identificacion}
+                  errors={errors.numero_identificacion}
+                  onChange={handleValidate}
+                  onBlur={handleEmpleadoExiste}
+                  maxLength="20"
+                />
+                {errors.numero_identificacion && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
             </div>
             {errors.numero_identificacion && (
-              <p className="text-red-500">{errors.numero_identificacion}</p>
+              <Span className="m-0">{errors.numero_identificacion}</Span>
             )}
           </div>
           <div>
-            <Label htmlFor="nombres">Nombres</Label>
-            <Input id="nombres" name="nombres" onChange={handleValidate} />
-            {errors.nombres && <p className="text-red-500">{errors.nombres}</p>}
+            <Label htmlFor="nombres" errors={errors.nombres}>
+              Nombres *
+            </Label>
+            <div className="relative w-full">
+              <Input
+                id="nombres"
+                name="nombres"
+                onChange={handleValidate}
+                errors={errors.nombres}
+              />
+              {errors.nombres && (
+                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+              )}
+            </div>
+            {errors.nombres && <Span className="m-0">{errors.nombres}</Span>}
           </div>
           <div>
-            <Label htmlFor="apellidos">Apellidos</Label>
-            <Input id="apellidos" name="apellidos" onChange={handleValidate} />
+            <Label htmlFor="apellidos" errors={errors.apellidos}>
+              Apellidos *
+            </Label>
+            <div className="relative w-full">
+              <Input
+                id="apellidos"
+                name="apellidos"
+                onChange={handleValidate}
+                errors={errors.apellidos}
+              />
+              {errors.apellidos && (
+                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+              )}
+            </div>
             {errors.apellidos && (
-              <p className="text-red-500">{errors.apellidos}</p>
+              <Span className="m-0">{errors.apellidos}</Span>
             )}
           </div>
           <div>
@@ -808,31 +885,59 @@ export function FormularioIngreso() {
             </Select>
           </div>
           <div>
-            <Label htmlFor="rif">Registro de información fiscal (RIF)</Label>
-            <Input id="rif" name="rif" onChange={handleValidate} />
-            {errors.rif && <p className="text-red-500">{errors.rif}</p>}
+            <Label htmlFor="rif" errors={errors.rif}>
+              Registro de información fiscal (RIF)
+            </Label>
+            <div className="relative w-full">
+              <Input
+                id="rif"
+                name="rif"
+                onChange={handleValidate}
+                errors={errors.rif}
+              />
+              {errors.rif && (
+                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+              )}
+            </div>
+            {errors.rif && <Span className="m-0">{errors.rif}</Span>}
           </div>
           <div>
-            <Label htmlFor="telefono">Teléfono</Label>
-            <Input
-              id="telefono"
-              type="tel"
-              name="telefono"
-              onChange={handleValidate}
-            />
-            {errors.telefono && (
-              <p className="text-red-500">{errors.telefono}</p>
-            )}
+            <Label htmlFor="telefono" errors={errors.telefono}>
+              Teléfono
+            </Label>
+            <div className="relative w-full">
+              <Input
+                id="telefono"
+                type="tel"
+                maxLength="20"
+                name="telefono"
+                onChange={handleValidate}
+                errors={errors.telefono}
+              />
+              {errors.telefono && (
+                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+              )}
+            </div>
+            {errors.telefono && <Span className="m-0">{errors.telefono}</Span>}
           </div>
           <div>
-            <Label htmlFor="correo">Correo electrónico</Label>
-            <Input
-              id="correo"
-              type="email"
-              name="correo"
-              onChange={handleValidate}
-            />
-            {errors.correo && <p className="text-red-500">{errors.correo}</p>}
+            <Label htmlFor="correo" errors={errors.correo}>
+              Correo electrónico
+            </Label>
+            <div className="relative w-full">
+              <Input
+                id="correo"
+                type="email"
+                name="correo"
+                onChange={handleValidate}
+                errors={errors.correo}
+                maxLength="150"
+              />
+              {errors.correo && (
+                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+              )}
+            </div>
+            {errors.correo && <Span className="m-0">{errors.correo}</Span>}
           </div>
           <div>
             <Label htmlFor="etnia_id">Etnia</Label>
@@ -929,30 +1034,43 @@ export function FormularioIngreso() {
               min="0"
             />
           </div>
-
           <div>
-            <Label htmlFor="fecha_nacimiento">Fecha de nacimiento</Label>
+            <Label htmlFor="fecha_nacimiento" errors={errors.fecha_nacimiento}>
+              Fecha de nacimiento *
+            </Label>
             <Input
               type="date"
               id="fecha_nacimiento"
               name="fecha_nacimiento"
-              max={YYYYMMDD()}
+              max={calcularMaxFechaNacimiento()}
               onChange={handleValidate}
+              errors={errors.fecha_nacimiento}
             />
-          </div>
-          <div>
-            <Label htmlFor="nacimiento_lugar">Lugar de nacimiento</Label>
-            <Input
-              id="nacimiento_lugar"
-              name="nacimiento_lugar"
-              onChange={handleValidate}
-            />
-            {errors.nacimiento_lugar && (
-              <p className="text-red-500">{errors.nacimiento_lugar}</p>
+            {errors.fecha_nacimiento && (
+              <Span className="m-0">{errors.fecha_nacimiento}</Span>
             )}
           </div>
           <div>
-            <Label htmlFor="nacimiento_pais_id">Nacionalidad</Label>
+            <Label htmlFor="nacimiento_lugar" errors={errors.nacimiento_lugar}>
+              Lugar de nacimiento *
+            </Label>
+            <div className="relative w-full">
+              <Input
+                id="nacimiento_lugar"
+                name="nacimiento_lugar"
+                onChange={handleValidate}
+                errors={errors.nacimiento_lugar}
+              />
+              {errors.nacimiento_lugar && (
+                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+              )}
+            </div>
+            {errors.nacimiento_lugar && (
+              <Span className="m-0">{errors.nacimiento_lugar}</Span>
+            )}
+          </div>
+          <div>
+            <Label htmlFor="nacimiento_pais_id">Nacionalidad *</Label>
             <Select
               id="nacimiento_pais_id"
               name="nacimiento_pais_id"
@@ -973,7 +1091,7 @@ export function FormularioIngreso() {
             </Select>
           </div>
           <div>
-            <Label htmlFor="nacimiento_estado_id">Estado de nacimiento</Label>
+            <Label htmlFor="nacimiento_estado_id">Estado de nacimiento *</Label>
             <Select
               id="nacimiento_estado_id"
               name="nacimiento_estado_id"
@@ -999,7 +1117,7 @@ export function FormularioIngreso() {
           </div>
 
           <div>
-            <Label htmlFor="pais_id">País de residencia</Label>
+            <Label htmlFor="pais_id">País de residencia *</Label>
             <Select
               id="pais_id"
               name="pais_id"
@@ -1020,7 +1138,7 @@ export function FormularioIngreso() {
             </Select>
           </div>
           <div>
-            <Label htmlFor="estado_id">Estado de residencia</Label>
+            <Label htmlFor="estado_id">Estado de residencia *</Label>
             <Select
               id="estado_id"
               name="estado_id"
@@ -1045,7 +1163,7 @@ export function FormularioIngreso() {
             </Select>
           </div>
           <div>
-            <Label htmlFor="municipio_id">Municipio</Label>
+            <Label htmlFor="municipio_id">Municipio *</Label>
             <Select
               id="municipio_id"
               name="municipio_id"
@@ -1070,7 +1188,7 @@ export function FormularioIngreso() {
             </Select>
           </div>
           <div>
-            <Label htmlFor="parroquia_id">Parroquia</Label>
+            <Label htmlFor="parroquia_id">Parroquia *</Label>
             <Select
               id="parroquia_id"
               name="parroquia_id"
@@ -1095,29 +1213,48 @@ export function FormularioIngreso() {
             </Select>
           </div>
           <div>
-            <Label htmlFor="urbanizacion_sector">Urbanización / Sector</Label>
-            <Input
-              id="urbanizacion_sector"
-              name="urbanizacion_sector"
-              onChange={handleValidate}
-            />
+            <Label
+              htmlFor="urbanizacion_sector"
+              errors={errors.urbanizacion_sector}
+            >
+              Urbanización / Sector *
+            </Label>
+            <div className="relative w-full">
+              <Input
+                id="urbanizacion_sector"
+                name="urbanizacion_sector"
+                onChange={handleValidate}
+                errors={errors.urbanizacion_sector}
+              />
+              {errors.urbanizacion_sector && (
+                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+              )}
+            </div>
             {errors.urbanizacion_sector && (
-              <p className="text-red-500">{errors.urbanizacion_sector}</p>
+              <Span className="m-0">{errors.urbanizacion_sector}</Span>
             )}
           </div>
           <div>
-            <Label htmlFor="calle_avenida">Calle / Avenida</Label>
-            <Input
-              id="calle_avenida"
-              name="calle_avenida"
-              onChange={handleValidate}
-            />
+            <Label htmlFor="calle_avenida" errors={errors.calle_avenida}>
+              Calle / Avenida *
+            </Label>
+            <div className="relative w-full">
+              <Input
+                id="calle_avenida"
+                name="calle_avenida"
+                onChange={handleValidate}
+                errors={errors.calle_avenida}
+              />
+              {errors.calle_avenida && (
+                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+              )}
+            </div>
             {errors.calle_avenida && (
-              <p className="text-red-500">{errors.calle_avenida}</p>
+              <Span className="m-0">{errors.calle_avenida}</Span>
             )}
           </div>
           <div>
-            <Label htmlFor="tipo_vivienda">Tipo de vivienda</Label>
+            <Label htmlFor="tipo_vivienda">Tipo de vivienda *</Label>
             <Select
               id="tipo_vivienda"
               name="tipo_vivienda"
@@ -1131,18 +1268,29 @@ export function FormularioIngreso() {
 
           {datosIngreso.tipo_vivienda === "Casa" && (
             <div>
-              <Label htmlFor="numero_casa">Numero de casa</Label>
-              <Input
-                name="numero_casa"
-                id="numero_casa"
-                onChange={handleValidate}
-              />
+              <Label htmlFor="numero_casa" errors={errors.numero_casa}>
+                Numero de casa *
+              </Label>
+              <div className="relative w-full">
+                <Input
+                  name="numero_casa"
+                  id="numero_casa"
+                  onChange={handleValidate}
+                  errors={errors.numero_casa}
+                />
+                {errors.numero_casa && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.numero_casa && (
+                <Span className="m-0">{errors.numero_casa}</Span>
+              )}
             </div>
           )}
           {datosIngreso.tipo_vivienda === "Edificio" && (
             <>
               <div>
-                <Label htmlFor="piso">Piso</Label>
+                <Label htmlFor="piso">Piso *</Label>
                 <Input
                   name="piso"
                   id="piso"
@@ -1152,89 +1300,142 @@ export function FormularioIngreso() {
                 />
               </div>
               <div>
-                <Label htmlFor="apartamento">Apartamento</Label>
-                <Input
-                  name="apartamento"
-                  id="apartamento"
-                  onChange={handleValidate}
-                />
+                <Label htmlFor="apartamento" errors={errors.apartamento}>
+                  Apartamento *
+                </Label>
+                <div className="relative w-full">
+                  <Input
+                    name="apartamento"
+                    id="apartamento"
+                    onChange={handleValidate}
+                    errors={errors.apartamento}
+                  />
+                  {errors.apartamento && (
+                    <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                  )}
+                </div>
                 {errors.apartamento && (
-                  <p className="text-red-500">{errors.apartamento}</p>
+                  <Span className="m-0">{errors.apartamento}</Span>
                 )}
               </div>
             </>
           )}
-
-          <div>
-            <Label htmlFor="licencia_conducir_grado">
-              ¿Posee licencia de conducir? Especifique el grado más alto
+          <div className="flex gap-2 justify-center items-center h-full">
+            <CheckBox
+              name="posee_licencia_conducir"
+              id="posee_licencia_conducir"
+              checked={datosIngreso.posee_licencia_conducir}
+              onChange={handleChecked}
+            />
+            <Label className="select-none" htmlFor="posee_licencia_conducir">
+              ¿Posee licencia de conducir?
             </Label>
-            <Input
-              type="number"
-              id="licencia_conducir_grado"
-              name="licencia_conducir_grado"
-              max="5"
-              min="0"
-              onChange={handleValidate}
-            />
           </div>
-          <div>
-            <Label htmlFor="licencia_conducir_vencimiento">
-              Fecha de vencimiento de licencia de conducir
+          {datosIngreso.posee_licencia_conducir && (
+            <>
+              <div>
+                <Label htmlFor="licencia_conducir_grado">
+                  Grado más alto obtenido de licencia de conducir *
+                </Label>
+                <Input
+                  type="number"
+                  id="licencia_conducir_grado"
+                  name="licencia_conducir_grado"
+                  max="5"
+                  min="0"
+                  onChange={handleValidate}
+                />
+              </div>
+              <div>
+                <Label htmlFor="licencia_conducir_vencimiento">
+                  Fecha de vencimiento de licencia de conducir *
+                </Label>
+                <Date
+                  id="licencia_conducir_vencimiento"
+                  name="licencia_conducir_vencimiento"
+                  onChange={handleValidate}
+                />
+              </div>
+            </>
+          )}
+          <div className="flex gap-2 justify-center items-center h-full">
+            <CheckBox
+              name="posee_carta_medica"
+              id="posee_carta_medica"
+              checked={datosIngreso.posee_carta_medica}
+              onChange={handleChecked}
+            />
+            <Label className="select-none" htmlFor="posee_carta_medica">
+              ¿Posee carta médica?
             </Label>
-            <Input
-              type="date"
-              id="licencia_conducir_vencimiento"
-              name="licencia_conducir_vencimiento"
-              max={YYYYMMDD()}
-              onChange={handleValidate}
-            />
           </div>
-
+          {datosIngreso.posee_carta_medica && (
+            <div>
+              <Label htmlFor="carta_medica_vencimiento">
+                Fecha de vencimiento de carta médica *
+              </Label>
+              <Date
+                id="carta_medica_vencimiento"
+                name="carta_medica_vencimiento"
+                onChange={handleValidate}
+              />
+            </div>
+          )}
           <div>
-            <Label htmlFor="carta_medica_vencimiento">
-              ¿Posee carta médica? Indique la fecha de su vencimiento
+            <Label htmlFor="talla_camisa" errors={errors.talla_camisa}>
+              Talla camisa *
             </Label>
-            <Input
-              type="date"
-              id="carta_medica_vencimiento"
-              name="carta_medica_vencimiento"
-              max={YYYYMMDD()}
-              onChange={handleValidate}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="talla_camisa">Talla camisa</Label>
-            <Input
-              name="talla_camisa"
-              id="talla_camisa"
-              onChange={handleValidate}
-            />
+            <div className="relative w-full">
+              <Input
+                name="talla_camisa"
+                id="talla_camisa"
+                onChange={handleValidate}
+                errors={errors.talla_camisa}
+              />
+              {errors.talla_camisa && (
+                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+              )}
+            </div>
             {errors.talla_camisa && (
-              <p className="text-red-500">{errors.talla_camisa}</p>
+              <Span className="m-0">{errors.talla_camisa}</Span>
             )}
           </div>
           <div>
-            <Label htmlFor="talla_pantalon">Talla pantalón</Label>
-            <Input
-              name="talla_pantalon"
-              id="talla_pantalon"
-              onChange={handleValidate}
-            />
+            <Label htmlFor="talla_pantalon" errors={errors.talla_pantalon}>
+              Talla pantalón *
+            </Label>
+            <div className="relative w-full">
+              <Input
+                name="talla_pantalon"
+                id="talla_pantalon"
+                onChange={handleValidate}
+                errors={errors.talla_pantalon}
+              />
+              {errors.talla_pantalon && (
+                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+              )}
+            </div>
             {errors.talla_pantalon && (
-              <p className="text-red-500">{errors.talla_pantalon}</p>
+              <Span className="m-0">{errors.talla_pantalon}</Span>
             )}
           </div>
           <div>
-            <Label htmlFor="talla_calzado">Talla calzado</Label>
-            <Input
-              name="talla_calzado"
-              id="talla_calzado"
-              onChange={handleValidate}
-            />
+            <Label htmlFor="talla_calzado" errors={errors.talla_calzado}>
+              Talla calzado *
+            </Label>
+            <div className="relative w-full">
+              <Input
+                name="talla_calzado"
+                id="talla_calzado"
+                onChange={handleValidate}
+                errors={errors.talla_calzado}
+              />
+              {errors.talla_calzado && (
+                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+              )}
+            </div>
             {errors.talla_calzado && (
-              <p className="text-red-500">{errors.talla_calzado}</p>
+              <Span className="m-0">{errors.talla_calzado}</Span>
             )}
           </div>
         </div>
@@ -1242,7 +1443,7 @@ export function FormularioIngreso() {
         {/* Educación */}
         <div className="mt-6">
           <Title>Educación</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
             <div>
               <Label htmlFor="grado_instruccion">Grado de instrucción</Label>
               <Select
@@ -1258,36 +1459,87 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="nombre_instituto">Nombre del instituto</Label>
-              <Input id="nombre_instituto" name="nombre_instituto" />
+              <Label
+                htmlFor="nombre_instituto"
+                errors={errors.nombre_instituto}
+              >
+                Nombre del instituto
+              </Label>
+              <div className="relative w-full">
+                <Input
+                  id="nombre_instituto"
+                  name="nombre_instituto"
+                  onChange={handleValidate}
+                  errors={errors.nombre_instituto}
+                />
+                {errors.nombre_instituto && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.nombre_instituto && (
+                <Span className="m-0">{errors.nombre_instituto}</Span>
+              )}
             </div>
             <div>
-              <Label htmlFor="titulo_obtenido">Titulo obtenido</Label>
-              <Input id="titulo_obtenido" name="titulo_obtenido" />
+              <Label htmlFor="titulo_obtenido" errors={errors.titulo_obtenido}>
+                Titulo obtenido
+              </Label>
+              <div className="relative w-full">
+                <Input
+                  id="titulo_obtenido"
+                  name="titulo_obtenido"
+                  onChange={handleValidate}
+                  errors={errors.titulo_obtenido}
+                />
+                {errors.titulo_obtenido && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.titulo_obtenido && (
+                <Span className="m-0">{errors.titulo_obtenido}</Span>
+              )}
             </div>
             <div>
-              <Label htmlFor="fecha_desde_titulo">Desde</Label>
-              <Input
+              <Label htmlFor="fecha_desde_titulo" errors={errors.fecha_titulo}>
+                Desde
+              </Label>
+              <Date
+                type="month"
                 id="fecha_desde_titulo"
-                name="fecha_desde"
-                type="date"
-                max={YYYYMMDD()}
+                name="fecha_desde_titulo"
+                max={YYYYMM()}
+                errors={errors.fecha_titulo}
+                onChange={handleValidate}
               />
             </div>
             <div>
-              <Label htmlFor="fecha_hasta_titulo">Hasta</Label>
-              <Input
+              <Label htmlFor="fecha_hasta_titulo" errors={errors.fecha_titulo}>
+                Hasta
+              </Label>
+              <Date
+                type="month"
                 id="fecha_hasta_titulo"
-                name="fecha_hasta"
-                type="date"
-                max={YYYYMMDD()}
+                name="fecha_hasta_titulo"
+                max={YYYYMM()}
+                errors={errors.fecha_titulo}
+                onChange={handleValidate}
               />
+              {errors.fecha_titulo && (
+                <Span className="m-0">{errors.fecha_titulo}</Span>
+              )}
             </div>
-            <div>
-              <Button onClick={handleAddTituloObtenido} className="m-0 w-full">
-                Agregar Título
-              </Button>
-            </div>
+            {!errors.nombre_instituto &&
+              !errors.titulo_obtenido &&
+              !errors.fecha_titulo && (
+                <div className="flex h-full items-end">
+                  <Button
+                    onClick={handleAddTituloObtenido}
+                    className="m-0 w-full"
+                  >
+                    Agregar Título
+                  </Button>
+                </div>
+              )}
           </div>
         </div>
 
@@ -1333,7 +1585,7 @@ export function FormularioIngreso() {
                     <td className="p-4">{edu.fecha_hasta}</td>
                     <td className="p-4">
                       <span
-                        className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
+                        className="font-medium text-red-600 hover:text-red-800 cursor-pointer"
                         onClick={() => handleRemoveTitulosObtenidos(index)}
                       >
                         Borrar
@@ -1350,43 +1602,90 @@ export function FormularioIngreso() {
         <div className="mt-8 ">
           <Title>Trabajos Anteriores</Title>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
             <div>
-              <Label htmlFor="empresa_centro_educativo">
+              <Label
+                htmlFor="empresa_centro_educativo"
+                errors={errors.empresa_centro_educativo}
+              >
                 Nombre de la empresa
               </Label>
-              <Input
-                id="empresa_centro_educativo"
-                name="empresa_centro_educativo"
-              />
+              <div className="relative w-full">
+                <Input
+                  id="empresa_centro_educativo"
+                  name="empresa_centro_educativo"
+                  onChange={handleValidate}
+                  errors={errors.empresa_centro_educativo}
+                />
+                {errors.empresa_centro_educativo && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.empresa_centro_educativo && (
+                <Span className="m-0">{errors.empresa_centro_educativo}</Span>
+              )}
             </div>
             <div>
-              <Label htmlFor="cargo_titulo">Cargo ejercido</Label>
-              <Input id="cargo_titulo" name="cargo_titulo" />
+              <Label htmlFor="cargo_titulo" errors={errors.cargo_titulo}>
+                Cargo ejercido
+              </Label>
+              <div className="relative w-full">
+                <Input
+                  id="cargo_titulo"
+                  name="cargo_titulo"
+                  onChange={handleValidate}
+                  errors={errors.cargo_titulo}
+                />
+                {errors.cargo_titulo && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.cargo_titulo && (
+                <Span className="m-0">{errors.cargo_titulo}</Span>
+              )}
             </div>
             <div>
-              <Label htmlFor="fecha_desde_experiencia">Desde</Label>
-              <Input
+              <Label
+                htmlFor="fecha_desde_experiencia"
+                errors={errors.fecha_experiencia}
+              >
+                Desde
+              </Label>
+              <Date
                 id="fecha_desde_experiencia"
-                name="fecha_desde"
-                type="date"
+                name="fecha_desde_experiencia"
                 max={YYYYMMDD()}
+                onChange={handleValidate}
+                errors={errors.fecha_experiencia}
               />
             </div>
             <div>
-              <Label htmlFor="fecha_hasta_experiencia">Hasta</Label>
-              <Input
+              <Label
+                htmlFor="fecha_hasta_experiencia"
+                errors={errors.fecha_experiencia}
+              >
+                Hasta
+              </Label>
+              <Date
                 id="fecha_hasta_experiencia"
-                name="fecha_hasta"
-                type="date"
+                name="fecha_hasta_experiencia"
                 max={YYYYMMDD()}
+                onChange={handleValidate}
+                errors={errors.fecha_experiencia}
               />
+              {errors.fecha_experiencia && (
+                <Span className="m-0">{errors.fecha_experiencia}</Span>
+              )}
             </div>
-            <div>
-              <Button onClick={handleAddExperiencia} className="m-0 w-full">
-                Agregar Trabajo Anterior
-              </Button>
-            </div>
+            {!errors.empresa_centro_educativo &&
+              !errors.cargo_titulo &&
+              !errors.fecha_experiencia && (
+                <div className="flex h-full items-end">
+                  <Button onClick={handleAddExperiencia} className="m-0 w-full">
+                    Agregar Trabajo Anterior
+                  </Button>
+                </div>
+              )}
           </div>
         </div>
 
@@ -1426,7 +1725,7 @@ export function FormularioIngreso() {
                     <td className="p-4">{experiencia.fecha_hasta}</td>
                     <td className="p-4">
                       <span
-                        className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
+                        className="font-medium text-red-600 hover:text-red-800 cursor-pointer"
                         onClick={() => handleRemoveTrabajosAnteriores(i)}
                       >
                         Borrar
@@ -1442,73 +1741,182 @@ export function FormularioIngreso() {
         <div className="mt-8">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
             <div>
-              <Label htmlFor="trabajo_anteriormente_especifique">
+              <Label
+                htmlFor="trabajo_anteriormente_especifique"
+                errors={errors.trabajo_anteriormente_especifique}
+              >
                 ¿Ha trabajado anteriormente en esta empresa? Especifique
               </Label>
-              <Input
-                id="trabajo_anteriormente_especifique"
-                name="trabajo_anteriormente_especifique"
-                onChange={handleValidate}
-              />
+              <div className="relative w-full">
+                <Input
+                  id="trabajo_anteriormente_especifique"
+                  name="trabajo_anteriormente_especifique"
+                  onChange={handleValidate}
+                  errors={errors.trabajo_anteriormente_especifique}
+                />
+                {errors.trabajo_anteriormente_especifique && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.trabajo_anteriormente_especifique && (
+                <Span className="m-0">
+                  {errors.trabajo_anteriormente_especifique}
+                </Span>
+              )}
             </div>
             <div>
-              <Label htmlFor="motivo_retiro">Motivo del retiro</Label>
-              <Input
-                id="motivo_retiro"
-                name="motivo_retiro"
-                onChange={handleValidate}
-              />
-            </div>
-            <div>
-              <Label htmlFor="posee_parientes_empresa">
-                ¿Posee parientes que trabajen en esta empresa? Especifique
-                cuantos
+              <Label htmlFor="motivo_retiro" errors={errors.motivo_retiro}>
+                Motivo del retiro
               </Label>
-              <Input
-                type="number"
-                min="0"
-                max="20"
-                value={datosIngreso.posee_parientes_empresa}
-                onChange={handleValidate}
-                id="posee_parientes_empresa"
-                name="posee_parientes_empresa"
-              />
+              <div className="relative w-full">
+                <Input
+                  id="motivo_retiro"
+                  name="motivo_retiro"
+                  onChange={handleValidate}
+                  errors={errors.motivo_retiro}
+                />
+                {errors.motivo_retiro && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.motivo_retiro && (
+                <Span className="m-0">{errors.motivo_retiro}</Span>
+              )}
             </div>
+            <div className="flex gap-2 justify-center items-center h-full">
+              <CheckBox
+                name="tiene_parientes_empresa"
+                id="tiene_parientes_empresa"
+                checked={datosIngreso.tiene_parientes_empresa}
+                onChange={handleChecked}
+              />
+              <Label className="select-none" htmlFor="tiene_parientes_empresa">
+                ¿Posee parientes que trabajen en esta empresa?
+              </Label>
+            </div>
+            {datosIngreso.tiene_parientes_empresa && (
+              <div>
+                <Label htmlFor="posee_parientes_empresa">
+                  Especifique cuantos parientes posee en la empresa
+                </Label>
+                <Input
+                  type="number"
+                  min="0"
+                  max="20"
+                  value={datosIngreso.posee_parientes_empresa}
+                  onChange={handleValidate}
+                  id="posee_parientes_empresa"
+                  name="posee_parientes_empresa"
+                />
+              </div>
+            )}
           </div>
         </div>
 
         {/* Referencias Personales */}
         <div className="mt-6">
-          <Title>Referencias Personales</Title>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
+          <Title>Referencias Personales *</Title>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
             <div>
-              <Label htmlFor="nombre_apellido_referencia">
+              <Label
+                htmlFor="nombre_apellido_referencia"
+                errors={errors.nombre_apellido_referencia}
+              >
                 Nombres y apellidos
               </Label>
-              <Input id="nombre_apellido_referencia" name="nombre_apellido" />
+              <div className="relative w-full">
+                <Input
+                  id="nombre_apellido_referencia"
+                  name="nombre_apellido_referencia"
+                  onChange={handleValidate}
+                  errors={errors.nombre_apellido_referencia}
+                />
+                {errors.nombre_apellido_referencia && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.nombre_apellido_referencia && (
+                <Span className="m-0">{errors.nombre_apellido_referencia}</Span>
+              )}
             </div>
             <div>
-              <Label htmlFor="direccion">Dirección</Label>
-              <Input id="direccion" name="direccion" />
-            </div>
-            <div>
-              <Label htmlFor="telefono_referencia">Teléfono</Label>
-              <Input id="telefono_referencia" name="telefono" />
-            </div>
-            <div>
-              <Label htmlFor="ocupacion">Ocupación</Label>
-              <Input id="ocupacion" name="ocupacion" />
-            </div>
-
-            <div>
-              <Button
-                onClick={handleAddReferenciaPersonal}
-                className="m-0 w-full"
+              <Label
+                htmlFor="direccion_referencia"
+                errors={errors.direccion_referencia}
               >
-                Agregar Referencia Personal
-              </Button>
+                Dirección
+              </Label>
+              <div className="relative w-full">
+                <Input
+                  id="direccion_referencia"
+                  name="direccion_referencia"
+                  onChange={handleValidate}
+                  errors={errors.direccion_referencia}
+                />
+                {errors.direccion_referencia && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.direccion_referencia && (
+                <Span className="m-0">{errors.direccion_referencia}</Span>
+              )}
             </div>
+            <div>
+              <Label
+                htmlFor="telefono_referencia"
+                errors={errors.telefono_referencia}
+              >
+                Teléfono
+              </Label>
+              <div className="relative w-full">
+                <Input
+                  id="telefono_referencia"
+                  name="telefono_referencia"
+                  type="tel"
+                  maxLength="20"
+                  onChange={handleValidate}
+                  errors={errors.telefono_referencia}
+                />
+                {errors.telefono_referencia && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.telefono_referencia && (
+                <Span className="m-0">{errors.telefono_referencia}</Span>
+              )}
+            </div>
+            <div>
+              <Label htmlFor="ocupacion" errors={errors.ocupacion}>
+                Ocupación
+              </Label>
+              <div className="relative w-full">
+                <Input
+                  id="ocupacion"
+                  name="ocupacion"
+                  onChange={handleValidate}
+                  errors={errors.ocupacion}
+                />
+                {errors.ocupacion && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.ocupacion && (
+                <Span className="m-0">{errors.ocupacion}</Span>
+              )}
+            </div>
+            {!errors.nombre_apellido_referencia &&
+              !errors.direccion_referencia &&
+              !errors.telefono_referencia &&
+              !errors.ocupacion && (
+                <div className="flex h-full items-end">
+                  <Button
+                    onClick={handleAddReferenciaPersonal}
+                    className="m-0 w-full"
+                  >
+                    Agregar Referencia Personal
+                  </Button>
+                </div>
+              )}
           </div>
         </div>
 
@@ -1546,7 +1954,7 @@ export function FormularioIngreso() {
                     <td className="p-4">{referencia.ocupacion}</td>
                     <td className="p-4">
                       <span
-                        className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
+                        className="font-medium text-red-600 hover:text-red-800 cursor-pointer"
                         onClick={() => handleRemoveReferenciaPersonal(i)}
                       >
                         Borrar
@@ -1562,8 +1970,8 @@ export function FormularioIngreso() {
         {/* Salud */}
         <div className="mt-6">
           <Title>Salud</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
-            <div className="flex gap-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
+            <div className="flex gap-2 justify-center items-center h-full">
               <CheckBox
                 name="alergia_alimentos"
                 id="alergia_alimentos"
@@ -1574,7 +1982,7 @@ export function FormularioIngreso() {
                 ¿Es alérgico a algún alimento?
               </Label>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 justify-center items-center h-full">
               <CheckBox
                 name="alergia_medicamentos"
                 id="alergia_medicamentos"
@@ -1585,7 +1993,7 @@ export function FormularioIngreso() {
                 ¿Es alérgico a algún medicamento?
               </Label>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 justify-center items-center h-full">
               <CheckBox
                 name="alergia_otros"
                 id="alergia_otros"
@@ -1596,8 +2004,7 @@ export function FormularioIngreso() {
                 ¿Es alérgico a alguna otra cosa?
               </Label>
             </div>
-
-            <div className="flex gap-2">
+            <div className="flex gap-2 justify-center items-center h-full">
               <CheckBox
                 name="fuma"
                 id="fuma"
@@ -1608,45 +2015,79 @@ export function FormularioIngreso() {
                 ¿Fuma?
               </Label>
             </div>
-
             <div>
-              <Label htmlFor="alergia_especifique">
+              <Label
+                htmlFor="alergia_especifique"
+                errors={errors.alergia_especifique}
+              >
                 Especifique sus alergias
               </Label>
-              <Input
-                name="alergia_especifique"
-                id="alergia_especifique"
-                onChange={handleValidate}
-              />
+              <div className="relative w-full">
+                <Input
+                  name="alergia_especifique"
+                  id="alergia_especifique"
+                  onChange={handleValidate}
+                  errors={errors.alergia_especifique}
+                />
+                {errors.alergia_especifique && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.alergia_especifique && (
+                <Span className="m-0">{errors.alergia_especifique}</Span>
+              )}
             </div>
-
             <div>
-              <Label htmlFor="cicatriz_especifique">
+              <Label
+                htmlFor="cicatriz_especifique"
+                errors={errors.cicatriz_especifique}
+              >
                 ¿Posee alguna cicatriz? Especifique
               </Label>
-              <Input
-                name="cicatriz_especifique"
-                id="cicatriz_especifique"
-                onChange={handleValidate}
-              />
+              <div className="relative w-full">
+                <Input
+                  name="cicatriz_especifique"
+                  id="cicatriz_especifique"
+                  onChange={handleValidate}
+                  errors={errors.cicatriz_especifique}
+                />
+                {errors.cicatriz_especifique && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.cicatriz_especifique && (
+                <Span className="m-0">{errors.cicatriz_especifique}</Span>
+              )}
             </div>
           </div>
         </div>
 
         {/* Contacto de Emergencia */}
         <div className="mt-6">
-          <Title>Contactos de Emergencia</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
+          <Title>Contactos de Emergencia *</Title>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
             <div>
-              <Label htmlFor="nombre_apellido_contacto_emergencia">
+              <Label
+                htmlFor="nombre_apellido_contacto_emergencia"
+                errors={errors.nombre_apellido_contacto_emergencia}
+              >
                 Nombre y apellido
               </Label>
-              <Input
-                id="nombre_apellido_contacto_emergencia"
-                name="nombre_apellido"
-              />
-              {errors.nombre_apellido && (
-                <p className="text-red-500">{errors.nombre_apellido}</p>
+              <div className="relative w-full">
+                <Input
+                  id="nombre_apellido_contacto_emergencia"
+                  name="nombre_apellido_contacto_emergencia"
+                  onChange={handleValidate}
+                  errors={errors.nombre_apellido_contacto_emergencia}
+                />
+                {errors.nombre_apellido_contacto_emergencia && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.nombre_apellido_contacto_emergencia && (
+                <Span className="m-0">
+                  {errors.nombre_apellido_contacto_emergencia}
+                </Span>
               )}
             </div>
             <div>
@@ -1655,6 +2096,7 @@ export function FormularioIngreso() {
                 <option value="Abuelo(a)">Abuelo(a)</option>
                 <option value="Amigo(a)">Amigo(a)</option>
                 <option value="Conyuge">Conyuge</option>
+                <option value="Cuñado(a)">Cuñado(a)</option>
                 <option value="Hermano(a)">Hermano(a)</option>
                 <option value="Hijo(a)">Hijo(a)</option>
                 <option value="Madre">Madre</option>
@@ -1662,30 +2104,73 @@ export function FormularioIngreso() {
                 <option value="Padre">Padre</option>
                 <option value="Primo(a)">Primo(a)</option>
                 <option value="Sobrino(a)">Sobrino(a)</option>
-                <option value="Tio(a)">Tio(a)</option>
+                <option value="Suegro(a)">Suegro(a)</option>
+                <option value="Tío(a)">Tío(a)</option>
+                <option value="Vecino(a)">Vecino(a)</option>
               </Select>
             </div>
             <div>
-              <Label htmlFor="telefono_contacto_emergencia">Teléfono</Label>
-              <Input
-                id="telefono_contacto_emergencia"
-                name="telefono"
-                type="tel"
-              />
-            </div>
-            <div>
-              <Label htmlFor="direccion_contacto_emergencia">Dirección</Label>
-              <Input id="direccion_contacto_emergencia" name="direccion" />
-            </div>
-
-            <div>
-              <Button
-                onClick={handleAddContactoEmergencia}
-                className="m-0 w-full"
+              <Label
+                htmlFor="telefono_contacto_emergencia"
+                errors={errors.telefono_contacto_emergencia}
               >
-                Agregar Contacto Emergencia
-              </Button>
+                Teléfono
+              </Label>
+              <div className="relative w-full">
+                <Input
+                  id="telefono_contacto_emergencia"
+                  name="telefono_contacto_emergencia"
+                  type="tel"
+                  maxLength="20"
+                  onChange={handleValidate}
+                  errors={errors.telefono_contacto_emergencia}
+                />
+                {errors.telefono_contacto_emergencia && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.telefono_contacto_emergencia && (
+                <Span className="m-0">
+                  {errors.telefono_contacto_emergencia}
+                </Span>
+              )}
             </div>
+            <div>
+              <Label
+                htmlFor="direccion_contacto_emergencia"
+                errors={errors.direccion_contacto_emergencia}
+              >
+                Dirección
+              </Label>
+              <div className="relative w-full">
+                <Input
+                  id="direccion_contacto_emergencia"
+                  name="direccion_contacto_emergencia"
+                  onChange={handleValidate}
+                  errors={errors.direccion_contacto_emergencia}
+                />
+                {errors.direccion_contacto_emergencia && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
+              {errors.direccion_contacto_emergencia && (
+                <Span className="m-0">
+                  {errors.direccion_contacto_emergencia}
+                </Span>
+              )}
+            </div>
+            {!errors.nombre_apellido_contacto_emergencia &&
+              !errors.telefono_contacto_emergencia &&
+              !errors.direccion_contacto_emergencia && (
+                <div className="flex h-full items-end">
+                  <Button
+                    onClick={handleAddContactoEmergencia}
+                    className="m-0 w-full"
+                  >
+                    Agregar Contacto Emergencia
+                  </Button>
+                </div>
+              )}
           </div>
         </div>
 
@@ -1724,7 +2209,7 @@ export function FormularioIngreso() {
                     <td className="p-4">{contacto.direccion}</td>
                     <td className="p-4">
                       <span
-                        className="font-medium text-red-600 hover:text-red-800 dark:text-blue-500 cursor-pointer"
+                        className="font-medium text-red-600 hover:text-red-800 cursor-pointer"
                         onClick={() => handleRemoveContactoEmergencia(i)}
                       >
                         Borrar
@@ -1740,7 +2225,7 @@ export function FormularioIngreso() {
         {/* Datos Bancarios */}
         <div className="mt-6">
           <Title>Datos Bancarios</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
             <div>
               <Label htmlFor="titular_cuenta">Titular de la cuenta</Label>
               <Select
@@ -1797,14 +2282,24 @@ export function FormularioIngreso() {
             </div>
 
             <div>
-              <Label htmlFor="numero_cuenta">Número de cuenta</Label>
-              <Input
-                id="numero_cuenta"
-                name="numero_cuenta"
-                onChange={handleValidate}
-              />
+              <Label htmlFor="numero_cuenta" errors={errors.numero_cuenta}>
+                Número de cuenta *
+              </Label>
+              <div className="relative w-full">
+                <Input
+                  id="numero_cuenta"
+                  name="numero_cuenta"
+                  type="tel"
+                  maxLength="20"
+                  onChange={handleValidate}
+                  errors={errors.numero_cuenta}
+                />
+                {errors.numero_cuenta && (
+                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                )}
+              </div>
               {errors.numero_cuenta && (
-                <p className="text-red-500">{errors.numero_cuenta}</p>
+                <Span className="m-0">{errors.numero_cuenta}</Span>
               )}
             </div>
             <div>
@@ -1823,8 +2318,11 @@ export function FormularioIngreso() {
             {datosIngreso.titular_cuenta === "Tercero" && (
               <>
                 <div>
-                  <Label htmlFor="numero_identificacion_tercero">
-                    Número de identificación del titular
+                  <Label
+                    htmlFor="numero_identificacion_tercero"
+                    errors={errors.numero_identificacion_tercero}
+                  >
+                    Número de identificación del titular *
                   </Label>
                   <div className="flex justify-between gap-2">
                     <Select
@@ -1836,29 +2334,47 @@ export function FormularioIngreso() {
                       <option value="V">V</option>
                       <option value="E">E</option>
                     </Select>
-
-                    <Input
-                      id="numero_identificacion_tercero"
-                      name="numero_identificacion_tercero"
-                      onChange={handleValidate}
-                      type="number"
-                      min="0"
-                    />
+                    <div className="relative w-full">
+                      <Input
+                        id="numero_identificacion_tercero"
+                        name="numero_identificacion_tercero"
+                        onChange={handleValidate}
+                        errors={errors.numero_identificacion_tercero}
+                        maxLength="20"
+                      />
+                      {errors.numero_identificacion_tercero && (
+                        <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                      )}
+                    </div>
                   </div>
+                  {errors.numero_identificacion_tercero && (
+                    <Span className="m-0">
+                      {errors.numero_identificacion_tercero}
+                    </Span>
+                  )}
                 </div>
                 <div>
-                  <Label htmlFor="nombre_apellido_tercero">
-                    Nombre y apellido del titular
+                  <Label
+                    htmlFor="nombre_apellido_tercero"
+                    errors={errors.nombre_apellido_tercero}
+                  >
+                    Nombre y apellido del titular *
                   </Label>
-                  <Input
-                    id="nombre_apellido_tercero"
-                    name="nombre_apellido_tercero"
-                    onChange={handleValidate}
-                  />
+                  <div className="relative w-full">
+                    <Input
+                      id="nombre_apellido_tercero"
+                      name="nombre_apellido_tercero"
+                      onChange={handleValidate}
+                      errors={errors.nombre_apellido_tercero}
+                    />
+                    {errors.nombre_apellido_tercero && (
+                      <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                    )}
+                  </div>
                   {errors.nombre_apellido_tercero && (
-                    <p className="text-red-500">
+                    <Span className="m-0">
                       {errors.nombre_apellido_tercero}
-                    </p>
+                    </Span>
                   )}
                 </div>
                 <div>
@@ -1894,11 +2410,11 @@ export function FormularioIngreso() {
 
         <div className="mt-6">
           <Title>Espacio para el departamento de talento humano</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
             <div>
-              <Label htmlFor="empresa_id">Empresa</Label>
+              <Label htmlFor="empresa_id">Empresa *</Label>
 
-              {empleado.Role.nombre !== "admin" ? (
+              {empleado.Role.nombre !== "Admin Global" ? (
                 <Input
                   id="empresa_id"
                   name="empresa_id"
@@ -1935,7 +2451,7 @@ export function FormularioIngreso() {
             </div>
 
             <div>
-              <Label htmlFor="departamento_id">Departamento</Label>
+              <Label htmlFor="departamento_id">Departamento *</Label>
               <Select
                 id="departamento_id"
                 name="departamento_id"
@@ -1960,7 +2476,7 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="cargo_id">Cargo</Label>
+              <Label htmlFor="cargo_id">Cargo *</Label>
               <Select
                 id="cargo_id"
                 name="cargo_id"
@@ -1985,7 +2501,7 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="cargo_nivel_id">Nivel del cargo</Label>
+              <Label htmlFor="cargo_nivel_id">Nivel del cargo *</Label>
               <Select
                 id="cargo_nivel_id"
                 name="cargo_nivel_id"
@@ -2010,31 +2526,60 @@ export function FormularioIngreso() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="salario" className="flex">
-                Salario
+              <Label htmlFor="salario" errors={errors.salario}>
+                Salario *
               </Label>
-              {/* rango_salario se asignara al min y max del input, ademas debe mostrarse al administrador */}
-              <Input id="salario" name="salario" onChange={handleValidate} />
+              <div className="relative w-full">
+                <Input
+                  id="salario"
+                  name="salario"
+                  onChange={handleValidate}
+                  errors={errors.salario}
+                  onBlur={handleConvertirADecimales}
+                  value={datosIngreso.salario}
+                  type="number"
+                  min="1"
+                  className={`${!showSalario && "text-transparent"}`}
+                />
+
+                {!showSalario ? (
+                  <BiSolidShow
+                    className="absolute right-6 top-[30%] text-xl"
+                    onClick={() => setShowSalario(!showSalario)}
+                  />
+                ) : (
+                  <BiSolidHide
+                    className="absolute right-6 top-[30%] text-xl"
+                    onClick={() => setShowSalario(!showSalario)}
+                  />
+                )}
+              </div>
+              {errors.salario && <Span className="m-0">{errors.salario}</Span>}
             </div>
             <div>
-              <Label htmlFor="fecha_ingreso">Fecha de ingreso</Label>
-              <Input
+              <Label htmlFor="fecha_ingreso">Fecha de ingreso *</Label>
+              <Date
                 id="fecha_ingreso"
                 name="fecha_ingreso"
-                type="date"
                 value={datosIngreso.fecha_ingreso}
                 onChange={handleValidate}
               />
             </div>
             <div className="col-span-1 sm:col-span-2 md:col-span-3">
-              <Label htmlFor="observaciones">Observaciones</Label>
+              <Label htmlFor="observaciones" errors={errors.observaciones}>
+                Observaciones
+              </Label>
               <TextArea
                 id="observaciones"
                 name="observaciones"
                 type="textarea"
                 rows="3"
                 onChange={handleValidate}
+                errors={errors.observaciones}
               />
+              {errors.observaciones && (
+                <Span className="m-0">{errors.observaciones}</Span>
+              )}
             </div>
 
             {/* <div className="col-span-1 sm:col-span-2 md:col-span-3">
@@ -2094,10 +2639,12 @@ export function FormularioIngreso() {
             </div> */}
           </div>
         </div>
-
         <div className="mt-2 flex justify-center">
           <Button
-            className="w-auto flex items-center justify-center gap-2"
+            disabled={Object.keys(errors).length}
+            className={`w-auto flex items-center justify-center gap-2 ${
+              Object.keys(errors).length && "opacity-50"
+            }`}
             onClick={handleSaveFicha}
           >
             <FaFloppyDisk />

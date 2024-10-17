@@ -69,6 +69,7 @@ const {
   Pruebas_Empleados,
   Referencias_Personales,
   Respuestas_Kostick,
+  Roles_Menus,
   Roles,
   Salud,
   Sedes,
@@ -77,6 +78,8 @@ const {
   Sugerencias,
   Tipos_Sugerencias,
   Titulos_Obtenidos,
+  Vacantes_Empleados,
+  Vacantes,
 } = sequelize.models;
 
 // RELACIONES DE MODELOS (TABLAS)
@@ -628,6 +631,59 @@ Empleados.belongsTo(Empresas, {
   },
 });
 
+// Roles M:M Menus
+Roles.belongsToMany(Menus, {
+  through: "Roles_Menus",
+  foreignKey: {
+    name: "rol_id",
+  },
+});
+Menus.belongsToMany(Roles, {
+  through: "Roles_Menus",
+  foreignKey: {
+    name: "menu_id",
+  },
+});
+
+Menus.belongsTo(Menus, { foreignKey: "padre_id", as: "Padre" });
+Menus.hasMany(Menus, { foreignKey: "padre_id", as: "Sub_Menus" });
+
+// Areas_Interes 1:M Vacantes
+Areas_Interes.hasMany(Vacantes, {
+  foreignKey: {
+    name: "area_interes_id",
+  },
+});
+Vacantes.belongsTo(Areas_Interes, {
+  foreignKey: {
+    name: "area_interes_id",
+  },
+});
+
+// Empleados 1:M Vacantes_Empleados
+Empleados.hasMany(Vacantes_Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Vacantes_Empleados.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Vacantes 1:M Vacantes_Empleados
+Vacantes.hasMany(Vacantes_Empleados, {
+  foreignKey: {
+    name: "vacante_id",
+  },
+});
+Vacantes_Empleados.belongsTo(Vacantes, {
+  foreignKey: {
+    name: "vacante_id",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -661,6 +717,7 @@ module.exports = {
   Pruebas_Empleados,
   Referencias_Personales,
   Respuestas_Kostick,
+  Roles_Menus,
   Roles,
   Salud,
   Sedes,
@@ -669,4 +726,6 @@ module.exports = {
   Sugerencias,
   Tipos_Sugerencias,
   Titulos_Obtenidos,
+  Vacantes_Empleados,
+  Vacantes,
 };

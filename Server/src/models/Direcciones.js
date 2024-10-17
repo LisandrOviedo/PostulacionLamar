@@ -8,6 +8,7 @@ module.exports = (sequelize) => {
       primaryKey: true,
     },
     empleado_id: {
+      // Campo relacionado
       type: DataTypes.INTEGER,
       allowNull: false,
     },

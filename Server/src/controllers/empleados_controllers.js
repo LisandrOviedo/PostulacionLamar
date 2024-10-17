@@ -26,6 +26,8 @@ const {
   Datos_Bancarios,
   Movimientos,
   Clases_Movimientos,
+  Menus,
+  Roles_Menus,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
@@ -153,7 +155,19 @@ const traerEmpleado = async (empleado_id) => {
       include: [
         {
           model: Roles,
-          attributes: ["nombre", "descripcion"],
+          attributes: ["nombre", "descripcion", "acceso_admin"],
+          include: [
+            {
+              model: Menus,
+              through: { attributes: ["rol_menu_id"] },
+              include: [
+                {
+                  model: Menus,
+                  as: "Padre",
+                },
+              ],
+            },
+          ],
         },
         {
           model: Empresas,
@@ -390,6 +404,10 @@ const traerEmpleadoExistencia = async (
       order: [[Movimientos, "createdAt", "DESC"]],
     });
 
+    if (empleado && !empleado.activo) {
+      throw new Error(`Ese empleado se encuentra inactivo`);
+    }
+
     if (empleado) {
       return empleado;
     }
@@ -434,7 +452,7 @@ const login = async (tipo_identificacion, numero_identificacion, clave) => {
       include: [
         {
           model: Roles,
-          attributes: ["rol_id", "nombre"],
+          attributes: ["rol_id", "nombre", "acceso_admin"],
         },
       ],
     });

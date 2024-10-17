@@ -20,11 +20,15 @@ import {
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
 export const getLogin = (tipo_identificacion, numero_identificacion, clave) => {
-  const URL_LOGIN = `${URL_SERVER}/empleados/login?tipo_identificacion=${tipo_identificacion}&numero_identificacion=${numero_identificacion}&clave=${clave}`;
+  const URL_LOGIN = `${URL_SERVER}/empleados/login`;
 
   return async (dispatch) => {
     try {
-      const { data } = await axios(URL_LOGIN);
+      const { data } = await axios.post(URL_LOGIN, {
+        tipo_identificacion: tipo_identificacion,
+        numero_identificacion: numero_identificacion,
+        clave: clave,
+      });
 
       if (data.token && data.infoEmpleado) {
         dispatch(token(data.token));
