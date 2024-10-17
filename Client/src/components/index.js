@@ -21,8 +21,8 @@ import { PanelAdmin } from "./Admin/PanelAdmin";
 import { Postulaciones } from "./Admin/Postulaciones";
 import { PruebasEmpleados } from "./Admin/PruebasEmpleados";
 import { Roles_Permisologia } from "./Admin/Roles_Permisologia";
-import { Sugerencias } from "./Admin/Sugerencias";
 import { SolicitudesMovimientos } from "./Admin/SolicitudesMovimientos";
+import { Sugerencias } from "./Admin/Sugerencias";
 
 export {
   AccesoEmpleado,
