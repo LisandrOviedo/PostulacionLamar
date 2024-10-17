@@ -1,6 +1,8 @@
-const { conn, Roles } = require("../db");
+const { conn, Roles, Empleados } = require("../db");
 
 const { roles } = require("../utils/roles");
+
+const { traerEmpleado } = require("./empleados_controllers");
 
 const todosLosRoles = async () => {
   try {
@@ -175,6 +177,38 @@ const inactivarRol = async (rol_id) => {
   }
 };
 
+const cambiarRolEmpleado = async (rol_id, empleado_id) => {
+  if (!rol_id || !empleado_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  let t;
+
+  try {
+    await traerRol(rol_id);
+
+    await traerEmpleado(rol_id);
+
+    t = await conn.transaction();
+
+    await Empleados.update(
+      { rol_id: rol_id }, //El primero es el nombre del campo y el segundo que dato recibo y quiero actualizar.
+      {
+        where: { empleado_id: empleado_id },
+        transaction: t,
+      }
+    );
+
+    await t.commit();
+  } catch (error) {
+    if (t && !t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error(`Error al cambiar el rol del empleado: ${error.message}`);
+  }
+};
+
 module.exports = {
   todosLosRoles,
   traerRol,
@@ -182,4 +216,5 @@ module.exports = {
   crearRol,
   modificarRol,
   inactivarRol,
+  cambiarRolEmpleado,
 };
