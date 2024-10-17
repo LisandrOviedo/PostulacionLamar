@@ -20,14 +20,14 @@ import {
   DetalleEmpleado,
   Empleados,
   FormularioIngreso,
+  Liquidaciones,
   Movimientos,
   PanelAdmin,
   Postulaciones,
   PruebasEmpleados,
+  Roles_Permisologia,
   SolicitudesMovimientos,
   Sugerencias,
-  Liquidaciones,
-  Roles_Permisologia
 } from "./components/";
 
 import {
@@ -119,21 +119,13 @@ function App() {
               path="/admin/solicitudesMovimientos"
               element={<SolicitudesMovimientos />}
             />
-
             <Route path="/admin/liquidaciones" element={<Liquidaciones />} />
             <Route
-              path="/admin/liquidaciones"
-              element={<Liquidaciones />}
-            />
-              <Route path="/admin/rolesPermisologia" element={<Roles_Permisologia />} />
-            <Route
               path="/admin/rolesPermisologia"
-              element={<Liquidaciones />}
+              element={<Roles_Permisologia />}
             />
-
             <Route path="/admin/sugerencias" element={<Sugerencias />} />
           </Route>
-
           <Route path="*" element={<PaginaNoEncontrada />} />
         </Routes>
       </Suspense>
