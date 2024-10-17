@@ -208,7 +208,7 @@ export function Sugerencias() {
     <div>
       <div
         className={`mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8 ${
-          showModal ? "opacity-50 pointer-events-none" : null
+          showModal && "opacity-50 pointer-events-none"
         }`}
       >
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -462,66 +462,62 @@ export function Sugerencias() {
           </nav>
         </div>
       </div>
-      {/* <!-- Main modal --> */}
-      <div
-        className={
-          showModal
-            ? "fixed z-50 inset-0 flex items-center justify-center"
-            : "hidden"
-        }
-      >
-        <div className="p-4 max-w-2xl max-h-full sm:min-w-[600px]">
-          {/* <!-- Modal content --> */}
-          <div className="bg-[#FBFBFD] rounded-lg shadow border-4">
-            {/* <!-- Modal header --> */}
-            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-              <h3 className="sm:text-lg font-semibold text-gray-900">
-                {sugerencia.Sede?.Empresa?.nombre} - Sede{" "}
-                {sugerencia.Sede?.nombre}
-              </h3>
-            </div>
-            {/* <!-- Modal body --> */}
-            <div className="p-4 md:p-5 space-y-4">
-              <span>
-                <b>Tipo De Sugerencia:</b>{" "}
-                {sugerencia.Tipos_Sugerencia?.descripcion}
-              </span>
-
-              <p className="text-base leading-relaxed break-words">
+      {/* Main modal */}
+      {showModal && (
+        <div className="fixed z-50 inset-0 flex items-center justify-center">
+          <div className="p-4 max-w-2xl max-h-full sm:min-w-[600px]">
+            {/* <!-- Modal content --> */}
+            <div className="bg-gray-400 rounded-lg border-2 border-white">
+              {/* <!-- Modal header --> */}
+              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                <h3 className="sm:text-lg font-semibold text-gray-900">
+                  {sugerencia.Sede?.Empresa?.nombre} - Sede{" "}
+                  {sugerencia.Sede?.nombre}
+                </h3>
+              </div>
+              {/* <!-- Modal body --> */}
+              <div className="p-4 md:p-5 space-y-4">
                 <span>
-                  <b>Descripción: </b>
+                  <b>Tipo De Sugerencia:</b>{" "}
+                  {sugerencia.Tipos_Sugerencia?.descripcion}
                 </span>
-                {sugerencia.descripcion}
-              </p>
-              <br />
-              <span>
-                <b>Revisado por: </b>
-                {sugerencia.Empleado?.nombres ? (
-                  <>
-                    {sugerencia.Empleado?.nombres}{" "}
-                    {sugerencia.Empleado?.apellidos} (
-                    {sugerencia.Empleado?.tipo_identificacion}-
-                    {sugerencia.Empleado?.numero_identificacion})
-                  </>
-                ) : (
-                  ""
-                )}
-              </span>
-            </div>
-            {/* <!-- Modal footer --> */}
-            <div className="flex items-center justify-center border-t border-gray-200 rounded-b">
-              <Button
-                className="w-auto"
-                onClick={() => {
-                  setShowModal(0);
-                }}
-              >
-                Cerrar
-              </Button>
+
+                <p className="text-base leading-relaxed break-words">
+                  <span>
+                    <b>Descripción: </b>
+                  </span>
+                  {sugerencia.descripcion}
+                </p>
+                <br />
+                <span>
+                  <b>Revisado por: </b>
+                  {sugerencia.Empleado?.nombres ? (
+                    <>
+                      {sugerencia.Empleado?.nombres}{" "}
+                      {sugerencia.Empleado?.apellidos} (
+                      {sugerencia.Empleado?.tipo_identificacion}-
+                      {sugerencia.Empleado?.numero_identificacion})
+                    </>
+                  ) : (
+                    ""
+                  )}
+                </span>
+              </div>
+              {/* <!-- Modal footer --> */}
+              <div className="flex items-center justify-center border-t border-gray-200 rounded-b">
+                <Button
+                  className="w-auto"
+                  onClick={() => {
+                    setShowModal(0);
+                  }}
+                >
+                  Cerrar
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
