@@ -55,9 +55,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 empleados.get("/detalle/:empleado_id", authenticateToken, getEmpleado);
-empleados.get("/login", getLogin);
 empleados.get("/empleadoExistencia", authenticateToken, getEmpleadoExistencia);
 
+empleados.post("/login", getLogin);
 empleados.post("/allEmpleados", authenticateToken, getEmpleados);
 empleados.post("/", authenticateToken, postEmpleado);
 
