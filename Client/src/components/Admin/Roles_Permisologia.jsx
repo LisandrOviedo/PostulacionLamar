@@ -1,27 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
+import { getAllRoles } from "../../redux/roles/rolesActions";
+
 import {
-  getAllMovimientos,
-  getMovimientoDetail,
-  putAprobarMovimiento,
-  putDenegarMovimiento,
-  postMovimientoPDF,
+  getAllEmpleados,
+  getEmpleadoDetail,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
   deleteFiltros,
-  clearMovimientoDetail,
-} from "../../redux/movimientos/movimientosActions";
-
-import { getAllClasesMovimientosActivas } from "../../redux/clasesMovimientos/clasesMovimientosActions";
-
-import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
-
-import {
-  getAllSedesActivas,
-  resetSedesActivas,
-} from "../../redux/sedes/sedesActions";
+} from "../../redux/empleados/empleadosActions";
 
 import { Button, Input, Label, Select, Span, Title } from "../UI";
 
@@ -30,58 +19,44 @@ import {
   infoPaginador,
 } from "../../utils/paginacion";
 
-import { DDMMYYYYHHMM2 } from "../../utils/formatearFecha";
-
-import { calcularAntiguedad } from "../../utils/formatearFecha";
+import { DDMMYYYY } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
 export function Roles_Permisologia() {
- 
-
   const dispatch = useDispatch();
 
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const movimiento = useSelector((state) => state.movimientos.movimientoDetail);
+  const empleados = useSelector((state) => state.empleados.empleados);
 
-  const movimientos = useSelector((state) => state.movimientos.movimientos);
+  const empleadoDetail = useSelector((state) => state.empleados.empleadoDetail);
 
-  const paginaActual = useSelector((state) => state.movimientos.paginaActual);
-
-  const empresas_activas = useSelector(
-    (state) => state.empresas.empresas_activas
-  );
-  const clases_movimientos_activas = useSelector(
-    (state) => state.clases_movimientos.clases_movimientos_activas
-  );
-
-  const sedes_activas = useSelector((state) => state.sedes.sedes_activas);
+  const paginaActual = useSelector((state) => state.empleados.paginaActual);
 
   const limitePorPagina = useSelector(
-    (state) => state.movimientos.limitePorPagina
+    (state) => state.empleados.limitePorPagina
   );
 
-  const filtros = useSelector((state) => state.movimientos.filtros);
+  const roles = useSelector((state) => state.roles.roles);
+
+  const filtros = useSelector((state) => state.empleados.filtros);
 
   const [filters, setFilters] = useState({
     numero_identificacion: filtros.numero_identificacion || "",
-    apellidos: filtros.numero_identificacion || "",
-    clase_movimiento_id: filtros.clase_movimiento_id || "Seleccione",
-    estado_solicitud: filtros.estado_solicitud || "",
+    apellidos: filtros.apellidos || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
-    empresa_id: filtros.empresa_id || "Seleccione",
-   
+    empresa_id: empleado.empresa_id,
   });
-  const [isSelectOpen, setIsSelectOpen] = useState(false);
+
+  const [nuevoRol, setNuevoRol] = useState({});
+
   const [showModal, setShowModal] = useState(false);
   const modalContentRef = useRef(null);
   const tableRef = useRef(null);
-
-  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const handleChangePagination = (e) => {
     const { value } = e.target;
@@ -93,11 +68,6 @@ export function Roles_Permisologia() {
     }
   };
 
-  const handleSelectToggle = () => {
-    setIsSelectOpen(prevState => !prevState);
-  };
-
-
   const handleChangeFiltersInput = (e) => {
     const { value } = e.target;
 
@@ -107,16 +77,34 @@ export function Roles_Permisologia() {
     setFilters({ ...filters, [valueBuscarPor]: value });
   };
 
+  const handleChangeFiltersSelect = (e) => {
+    const { value } = e.target;
+
+    const buscarPor = document.getElementById("input_search");
+    const valueBuscarPor = buscarPor.value;
+
+    if (valueBuscarPor) {
+      setFilters((prevFilters) => {
+        let updatedFilters = { ...prevFilters };
+
+        if (value === "numero_identificacion") {
+          updatedFilters.apellidos = "";
+        } else if (value === "apellidos") {
+          updatedFilters.numero_identificacion = "";
+        }
+
+        return { ...updatedFilters, [value]: valueBuscarPor };
+      });
+    }
+  };
+
   const handleResetFilters = () => {
     setFilters({
       numero_identificacion: "",
       apellidos: "",
-      clase_movimiento_id: "Seleccione",
-      estado_solicitud: "",
       orden_campo: "",
       orden_por: "",
-      empresa_id: "Seleccione",
-      sede_id: "Seleccione",
+      empresa_id: empleado.empresa_id,
     });
 
     const buscarPor = document.getElementById("buscar_por");
@@ -139,15 +127,18 @@ export function Roles_Permisologia() {
 
     handleFind();
 
-    dispatch(getAllEmpresasActivas(token));
-    dispatch(getAllClasesMovimientosActivas(token));
+    dispatch(getAllRoles(token));
 
-    document.title = "Grupo Lamar - Solicitudes Movimientos (Admin)";
+    document.title = "Grupo Lamar - Roles y Permisología (Admin)";
 
     return () => {
       document.title = "Grupo Lamar";
     };
   }, []);
+
+  useEffect(() => {
+    dispatch(getAllEmpleados(token, filtros, paginaActual, limitePorPagina));
+  }, [filtros, paginaActual, limitePorPagina]);
 
   useEffect(() => {
     if (showModal) {
@@ -156,29 +147,6 @@ export function Roles_Permisologia() {
     }
   }, [showModal]);
 
-  useEffect(() => {
-    dispatch(getAllMovimientos(token, filtros, paginaActual, limitePorPagina));
-  }, [filtros, paginaActual, limitePorPagina]);
-
-  useEffect(() => {
-    if (filters.empresa_id && filters.empresa_id !== "Seleccione") {
-      setFilters({ ...filters, sede_id: "Seleccione" });
-      dispatch(getAllSedesActivas(filters.empresa_id));
-    } else {
-      dispatch(resetSedesActivas());
-      setFilters({ ...filters, sede_id: "Seleccione" });
-    }
-  }, [filters.empresa_id]);
-
-  const handleVerDetalles = (movimiento_id) => {
-    if (!showModal) {
-      setShowModal(true);
-    }
-
-    dispatch(getMovimientoDetail(token, movimiento_id, empleado.empleado_id));
-  };
-
-  
   const changeOrder = (e) => {
     const { name } = e.target;
 
@@ -228,91 +196,54 @@ export function Roles_Permisologia() {
   };
 
   const paginaSiguiente = () => {
-    if (paginaActual < movimientos.cantidadPaginas) {
+    if (paginaActual < empleados.cantidadPaginas) {
       dispatch(postPaginaActual(paginaActual + 1)).then(() => {
         tableRef.current.scrollIntoView({ behavior: "smooth" });
       });
     }
   };
 
-  const handleAprobarMovimiento = async (movimiento_id) => {
-    const { value: text, isConfirmed } = await Swal.fire({
-      input: "textarea",
-      inputLabel: "Aprobar Movimiento",
-      inputPlaceholder: "Escribe tus observaciones aquí...",
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Aceptar",
-      cancelButtonText: "Cancelar",
-      showCancelButton: true,
-    });
-
-    if (isConfirmed) {
-      await putAprobarMovimiento(
-        token,
-        movimiento_id,
-        empleado.empleado_id,
-        text
-      );
-
-      handleFind();
-      handleVerDetalles(movimiento_id);
-    }
-  };
-
-  const handleDenegarMovimiento = async (movimiento_id) => {
-    const { value: text, isConfirmed } = await Swal.fire({
-      input: "textarea",
-      inputLabel: "Denegar Movimiento",
-      inputPlaceholder: "Escribe tus observaciones aquí...",
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Aceptar",
-      cancelButtonText: "Cancelar",
-      showCancelButton: true,
-    });
-
-    if (isConfirmed) {
-      await putDenegarMovimiento(
-        token,
-        movimiento_id,
-        empleado.empleado_id,
-        text
-      );
-
-      handleFind();
-      handleVerDetalles(movimiento_id);
-    }
-  };
-
   const handleCerrarModal = () => {
-    setShowModal(0);
-    clearMovimientoDetail();
+    setShowModal(false);
+    setNuevoRol({});
   };
 
-  const handleChangeFiltersSelect = (e) => {
-    const { value } = e.target;
-
-    const buscarPor = document.getElementById("input_search");
-    const valueBuscarPor = buscarPor.value;
-
-    if (valueBuscarPor) {
-      setFilters((prevFilters) => {
-        let updatedFilters = { ...prevFilters };
-
-        if (value === "numero_identificacion") {
-          updatedFilters.apellidos = "";
-        } else if (value === "apellidos") {
-          updatedFilters.numero_identificacion = "";
-        }
-
-        return { ...updatedFilters, [value]: valueBuscarPor };
-      });
+  const handleVerDetalles = (empleado_id) => {
+    if (!showModal) {
+      setShowModal(true);
     }
+
+    dispatch(getEmpleadoDetail(token, empleado_id));
   };
 
+  const handleGuardarRol = () => {
+    const nombreCompleto = `${empleadoDetail.nombres} ${empleadoDetail.apellidos}`;
 
+    Swal.fire({
+      text: `¿Deseas asignar este rol al usuario ${nombreCompleto}?`,
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Hacer el guardado del rol
+      }
+    });
+  };
 
+  const handleValidate = (e) => {
+    const { name, value } = e.target;
+
+    const rol_seleccionado = document.getElementById("rol_id");
+
+    const descripcion_rol =
+      rol_seleccionado.options[rol_seleccionado.selectedIndex].text;
+
+    setNuevoRol({ descripcion: descripcion_rol, [name]: value });
+  };
 
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
@@ -370,7 +301,7 @@ export function Roles_Permisologia() {
         <div
           id="tabla"
           ref={tableRef}
-          className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start gap-2"
+          className="flex items-end justify-center sm:col-Span-2 lg:col-Span-1 lg:justify-start gap-2"
         >
           <Button className="m-0 w-auto" onClick={handleFind}>
             Buscar
@@ -388,7 +319,7 @@ export function Roles_Permisologia() {
               <tr>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    <span
+                    <Span
                       id="apellidos"
                       name="apellidos"
                       onClick={changeOrder}
@@ -409,7 +340,7 @@ export function Roles_Permisologia() {
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
                       />
-                    </span>
+                    </Span>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -427,12 +358,12 @@ export function Roles_Permisologia() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Roles</div>
+                  <div className="flex items-center">Rol Actual</div>
                 </th>
 
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    <span
+                    <Span
                       id="updatedAt"
                       name="updatedAt"
                       onClick={changeOrder}
@@ -453,7 +384,7 @@ export function Roles_Permisologia() {
                         alt="Icon Sort"
                         className="w-5 h-5 ms-1.5 cursor-pointer"
                       />
-                    </span>
+                    </Span>
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
@@ -462,45 +393,53 @@ export function Roles_Permisologia() {
               </tr>
             </thead>
             <tbody>
-              {movimientos === "No existen movimientos" ||
-              !movimientos.movimientos?.length ? (
+              {empleados === "No existen empleados" ||
+              !empleados.empleados?.length ? (
                 <tr>
                   <td colSpan="4" className="text-center p-2">
-                    <p>¡No existen registros de movimientos!</p>
+                    <p>¡No existen registros de empleados!</p>
                   </td>
                 </tr>
               ) : (
-                movimientos.movimientos?.map((movimiento, i) => (
+                empleados.empleados?.map((empleado, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
                     <td className="p-4">
-                      {movimiento.Empleado.apellidos}{" "}
-                      {movimiento.Empleado.nombres}
+                      {empleado.apellidos} {empleado.nombres}
                     </td>
                     <td className="p-4">
-                      {movimiento.Empleado.tipo_identificacion}
-                      {movimiento.Empleado.numero_identificacion}
+                      {empleado.tipo_identificacion}
+                      {empleado.numero_identificacion}
+                    </td>
+
+                    <td className="p-4">
+                      {
+                        empleado.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo
+                          ?.descripcion
+                      }
                     </td>
                     <td className="p-4">
-                      {movimiento.Clases_Movimiento.descripcion}
+                      {
+                        empleado.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo
+                          ?.Departamento?.Empresa?.nombre
+                      }
                     </td>
                     <td className="p-4">
-                      {DDMMYYYYHHMM2(movimiento.createdAt)}
+                      {
+                        empleado.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo
+                          ?.Departamento?.nombre
+                      }
                     </td>
-                    <td className="p-4">{movimiento.estado_solicitud}</td>
-                    <td className="p-4">
-                      {DDMMYYYYHHMM2(movimiento.updatedAt)}
-                    </td>
+                    <td className="p-4">{empleado.Role.descripcion}</td>
+                    <td className="p-4">{DDMMYYYY(empleado.updatedAt)}</td>
                     <td className="p-4 flex gap-2">
                       <Button
                         className="m-0 w-auto text-xs"
-                        onClick={() =>
-                          handleVerDetalles(movimiento.movimiento_id)
-                        }
+                        onClick={() => handleVerDetalles(empleado.empleado_id)}
                       >
-                        Editar roles
+                        Editar
                       </Button>
                     </td>
                   </tr>
@@ -514,11 +453,11 @@ export function Roles_Permisologia() {
           {infoPaginador(
             paginaActual,
             limitePorPagina,
-            movimientos.totalRegistros
+            empleados.totalRegistros
           )}
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
-              <span
+              <Span
                 onClick={paginaAnterior}
                 className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
@@ -528,14 +467,14 @@ export function Roles_Permisologia() {
                 }`}
               >
                 Pág. Anterior
-              </span>
+              </Span>
             </li>
             {calcularPaginasARenderizar(
               paginaActual,
-              movimientos.cantidadPaginas
+              empleados.cantidadPaginas
             ).map((page) => (
               <li key={page}>
-                <span
+                <Span
                   onClick={() =>
                     dispatch(postPaginaActual(page)).then(() => {
                       tableRef.current.scrollIntoView({ behavior: "smooth" });
@@ -548,91 +487,144 @@ export function Roles_Permisologia() {
                   }`}
                 >
                   {page}
-                </span>
+                </Span>
               </li>
             ))}
             <li>
-              <span
+              <Span
                 onClick={paginaSiguiente}
                 className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
-                  paginaActual >= movimientos.cantidadPaginas
+                  paginaActual >= empleados.cantidadPaginas
                     ? "cursor-default"
                     : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}
               >
                 Pág. Siguiente
-              </span>
+              </Span>
             </li>
           </ul>
         </nav>
       </div>
-
-      {/* Main modal */}
-      <div
-        className={
-          showModal
-            ? "fixed z-[1000] flex items-center justify-center w-full sm:w-[60%] text-sm md:text-base"
-            : "hidden"
-        }
-      >
-        {/* Modal content */}
-        <div className={`bg-gray-400 rounded-lg border-2 border-white lg:w-[70%] ${isSelectOpen ? 'lg:max-h-[80vh]' : 'lg:max-h-[90vh]'}`}>
-          {/* Modal header */}
-          <div className="flex items-start justify-between p-4 md:p-5 border-b rounded-t">
-            <div className="flex flex-col items-start">
-              <Span className="font-bold">
-                {`${movimiento?.movimiento?.Empleado?.Empresa?.nombre} (${movimiento?.movimiento?.Empleado?.Empresa?.Sedes[0]?.nombre})`}
-              </Span>
-              <Span>
-                {`${movimiento?.movimiento?.Empleado?.nombres} ${movimiento?.movimiento?.Empleado?.apellidos}`}
-              </Span>
-              <Span>
-                {`${movimiento?.movimiento?.Empleado?.tipo_identificacion}-${movimiento?.movimiento?.Empleado?.numero_identificacion}`}
-              </Span>
-            </div>
-
-            <div className="flex gap-2 items-center">
-              {movimiento?.movimiento?.estado_solicitud ===
-                "Pendiente por revisar" ||
-              movimiento?.movimiento?.estado_solicitud === "Revisado" ? (
+      {showModal && (
+        <div className="fixed z-[1000] flex items-center justify-center w-full sm:w-[80%] max-h-[70vh] min-h-[70vh] text-sm md:text-base">
+          {/* Modal content */}
+          <div className="bg-gray-400 rounded-lg border-2 border-white">
+            {/* Modal header */}
+            <div className="flex flex-col p-5 border-b rounded-t">
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <Span>
+                    <b>Nombres y apellidos:</b> {empleadoDetail.nombres}{" "}
+                    {empleadoDetail.apellidos}
+                  </Span>
+                  <div className="mt-2">
+                    {" "}
+                    {/* Agregado div para separar visualmente */}
+                    <Span>
+                      <b>Número de identificación:</b>{" "}
+                      {empleado.tipo_identificacion}{" "}
+                      {empleado.numero_identificacion}
+                    </Span>
+                  </div>
+                </div>
                 <Button
-                  className="m-0 w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
-                  onClick={() =>
-                    handleAprobarMovimiento(
-                      movimiento.movimiento.movimiento_id
-                        )
-                  }
+                  className="m-0 w-auto text-xs"
+                  onClick={handleCerrarModal}
                 >
-                  Guardar
+                  Cerrar
                 </Button>
-              ) : null}
-
-              <Button
-                className="m-0 w-auto text-xs"
-                onClick={handleCerrarModal}
-              >
-                Cerrar
-              </Button>
+              </div>
             </div>
-          </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
+              <div className="flex flex-col items-center p-5 space-y-3">
+                <Span>
+                  <b>Cargo actual</b>
+                </Span>
+                <Span>
+                  {
+                    empleado.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo
+                      ?.descripcion
+                  }
+                </Span>
+                <Span>
+                  <b>Empresa</b>
+                </Span>
+                <Span>
+                  {
+                    empleado.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo
+                      ?.Departamento?.Empresa?.nombre
+                  }
+                </Span>
+              </div>
 
-                  {/* Modal body */}
-                  <div className={`overflow-y-auto p-4 transition-all duration-300 ${isSelectOpen ? 'max-h-[100vh]' : 'max-h-[90vh]'}`} ref={modalContentRef}>
-                    <div className="flex flex-col items-center border-b">
-                      <Span className="font-bold mb-2">Roles</Span>
-                      <Select
-                        className="bg-gray-300 border border-white rounded-md p-2 w-full sm:w-auto"
-                        onClick={handleSelectToggle} // Cambia el estado al hacer clic
-                      >
-                        <option value="admin">Admin</option>
-                        <option value="empleados">Empleados</option>
-                      </Select>
+              <div className="flex flex-col items-center p-5 space-y-3">
+                <Span>
+                  <b>Unidad organizativa de adscripción</b>
+                </Span>
+                <Span>
+                  {
+                    empleado.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo
+                      ?.Departamento?.nombre
+                  }
+                </Span>
+                <Span>
+                  <b>Rol Actual</b>
+                </Span>
+                <Span>{empleado.Role.descripcion}</Span>
+                
+                </div>
+                <div className="flex flex-col items-center p-5 space-y-3">
+                <Span>
+                  <b>Últ.Modif</b>
+                </Span>
+                <Span>{DDMMYYYY(empleado.updatedAt)}</Span>
+                </div>
+            
+            </div>
+
+            {/* <!-- Modal body --> */}
+            <div className="flex flex-col p-5 border-b border-white">
+              <div
+                className="overflow-y-auto max-h-[60vh]  "
+                ref={modalContentRef}
+              >
+                <div className="grid grid-cols-2 ">
+                  <div>
+                  <div className="border-b border-white pb-2">
+                    <Label htmlFor="rol_id">
+                      <b>Lista de roles</b>
+                    </Label>
                     </div>
+                    <Select id="rol_id" name="rol_id" onChange={handleValidate}>
+                      <option value="Seleccione">Seleccione</option>
+                      {roles.length &&
+                        roles.map((rol) => (
+                          <option key={rol.rol_id} value={rol.rol_id}>
+                            {rol.descripcion}
+                          </option>
+                        ))}
+                    </Select>
+                  
+                  </div>
+                  <div>
+                    <Button
+                      className="m-0 w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
+                      onClick={handleGuardarRol}
+                    >
+                      Guardar
+                    </Button>
+                   
+                  </div>
+                </div>
+              </div>
+              {/* <!-- Modal footer --> */}
+            </div>
           </div>
         </div>
-      </div>
+       
+      )}
     </div>
   );
-};
-
+}
