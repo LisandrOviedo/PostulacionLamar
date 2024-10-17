@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { getAllRoles } from "../../redux/roles/rolesActions";
+import { getAllRoles, putRolEmpleado } from "../../redux/roles/rolesActions";
 
 import {
   getAllEmpleados,
@@ -55,7 +55,7 @@ export function Roles_Permisologia() {
   const [nuevoRol, setNuevoRol] = useState({});
 
   const [showModal, setShowModal] = useState(false);
-  const modalContentRef = useRef(null);
+
   const tableRef = useRef(null);
 
   const handleChangePagination = (e) => {
@@ -140,13 +140,6 @@ export function Roles_Permisologia() {
     dispatch(getAllEmpleados(token, filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
 
-  useEffect(() => {
-    if (showModal) {
-      // Reinicia el scroll al inicio cada vez que el modal se abre
-      modalContentRef.current.scrollTop = 0;
-    }
-  }, [showModal]);
-
   const changeOrder = (e) => {
     const { name } = e.target;
 
@@ -217,10 +210,10 @@ export function Roles_Permisologia() {
   };
 
   const handleGuardarRol = () => {
-    const nombreCompleto = `${empleadoDetail.nombres} ${empleadoDetail.apellidos}`;
+    const identificacionEmpleado = `${empleadoDetail.tipo_identificacion}${empleadoDetail.numero_identificacion}`;
 
     Swal.fire({
-      text: `¿Deseas asignar este rol al usuario ${nombreCompleto}?`,
+      text: `¿Deseas asignar el rol ${nuevoRol.descripcion} al usuario ${identificacionEmpleado}?`,
       icon: "info",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -229,7 +222,18 @@ export function Roles_Permisologia() {
       cancelButtonText: "No",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Hacer el guardado del rol
+        if (nuevoRol.rol_id !== "Seleccione") {
+          putRolEmpleado(token, nuevoRol.rol_id, empleadoDetail.empleado_id);
+          setShowModal(false);
+        } else {
+          Swal.fire({
+            title: "Oops...",
+            text: "Debes seleccionar un rol válido",
+            icon: "error",
+            showConfirmButton: false,
+            timer: 3000,
+          });
+        }
       }
     });
   };
@@ -511,107 +515,89 @@ export function Roles_Permisologia() {
           {/* Modal content */}
           <div className="bg-gray-400 rounded-lg border-2 border-white">
             {/* Modal header */}
-            <div className="flex flex-col p-5 border-b rounded-t">
-              <div className="flex justify-between items-center mb-4">
-                <div>
-                  <Span>
-                    <b>Nombres y apellidos:</b> {empleadoDetail.nombres}{" "}
-                    {empleadoDetail.apellidos}
-                  </Span>
-                  <div className="mt-2">
-                    <Span>
-                      <b>Número de identificación:</b>{" "}
-                      {empleado.tipo_identificacion}{" "}
-                      {empleado.numero_identificacion}
-                    </Span>
-                  </div>
-                </div>
-                <div className="flex flex-col items-end">
-                  <Button
-                    className="m-0 w-auto text-xs"
-                    onClick={handleCerrarModal}
-                  >
-                    Cerrar
-                  </Button>
-                </div>
-              </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="flex flex-col items-center p-5 space-y-3">
-                <Span>
-                  <b>Cargo actual</b>
-                </Span>
-                <Span>
-                  {
-                    empleado.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo
-                      ?.descripcion
-                  }
-                </Span>
-                <Span>
-                  <b>Empresa</b>
-                </Span>
-                <Span>
-                  {
-                    empleado.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo
-                      ?.Departamento?.Empresa?.nombre
-                  }
-                </Span>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-6">
+              <Span className="mr-2">
+                <b>Nombre completo: </b>
+                {empleadoDetail.nombres} {empleadoDetail.apellidos}
+              </Span>
 
-              <div className="flex flex-col items-center p-5 space-y-3">
-                <Span>
-                  <b>Unidad organizativa de adscripción</b>
-                </Span>
-                <Span>
-                  {
-                    empleado.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo
-                      ?.Departamento?.nombre
-                  }
-                </Span>
-                <Span>
-                  <b>Rol Actual</b>
-                </Span>
-                <Span>{empleado.Role.descripcion}</Span>
-              </div>
+              <Span>
+                <b>Número de identificación: </b>
+                {empleado.tipo_identificacion}
+                {empleado.numero_identificacion}
+              </Span>
 
-              <div className="flex flex-col items-center p-5 space-y-3">
-                <Span>
-                  <b>Últ.Modif</b>
-                </Span>
-                <Span>{DDMMYYYY(empleado.updatedAt)}</Span>
-              </div>
+              <Span>
+                <b>Cargo actual: </b>
+                {
+                  empleado.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo
+                    ?.descripcion
+                }
+              </Span>
+
+              <Span>
+                <b>Empresa: </b>
+                {
+                  empleado.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo
+                    ?.Departamento?.Empresa?.nombre
+                }
+              </Span>
+
+              <Span>
+                <b>Unidad organizativa de adscripción: </b>
+                {
+                  empleado.Cargos_Empleados[0]?.Cargos_Nivele?.Cargo
+                    ?.Departamento?.nombre
+                }
+              </Span>
+              <Span>
+                <b>Rol actual: </b>
+                {empleado.Role.descripcion}
+              </Span>
+
+              <Span>
+                <b>Última modificación: </b>
+                {DDMMYYYY(empleado.updatedAt)}
+              </Span>
             </div>
 
             {/* Cuerpo del modal */}
-
-            <div className="overflow-y-auto max-h-[60vh]" ref={modalContentRef}>
-              <div className="border-b border-white pb-2 mb-2"></div>
-              <div className="flex flex-col mb-2">
-                <Label htmlFor="rol_id">
-                  <b>Lista de roles</b>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 p-4 rounded-t border-t gap-4">
+              <div className="md:col-span-2">
+                <Label htmlFor="rol_id" className="font-bold">
+                  Asignar nuevo rol:
                 </Label>
+
+                <Select
+                  id="rol_id"
+                  name="rol_id"
+                  onChange={handleValidate}
+                  className="md:w-auto"
+                >
+                  <option value="Seleccione">Seleccione</option>
+                  {roles.length > 0 &&
+                    roles.map((rol) => (
+                      <option key={rol.rol_id} value={rol.rol_id}>
+                        {rol.descripcion}
+                      </option>
+                    ))}
+                </Select>
               </div>
-              <div className="grid grid-cols-2">
-                <div className="flex flex-col">
-                  <Select id="rol_id" name="rol_id" onChange={handleValidate}>
-                    <option value="Seleccione">Seleccione</option>
-                    {roles.length > 0 &&
-                      roles.map((rol) => (
-                        <option key={rol.rol_id} value={rol.rol_id}>
-                          {rol.descripcion}
-                        </option>
-                      ))}
-                  </Select>
-                </div>
-                <div className="flex flex-col justify-end items-end h-full">
-                  <Button
-                    className="m-0 w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
-                    onClick={handleGuardarRol}
-                  >
-                    Guardar
-                  </Button>
-                </div>
+
+              <div className="flex flex-col gap-4 sm:flex-row justify-end items-center sm:items-end">
+                <Button
+                  className="m-0 md:w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
+                  onClick={handleGuardarRol}
+                >
+                  Guardar
+                </Button>
+                <Button
+                  className="m-0 md:w-auto text-xs"
+                  onClick={handleCerrarModal}
+                >
+                  Cancelar
+                </Button>
               </div>
             </div>
             {/* <!-- Modal footer --> */}
