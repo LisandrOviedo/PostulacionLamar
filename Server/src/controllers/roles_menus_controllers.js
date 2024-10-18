@@ -9,6 +9,7 @@ const todosLosRolesMenus = async (rol_id) => {
     const roles_menus = await Roles_Menus.findAll({
       where: {
         rol_id: rol_id,
+        activo: true,
       },
     });
 
