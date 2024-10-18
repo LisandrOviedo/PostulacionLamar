@@ -159,11 +159,13 @@ const traerEmpleado = async (empleado_id) => {
           include: [
             {
               model: Menus,
-              through: { attributes: ["rol_menu_id"] },
+              through: { attributes: ["rol_menu_id"], where: { activo: true } },
               include: [
                 {
                   model: Menus,
                   as: "Padre",
+                  where: { activo: true },
+                  required: false,
                 },
               ],
             },
