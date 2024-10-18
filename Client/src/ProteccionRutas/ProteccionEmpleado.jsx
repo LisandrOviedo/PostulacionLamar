@@ -12,7 +12,9 @@ export const ProteccionEmpleado = () => {
     (element) => element.ruta === pathname
   );
 
-  return userState.empleado_id && userState.Role.nombre && menuPermiso ? (
+  return userState.empleado_id &&
+    userState.Role.nombre &&
+    (menuPermiso || pathname === "/perfilProfesional/registro") ? (
     <Outlet />
   ) : (
     <Navigate replace to="/" state={{ from: location }} />

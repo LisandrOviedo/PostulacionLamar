@@ -60,15 +60,17 @@ export function InfoCurriculo() {
         </span>
 
         <ul className="list-disc text-justify sm:text-left text-sm sm:text-base">
-          <li>
+          {/* <li>
             Disponibilidad de tiempo de 30 minutos para aplicación del Test de
             Valoración Actitudinal
-          </li>
+          </li> */}
           <li>
             Anexar resumen curricular en formato PDF{" "}
-            <img className="w-[1.2rem] inline" src="./PDF.svg" alt="PDF Icon" />{" "}
-            Además, anexar también el resto de documentos requeridos en el menú
-            Perfil Profesional / Anexar documentos.
+            <img className="w-[1.2rem] inline" src="./PDF.svg" alt="PDF Icon" />
+          </li>
+          <li>
+            Anexar el resto de documentos requeridos en el menú{" "}
+            <b>Perfil Profesional / Anexar Documentos</b>.
           </li>
         </ul>
 
