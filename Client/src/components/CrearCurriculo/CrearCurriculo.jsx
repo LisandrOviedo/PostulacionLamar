@@ -10,6 +10,7 @@ import {
   postCurriculoPDF,
   getCurriculoEmpleado,
 } from "../../redux/curriculos/curriculosActions";
+import { postPostulacionVacante } from "../../redux/vacantes/vacantesActions";
 
 import {
   Button,
@@ -86,24 +87,24 @@ export function CrearCurriculo() {
 
     dispatch(getAllIdiomasActivos(token));
 
+    Swal.fire({
+      title: "Perfil Profesional",
+      text: `Actualiza tus datos y presiona el botón "Guardar Cambios" al final de la página`,
+      icon: "info",
+      showConfirmButton: false,
+      timer: 3000,
+    });
+
     document.title = "Grupo Lamar - Perfil Profesional";
 
     return () => {
       document.title = "Grupo Lamar";
     };
-  }, [curriculoEmpleado]);
+  }, []);
 
   useEffect(() => {
-    if (
-      areas_interes_activas?.length &&
-      searchParams.get("areaInteres") &&
-      parseInt(searchParams.get("areaInteres"))
-    ) {
-      const select = document.getElementById("area_interes_id");
-
-      select.value = searchParams.get("areaInteres");
-    }
-  }, [areas_interes_activas]);
+    window.scroll(0, 0);
+  }, [curriculoEmpleado]);
 
   const handleInputChangeCurriculo = (event) => {
     const { name, value } = event.target;
@@ -454,8 +455,30 @@ export function CrearCurriculo() {
               `${empleado.tipo_identificacion}${empleado.numero_identificacion}`
             )
           )
-            .then((response) => {
-              Swal.fire({
+            .then(async (response) => {
+              if (searchParams.get("vacante")) {
+                const vacante_id = searchParams.get("vacante");
+
+                await Swal.fire({
+                  text: "¿Deseas postularte a la vacante?",
+                  icon: "info",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Si",
+                  cancelButtonText: "No",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    postPostulacionVacante(
+                      token,
+                      vacante_id,
+                      empleado.empleado_id
+                    );
+                  }
+                });
+              }
+
+              await Swal.fire({
                 text: "¿Deseas observar / descargar tu perfil?",
                 icon: "info",
                 showCancelButton: true,
@@ -469,6 +492,7 @@ export function CrearCurriculo() {
                   window.open(URL_GET_PDF, "_blank");
                 }
               });
+
               navigate("/inicio");
             })
             .catch((error) => {

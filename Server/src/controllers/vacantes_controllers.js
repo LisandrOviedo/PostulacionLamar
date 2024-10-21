@@ -252,7 +252,7 @@ const postularVacanteEmpleado = async (vacante_id, empleado_id) => {
       await t.rollback();
     }
 
-    throw new Error(`Error al inactivar la vacante: ${error.message}`);
+    throw new Error(`Error al postular a la vacante: ${error.message}`);
   }
 };
 

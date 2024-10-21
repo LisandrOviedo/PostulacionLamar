@@ -18,11 +18,12 @@ import municipios from "./municipios/municipiosSlices";
 import paises from "./paises/paisesSlices";
 import parroquias from "./parroquias/parroquiasSlices";
 import pruebas_empleados from "./pruebasEmpleados/pruebasEmpleadosSlices";
+import roles from "./roles/rolesSlices";
 import sedes from "./sedes/sedesSlices";
 import sugerencias from "./sugerencias/sugerenciasSlices";
 import sugerencias_pred from "./sugerenciasPred/sugerenciasPredSlices";
 import tipos_sugerencias from "./tiposSugerencias/tiposSugerenciasSlices";
-import roles from "./roles/rolesSlices";
+import vacantes from "./vacantes/vacantesSlices";
 
 // Configuración de Redux Persist
 const persistConfig = {
@@ -49,11 +50,12 @@ const rootReducer = combineReducers({
   paises: paises,
   parroquias: parroquias,
   pruebas_empleados: pruebas_empleados,
+  roles: roles,
   sedes: sedes,
   sugerencias: sugerencias,
   sugerencias_pred: sugerencias_pred,
   tipos_sugerencias: tipos_sugerencias,
-  roles: roles,
+  vacantes: vacantes,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
