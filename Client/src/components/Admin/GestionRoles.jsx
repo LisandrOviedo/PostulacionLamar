@@ -287,7 +287,6 @@ const [listaRoles, setListaRoles] = useState([]);
               }
             />
           </div>
-  
           <div className="flex flex-col place-content-between">
             <Label htmlFor="limitePorPagina">Límite por página</Label>
             <Select
@@ -302,7 +301,6 @@ const [listaRoles, setListaRoles] = useState([]);
               <option value="30">30</option>
             </Select>
           </div>
-  
           <div className="flex space-x-4">
             <div
               id="tabla"
@@ -402,19 +400,19 @@ const [listaRoles, setListaRoles] = useState([]);
                     </td>
                   </tr>
                 ) : (
-                  roles.roles?.map((roles, i) => (
+                  roles.roles?.map((rol, i) => (
                     <tr
                       key={i}
                       className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                     >
-                      <td className="p-4">{roles.nombre}</td>
-                      <td className="p-4">{roles.descripcion}</td>
-                      <td className="p-4">{DDMMYYYY(empleado.updatedAt)}</td>
+                      <td className="p-4">{rol.nombre}</td>
+                      <td className="p-4">{rol.descripcion}</td>
+                      <td className="p-4">{DDMMYYYY(rol.updatedAt)}</td>
                       <td className="p-4 flex gap-2">
                         <Button
                           className="m-0 w-auto text-xs"
                           onClick={() =>
-                            handleVerDetalles(empleado.empleado_id, roles.rol_id)
+                            handleVerDetalles(rol.empleado_id, rol.rol_id)
                           }
                         >
                           Editar
@@ -422,7 +420,7 @@ const [listaRoles, setListaRoles] = useState([]);
                         <Button
                           className="m-0 w-auto text-xs"
                           onClick={() =>
-                            handleVerDetalles(empleado.empleado_id)
+                            handleVerDetalles(rol.empleado_id)
                           }
                         >
                           Asignar Menús
@@ -441,27 +439,23 @@ const [listaRoles, setListaRoles] = useState([]);
               <li>
                 <Span
                   onClick={paginaAnterior}
-                  className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
-                  ${paginaActual <= 1 ? "cursor-default" : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"}`}
+                  className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                    paginaActual <= 1 ? "cursor-default" : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                  }`}
                 >
                   Pág. Anterior
                 </Span>
               </li>
-              {calcularPaginasARenderizar(
-                paginaActual,
-                roles.cantidadPaginas
-              ).map((page) => (
+              {calcularPaginasARenderizar(paginaActual, roles.cantidadPaginas).map((page) => (
                 <li key={page}>
                   <Span
-                    onClick={() =>
+                    onClick={() => {
                       dispatch(postPaginaActual(page)).then(() => {
                         tableRef.current.scrollIntoView({ behavior: "smooth" });
-                      })
-                    }
+                      });
+                    }}
                     className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
-                      page === paginaActual
-                        ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"
-                        : ""
+                      page === paginaActual ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50" : ""
                     }`}
                   >
                     {page}
@@ -471,8 +465,9 @@ const [listaRoles, setListaRoles] = useState([]);
               <li>
                 <Span
                   onClick={paginaSiguiente}
-                  className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
-                  ${paginaActual >= roles.cantidadPaginas ? "cursor-default" : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"}`}
+                  className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                    paginaActual >= roles.cantidadPaginas ? "cursor-default" : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                  }`}
                 >
                   Pág. Siguiente
                 </Span>
@@ -516,52 +511,6 @@ const [listaRoles, setListaRoles] = useState([]);
                 onClick={handleGuardarRol}
               >
                 Guardar
-              </Button>
-              <Button
-                className="m-0 md:w-auto text-xs"
-                onClick={handleCerrarModal}
-              >
-                Cancelar
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-  
-      {showModal && (
-        <div className="fixed z-50 inset-0 flex items-center justify-center mx-[6%]">
-          <div className="bg-gray-400 rounded-lg border-2 border-white p-6">
-            <div className="flex flex-col">
-              <Label htmlFor="nombre" className="font-bold">
-                Nombre del rol:
-              </Label>
-              <Input
-                type="text"
-                id="nombre"
-                name="nombre"
-                value={listaRoles.nombre}
-                onChange={handleVerDetalles}
-              />
-            </div>
-            <div className="flex flex-col">
-              <Label htmlFor="descripcion" className="font-bold">
-                Descripción del rol:
-              </Label>
-              <Input
-                type="text"
-                id="descripcion"
-                name="descripcion"
-                value={listaRoles.descripcion}
-                onChange={handleVerDetalles}
-              />
-            </div>
-  
-            <div className="flex justify-end space-x-4 mt-4">
-              <Button
-                className="m-0 md:w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
-                onClick={handleVerDetalles}
-              >
-                Buscar
               </Button>
               <Button
                 className="m-0 md:w-auto text-xs"
