@@ -27,7 +27,6 @@ const {
   Movimientos,
   Clases_Movimientos,
   Menus,
-  Roles_Menus,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
@@ -36,7 +35,11 @@ const { YYYYMMDD, fechaHoraActual } = require("../utils/formatearFecha");
 
 const { sanarTextoAPI } = require("../utils/formatearTexto");
 
-const { crearSesion, traerSesion } = require("./sesiones_controllers");
+const {
+  crearSesion,
+  traerSesion,
+  cerrarSesion,
+} = require("./sesiones_controllers");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -1115,6 +1118,8 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
 
     await t.commit();
 
+    await cerrarSesion(empleado_id);
+
     return await traerEmpleado(empleado_id);
   } catch (error) {
     if (t && !t.finished) {
@@ -1146,6 +1151,8 @@ const inactivarEmpleado = async (empleado_id) => {
     );
 
     await t.commit();
+
+    await cerrarSesion(empleado_id);
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
