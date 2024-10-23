@@ -17,15 +17,16 @@ import {
   PruebaKostick,
   SubirDocumentos,
   AccesoAdmin,
+  AsignacionRoles,
   DetalleEmpleado,
   Empleados,
   FormularioIngreso,
+  GestionRoles,
   Liquidaciones,
   Movimientos,
   PanelAdmin,
   Postulaciones,
   PruebasEmpleados,
-  Roles_Permisologia,
   SolicitudesMovimientos,
   Sugerencias,
 } from "./components/";
@@ -120,9 +121,12 @@ function App() {
               element={<SolicitudesMovimientos />}
             />
             <Route path="/admin/liquidaciones" element={<Liquidaciones />} />
+
+            <Route path="/admin/gestionRoles" element={<GestionRoles />} />
+
             <Route
-              path="/admin/rolesPermisologia"
-              element={<Roles_Permisologia />}
+              path="/admin/asignacionRoles"
+              element={<AsignacionRoles />}
             />
             <Route path="/admin/sugerencias" element={<Sugerencias />} />
           </Route>
