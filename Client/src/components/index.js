@@ -12,6 +12,7 @@ import { PruebaKostick } from "./PruebaKostick/PruebaKostick";
 import { SubirDocumentos } from "./SubirDocumentos/SubirDocumentos";
 
 import { AccesoAdmin } from "./Admin/AccesoAdmin";
+import { AsignacionRoles } from "./Admin/AsignacionRoles";
 import { DetalleEmpleado } from "./Admin/DetalleEmpleado";
 import { Empleados } from "./Admin/Empleados";
 import { FormularioIngreso } from "./Admin/FormularioIngreso";
@@ -20,7 +21,7 @@ import { Movimientos } from "./Admin/Movimientos";
 import { PanelAdmin } from "./Admin/PanelAdmin";
 import { Postulaciones } from "./Admin/Postulaciones";
 import { PruebasEmpleados } from "./Admin/PruebasEmpleados";
-import { Roles_Permisologia } from "./Admin/Roles_Permisologia";
+import { GestionRoles } from "./Admin/GestionRoles";
 import { SolicitudesMovimientos } from "./Admin/SolicitudesMovimientos";
 import { Sugerencias } from "./Admin/Sugerencias";
 
@@ -38,15 +39,16 @@ export {
   PruebaKostick,
   SubirDocumentos,
   AccesoAdmin,
+  AsignacionRoles,
   DetalleEmpleado,
   Empleados,
   FormularioIngreso,
+  GestionRoles,
   Liquidaciones,
   Movimientos,
   PanelAdmin,
   Postulaciones,
   PruebasEmpleados,
-  Roles_Permisologia,
   SolicitudesMovimientos,
   Sugerencias,
 };
