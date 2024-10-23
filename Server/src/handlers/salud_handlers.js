@@ -83,7 +83,7 @@ export const putSalud = async (req, res) => {
   }
 };
 
-const deleteSalud = async (req, res) => {
+export const deleteSalud = async (req, res) => {
   const { salud_id } = req.body;
 
   try {

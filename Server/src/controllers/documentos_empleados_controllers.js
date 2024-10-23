@@ -1,6 +1,7 @@
 import fs from "node:fs";
 
-import { conn, Documentos_Empleados } from "../db.js";
+import { conn, models } from "../db.js";
+const { Documentos_Empleados } = models;
 
 import { traerEmpleado } from "./empleados_controllers.js";
 
