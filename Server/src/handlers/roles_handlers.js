@@ -1,4 +1,5 @@
 const {
+  todosLosRolesFiltrados,
   todosLosRoles,
   traerRol,
   crearRol,
@@ -6,6 +7,22 @@ const {
   inactivarRol,
   cambiarRolEmpleado,
 } = require("../controllers/roles_controllers");
+
+const getRolesFiltrados = async (req, res) => {
+  const { filtros, paginaActual, limitePorPagina } = req.body;
+
+  try {
+    const response = await todosLosRolesFiltrados(
+      filtros,
+      paginaActual,
+      limitePorPagina
+    );
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
 
 const getRoles = async (req, res) => {
   try {
@@ -78,6 +95,7 @@ const putCambiarRolEmpleado = async (req, res) => {
 };
 
 module.exports = {
+  getRolesFiltrados,
   getRoles,
   getRol,
   postRol,
