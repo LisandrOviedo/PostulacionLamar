@@ -47,7 +47,7 @@ export function AccesoEmpleado() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    if (empleado.activo && empleado.Role?.nombre) {
+    if (empleado.activo && empleado.Role.nombre) {
       return navigate("/inicio");
     }
 
@@ -66,7 +66,7 @@ export function AccesoEmpleado() {
 
     if (empleado?.changePassword) {
       return navigate("/miPerfil/actualizarClaveTemporal");
-    } else if (empleado.activo && empleado.Role?.nombre) {
+    } else if (empleado.activo && empleado.Role.nombre) {
       Swal.fire({
         title: "¡Bienvenido!",
         text: "Sesión iniciada correctamente",

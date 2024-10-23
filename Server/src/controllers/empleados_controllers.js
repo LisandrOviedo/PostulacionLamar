@@ -159,11 +159,17 @@ const traerEmpleado = async (empleado_id) => {
           include: [
             {
               model: Menus,
+              attributes: {
+                exclude: ["createdAt", "updatedAt"],
+              },
               through: { attributes: ["rol_menu_id"], where: { activo: true } },
               include: [
                 {
                   model: Menus,
                   as: "Padre",
+                  attributes: {
+                    exclude: ["createdAt", "updatedAt"],
+                  },
                   where: { activo: true },
                   required: false,
                 },
@@ -498,6 +504,12 @@ const login = async (tipo_identificacion, numero_identificacion, clave) => {
       }
     }
 
+    const infoEmpleado = await traerEmpleado(empleado.empleado_id);
+
+    if (!infoEmpleado.Role.Menus.length) {
+      throw new Error(`El rol de su usuario no posee menús asociados`);
+    }
+
     const token = jwt.sign(
       {
         empleado_id: empleado.empleado_id,
@@ -506,8 +518,6 @@ const login = async (tipo_identificacion, numero_identificacion, clave) => {
       SECRET_KEY,
       { expiresIn: "4h" }
     );
-
-    const infoEmpleado = await traerEmpleado(empleado.empleado_id);
 
     await crearSesion(empleado.empleado_id, token);
 

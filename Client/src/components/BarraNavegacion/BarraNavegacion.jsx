@@ -107,7 +107,7 @@ export function BarraNavegacion() {
       });
     }
 
-    const resultadoMenu = organizedMenus(empleado?.Role?.Menus);
+    const resultadoMenu = organizedMenus(empleado.Role.Menus);
 
     setMenu(resultadoMenu);
   }, [pathname]);

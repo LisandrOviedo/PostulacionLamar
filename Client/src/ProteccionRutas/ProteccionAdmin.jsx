@@ -8,7 +8,7 @@ export const ProteccionAdmin = () => {
 
   const { pathname } = location;
 
-  const menuPermiso = userState?.Role?.Menus?.find(
+  const menuPermiso = userState?.Role?.Menus?.some(
     (element) => element.ruta === pathname
   );
 
