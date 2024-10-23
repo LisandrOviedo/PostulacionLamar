@@ -6,7 +6,7 @@ export const Label = ({ className, errors, children, ...props }) => {
     <label
       className={twMerge(
         clsx(
-          `block mb-2 text-sm font-medium  ${
+          `block mb-2 text-sm font-medium ${
             errors ? "text-red-600" : "text-gray-900"
           }`,
           className

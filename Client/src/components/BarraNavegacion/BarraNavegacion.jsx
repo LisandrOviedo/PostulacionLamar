@@ -107,7 +107,7 @@ export function BarraNavegacion() {
       });
     }
 
-    const resultadoMenu = organizedMenus(empleado?.Role?.Menus);
+    const resultadoMenu = organizedMenus(empleado.Role.Menus);
 
     setMenu(resultadoMenu);
   }, [pathname]);
@@ -316,118 +316,7 @@ export function BarraNavegacion() {
                   />
                 </div>
               </li>
-
-              <li>
-                <Link
-                  to={
-                    !pathname.startsWith("/admin/") ? "/inicio" : "/admin/panel"
-                  }
-                  className="text-white hover:text-[#F0C95C] block"
-                  onClick={() => {
-                    toggleMenuBurger();
-                  }}
-                >
-                  Inicio
-                </Link>
-              </li>
-
-              <li>
-                <span
-                  onClick={() => toggleMenu("mi_perfil")}
-                  className="hover:text-[#F0C95C] block cursor-pointer"
-                >
-                  Mi Perfil
-                  {showSubMenu["mi_perfil"] ? (
-                    <IoMdArrowDropup className="inline" />
-                  ) : (
-                    <IoMdArrowDropdown className="inline" />
-                  )}
-                </span>
-
-                <ul
-                  className={
-                    showSubMenu["mi_perfil"]
-                      ? "flex flex-col gap-1 my-3 p-1 border rounded-3xl text-sm"
-                      : "hidden"
-                  }
-                >
-                  <li>
-                    <Link
-                      to={
-                        !pathname.startsWith("/admin/")
-                          ? "/miPerfil/datosPersonales"
-                          : "/admin/miPerfil/datosPersonales"
-                      }
-                      className="text-white hover:text-[#F0C95C] block"
-                      onClick={toggleMenuBurger}
-                    >
-                      Datos personales
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={
-                        !pathname.startsWith("/admin/")
-                          ? "/miPerfil/actualizarClave"
-                          : "/admin/miPerfil/actualizarClave"
-                      }
-                      className="text-white hover:text-[#F0C95C] block"
-                      onClick={toggleMenuBurger}
-                    >
-                      Actualizar contraseña
-                    </Link>
-                  </li>
-                </ul>
-              </li>
-              {!pathname.startsWith("/admin/") ? (
-                // EMPLEADOS
-                <>
-                  <li>
-                    <span
-                      onClick={() => toggleMenu("perfil_profesional")}
-                      className="hover:text-[#F0C95C] block cursor-pointer"
-                    >
-                      Perfil Profesional
-                      {showSubMenu["perfil_profesional"] ? (
-                        <IoMdArrowDropup className="inline" />
-                      ) : (
-                        <IoMdArrowDropdown className="inline" />
-                      )}
-                    </span>
-                    <ul
-                      className={
-                        showSubMenu["perfil_profesional"]
-                          ? "flex flex-col gap-1 my-3 p-1 border rounded-3xl text-sm"
-                          : "hidden"
-                      }
-                    >
-                      <li>
-                        <Link
-                          to="/perfilProfesional/info"
-                          className="text-white hover:text-[#F0C95C] block"
-                          onClick={toggleMenuBurger}
-                        >
-                          Actualizar Perfil
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/perfilProfesional/misDocumentos"
-                          className="text-white hover:text-[#F0C95C] block"
-                          onClick={toggleMenuBurger}
-                        >
-                          Anexar documentos
-                        </Link>
-                      </li>
-                    </ul>
-                  </li>
-                  {renderMenu(menu)}
-                </>
-              ) : (
-                // ADMINISTRADORES
-                renderMenu(menu)
-              )}
-
+              {renderMenu(menu)}
               <li>
                 <Link
                   className="text-white hover:text-[#F0C95C] block"

@@ -27,7 +27,6 @@ const {
   Movimientos,
   Clases_Movimientos,
   Menus,
-  Roles_Menus,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
@@ -36,7 +35,11 @@ const { YYYYMMDD, fechaHoraActual } = require("../utils/formatearFecha");
 
 const { sanarTextoAPI } = require("../utils/formatearTexto");
 
-const { crearSesion, traerSesion } = require("./sesiones_controllers");
+const {
+  crearSesion,
+  traerSesion,
+  cerrarSesion,
+} = require("./sesiones_controllers");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -159,11 +162,19 @@ const traerEmpleado = async (empleado_id) => {
           include: [
             {
               model: Menus,
-              through: { attributes: ["rol_menu_id"] },
+              attributes: {
+                exclude: ["createdAt", "updatedAt"],
+              },
+              through: { attributes: ["rol_menu_id"], where: { activo: true } },
               include: [
                 {
                   model: Menus,
                   as: "Padre",
+                  attributes: {
+                    exclude: ["createdAt", "updatedAt"],
+                  },
+                  where: { activo: true },
+                  required: false,
                 },
               ],
             },
@@ -496,6 +507,12 @@ const login = async (tipo_identificacion, numero_identificacion, clave) => {
       }
     }
 
+    const infoEmpleado = await traerEmpleado(empleado.empleado_id);
+
+    if (!infoEmpleado.Role.Menus.length) {
+      throw new Error(`El rol de su usuario no posee menús asociados`);
+    }
+
     const token = jwt.sign(
       {
         empleado_id: empleado.empleado_id,
@@ -504,8 +521,6 @@ const login = async (tipo_identificacion, numero_identificacion, clave) => {
       SECRET_KEY,
       { expiresIn: "4h" }
     );
-
-    const infoEmpleado = await traerEmpleado(empleado.empleado_id);
 
     await crearSesion(empleado.empleado_id, token);
 
@@ -1103,6 +1118,8 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
 
     await t.commit();
 
+    await cerrarSesion(empleado_id);
+
     return await traerEmpleado(empleado_id);
   } catch (error) {
     if (t && !t.finished) {
@@ -1134,6 +1151,8 @@ const inactivarEmpleado = async (empleado_id) => {
     );
 
     await t.commit();
+
+    await cerrarSesion(empleado_id);
 
     return await traerEmpleado(empleado_id);
   } catch (error) {

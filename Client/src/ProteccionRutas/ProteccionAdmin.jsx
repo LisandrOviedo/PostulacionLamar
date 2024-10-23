@@ -6,7 +6,13 @@ export const ProteccionAdmin = () => {
 
   const location = useLocation();
 
-  return userState.empleado_id && userState.Role.acceso_admin ? (
+  const { pathname } = location;
+
+  const menuPermiso = userState?.Role?.Menus?.some(
+    (element) => element.ruta === pathname
+  );
+
+  return userState.empleado_id && userState.Role.acceso_admin && menuPermiso ? (
     <Outlet />
   ) : (
     <Navigate replace to="/admin/acceso" state={{ from: location }} />
