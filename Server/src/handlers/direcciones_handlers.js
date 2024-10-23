@@ -1,13 +1,13 @@
-const {
+import {
   todasLasDirecciones,
   todasLasDireccionesActivas,
   traerDireccion,
   crearDireccion,
   modificarDireccion,
   inactivarDireccion,
-} = require("../controllers/direcciones_controllers");
+} from "../controllers/direcciones_controllers.js";
 
-const getDirecciones = async (req, res) => {
+export const getDirecciones = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getDirecciones = async (req, res) => {
   }
 };
 
-const getDireccionesActivas = async (req, res) => {
+export const getDireccionesActivas = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getDireccionesActivas = async (req, res) => {
   }
 };
 
-const getDireccion = async (req, res) => {
+export const getDireccion = async (req, res) => {
   const { direccion_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getDireccion = async (req, res) => {
   }
 };
 
-const postDireccion = async (req, res) => {
+export const postDireccion = async (req, res) => {
   const { empleado_id, datosIngreso } = req.body;
 
   try {
@@ -55,7 +55,7 @@ const postDireccion = async (req, res) => {
   }
 };
 
-const putDireccion = async (req, res) => {
+export const putDireccion = async (req, res) => {
   const {
     direccion_id,
     calle_avenida,
@@ -91,7 +91,7 @@ const putDireccion = async (req, res) => {
   }
 };
 
-const deleteDireccion = async (req, res) => {
+export const deleteDireccion = async (req, res) => {
   const { direccion_id } = req.body;
 
   try {
@@ -101,13 +101,4 @@ const deleteDireccion = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getDirecciones,
-  getDireccionesActivas,
-  getDireccion,
-  postDireccion,
-  putDireccion,
-  deleteDireccion,
 };

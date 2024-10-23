@@ -1,11 +1,11 @@
-const {
+import {
   todasLasPruebas,
   traerPruebasEmpleados,
   traerPrueba,
   crearPrueba,
-} = require("../controllers/pruebas_empleados_controllers");
+} from "../controllers/pruebas_empleados_controllers.js";
 
-const getPruebas = async (req, res) => {
+export const getPruebas = async (req, res) => {
   const { filtros, paginaActual, limitePorPagina } = req.body;
 
   try {
@@ -21,7 +21,7 @@ const getPruebas = async (req, res) => {
   }
 };
 
-const getPruebasEmpleado = async (req, res) => {
+export const getPruebasEmpleado = async (req, res) => {
   const { empleado_id, prueba } = req.body;
 
   try {
@@ -33,7 +33,7 @@ const getPruebasEmpleado = async (req, res) => {
   }
 };
 
-const getPrueba = async (req, res) => {
+export const getPrueba = async (req, res) => {
   const { prueba_id } = req.params;
 
   try {
@@ -45,7 +45,7 @@ const getPrueba = async (req, res) => {
   }
 };
 
-const postPrueba = async (req, res) => {
+export const postPrueba = async (req, res) => {
   const { empleado_id, prueba } = req.body;
 
   try {
@@ -55,11 +55,4 @@ const postPrueba = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getPruebas,
-  getPruebasEmpleado,
-  getPrueba,
-  postPrueba,
 };

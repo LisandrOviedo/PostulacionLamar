@@ -1,16 +1,17 @@
-const axios = require("axios");
+import axios from "axios";
 
-const { conn, Empresas, Sedes } = require("../db");
+import { conn, models } from "../db.js";
+const { Empresas, Sedes } = models;
 
-const { sanarTextoAPI } = require("../utils/formatearTexto");
+import { sanarTextoAPI } from "../utils/formatearTexto.js";
 
-const { fechaHoraActual } = require("../utils/formatearFecha");
+import { fechaHoraActual } from "../utils/formatearFecha.js";
 
 const { API_EMPLEADOS } = process.env;
 
-const { empresas_faltantes } = require("../utils/empresas");
+import { empresas_faltantes } from "../utils/empresas.js";
 
-const todasLasEmpresas = async () => {
+export const todasLasEmpresas = async () => {
   try {
     const empresas = await Empresas.findAll({
       order: [["nombre", "ASC"]],
@@ -22,7 +23,7 @@ const todasLasEmpresas = async () => {
   }
 };
 
-const todasLasEmpresasActivas = async () => {
+export const todasLasEmpresasActivas = async () => {
   try {
     const empresas = await Empresas.findAll({
       where: { activo: true },
@@ -35,7 +36,7 @@ const todasLasEmpresasActivas = async () => {
   }
 };
 
-const traerEmpresa = async (empresa_id) => {
+export const traerEmpresa = async (empresa_id) => {
   if (!empresa_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -53,7 +54,7 @@ const traerEmpresa = async (empresa_id) => {
   }
 };
 
-const cargarEmpresas = async () => {
+export const cargarEmpresas = async () => {
   let t;
 
   try {
@@ -158,7 +159,7 @@ const cargarEmpresas = async () => {
   }
 };
 
-const crearEmpresa = async (codigo_empresa, nombre, direccion, rif) => {
+export const crearEmpresa = async (codigo_empresa, nombre, direccion, rif) => {
   if (!codigo_empresa || !nombre || !direccion || !rif) {
     throw new Error(`Datos faltantes`);
   }
@@ -200,7 +201,7 @@ const crearEmpresa = async (codigo_empresa, nombre, direccion, rif) => {
   }
 };
 
-const modificarEmpresa = async (
+export const modificarEmpresa = async (
   empresa_id,
   codigo_empresa,
   nombre,
@@ -245,7 +246,7 @@ const modificarEmpresa = async (
   }
 };
 
-const inactivarEmpresa = async (empresa_id) => {
+export const inactivarEmpresa = async (empresa_id) => {
   if (!empresa_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -261,8 +262,8 @@ const inactivarEmpresa = async (empresa_id) => {
       { activo: !empresa.activo },
       {
         where: { empresa_id: empresa_id },
-         transaction: t 
-      },
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -275,14 +276,4 @@ const inactivarEmpresa = async (empresa_id) => {
 
     throw new Error(`Error al inactivar el empresa: ${error.message}`);
   }
-};
-
-module.exports = {
-  todasLasEmpresas,
-  todasLasEmpresasActivas,
-  traerEmpresa,
-  cargarEmpresas,
-  crearEmpresa,
-  modificarEmpresa,
-  inactivarEmpresa,
 };

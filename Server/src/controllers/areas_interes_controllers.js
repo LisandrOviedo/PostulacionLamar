@@ -1,10 +1,11 @@
-const { conn, Areas_Interes, Areas_Interes_Curriculos } = require("../db");
+import { conn, models } from "../db.js";
+const { Areas_Interes, Areas_Interes_Curriculos } = models;
 
-const { traerCurriculo } = require("./curriculos_controllers");
+import { traerCurriculo } from "./curriculos_controllers.js";
 
-const { areasInteres } = require("../utils/areasInteres");
+import { areasInteres } from "../utils/areasInteres.js";
 
-const todosLosAreaInteres = async () => {
+export const todosLosAreaInteres = async () => {
   try {
     const areas_interes = await Areas_Interes.findAll({
       order: [["nombre", "ASC"]],
@@ -22,7 +23,7 @@ const todosLosAreaInteres = async () => {
   }
 };
 
-const todosLosAreaInteresActivas = async () => {
+export const todosLosAreaInteresActivas = async () => {
   try {
     const areas_interes = await Areas_Interes.findAll({
       where: { activo: true },
@@ -41,7 +42,7 @@ const todosLosAreaInteresActivas = async () => {
   }
 };
 
-const traerAreaInteres = async (area_interes_id) => {
+export const traerAreaInteres = async (area_interes_id) => {
   if (!area_interes_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -59,7 +60,7 @@ const traerAreaInteres = async (area_interes_id) => {
   }
 };
 
-const cargarAreaInteres = async () => {
+export const cargarAreaInteres = async () => {
   let t;
 
   try {
@@ -92,7 +93,7 @@ const cargarAreaInteres = async () => {
   }
 };
 
-const crearAreaInteres = async (nombre) => {
+export const crearAreaInteres = async (nombre) => {
   if (!nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -126,7 +127,7 @@ const crearAreaInteres = async (nombre) => {
   }
 };
 
-const modificarAreaInteres = async (area_interes_id, nombre) => {
+export const modificarAreaInteres = async (area_interes_id, nombre) => {
   if (!area_interes_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -162,7 +163,7 @@ const modificarAreaInteres = async (area_interes_id, nombre) => {
   }
 };
 
-const inactivarAreaInteres = async (area_interes_id) => {
+export const inactivarAreaInteres = async (area_interes_id) => {
   if (!area_interes_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -194,7 +195,10 @@ const inactivarAreaInteres = async (area_interes_id) => {
   }
 };
 
-const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
+export const agregarAreasInteresCurriculo = async (
+  curriculo_id,
+  areas_interes
+) => {
   if (!curriculo_id || !areas_interes) {
     throw new Error(`Datos faltantes`);
   }
@@ -235,7 +239,7 @@ const agregarAreasInteresCurriculo = async (curriculo_id, areas_interes) => {
   }
 };
 
-const eliminarAreasInteresCurriculo = async (curriculo_id) => {
+export const eliminarAreasInteresCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -262,15 +266,4 @@ const eliminarAreasInteresCurriculo = async (curriculo_id) => {
 
     throw new Error(`Error al eliminar las áreas de interés: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosAreaInteres,
-  todosLosAreaInteresActivas,
-  traerAreaInteres,
-  cargarAreaInteres,
-  crearAreaInteres,
-  modificarAreaInteres,
-  inactivarAreaInteres,
-  agregarAreasInteresCurriculo,
 };

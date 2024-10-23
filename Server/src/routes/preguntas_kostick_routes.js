@@ -1,12 +1,10 @@
-const { Router } = require("express");
-const {
-  getPreguntasKostick,
-} = require("../handlers/preguntas_kostick_handlers");
+import { Router } from "express";
+import { getPreguntasKostick } from "../handlers/preguntas_kostick_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const preguntas_kostick = Router();
 
 preguntas_kostick.get("/", authenticateToken, getPreguntasKostick);
 
-module.exports = preguntas_kostick;
+export default preguntas_kostick;

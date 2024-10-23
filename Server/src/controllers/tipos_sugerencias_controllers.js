@@ -1,6 +1,7 @@
-const { conn, Tipos_Sugerencias } = require("../db");
+import { conn, models } from "../db.js";
+const { Tipos_Sugerencias } = models;
 
-const todosLosTiposSugerencias = async () => {
+export const todosLosTiposSugerencias = async () => {
   try {
     const tipos_sugerencias = await Tipos_Sugerencias.findAll({
       order: [["descripcion", "ASC"]],
@@ -14,7 +15,7 @@ const todosLosTiposSugerencias = async () => {
   }
 };
 
-const todosLosTiposSugerenciasActivas = async () => {
+export const todosLosTiposSugerenciasActivas = async () => {
   try {
     const tipos_sugerencias = await Tipos_Sugerencias.findAll({
       where: { activo: true },
@@ -29,7 +30,7 @@ const todosLosTiposSugerenciasActivas = async () => {
   }
 };
 
-const traerTipoSugerencia = async (tipo_sugerencia_id) => {
+export const traerTipoSugerencia = async (tipo_sugerencia_id) => {
   if (!tipo_sugerencia_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -49,7 +50,7 @@ const traerTipoSugerencia = async (tipo_sugerencia_id) => {
   }
 };
 
-const crearTipoSugerencia = async (descripcion) => {
+export const crearTipoSugerencia = async (descripcion) => {
   if (!descripcion) {
     throw new Error(`Datos faltantes`);
   }
@@ -83,7 +84,10 @@ const crearTipoSugerencia = async (descripcion) => {
   }
 };
 
-const modificarTipoSugerencia = async (tipo_sugerencia_id, descripcion) => {
+export const modificarTipoSugerencia = async (
+  tipo_sugerencia_id,
+  descripcion
+) => {
   if (!tipo_sugerencia_id || !descripcion) {
     throw new Error(`Datos faltantes`);
   }
@@ -121,7 +125,7 @@ const modificarTipoSugerencia = async (tipo_sugerencia_id, descripcion) => {
   }
 };
 
-const inactivarTipoSugerencia = async (tipo_sugerencia_id) => {
+export const inactivarTipoSugerencia = async (tipo_sugerencia_id) => {
   if (!tipo_sugerencia_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -153,13 +157,4 @@ const inactivarTipoSugerencia = async (tipo_sugerencia_id) => {
       `Error al inactivar el tipo de sugerencia: ${error.message}`
     );
   }
-};
-
-module.exports = {
-  todosLosTiposSugerencias,
-  todosLosTiposSugerenciasActivas,
-  traerTipoSugerencia,
-  crearTipoSugerencia,
-  modificarTipoSugerencia,
-  inactivarTipoSugerencia,
 };

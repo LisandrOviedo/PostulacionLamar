@@ -1,13 +1,13 @@
-const {
+import {
   todasLasEmpresas,
   todasLasEmpresasActivas,
   traerEmpresa,
   crearEmpresa,
   modificarEmpresa,
   inactivarEmpresa,
-} = require("../controllers/empresas_controllers");
+} from "../controllers/empresas_controllers.js";
 
-const getEmpresas = async (req, res) => {
+export const getEmpresas = async (req, res) => {
   try {
     const response = await todasLasEmpresas();
 
@@ -17,7 +17,7 @@ const getEmpresas = async (req, res) => {
   }
 };
 
-const getEmpresasActivas = async (req, res) => {
+export const getEmpresasActivas = async (req, res) => {
   try {
     const response = await todasLasEmpresasActivas();
 
@@ -27,7 +27,7 @@ const getEmpresasActivas = async (req, res) => {
   }
 };
 
-const getEmpresa = async (req, res) => {
+export const getEmpresa = async (req, res) => {
   const { empresa_id } = req.params;
 
   try {
@@ -39,7 +39,7 @@ const getEmpresa = async (req, res) => {
   }
 };
 
-const postEmpresa = async (req, res) => {
+export const postEmpresa = async (req, res) => {
   const { codigo_empresa, nombre, direccion, rif } = req.body;
 
   try {
@@ -51,7 +51,7 @@ const postEmpresa = async (req, res) => {
   }
 };
 
-const putEmpresa = async (req, res) => {
+export const putEmpresa = async (req, res) => {
   const { empresa_id, codigo_empresa, nombre, direccion, rif } = req.body;
 
   try {
@@ -69,7 +69,7 @@ const putEmpresa = async (req, res) => {
   }
 };
 
-const deleteEmpresa = async (req, res) => {
+export const deleteEmpresa = async (req, res) => {
   const { empresa_id } = req.body;
 
   try {
@@ -79,13 +79,4 @@ const deleteEmpresa = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getEmpresas,
-  getEmpresasActivas,
-  getEmpresa,
-  postEmpresa,
-  putEmpresa,
-  deleteEmpresa,
 };

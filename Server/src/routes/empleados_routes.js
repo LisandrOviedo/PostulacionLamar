@@ -1,5 +1,5 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getEmpleados,
   getEmpleado,
   getEmpleadoExistencia,
@@ -11,18 +11,18 @@ const {
   putClaveEmpleado,
   putReiniciarClave,
   deleteEmpleado,
-} = require("../handlers/empleados_handlers");
+} from "../handlers/empleados_handlers.js";
 
-const { DDMMYYYYHHMM } = require("../utils/formatearFecha");
+import { DDMMYYYYHHMM } from "../utils/formatearFecha.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const empleados = Router();
 
-const multer = require("multer");
-const path = require("path");
+import multer from "multer";
+import path from "node:path";
 const MIMETYPES = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
-const fs = require("fs");
+import fs from "node:fs";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -73,4 +73,4 @@ empleados.put(
 );
 empleados.put("/inactivar", authenticateToken, deleteEmpleado);
 
-module.exports = empleados;
+export default empleados;

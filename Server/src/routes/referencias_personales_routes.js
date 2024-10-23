@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getReferenciasPersonales,
   getReferenciasPersonalesActivas,
   getReferenciaPersonal,
   postReferenciaPersonal,
   putReferenciaPersonal,
   deleteReferenciaPersonal,
-} = require("../handlers/referencias_personales_handlers");
+} from "../handlers/referencias_personales_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const referencias_personales = Router();
 
@@ -41,4 +41,4 @@ referencias_personales.put(
   deleteReferenciaPersonal
 );
 
-module.exports = referencias_personales;
+export default referencias_personales;

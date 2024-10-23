@@ -1,13 +1,13 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getTitulosObtenidos,
   getTituloObtenido,
   postTitulosObtenidos,
   putTituloObtenido,
   deleteTituloObtenido,
-} = require("../handlers/titulos_obtenidos_handlers");
+} from "../handlers/titulos_obtenidos_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const titulos_obtenidos = Router();
 
@@ -27,4 +27,4 @@ titulos_obtenidos.post("/", authenticateToken, postTitulosObtenidos);
 titulos_obtenidos.put("/modificar", authenticateToken, putTituloObtenido);
 titulos_obtenidos.put("/inactivar", authenticateToken, deleteTituloObtenido);
 
-module.exports = titulos_obtenidos;
+export default titulos_obtenidos;

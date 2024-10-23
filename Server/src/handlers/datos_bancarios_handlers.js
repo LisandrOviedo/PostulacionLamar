@@ -1,13 +1,13 @@
-const {
+import {
   todosLosDatosBancarios,
   todosLosDatosBancariosActivos,
   traerDatoBancario,
   crearDatoBancario,
   modificarDatoBancario,
   inactivarDatoBancario,
-} = require("../controllers/datos_bancarios_controllers");
+} from "../controllers/datos_bancarios_controllers.js";
 
-const getDatosBancarios = async (req, res) => {
+export const getDatosBancarios = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getDatosBancarios = async (req, res) => {
   }
 };
 
-const getDatosBancariosActivos = async (req, res) => {
+export const getDatosBancariosActivos = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getDatosBancariosActivos = async (req, res) => {
   }
 };
 
-const getDatoBancario = async (req, res) => {
+export const getDatoBancario = async (req, res) => {
   const { dato_bancario_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getDatoBancario = async (req, res) => {
   }
 };
 
-const postDatoBancario = async (req, res) => {
+export const postDatoBancario = async (req, res) => {
   const { empleado_id, datosIngreso } = req.body;
 
   try {
@@ -55,7 +55,7 @@ const postDatoBancario = async (req, res) => {
   }
 };
 
-const putDatoBancario = async (req, res) => {
+export const putDatoBancario = async (req, res) => {
   const {
     dato_bancario_id,
     titular_cuenta,
@@ -87,7 +87,7 @@ const putDatoBancario = async (req, res) => {
   }
 };
 
-const deleteDatoBancario = async (req, res) => {
+export const deleteDatoBancario = async (req, res) => {
   const { dato_bancario_id } = req.body;
 
   try {
@@ -97,13 +97,4 @@ const deleteDatoBancario = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getDatosBancarios,
-  getDatosBancariosActivos,
-  getDatoBancario,
-  postDatoBancario,
-  putDatoBancario,
-  deleteDatoBancario,
 };

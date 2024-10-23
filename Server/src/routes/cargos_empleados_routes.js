@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getCargosEmpleadosEmpleados,
   getCargosEmpleadosEmpleadosActivos,
   getCargoEmpleado,
   postCargoEmpleado,
   putCargoEmpleado,
   deleteCargoEmpleado,
-} = require("../handlers/cargos_empleados_handlers");
+} from "../handlers/cargos_empleados_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const cargos_empleados = Router();
 
@@ -33,4 +33,4 @@ cargos_empleados.post("/", authenticateToken, postCargoEmpleado);
 cargos_empleados.put("/modificar", authenticateToken, putCargoEmpleado);
 cargos_empleados.put("/inactivar", authenticateToken, deleteCargoEmpleado);
 
-module.exports = cargos_empleados;
+export default cargos_empleados;

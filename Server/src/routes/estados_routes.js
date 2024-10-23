@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getEstados,
   getEstadosActivos,
   getEstado,
   postEstado,
   putEstado,
   deleteEstado,
-} = require("../handlers/estados_handlers");
+} from "../handlers/estados_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const estados = Router();
 
@@ -21,4 +21,4 @@ estados.post("/", authenticateToken, postEstado);
 estados.put("/modificar", authenticateToken, putEstado);
 estados.put("/inactivar", authenticateToken, deleteEstado);
 
-module.exports = estados;
+export default estados;

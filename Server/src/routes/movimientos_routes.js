@@ -1,5 +1,5 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getMovimientos,
   getMovimiento,
   getMovimientoPDF,
@@ -8,9 +8,9 @@ const {
   putAprobarMovimiento,
   putDenegarMovimiento,
   deleteMovimiento,
-} = require("../handlers/movimientos_handlers");
+} from "../handlers/movimientos_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const movimientos = Router();
 
@@ -25,4 +25,4 @@ movimientos.put("/aprobar", authenticateToken, putAprobarMovimiento);
 movimientos.put("/denegar", authenticateToken, putDenegarMovimiento);
 movimientos.put("/inactivar", authenticateToken, deleteMovimiento);
 
-module.exports = movimientos;
+export default movimientos;

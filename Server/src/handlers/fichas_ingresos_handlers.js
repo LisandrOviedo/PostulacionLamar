@@ -1,4 +1,4 @@
-const {
+import {
   todasLasFichasIngresos,
   traerFichaIngresoEmpleado,
   traerFichaIngreso,
@@ -6,21 +6,19 @@ const {
   crearFichaIngreso,
   modificarFichaIngreso,
   inactivarFichaIngreso,
-} = require("../controllers/fichas_ingresos_controllers");
+} from "../controllers/fichas_ingresos_controllers.js";
 
-const {
-  traerFotoEmpleado,
-} = require("../controllers/empleados_controllers.js");
+import { traerFotoEmpleado } from "../controllers/empleados_controllers.js";
 
-const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
+import { crearCarpetaSiNoExiste } from "../utils/pruebaKostick.js";
 
-const path = require("path");
+import path from "node:path";
 
-const puppeteer = require("puppeteer");
+import puppeteer from "puppeteer";
 
-const { reporteFichaIngreso } = require("../utils/reportes.js");
+import { reporteFichaIngreso } from "../utils/reportes.js";
 
-const getFichasIngresosEmpleado = async (req, res) => {
+export const getFichasIngresosEmpleado = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -32,7 +30,7 @@ const getFichasIngresosEmpleado = async (req, res) => {
   }
 };
 
-const getFichaIngresoEmpleado = async (req, res) => {
+export const getFichaIngresoEmpleado = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -44,7 +42,7 @@ const getFichaIngresoEmpleado = async (req, res) => {
   }
 };
 
-const getFichaIngreso = async (req, res) => {
+export const getFichaIngreso = async (req, res) => {
   const { ficha_ingreso_id } = req.params;
 
   try {
@@ -56,7 +54,7 @@ const getFichaIngreso = async (req, res) => {
   }
 };
 
-const postFichaIngreso = async (req, res) => {
+export const postFichaIngreso = async (req, res) => {
   const { empleado_id, datosIngreso } = req.body;
 
   try {
@@ -68,7 +66,7 @@ const postFichaIngreso = async (req, res) => {
   }
 };
 
-const getFichaIngresoPDF = async (req, res) => {
+export const getFichaIngresoPDF = async (req, res) => {
   const { empleado_id, identificacion } = req.body;
   const filename = "Ficha Ingreso.pdf";
 
@@ -121,7 +119,7 @@ const getFichaIngresoPDF = async (req, res) => {
   }
 };
 
-const putFichaIngreso = async (req, res) => {
+export const putFichaIngreso = async (req, res) => {
   const {
     ficha_ingreso_id,
     cargo_nivel_id,
@@ -145,7 +143,7 @@ const putFichaIngreso = async (req, res) => {
   }
 };
 
-const deleteFichaIngreso = async (req, res) => {
+export const deleteFichaIngreso = async (req, res) => {
   const { ficha_ingreso_id } = req.body;
 
   try {
@@ -155,14 +153,4 @@ const deleteFichaIngreso = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getFichasIngresosEmpleado,
-  getFichaIngresoEmpleado,
-  getFichaIngreso,
-  getFichaIngresoPDF,
-  postFichaIngreso,
-  putFichaIngreso,
-  deleteFichaIngreso,
 };

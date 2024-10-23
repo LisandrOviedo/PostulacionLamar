@@ -1,13 +1,13 @@
-const {
+import {
   todasLasSedes,
   todasLasSedesActivas,
   traerSede,
   crearSede,
   modificarSede,
   inactivarSede,
-} = require("../controllers/sedes_controllers");
+} from "../controllers/sedes_controllers.js";
 
-const getSedes = async (req, res) => {
+export const getSedes = async (req, res) => {
   const { empresa_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getSedes = async (req, res) => {
   }
 };
 
-const getSedesActivas = async (req, res) => {
+export const getSedesActivas = async (req, res) => {
   const { empresa_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getSedesActivas = async (req, res) => {
   }
 };
 
-const getSede = async (req, res) => {
+export const getSede = async (req, res) => {
   const { sede_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getSede = async (req, res) => {
   }
 };
 
-const postSede = async (req, res) => {
+export const postSede = async (req, res) => {
   const { empresa_id, nombre, tipo, direccion, latitud, longitud } = req.body;
 
   try {
@@ -62,7 +62,7 @@ const postSede = async (req, res) => {
   }
 };
 
-const putSede = async (req, res) => {
+export const putSede = async (req, res) => {
   const { sede_id, empresa_id, nombre, tipo, direccion, latitud, longitud } =
     req.body;
 
@@ -83,7 +83,7 @@ const putSede = async (req, res) => {
   }
 };
 
-const deleteSede = async (req, res) => {
+export const deleteSede = async (req, res) => {
   const { sede_id } = req.body;
 
   try {
@@ -93,13 +93,4 @@ const deleteSede = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getSedes,
-  getSedesActivas,
-  getSede,
-  postSede,
-  putSede,
-  deleteSede,
 };

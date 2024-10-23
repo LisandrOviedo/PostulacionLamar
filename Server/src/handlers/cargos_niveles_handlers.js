@@ -1,13 +1,13 @@
-const {
+import {
   todosLosCargosNiveles,
   todosLosCargosNivelesActivos,
   traerCargoNivel,
   crearCargoNivel,
   modificarCargoNivel,
   inactivarCargoNivel,
-} = require("../controllers/cargos_niveles_controllers");
+} from "../controllers/cargos_niveles_controllers.js";
 
-const getCargosNiveles = async (req, res) => {
+export const getCargosNiveles = async (req, res) => {
   const { cargo_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getCargosNiveles = async (req, res) => {
   }
 };
 
-const getCargosNivelesActivos = async (req, res) => {
+export const getCargosNivelesActivos = async (req, res) => {
   const { cargo_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getCargosNivelesActivos = async (req, res) => {
   }
 };
 
-const getCargoNivel = async (req, res) => {
+export const getCargoNivel = async (req, res) => {
   const { cargo_nivel_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getCargoNivel = async (req, res) => {
   }
 };
 
-const postCargoNivel = async (req, res) => {
+export const postCargoNivel = async (req, res) => {
   const { cargo_id, nivel, salario_min, salario_max } = req.body;
 
   try {
@@ -60,7 +60,7 @@ const postCargoNivel = async (req, res) => {
   }
 };
 
-const putCargoNivel = async (req, res) => {
+export const putCargoNivel = async (req, res) => {
   const { cargo_nivel_id, cargo_id, nivel, salario_min, salario_max } =
     req.body;
 
@@ -79,7 +79,7 @@ const putCargoNivel = async (req, res) => {
   }
 };
 
-const deleteCargoNivel = async (req, res) => {
+export const deleteCargoNivel = async (req, res) => {
   const { cargo_nivel_id } = req.body;
 
   try {
@@ -89,13 +89,4 @@ const deleteCargoNivel = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getCargosNiveles,
-  getCargosNivelesActivos,
-  getCargoNivel,
-  postCargoNivel,
-  putCargoNivel,
-  deleteCargoNivel,
 };

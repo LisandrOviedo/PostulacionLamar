@@ -1,7 +1,7 @@
-const { Op } = require("sequelize");
+import { Op } from "sequelize";
 
+import { conn, models } from "../db.js";
 const {
-  conn,
   Curriculos,
   Empleados,
   Titulos_Obtenidos,
@@ -10,13 +10,17 @@ const {
   Documentos_Empleados,
   Idiomas,
   Etnias,
-} = require("../db");
+} = models;
 
-const { traerEmpleado } = require("./empleados_controllers");
-const { traerAnexos } = require("./documentos_empleados_controllers");
-const { calcularEdad } = require("../utils/formatearFecha");
+import { traerEmpleado } from "./empleados_controllers.js";
+import { traerAnexos } from "./documentos_empleados_controllers.js";
+import { calcularEdad } from "../utils/formatearFecha.js";
 
-const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
+export const todosLosCurriculos = async (
+  filtros,
+  paginaActual,
+  limitePorPagina
+) => {
   if (!paginaActual || !limitePorPagina) {
     throw new Error(`Datos faltantes`);
   }
@@ -134,7 +138,7 @@ const todosLosCurriculos = async (filtros, paginaActual, limitePorPagina) => {
   }
 };
 
-const traerCurriculo = async (curriculo_id) => {
+export const traerCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -146,7 +150,7 @@ const traerCurriculo = async (curriculo_id) => {
   }
 };
 
-const traerCurriculoPDF = async (empleado_id) => {
+export const traerCurriculoPDF = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -308,7 +312,7 @@ const traerCurriculoPDF = async (empleado_id) => {
   }
 };
 
-const traerCurriculoPDFAnexos = async (empleado_id) => {
+export const traerCurriculoPDFAnexos = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -328,7 +332,7 @@ const traerCurriculoPDFAnexos = async (empleado_id) => {
   }
 };
 
-const cambiarEstadoRevisado = async (empleado_id, revisado_por_id) => {
+export const cambiarEstadoRevisado = async (empleado_id, revisado_por_id) => {
   if (!empleado_id || !revisado_por_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -372,7 +376,7 @@ const cambiarEstadoRevisado = async (empleado_id, revisado_por_id) => {
   }
 };
 
-const traerCurriculoEmpleado = async (empleado_id) => {
+export const traerCurriculoEmpleado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -445,7 +449,7 @@ const traerCurriculoEmpleado = async (empleado_id) => {
   }
 };
 
-const modificarCurriculo = async (
+export const modificarCurriculo = async (
   empleado_id,
   curriculo_id,
   disponibilidad_viajar,
@@ -515,7 +519,7 @@ const modificarCurriculo = async (
   }
 };
 
-const inactivarCurriculo = async (curriculo_id) => {
+export const inactivarCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -545,15 +549,4 @@ const inactivarCurriculo = async (curriculo_id) => {
 
     throw new Error(`Error al inactivar el curriculo: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosCurriculos,
-  traerCurriculo,
-  traerCurriculoPDF,
-  traerCurriculoPDFAnexos,
-  cambiarEstadoRevisado,
-  traerCurriculoEmpleado,
-  modificarCurriculo,
-  inactivarCurriculo,
 };

@@ -1,13 +1,13 @@
-const {
+import {
   todosLosMenus,
   todosLosMenusActivos,
   traerMenu,
   crearMenu,
   modificarMenu,
   inactivarMenu,
-} = require("../controllers/menus_controllers");
+} from "../controllers/menus_controllers.js";
 
-const getMenus = async (req, res) => {
+export const getMenus = async (req, res) => {
   try {
     const response = await todosLosMenus();
 
@@ -17,7 +17,7 @@ const getMenus = async (req, res) => {
   }
 };
 
-const getMenusActivos = async (req, res) => {
+export const getMenusActivos = async (req, res) => {
   try {
     const response = await todosLosMenusActivos();
 
@@ -27,7 +27,7 @@ const getMenusActivos = async (req, res) => {
   }
 };
 
-const getMenu = async (req, res) => {
+export const getMenu = async (req, res) => {
   const { menu_id } = req.params;
 
   try {
@@ -39,7 +39,7 @@ const getMenu = async (req, res) => {
   }
 };
 
-const postMenu = async (req, res) => {
+export const postMenu = async (req, res) => {
   const { padre_id, titulo, ruta, orden, icono } = req.body;
 
   try {
@@ -51,7 +51,7 @@ const postMenu = async (req, res) => {
   }
 };
 
-const putMenu = async (req, res) => {
+export const putMenu = async (req, res) => {
   const { menu_id, padre_id, titulo, ruta, orden, icono } = req.body;
 
   try {
@@ -70,7 +70,7 @@ const putMenu = async (req, res) => {
   }
 };
 
-const deleteMenu = async (req, res) => {
+export const deleteMenu = async (req, res) => {
   const { menu_id } = req.body;
 
   try {
@@ -80,13 +80,4 @@ const deleteMenu = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getMenus,
-  getMenusActivos,
-  getMenu,
-  postMenu,
-  putMenu,
-  deleteMenu,
 };

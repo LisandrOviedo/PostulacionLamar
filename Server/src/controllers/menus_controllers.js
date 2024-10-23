@@ -1,6 +1,7 @@
-const { conn, Menus } = require("../db");
+import { conn, models } from "../db.js";
+const { Menus } = models;
 
-const todosLosMenus = async () => {
+export const todosLosMenus = async () => {
   try {
     const menus = await Menus.findAll({
       order: [["titulo", "ASC"]],
@@ -16,7 +17,7 @@ const todosLosMenus = async () => {
   }
 };
 
-const todosLosMenusActivos = async () => {
+export const todosLosMenusActivos = async () => {
   try {
     const menus = await Menus.findAll({
       where: { activo: true },
@@ -33,7 +34,7 @@ const todosLosMenusActivos = async () => {
   }
 };
 
-const traerMenu = async (menu_id) => {
+export const traerMenu = async (menu_id) => {
   if (!menu_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -51,7 +52,7 @@ const traerMenu = async (menu_id) => {
   }
 };
 
-const crearMenu = async (padre_id, titulo, ruta, orden, icono) => {
+export const crearMenu = async (padre_id, titulo, ruta, orden, icono) => {
   if (!titulo || !ruta || !orden) {
     throw new Error(`Datos faltantes`);
   }
@@ -89,7 +90,14 @@ const crearMenu = async (padre_id, titulo, ruta, orden, icono) => {
   }
 };
 
-const modificarMenu = async (menu_id, padre_id, titulo, ruta, orden, icono) => {
+export const modificarMenu = async (
+  menu_id,
+  padre_id,
+  titulo,
+  ruta,
+  orden,
+  icono
+) => {
   if (!menu_id || !titulo || !ruta || !orden) {
     throw new Error(`Datos faltantes`);
   }
@@ -129,7 +137,7 @@ const modificarMenu = async (menu_id, padre_id, titulo, ruta, orden, icono) => {
   }
 };
 
-const inactivarMenu = async (menu_id) => {
+export const inactivarMenu = async (menu_id) => {
   if (!menu_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -159,13 +167,4 @@ const inactivarMenu = async (menu_id) => {
 
     throw new Error(`Error al inactivar el menú: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosMenus,
-  todosLosMenusActivos,
-  traerMenu,
-  crearMenu,
-  modificarMenu,
-  inactivarMenu,
 };

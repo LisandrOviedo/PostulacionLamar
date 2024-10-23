@@ -1,13 +1,13 @@
-const {
+import {
   todosLosTiposSugerencias,
   todosLosTiposSugerenciasActivas,
   traerTipoSugerencia,
   crearTipoSugerencia,
   modificarTipoSugerencia,
   inactivarTipoSugerencia,
-} = require("../controllers/tipos_sugerencias_controllers");
+} from "../controllers/tipos_sugerencias_controllers.js";
 
-const getTiposSugerencias = async (req, res) => {
+export const getTiposSugerencias = async (req, res) => {
   try {
     const response = await todosLosTiposSugerencias();
 
@@ -17,7 +17,7 @@ const getTiposSugerencias = async (req, res) => {
   }
 };
 
-const getTiposSugerenciasActivas = async (req, res) => {
+export const getTiposSugerenciasActivas = async (req, res) => {
   try {
     const response = await todosLosTiposSugerenciasActivas();
 
@@ -27,7 +27,7 @@ const getTiposSugerenciasActivas = async (req, res) => {
   }
 };
 
-const getTipoSugerencia = async (req, res) => {
+export const getTipoSugerencia = async (req, res) => {
   const { tipo_sugerencia_id } = req.params;
 
   try {
@@ -39,7 +39,7 @@ const getTipoSugerencia = async (req, res) => {
   }
 };
 
-const postTipoSugerencia = async (req, res) => {
+export const postTipoSugerencia = async (req, res) => {
   const { descripcion } = req.body;
 
   try {
@@ -51,7 +51,7 @@ const postTipoSugerencia = async (req, res) => {
   }
 };
 
-const putTipoSugerencia = async (req, res) => {
+export const putTipoSugerencia = async (req, res) => {
   const { tipo_sugerencia_id, descripcion } = req.body;
 
   try {
@@ -66,7 +66,7 @@ const putTipoSugerencia = async (req, res) => {
   }
 };
 
-const deleteTipoSugerencia = async (req, res) => {
+export const deleteTipoSugerencia = async (req, res) => {
   const { tipo_sugerencia_id } = req.body;
 
   try {
@@ -76,13 +76,4 @@ const deleteTipoSugerencia = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getTiposSugerencias,
-  getTiposSugerenciasActivas,
-  getTipoSugerencia,
-  postTipoSugerencia,
-  putTipoSugerencia,
-  deleteTipoSugerencia,
 };

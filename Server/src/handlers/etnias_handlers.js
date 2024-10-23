@@ -1,13 +1,13 @@
-const {
+import {
   todasLasEtnias,
   todasLasEtniasActivas,
   traerEtnia,
   crearEtnia,
   modificarEtnia,
   inactivarEtnia,
-} = require("../controllers/etnias_controllers");
+} from "../controllers/etnias_controllers.js";
 
-const getEtnias = async (req, res) => {
+export const getEtnias = async (req, res) => {
   try {
     const response = await todasLasEtnias();
 
@@ -17,7 +17,7 @@ const getEtnias = async (req, res) => {
   }
 };
 
-const getEtniasActivas = async (req, res) => {
+export const getEtniasActivas = async (req, res) => {
   try {
     const response = await todasLasEtniasActivas();
 
@@ -27,7 +27,7 @@ const getEtniasActivas = async (req, res) => {
   }
 };
 
-const getEtnia = async (req, res) => {
+export const getEtnia = async (req, res) => {
   const { etnia_id } = req.params;
 
   try {
@@ -39,7 +39,7 @@ const getEtnia = async (req, res) => {
   }
 };
 
-const postEtnia = async (req, res) => {
+export const postEtnia = async (req, res) => {
   const { nombre } = req.body;
 
   try {
@@ -51,7 +51,7 @@ const postEtnia = async (req, res) => {
   }
 };
 
-const putEtnia = async (req, res) => {
+export const putEtnia = async (req, res) => {
   const { etnia_id, nombre } = req.body;
 
   try {
@@ -63,7 +63,7 @@ const putEtnia = async (req, res) => {
   }
 };
 
-const deleteEtnia = async (req, res) => {
+export const deleteEtnia = async (req, res) => {
   const { etnia_id } = req.body;
 
   try {
@@ -73,13 +73,4 @@ const deleteEtnia = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getEtnias,
-  getEtniasActivas,
-  getEtnia,
-  postEtnia,
-  putEtnia,
-  deleteEtnia,
 };

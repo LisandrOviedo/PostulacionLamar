@@ -1,6 +1,7 @@
-const { conn, Cargos } = require("../db");
+import { conn, models } from "../db.js";
+const { Cargos } = models;
 
-const todosLosCargos = async (departamento_id) => {
+export const todosLosCargos = async (departamento_id) => {
   if (!departamento_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -19,7 +20,7 @@ const todosLosCargos = async (departamento_id) => {
   }
 };
 
-const todosLosCargosActivos = async (departamento_id) => {
+export const todosLosCargosActivos = async (departamento_id) => {
   if (!departamento_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -36,7 +37,7 @@ const todosLosCargosActivos = async (departamento_id) => {
   }
 };
 
-const traerCargo = async (cargo_id) => {
+export const traerCargo = async (cargo_id) => {
   if (!cargo_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -54,7 +55,7 @@ const traerCargo = async (cargo_id) => {
   }
 };
 
-const crearCargo = async (
+export const crearCargo = async (
   departamento_id,
   codigo_cargo,
   descripcion,
@@ -99,7 +100,7 @@ const crearCargo = async (
   }
 };
 
-const modificarCargo = async (
+export const modificarCargo = async (
   cargo_id,
   departamento_id,
   codigo_cargo,
@@ -144,7 +145,7 @@ const modificarCargo = async (
   }
 };
 
-const inactivarCargo = async (cargo_id) => {
+export const inactivarCargo = async (cargo_id) => {
   if (!cargo_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -174,13 +175,4 @@ const inactivarCargo = async (cargo_id) => {
 
     throw new Error(`Error al inactivar la cargo: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosCargos,
-  todosLosCargosActivos,
-  traerCargo,
-  crearCargo,
-  modificarCargo,
-  inactivarCargo,
 };

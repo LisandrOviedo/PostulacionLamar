@@ -1,7 +1,7 @@
-const { Op } = require("sequelize");
+import { Op } from "sequelize";
 
+import { conn, models } from "../db.js";
 const {
-  conn,
   Movimientos,
   Empleados,
   Cargos_Empleados,
@@ -11,13 +11,17 @@ const {
   Empresas,
   Clases_Movimientos,
   Sedes,
-} = require("../db");
+} = models;
 
-const { traerEmpleado } = require("./empleados_controllers");
+import { traerEmpleado } from "./empleados_controllers.js";
 
-const { calcularAntiguedad } = require("../utils/formatearFecha");
+import { calcularAntiguedad } from "../utils/formatearFecha.js";
 
-const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
+export const todosLosMovimientos = async (
+  filtros,
+  paginaActual,
+  limitePorPagina
+) => {
   if (!paginaActual || !limitePorPagina) {
     throw new Error(`Datos faltantes`);
   }
@@ -356,7 +360,7 @@ const todosLosMovimientos = async (filtros, paginaActual, limitePorPagina) => {
   }
 };
 
-const traerMovimiento = async (movimiento_id, empleado_id) => {
+export const traerMovimiento = async (movimiento_id, empleado_id) => {
   if (!movimiento_id || !empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -742,7 +746,7 @@ const traerMovimiento = async (movimiento_id, empleado_id) => {
   }
 };
 
-const traerMovimientoPDF = async (movimiento_id, empleado_id) => {
+export const traerMovimientoPDF = async (movimiento_id, empleado_id) => {
   if (!movimiento_id || !empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -1020,7 +1024,7 @@ const traerMovimientoPDF = async (movimiento_id, empleado_id) => {
   }
 };
 
-const crearMovimiento = async (
+export const crearMovimiento = async (
   empleado_id,
   cargo_empleado_id,
   clase_movimiento_id,
@@ -1123,7 +1127,7 @@ const crearMovimiento = async (
   }
 };
 
-const modificarMovimiento = async (
+export const modificarMovimiento = async (
   movimiento_id,
   clase_movimiento_id,
   duracion_movimiento,
@@ -1218,7 +1222,7 @@ const modificarMovimiento = async (
   }
 };
 
-const aprobarMovimiento = async (
+export const aprobarMovimiento = async (
   movimiento_id,
   revisado_por_id,
   observaciones
@@ -1320,7 +1324,7 @@ const aprobarMovimiento = async (
   }
 };
 
-const denegarMovimiento = async (
+export const denegarMovimiento = async (
   movimiento_id,
   revisado_por_id,
   observaciones
@@ -1372,7 +1376,7 @@ const denegarMovimiento = async (
   }
 };
 
-const inactivarMovimiento = async (movimiento_id) => {
+export const inactivarMovimiento = async (movimiento_id) => {
   if (!movimiento_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -1400,15 +1404,4 @@ const inactivarMovimiento = async (movimiento_id) => {
 
     throw new Error(`Error al inactivar el movimiento: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosMovimientos,
-  traerMovimiento,
-  traerMovimientoPDF,
-  crearMovimiento,
-  modificarMovimiento,
-  aprobarMovimiento,
-  denegarMovimiento,
-  inactivarMovimiento,
 };

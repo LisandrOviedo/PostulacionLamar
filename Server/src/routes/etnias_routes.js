@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getEtnias,
   getEtniasActivas,
   getEtnia,
   postEtnia,
   putEtnia,
   deleteEtnia,
-} = require("../handlers/etnias_handlers");
+} from "../handlers/etnias_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const etnias = Router();
 
@@ -21,4 +21,4 @@ etnias.post("/", authenticateToken, postEtnia);
 etnias.put("/modificar", authenticateToken, putEtnia);
 etnias.put("/inactivar", authenticateToken, deleteEtnia);
 
-module.exports = etnias;
+export default etnias;

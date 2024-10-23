@@ -1,13 +1,13 @@
-const {
+import {
   todasLosSugerenciasPred,
   todasLosSugerenciasPredActivas,
   traerSugerenciaPred,
   crearSugerenciaPred,
   modificarSugerenciaPred,
   inactivarSugerenciaPred,
-} = require("../controllers/sugerencias_pred_controllers");
+} from "../controllers/sugerencias_pred_controllers.js";
 
-const getSugerenciasPred = async (req, res) => {
+export const getSugerenciasPred = async (req, res) => {
   const { tipo_sugerencia_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getSugerenciasPred = async (req, res) => {
   }
 };
 
-const getSugerenciasPredActivas = async (req, res) => {
+export const getSugerenciasPredActivas = async (req, res) => {
   const { tipo_sugerencia_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getSugerenciasPredActivas = async (req, res) => {
   }
 };
 
-const getSugerenciaPred = async (req, res) => {
+export const getSugerenciaPred = async (req, res) => {
   const { sugerencia_pred_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getSugerenciaPred = async (req, res) => {
   }
 };
 
-const postSugerenciaPred = async (req, res) => {
+export const postSugerenciaPred = async (req, res) => {
   const { tipo_sugerencia_id, descripcion } = req.body;
 
   try {
@@ -55,7 +55,7 @@ const postSugerenciaPred = async (req, res) => {
   }
 };
 
-const putSugerenciaPred = async (req, res) => {
+export const putSugerenciaPred = async (req, res) => {
   const { sugerencia_pred_id, tipo_sugerencia_id, descripcion } = req.body;
 
   try {
@@ -71,7 +71,7 @@ const putSugerenciaPred = async (req, res) => {
   }
 };
 
-const deleteSugerenciaPred = async (req, res) => {
+export const deleteSugerenciaPred = async (req, res) => {
   const { sugerencia_pred_id } = req.body;
 
   try {
@@ -81,13 +81,4 @@ const deleteSugerenciaPred = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getSugerenciasPred,
-  getSugerenciasPredActivas,
-  getSugerenciaPred,
-  postSugerenciaPred,
-  putSugerenciaPred,
-  deleteSugerenciaPred,
 };

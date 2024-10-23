@@ -1,13 +1,13 @@
-const {
+import {
   todosLosPaises,
   todosLosPaisesActivos,
   traerPais,
   crearPais,
   modificarPais,
   inactivarPais,
-} = require("../controllers/paises_controllers");
+} from "../controllers/paises_controllers.js";
 
-const getPaises = async (req, res) => {
+export const getPaises = async (req, res) => {
   try {
     const response = await todosLosPaises();
 
@@ -17,7 +17,7 @@ const getPaises = async (req, res) => {
   }
 };
 
-const getPaisesActivos = async (req, res) => {
+export const getPaisesActivos = async (req, res) => {
   try {
     const response = await todosLosPaisesActivos();
 
@@ -27,7 +27,7 @@ const getPaisesActivos = async (req, res) => {
   }
 };
 
-const getPais = async (req, res) => {
+export const getPais = async (req, res) => {
   const { pais_id } = req.params;
 
   try {
@@ -39,7 +39,7 @@ const getPais = async (req, res) => {
   }
 };
 
-const postPais = async (req, res) => {
+export const postPais = async (req, res) => {
   const { nombre } = req.body;
 
   try {
@@ -51,7 +51,7 @@ const postPais = async (req, res) => {
   }
 };
 
-const putPais = async (req, res) => {
+export const putPais = async (req, res) => {
   const { pais_id, nombre } = req.body;
 
   try {
@@ -63,7 +63,7 @@ const putPais = async (req, res) => {
   }
 };
 
-const deletePais = async (req, res) => {
+export const deletePais = async (req, res) => {
   const { pais_id } = req.body;
 
   try {
@@ -73,13 +73,4 @@ const deletePais = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getPaises,
-  getPaisesActivos,
-  getPais,
-  postPais,
-  putPais,
-  deletePais,
 };

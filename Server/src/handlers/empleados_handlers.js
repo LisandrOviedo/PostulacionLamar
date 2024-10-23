@@ -1,4 +1,4 @@
-const {
+import {
   todosLosEmpleados,
   traerEmpleado,
   traerEmpleadoExistencia,
@@ -10,9 +10,9 @@ const {
   actualizarClaveEmpleado,
   reiniciarClaveEmpleado,
   inactivarEmpleado,
-} = require("../controllers/empleados_controllers");
+} from "../controllers/empleados_controllers.js";
 
-const getEmpleados = async (req, res) => {
+export const getEmpleados = async (req, res) => {
   const { filtros, paginaActual, limitePorPagina } = req.body;
 
   try {
@@ -28,7 +28,7 @@ const getEmpleados = async (req, res) => {
   }
 };
 
-const getEmpleado = async (req, res) => {
+export const getEmpleado = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -40,7 +40,7 @@ const getEmpleado = async (req, res) => {
   }
 };
 
-const getEmpleadoExistencia = async (req, res) => {
+export const getEmpleadoExistencia = async (req, res) => {
   const { tipo_identificacion, numero_identificacion, empresa_id } = req.query;
 
   try {
@@ -56,7 +56,7 @@ const getEmpleadoExistencia = async (req, res) => {
   }
 };
 
-const getLogin = async (req, res) => {
+export const getLogin = async (req, res) => {
   const { tipo_identificacion, numero_identificacion, clave } = req.body;
 
   try {
@@ -72,7 +72,7 @@ const getLogin = async (req, res) => {
   }
 };
 
-const postEmpleado = async (req, res) => {
+export const postEmpleado = async (req, res) => {
   const {
     empresa_id,
     nombres,
@@ -140,7 +140,7 @@ const postEmpleado = async (req, res) => {
   }
 };
 
-const putClaveTemporalEmpleado = async (req, res) => {
+export const putClaveTemporalEmpleado = async (req, res) => {
   const { empleado_id, clave } = req.body;
 
   try {
@@ -152,7 +152,7 @@ const putClaveTemporalEmpleado = async (req, res) => {
   }
 };
 
-const putEmpleado = async (req, res) => {
+export const putEmpleado = async (req, res) => {
   const { datosPersonales } = req.body;
 
   try {
@@ -164,7 +164,7 @@ const putEmpleado = async (req, res) => {
   }
 };
 
-const putFotoEmpleado = async (req, res) => {
+export const putFotoEmpleado = async (req, res) => {
   const { empleado_id } = req.body;
   const { filename, path } = req.file;
 
@@ -177,7 +177,7 @@ const putFotoEmpleado = async (req, res) => {
   }
 };
 
-const putClaveEmpleado = async (req, res) => {
+export const putClaveEmpleado = async (req, res) => {
   const { empleado_id, claveAnterior, claveNueva } = req.body;
 
   try {
@@ -193,7 +193,7 @@ const putClaveEmpleado = async (req, res) => {
   }
 };
 
-const putReiniciarClave = async (req, res) => {
+export const putReiniciarClave = async (req, res) => {
   const { empleado_id } = req.body;
 
   try {
@@ -205,7 +205,7 @@ const putReiniciarClave = async (req, res) => {
   }
 };
 
-const deleteEmpleado = async (req, res) => {
+export const deleteEmpleado = async (req, res) => {
   const { empleado_id } = req.body;
 
   try {
@@ -215,18 +215,4 @@ const deleteEmpleado = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getEmpleados,
-  getEmpleado,
-  getEmpleadoExistencia,
-  getLogin,
-  postEmpleado,
-  putClaveTemporalEmpleado,
-  putEmpleado,
-  putFotoEmpleado,
-  putClaveEmpleado,
-  putReiniciarClave,
-  deleteEmpleado,
 };

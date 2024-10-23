@@ -1,4 +1,4 @@
-const roles = [
+export const roles = [
   {
     nombre: "Admin Global",
     descripcion: "Administrador Global",
@@ -6,7 +6,3 @@ const roles = [
   },
   { nombre: "Empleado", descripcion: "Empleado" },
 ];
-
-module.exports = {
-  roles,
-};

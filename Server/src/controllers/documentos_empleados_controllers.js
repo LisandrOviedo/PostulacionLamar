@@ -1,12 +1,12 @@
-const fs = require("fs");
+import fs from "node:fs";
 
-const { conn, Documentos_Empleados } = require("../db");
+import { conn, Documentos_Empleados } from "../db.js";
 
-const { traerEmpleado } = require("./empleados_controllers");
+import { traerEmpleado } from "./empleados_controllers.js";
 
-const { fechaHoraActual } = require("../utils/formatearFecha");
+import { fechaHoraActual } from "../utils/formatearFecha.js";
 
-const traerAnexos = async (empleado_id) => {
+export const traerAnexos = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -27,7 +27,7 @@ const traerAnexos = async (empleado_id) => {
   }
 };
 
-const crearAnexos = async (empleado_id, anexos) => {
+export const crearAnexos = async (empleado_id, anexos) => {
   if (!empleado_id || !anexos) {
     throw new Error(`Datos faltantes`);
   }
@@ -93,7 +93,7 @@ const crearAnexos = async (empleado_id, anexos) => {
   }
 };
 
-const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
+export const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
   if (!filename || !pdf_path) {
     throw new Error(`Datos faltantes`);
   }
@@ -148,10 +148,4 @@ const crearCurriculoPDF = async (empleado_id, filename, pdf_path) => {
 
     throw new Error(`Error al crear el anexo: ${error.message}`);
   }
-};
-
-module.exports = {
-  traerAnexos,
-  crearAnexos,
-  crearCurriculoPDF,
 };

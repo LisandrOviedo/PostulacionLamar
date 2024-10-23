@@ -1,13 +1,11 @@
-const {
-  conn,
-  Sugerencias,
-  Tipos_Sugerencias,
-  Empleados,
-  Sedes,
-  Empresas,
-} = require("../db");
+import { conn, models } from "../db.js";
+const { Sugerencias, Tipos_Sugerencias, Empleados, Sedes, Empresas } = models;
 
-const todasLasSugerencias = async (filtros, paginaActual, limitePorPagina) => {
+export const todasLasSugerencias = async (
+  filtros,
+  paginaActual,
+  limitePorPagina
+) => {
   if (!paginaActual || !limitePorPagina) {
     throw new Error(`Datos faltantes`);
   }
@@ -73,7 +71,7 @@ const todasLasSugerencias = async (filtros, paginaActual, limitePorPagina) => {
   }
 };
 
-const todasLasSugerenciasActivas = async () => {
+export const todasLasSugerenciasActivas = async () => {
   try {
     const sugerencias = await Sugerencias.findAll({
       where: { activo: true },
@@ -89,7 +87,7 @@ const todasLasSugerenciasActivas = async () => {
   }
 };
 
-const todasLasSugerenciasActivasNoRevisadas = async () => {
+export const todasLasSugerenciasActivasNoRevisadas = async () => {
   try {
     const { count: totalRegistros, rows: dataSugerencias } =
       await Sugerencias.findAndCountAll({
@@ -102,7 +100,7 @@ const todasLasSugerenciasActivasNoRevisadas = async () => {
   }
 };
 
-const traerSugerencia = async (sugerencia_id, empleado_id) => {
+export const traerSugerencia = async (sugerencia_id, empleado_id) => {
   if (!sugerencia_id || !empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -168,7 +166,11 @@ const traerSugerencia = async (sugerencia_id, empleado_id) => {
   }
 };
 
-const crearSugerencia = async (sede_id, tipo_sugerencia_id, descripcion) => {
+export const crearSugerencia = async (
+  sede_id,
+  tipo_sugerencia_id,
+  descripcion
+) => {
   if (!sede_id || !tipo_sugerencia_id || !descripcion) {
     throw new Error(`Datos faltantes`);
   }
@@ -199,7 +201,7 @@ const crearSugerencia = async (sede_id, tipo_sugerencia_id, descripcion) => {
   }
 };
 
-const inactivarSugerencia = async (sugerencia_id) => {
+export const inactivarSugerencia = async (sugerencia_id) => {
   if (!sugerencia_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -229,13 +231,4 @@ const inactivarSugerencia = async (sugerencia_id) => {
 
     throw new Error(`Error al inactivar la sugerencia: ${error.message}`);
   }
-};
-
-module.exports = {
-  todasLasSugerencias,
-  todasLasSugerenciasActivas,
-  todasLasSugerenciasActivasNoRevisadas,
-  traerSugerencia,
-  crearSugerencia,
-  inactivarSugerencia,
 };

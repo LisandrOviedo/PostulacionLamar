@@ -1,6 +1,7 @@
-const { conn, Datos_Bancarios } = require("../db");
+import { conn, models } from "../db.js";
+const { Datos_Bancarios } = models;
 
-const todosLosDatosBancarios = async (empleado_id) => {
+export const todosLosDatosBancarios = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -23,7 +24,7 @@ const todosLosDatosBancarios = async (empleado_id) => {
   }
 };
 
-const todosLosDatosBancariosActivos = async (empleado_id) => {
+export const todosLosDatosBancariosActivos = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -46,7 +47,7 @@ const todosLosDatosBancariosActivos = async (empleado_id) => {
   }
 };
 
-const traerDatoBancario = async (dato_bancario_id) => {
+export const traerDatoBancario = async (dato_bancario_id) => {
   if (!dato_bancario_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -64,7 +65,7 @@ const traerDatoBancario = async (dato_bancario_id) => {
   }
 };
 
-const crearDatoBancario = async (
+export const crearDatoBancario = async (
   empleado_id,
   {
     titular_cuenta,
@@ -120,7 +121,7 @@ const crearDatoBancario = async (
   }
 };
 
-const modificarDatoBancario = async (
+export const modificarDatoBancario = async (
   dato_bancario_id,
   titular_cuenta,
   entidad_bancaria,
@@ -183,7 +184,7 @@ const modificarDatoBancario = async (
   }
 };
 
-const inactivarDatoBancario = async (dato_bancario_id) => {
+export const inactivarDatoBancario = async (dato_bancario_id) => {
   if (!dato_bancario_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -213,13 +214,4 @@ const inactivarDatoBancario = async (dato_bancario_id) => {
 
     throw new Error(`Error al inactivar el dato bancario: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosDatosBancarios,
-  todosLosDatosBancariosActivos,
-  traerDatoBancario,
-  crearDatoBancario,
-  modificarDatoBancario,
-  inactivarDatoBancario,
 };

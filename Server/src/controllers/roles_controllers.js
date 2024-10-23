@@ -1,8 +1,9 @@
-const { conn, Roles } = require("../db");
+import { conn, models } from "../db.js";
+const { Roles } = models;
 
-const { roles } = require("../utils/roles");
+import { roles } from "../utils/roles.js";
 
-const todosLosRoles = async () => {
+export const todosLosRoles = async () => {
   try {
     const roles = await Roles.findAll({
       order: [["nombre", "ASC"]],
@@ -18,7 +19,7 @@ const todosLosRoles = async () => {
   }
 };
 
-const traerRol = async (rol_id) => {
+export const traerRol = async (rol_id) => {
   if (!rol_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -36,7 +37,7 @@ const traerRol = async (rol_id) => {
   }
 };
 
-const cargarRoles = async () => {
+export const cargarRoles = async () => {
   let t;
 
   try {
@@ -71,7 +72,7 @@ const cargarRoles = async () => {
   }
 };
 
-const crearRol = async (nombre, descripcion) => {
+export const crearRol = async (nombre, descripcion) => {
   if (!nombre || !descripcion) {
     throw new Error(`Datos faltantes`);
   }
@@ -106,7 +107,7 @@ const crearRol = async (nombre, descripcion) => {
   }
 };
 
-const modificarRol = async (rol_id, nombre, descripcion) => {
+export const modificarRol = async (rol_id, nombre, descripcion) => {
   if (!rol_id || !nombre || !descripcion) {
     throw new Error(`Datos faltantes`);
   }
@@ -144,7 +145,7 @@ const modificarRol = async (rol_id, nombre, descripcion) => {
   }
 };
 
-const inactivarRol = async (rol_id) => {
+export const inactivarRol = async (rol_id) => {
   if (!rol_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -173,13 +174,4 @@ const inactivarRol = async (rol_id) => {
 
     throw new Error(`Error al inactivar el rol: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosRoles,
-  traerRol,
-  cargarRoles,
-  crearRol,
-  modificarRol,
-  inactivarRol,
 };

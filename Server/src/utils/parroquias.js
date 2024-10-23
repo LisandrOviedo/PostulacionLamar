@@ -1,4 +1,4 @@
-const parroquias = [
+export const parroquias = [
   {
     pais: "Venezuela",
     estado: "Amazonas",
@@ -2280,7 +2280,3 @@ const parroquias = [
     ],
   },
 ];
-
-module.exports = {
-  parroquias,
-};

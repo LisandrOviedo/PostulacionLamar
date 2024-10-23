@@ -1,4 +1,4 @@
-const clasesMovimientos = [
+export const clasesMovimientos = [
   "Transferencia entre empresas",
   "Reasignación de funciones",
   "Redenominación de cargo",
@@ -8,7 +8,3 @@ const clasesMovimientos = [
   "Ajuste de sueldo",
   "Cambio de nómina",
 ];
-
-module.exports = {
-  clasesMovimientos,
-};

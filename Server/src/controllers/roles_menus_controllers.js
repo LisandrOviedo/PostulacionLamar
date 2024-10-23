@@ -1,6 +1,7 @@
-const { conn, Roles_Menus } = require("../db");
+import { conn, models } from "../db.js";
+const { Roles_Menus } = models;
 
-const todosLosRolesMenus = async (rol_id) => {
+export const todosLosRolesMenus = async (rol_id) => {
   if (!rol_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -21,7 +22,7 @@ const todosLosRolesMenus = async (rol_id) => {
   }
 };
 
-const traerRolMenu = async (rol_menu_id) => {
+export const traerRolMenu = async (rol_menu_id) => {
   if (!rol_menu_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -39,7 +40,7 @@ const traerRolMenu = async (rol_menu_id) => {
   }
 };
 
-const crearRolMenu = async (rol_id, menu_id) => {
+export const crearRolMenu = async (rol_id, menu_id) => {
   if (!rol_id || !menu_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -74,7 +75,7 @@ const crearRolMenu = async (rol_id, menu_id) => {
   }
 };
 
-const modificarRolMenu = async (rol_menu_id, rol_id, menu_id) => {
+export const modificarRolMenu = async (rol_menu_id, rol_id, menu_id) => {
   if (!rol_menu_id || !rol_id || !menu_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -113,7 +114,7 @@ const modificarRolMenu = async (rol_menu_id, rol_id, menu_id) => {
   }
 };
 
-const inactivarRolMenu = async (rol_menu_id) => {
+export const inactivarRolMenu = async (rol_menu_id) => {
   if (!rol_menu_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -145,12 +146,4 @@ const inactivarRolMenu = async (rol_menu_id) => {
       `Error al inactivar ese menú para ese rol: ${error.message}`
     );
   }
-};
-
-module.exports = {
-  todosLosRolesMenus,
-  traerRolMenu,
-  crearRolMenu,
-  modificarRolMenu,
-  inactivarRolMenu,
 };

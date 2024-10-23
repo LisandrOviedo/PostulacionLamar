@@ -1,5 +1,1 @@
-const paises = ["Venezuela"];
-
-module.exports = {
-  paises,
-};
+export const paises = ["Venezuela"];

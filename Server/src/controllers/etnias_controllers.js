@@ -1,8 +1,9 @@
-const { conn, Etnias } = require("../db");
+import { conn, models } from "../db.js";
+const { Etnias } = models;
 
-const { etnias } = require("../utils/etnias");
+import { etnias } from "../utils/etnias.js";
 
-const todasLasEtnias = async () => {
+export const todasLasEtnias = async () => {
   try {
     const etnias = await Etnias.findAll({
       order: [["nombre", "ASC"]],
@@ -18,7 +19,7 @@ const todasLasEtnias = async () => {
   }
 };
 
-const todasLasEtniasActivas = async () => {
+export const todasLasEtniasActivas = async () => {
   try {
     const etnias = await Etnias.findAll({
       where: { activo: true },
@@ -35,7 +36,7 @@ const todasLasEtniasActivas = async () => {
   }
 };
 
-const traerEtnia = async (etnia_id) => {
+export const traerEtnia = async (etnia_id) => {
   if (!etnia_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -53,7 +54,7 @@ const traerEtnia = async (etnia_id) => {
   }
 };
 
-const cargarEtnias = async () => {
+export const cargarEtnias = async () => {
   let t;
 
   try {
@@ -86,7 +87,7 @@ const cargarEtnias = async () => {
   }
 };
 
-const crearEtnia = async (nombre) => {
+export const crearEtnia = async (nombre) => {
   if (!nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -120,7 +121,7 @@ const crearEtnia = async (nombre) => {
   }
 };
 
-const modificarEtnia = async (etnia_id, nombre) => {
+export const modificarEtnia = async (etnia_id, nombre) => {
   if (!etnia_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -156,7 +157,7 @@ const modificarEtnia = async (etnia_id, nombre) => {
   }
 };
 
-const inactivarEtnia = async (etnia_id) => {
+export const inactivarEtnia = async (etnia_id) => {
   if (!etnia_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -186,14 +187,4 @@ const inactivarEtnia = async (etnia_id) => {
 
     throw new Error(`Error al inactivar la etnia: ${error.message}`);
   }
-};
-
-module.exports = {
-  todasLasEtnias,
-  todasLasEtniasActivas,
-  traerEtnia,
-  cargarEtnias,
-  crearEtnia,
-  modificarEtnia,
-  inactivarEtnia,
 };

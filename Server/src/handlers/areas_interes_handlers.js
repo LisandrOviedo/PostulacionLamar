@@ -1,4 +1,4 @@
-const {
+import {
   todosLosAreaInteres,
   todosLosAreaInteresActivas,
   traerAreaInteres,
@@ -6,9 +6,9 @@ const {
   modificarAreaInteres,
   inactivarAreaInteres,
   agregarAreasInteresCurriculo,
-} = require("../controllers/areas_interes_controllers");
+} from "../controllers/areas_interes_controllers.js";
 
-const getAreasInteres = async (req, res) => {
+export const getAreasInteres = async (req, res) => {
   try {
     const response = await todosLosAreaInteres();
 
@@ -18,7 +18,7 @@ const getAreasInteres = async (req, res) => {
   }
 };
 
-const getAreasInteresActivas = async (req, res) => {
+export const getAreasInteresActivas = async (req, res) => {
   try {
     const response = await todosLosAreaInteresActivas();
 
@@ -28,7 +28,7 @@ const getAreasInteresActivas = async (req, res) => {
   }
 };
 
-const getAreaInteres = async (req, res) => {
+export const getAreaInteres = async (req, res) => {
   const { area_interes_id } = req.params;
 
   try {
@@ -40,7 +40,7 @@ const getAreaInteres = async (req, res) => {
   }
 };
 
-const postAreaInteres = async (req, res) => {
+export const postAreaInteres = async (req, res) => {
   const { nombre } = req.body;
 
   try {
@@ -52,7 +52,7 @@ const postAreaInteres = async (req, res) => {
   }
 };
 
-const putAreaInteres = async (req, res) => {
+export const putAreaInteres = async (req, res) => {
   const { area_interes_id, nombre } = req.body;
 
   try {
@@ -64,7 +64,7 @@ const putAreaInteres = async (req, res) => {
   }
 };
 
-const deleteAreaInteres = async (req, res) => {
+export const deleteAreaInteres = async (req, res) => {
   const { area_interes_id } = req.body;
 
   try {
@@ -76,7 +76,7 @@ const deleteAreaInteres = async (req, res) => {
   }
 };
 
-const postAreasInteresCurriculo = async (req, res) => {
+export const postAreasInteresCurriculo = async (req, res) => {
   const { curriculo_id, areas_interes } = req.body;
 
   try {
@@ -89,14 +89,4 @@ const postAreasInteresCurriculo = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getAreasInteres,
-  getAreasInteresActivas,
-  getAreaInteres,
-  postAreaInteres,
-  putAreaInteres,
-  deleteAreaInteres,
-  postAreasInteresCurriculo,
 };

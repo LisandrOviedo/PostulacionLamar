@@ -1,5 +1,5 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getIdiomas,
   getIdiomasActivos,
   getIdioma,
@@ -7,9 +7,9 @@ const {
   putIdioma,
   deleteIdioma,
   postIdiomasCurriculo,
-} = require("../handlers/idiomas_handlers");
+} from "../handlers/idiomas_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const idiomas = Router();
 
@@ -23,4 +23,4 @@ idiomas.post("/agregarIdioma", authenticateToken, postIdiomasCurriculo);
 idiomas.put("/modificar", authenticateToken, putIdioma);
 idiomas.put("/inactivar", authenticateToken, deleteIdioma);
 
-module.exports = idiomas;
+export default idiomas;

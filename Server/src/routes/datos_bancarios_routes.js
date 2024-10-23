@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getDatosBancarios,
   getDatosBancariosActivos,
   getDatoBancario,
   postDatoBancario,
   putDatoBancario,
   deleteDatoBancario,
-} = require("../handlers/datos_bancarios_handlers");
+} from "../handlers/datos_bancarios_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const datos_bancarios = Router();
 
@@ -29,4 +29,4 @@ datos_bancarios.post("/", authenticateToken, postDatoBancario);
 datos_bancarios.put("/modificar", authenticateToken, putDatoBancario);
 datos_bancarios.put("/inactivar", authenticateToken, deleteDatoBancario);
 
-module.exports = datos_bancarios;
+export default datos_bancarios;

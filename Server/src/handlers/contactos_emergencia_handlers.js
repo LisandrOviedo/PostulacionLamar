@@ -1,13 +1,13 @@
-const {
+import {
   todosLosContactosEmergencia,
   todosLosContactosEmergenciaActivos,
   traerContactoEmergencia,
   crearContactoEmergencia,
   modificarContactoEmergencia,
   inactivarContactoEmergencia,
-} = require("../controllers/contactos_emergencia_controllers");
+} from "../controllers/contactos_emergencia_controllers.js";
 
-const getContactosEmergencia = async (req, res) => {
+export const getContactosEmergencia = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getContactosEmergencia = async (req, res) => {
   }
 };
 
-const getContactosEmergenciaActivas = async (req, res) => {
+export const getContactosEmergenciaActivas = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getContactosEmergenciaActivas = async (req, res) => {
   }
 };
 
-const getContactoEmergencia = async (req, res) => {
+export const getContactoEmergencia = async (req, res) => {
   const { contacto_emergencia_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getContactoEmergencia = async (req, res) => {
   }
 };
 
-const postContactoEmergencia = async (req, res) => {
+export const postContactoEmergencia = async (req, res) => {
   const { empleado_id, contactos_emergencia } = req.body;
 
   try {
@@ -58,7 +58,7 @@ const postContactoEmergencia = async (req, res) => {
   }
 };
 
-const putContactoEmergencia = async (req, res) => {
+export const putContactoEmergencia = async (req, res) => {
   const {
     contacto_emergencia_id,
     nombre_apellido,
@@ -82,7 +82,7 @@ const putContactoEmergencia = async (req, res) => {
   }
 };
 
-const deleteContactoEmergencia = async (req, res) => {
+export const deleteContactoEmergencia = async (req, res) => {
   const { contacto_emergencia_id } = req.body;
 
   try {
@@ -92,13 +92,4 @@ const deleteContactoEmergencia = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getContactosEmergencia,
-  getContactosEmergenciaActivas,
-  getContactoEmergencia,
-  postContactoEmergencia,
-  putContactoEmergencia,
-  deleteContactoEmergencia,
 };

@@ -1,4 +1,4 @@
-const {
+import {
   todasLasVacantes,
   traerVacante,
   traerVacanteEmpleados,
@@ -6,9 +6,9 @@ const {
   modificarVacante,
   inactivarVacante,
   postularVacanteEmpleado,
-} = require("../controllers/vacantes_controllers");
+} from "../controllers/vacantes_controllers.js";
 
-const getVacantes = async (req, res) => {
+export const getVacantes = async (req, res) => {
   const { filtros, paginaActual, limitePorPagina } = req.params;
 
   try {
@@ -24,7 +24,7 @@ const getVacantes = async (req, res) => {
   }
 };
 
-const getVacante = async (req, res) => {
+export const getVacante = async (req, res) => {
   const { vacante_id } = req.params;
 
   try {
@@ -36,7 +36,7 @@ const getVacante = async (req, res) => {
   }
 };
 
-const getVacanteEmpleados = async (req, res) => {
+export const getVacanteEmpleados = async (req, res) => {
   const { filtros, paginaActual, limitePorPagina } = req.params;
 
   try {
@@ -52,7 +52,7 @@ const getVacanteEmpleados = async (req, res) => {
   }
 };
 
-const postVacante = async (req, res) => {
+export const postVacante = async (req, res) => {
   const { area_interes_id, descripcion } = req.body;
 
   try {
@@ -64,7 +64,7 @@ const postVacante = async (req, res) => {
   }
 };
 
-const postVacanteEmpleado = async (req, res) => {
+export const postVacanteEmpleado = async (req, res) => {
   const { vacante_id, empleado_id } = req.body;
 
   try {
@@ -76,7 +76,7 @@ const postVacanteEmpleado = async (req, res) => {
   }
 };
 
-const putVacante = async (req, res) => {
+export const putVacante = async (req, res) => {
   const { vacante_id, area_interes_id, descripcion } = req.body;
 
   try {
@@ -92,7 +92,7 @@ const putVacante = async (req, res) => {
   }
 };
 
-const deleteVacante = async (req, res) => {
+export const deleteVacante = async (req, res) => {
   const { vacante_id } = req.body;
 
   try {
@@ -102,14 +102,4 @@ const deleteVacante = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getVacantes,
-  getVacante,
-  getVacanteEmpleados,
-  postVacante,
-  postVacanteEmpleado,
-  putVacante,
-  deleteVacante,
 };

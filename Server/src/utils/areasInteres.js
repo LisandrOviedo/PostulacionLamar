@@ -1,4 +1,4 @@
-const areasInteres = [
+export const areasInteres = [
   "Administración",
   "Cadena de Suministros",
   "Mantenimiento",
@@ -9,7 +9,3 @@ const areasInteres = [
   "Talento Humano",
   "Tecnología e Informática",
 ];
-
-module.exports = {
-  areasInteres,
-};

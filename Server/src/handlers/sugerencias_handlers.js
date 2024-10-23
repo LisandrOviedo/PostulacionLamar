@@ -1,13 +1,13 @@
-const {
+import {
   todasLasSugerencias,
   todasLasSugerenciasActivas,
   todasLasSugerenciasActivasNoRevisadas,
   traerSugerencia,
   crearSugerencia,
   inactivarSugerencia,
-} = require("../controllers/sugerencias_controllers");
+} from "../controllers/sugerencias_controllers.js";
 
-const getSugerencias = async (req, res) => {
+export const getSugerencias = async (req, res) => {
   const { filtros, paginaActual, limitePorPagina } = req.body;
 
   try {
@@ -23,7 +23,7 @@ const getSugerencias = async (req, res) => {
   }
 };
 
-const getSugerenciasActivas = async (req, res) => {
+export const getSugerenciasActivas = async (req, res) => {
   try {
     const response = await todasLasSugerenciasActivas();
 
@@ -33,7 +33,7 @@ const getSugerenciasActivas = async (req, res) => {
   }
 };
 
-const getSugerenciasActivasNoRevisadas = async (req, res) => {
+export const getSugerenciasActivasNoRevisadas = async (req, res) => {
   try {
     const response = await todasLasSugerenciasActivasNoRevisadas();
 
@@ -43,7 +43,7 @@ const getSugerenciasActivasNoRevisadas = async (req, res) => {
   }
 };
 
-const getSugerencia = async (req, res) => {
+export const getSugerencia = async (req, res) => {
   const { sugerencia_id, empleado_id } = req.body;
 
   try {
@@ -55,7 +55,7 @@ const getSugerencia = async (req, res) => {
   }
 };
 
-const postSugerencia = async (req, res) => {
+export const postSugerencia = async (req, res) => {
   const { sede_id, tipo_sugerencia_id, descripcion } = req.body;
 
   try {
@@ -71,7 +71,7 @@ const postSugerencia = async (req, res) => {
   }
 };
 
-const deleteSugerencia = async (req, res) => {
+export const deleteSugerencia = async (req, res) => {
   const { sugerencia_id } = req.body;
 
   try {
@@ -81,13 +81,4 @@ const deleteSugerencia = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getSugerencias,
-  getSugerenciasActivas,
-  getSugerenciasActivasNoRevisadas,
-  getSugerencia,
-  postSugerencia,
-  deleteSugerencia,
 };

@@ -1,6 +1,7 @@
-const { conn, Sedes } = require("../db");
+import { conn, models } from "../db.js";
+const { Sedes } = models;
 
-const todasLasSedes = async (empresa_id) => {
+export const todasLasSedes = async (empresa_id) => {
   if (!empresa_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -19,7 +20,7 @@ const todasLasSedes = async (empresa_id) => {
   }
 };
 
-const todasLasSedesActivas = async (empresa_id) => {
+export const todasLasSedesActivas = async (empresa_id) => {
   if (!empresa_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -36,7 +37,7 @@ const todasLasSedesActivas = async (empresa_id) => {
   }
 };
 
-const traerSede = async (sede_id) => {
+export const traerSede = async (sede_id) => {
   if (!sede_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -54,7 +55,7 @@ const traerSede = async (sede_id) => {
   }
 };
 
-const crearSede = async (
+export const crearSede = async (
   empresa_id,
   nombre,
   tipo,
@@ -100,7 +101,7 @@ const crearSede = async (
   }
 };
 
-const modificarSede = async (
+export const modificarSede = async (
   sede_id,
   empresa_id,
   nombre,
@@ -149,7 +150,7 @@ const modificarSede = async (
   }
 };
 
-const inactivarSede = async (sede_id) => {
+export const inactivarSede = async (sede_id) => {
   if (!sede_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -179,13 +180,4 @@ const inactivarSede = async (sede_id) => {
 
     throw new Error(`Error al inactivar la sede: ${error.message}`);
   }
-};
-
-module.exports = {
-  todasLasSedes,
-  todasLasSedesActivas,
-  traerSede,
-  crearSede,
-  modificarSede,
-  inactivarSede,
 };

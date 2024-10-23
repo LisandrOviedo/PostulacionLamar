@@ -1,10 +1,11 @@
-const { conn, Idiomas, Idiomas_Curriculos } = require("../db");
+import { conn, models } from "../db.js";
+const { Idiomas, Idiomas_Curriculos } = models;
 
-const { traerCurriculo } = require("./curriculos_controllers");
+import { traerCurriculo } from "./curriculos_controllers.js";
 
-const { idiomas } = require("../utils/idiomas");
+import { idiomas } from "../utils/idiomas.js";
 
-const todosLosIdiomas = async () => {
+export const todosLosIdiomas = async () => {
   try {
     const idiomas = await Idiomas.findAll({
       order: [["nombre", "ASC"]],
@@ -20,7 +21,7 @@ const todosLosIdiomas = async () => {
   }
 };
 
-const todosLosIdiomasActivos = async () => {
+export const todosLosIdiomasActivos = async () => {
   try {
     const idiomas = await Idiomas.findAll({
       where: { activo: true },
@@ -37,7 +38,7 @@ const todosLosIdiomasActivos = async () => {
   }
 };
 
-const traerIdioma = async (idioma_id) => {
+export const traerIdioma = async (idioma_id) => {
   if (!idioma_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -55,7 +56,7 @@ const traerIdioma = async (idioma_id) => {
   }
 };
 
-const cargarIdiomas = async () => {
+export const cargarIdiomas = async () => {
   let t;
 
   try {
@@ -88,7 +89,7 @@ const cargarIdiomas = async () => {
   }
 };
 
-const crearIdioma = async (nombre) => {
+export const crearIdioma = async (nombre) => {
   if (!nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -124,7 +125,7 @@ const crearIdioma = async (nombre) => {
   }
 };
 
-const modificarIdioma = async (idioma_id, nombre) => {
+export const modificarIdioma = async (idioma_id, nombre) => {
   if (!idioma_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -160,7 +161,7 @@ const modificarIdioma = async (idioma_id, nombre) => {
   }
 };
 
-const inactivarIdioma = async (idioma_id) => {
+export const inactivarIdioma = async (idioma_id) => {
   if (!idioma_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -192,7 +193,7 @@ const inactivarIdioma = async (idioma_id) => {
   }
 };
 
-const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
+export const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
   if (!curriculo_id || !idiomas) {
     throw new Error(`Datos faltantes`);
   }
@@ -233,7 +234,7 @@ const agregarIdiomasCurriculo = async (curriculo_id, idiomas) => {
   }
 };
 
-const eliminarIdiomasCurriculo = async (curriculo_id) => {
+export const eliminarIdiomasCurriculo = async (curriculo_id) => {
   if (!curriculo_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -260,15 +261,4 @@ const eliminarIdiomasCurriculo = async (curriculo_id) => {
 
     throw new Error(`Error al eliminar los idiomas: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosIdiomas,
-  todosLosIdiomasActivos,
-  traerIdioma,
-  cargarIdiomas,
-  crearIdioma,
-  modificarIdioma,
-  inactivarIdioma,
-  agregarIdiomasCurriculo,
 };

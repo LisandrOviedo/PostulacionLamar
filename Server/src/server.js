@@ -1,7 +1,10 @@
-const express = require("express");
-const router = require("./routes/index");
-const morgan = require("morgan");
-const cors = require("cors");
+import express from "express";
+
+import router from "./routes/index.js";
+
+import morgan from "morgan";
+
+import cors from "cors";
 
 const server = express();
 
@@ -35,4 +38,4 @@ server.use(
 
 server.use(router);
 
-module.exports = server;
+export default server;

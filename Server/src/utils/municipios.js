@@ -1,4 +1,4 @@
-const municipios = [
+export const municipios = [
   {
     pais: "Venezuela",
     estado: "Amazonas",
@@ -481,7 +481,3 @@ const municipios = [
     ],
   },
 ];
-
-module.exports = {
-  municipios,
-};

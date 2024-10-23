@@ -1,13 +1,13 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getRoles,
   getRol,
   postRol,
   putRol,
   deleteRol,
-} = require("../handlers/roles_handlers");
+} from "../handlers/roles_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const roles = Router();
 
@@ -19,4 +19,4 @@ roles.post("/", authenticateToken, postRol);
 roles.put("/modificar", authenticateToken, putRol);
 roles.put("/inactivar", authenticateToken, deleteRol);
 
-module.exports = roles;
+export default roles;

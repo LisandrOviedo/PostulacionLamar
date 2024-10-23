@@ -1,6 +1,7 @@
-const { conn, Contactos_Emergencia } = require("../db");
+import { conn, models } from "../db.js";
+const { Contactos_Emergencia } = models;
 
-const todosLosContactosEmergencia = async (empleado_id) => {
+export const todosLosContactosEmergencia = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -23,7 +24,7 @@ const todosLosContactosEmergencia = async (empleado_id) => {
   }
 };
 
-const todosLosContactosEmergenciaActivos = async (empleado_id) => {
+export const todosLosContactosEmergenciaActivos = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -46,7 +47,7 @@ const todosLosContactosEmergenciaActivos = async (empleado_id) => {
   }
 };
 
-const traerContactoEmergencia = async (contacto_emergencia_id) => {
+export const traerContactoEmergencia = async (contacto_emergencia_id) => {
   if (!contacto_emergencia_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -68,7 +69,10 @@ const traerContactoEmergencia = async (contacto_emergencia_id) => {
   }
 };
 
-const crearContactoEmergencia = async (empleado_id, contactos_emergencia) => {
+export const crearContactoEmergencia = async (
+  empleado_id,
+  contactos_emergencia
+) => {
   if (!empleado_id || !contactos_emergencia) {
     throw new Error(`Datos faltantes`);
   }
@@ -110,7 +114,7 @@ const crearContactoEmergencia = async (empleado_id, contactos_emergencia) => {
   }
 };
 
-const modificarContactoEmergencia = async (
+export const modificarContactoEmergencia = async (
   contacto_emergencia_id,
   nombre_apellido,
   parentesco,
@@ -163,7 +167,7 @@ const modificarContactoEmergencia = async (
   }
 };
 
-const inactivarContactoEmergencia = async (contacto_emergencia_id) => {
+export const inactivarContactoEmergencia = async (contacto_emergencia_id) => {
   if (!contacto_emergencia_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -197,13 +201,4 @@ const inactivarContactoEmergencia = async (contacto_emergencia_id) => {
       `Error al inactivar el contacto de emergencia: ${error.message}`
     );
   }
-};
-
-module.exports = {
-  todosLosContactosEmergencia,
-  todosLosContactosEmergenciaActivos,
-  traerContactoEmergencia,
-  crearContactoEmergencia,
-  modificarContactoEmergencia,
-  inactivarContactoEmergencia,
 };

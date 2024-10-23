@@ -1,13 +1,13 @@
-const {
+import {
   todosLosDepartamentos,
   todosLosDepartamentosActivos,
   traerDepartamento,
   crearDepartamento,
   modificarDepartamento,
   inactivarDepartamento,
-} = require("../controllers/departamentos_controllers");
+} from "../controllers/departamentos_controllers.js";
 
-const getDepartamentos = async (req, res) => {
+export const getDepartamentos = async (req, res) => {
   const { empresa_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getDepartamentos = async (req, res) => {
   }
 };
 
-const getDepartamentosActivos = async (req, res) => {
+export const getDepartamentosActivos = async (req, res) => {
   const { empresa_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getDepartamentosActivos = async (req, res) => {
   }
 };
 
-const getDepartamento = async (req, res) => {
+export const getDepartamento = async (req, res) => {
   const { departamento_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getDepartamento = async (req, res) => {
   }
 };
 
-const postDepartamento = async (req, res) => {
+export const postDepartamento = async (req, res) => {
   const { empresa_id, nombre, descripcion } = req.body;
 
   try {
@@ -55,7 +55,7 @@ const postDepartamento = async (req, res) => {
   }
 };
 
-const putDepartamento = async (req, res) => {
+export const putDepartamento = async (req, res) => {
   const { departamento_id, empresa_id, nombre, descripcion } = req.body;
 
   try {
@@ -72,7 +72,7 @@ const putDepartamento = async (req, res) => {
   }
 };
 
-const deleteDepartamento = async (req, res) => {
+export const deleteDepartamento = async (req, res) => {
   const { departamento_id } = req.body;
 
   try {
@@ -82,13 +82,4 @@ const deleteDepartamento = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getDepartamentos,
-  getDepartamentosActivos,
-  getDepartamento,
-  postDepartamento,
-  putDepartamento,
-  deleteDepartamento,
 };

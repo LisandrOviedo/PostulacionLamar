@@ -1,4 +1,4 @@
-const empleados = [
+export const empleados = [
   {
     cedula: "26388249",
     nombres: "Lisandro   José    ?-@  áéíóúÁÉÍÓÚ   .,;_    ",
@@ -6,7 +6,3 @@ const empleados = [
     fecha_nacimiento: "1998-11-24",
   },
 ];
-
-module.exports = {
-  empleados,
-};

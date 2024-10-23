@@ -1,13 +1,13 @@
-const {
+import {
   todosLosMunicipios,
   todosLosMunicipiosActivos,
   traerMunicipio,
   crearMunicipio,
   modificarMunicipio,
   inactivarMunicipio,
-} = require("../controllers/municipios_controllers");
+} from "../controllers/municipios_controllers.js";
 
-const getMunicipios = async (req, res) => {
+export const getMunicipios = async (req, res) => {
   const { estado_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getMunicipios = async (req, res) => {
   }
 };
 
-const getMunicipiosActivos = async (req, res) => {
+export const getMunicipiosActivos = async (req, res) => {
   const { estado_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getMunicipiosActivos = async (req, res) => {
   }
 };
 
-const getMunicipio = async (req, res) => {
+export const getMunicipio = async (req, res) => {
   const { municipio_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getMunicipio = async (req, res) => {
   }
 };
 
-const postMunicipio = async (req, res) => {
+export const postMunicipio = async (req, res) => {
   const { estado_id, nombre } = req.body;
 
   try {
@@ -55,7 +55,7 @@ const postMunicipio = async (req, res) => {
   }
 };
 
-const putMunicipio = async (req, res) => {
+export const putMunicipio = async (req, res) => {
   const { municipio_id, estado_id, nombre } = req.body;
 
   try {
@@ -67,7 +67,7 @@ const putMunicipio = async (req, res) => {
   }
 };
 
-const deleteMunicipio = async (req, res) => {
+export const deleteMunicipio = async (req, res) => {
   const { municipio_id } = req.body;
 
   try {
@@ -77,13 +77,4 @@ const deleteMunicipio = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getMunicipios,
-  getMunicipiosActivos,
-  getMunicipio,
-  postMunicipio,
-  putMunicipio,
-  deleteMunicipio,
 };

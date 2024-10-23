@@ -1,4 +1,4 @@
-const {
+import {
   todosLosMovimientos,
   traerMovimiento,
   traerMovimientoPDF,
@@ -7,17 +7,17 @@ const {
   aprobarMovimiento,
   denegarMovimiento,
   inactivarMovimiento,
-} = require("../controllers/movimientos_controllers");
+} from "../controllers/movimientos_controllers.js";
 
-const { reporteMovimiento } = require("../utils/reportes");
+import { reporteMovimiento } from "../utils/reportes.js";
 
-const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
+import { crearCarpetaSiNoExiste } from "../utils/pruebaKostick.js";
 
-const path = require("path");
+import path from "node:path";
 
-const puppeteer = require("puppeteer");
+import puppeteer from "puppeteer";
 
-const getMovimientos = async (req, res) => {
+export const getMovimientos = async (req, res) => {
   const { filtros, paginaActual, limitePorPagina } = req.body;
 
   try {
@@ -33,7 +33,7 @@ const getMovimientos = async (req, res) => {
   }
 };
 
-const getMovimiento = async (req, res) => {
+export const getMovimiento = async (req, res) => {
   const { movimiento_id, empleado_id } = req.query;
 
   try {
@@ -45,7 +45,7 @@ const getMovimiento = async (req, res) => {
   }
 };
 
-const getMovimientoPDF = async (req, res) => {
+export const getMovimientoPDF = async (req, res) => {
   const { movimiento_id, empleado_id, identificacion } = req.body;
   const filename = `Movimiento ${movimiento_id}.pdf`;
 
@@ -96,7 +96,7 @@ const getMovimientoPDF = async (req, res) => {
   }
 };
 
-const postMovimiento = async (req, res) => {
+export const postMovimiento = async (req, res) => {
   const {
     empleado_id,
     cargo_empleado_id,
@@ -154,7 +154,7 @@ const postMovimiento = async (req, res) => {
   }
 };
 
-const putMovimiento = async (req, res) => {
+export const putMovimiento = async (req, res) => {
   const {
     movimiento_id,
     clase_movimiento_id,
@@ -210,7 +210,7 @@ const putMovimiento = async (req, res) => {
   }
 };
 
-const putAprobarMovimiento = async (req, res) => {
+export const putAprobarMovimiento = async (req, res) => {
   const { movimiento_id, revisado_por_id, observaciones } = req.body;
 
   try {
@@ -226,7 +226,7 @@ const putAprobarMovimiento = async (req, res) => {
   }
 };
 
-const putDenegarMovimiento = async (req, res) => {
+export const putDenegarMovimiento = async (req, res) => {
   const { movimiento_id, revisado_por_id, observaciones } = req.body;
 
   try {
@@ -242,7 +242,7 @@ const putDenegarMovimiento = async (req, res) => {
   }
 };
 
-const deleteMovimiento = async (req, res) => {
+export const deleteMovimiento = async (req, res) => {
   const { movimiento_id } = req.body;
 
   try {
@@ -252,15 +252,4 @@ const deleteMovimiento = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getMovimientos,
-  getMovimiento,
-  getMovimientoPDF,
-  postMovimiento,
-  putMovimiento,
-  putAprobarMovimiento,
-  putDenegarMovimiento,
-  deleteMovimiento,
 };

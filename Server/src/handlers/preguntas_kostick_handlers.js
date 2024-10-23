@@ -1,8 +1,6 @@
-const {
-  todasLasPreguntasKostick,
-} = require("../controllers/preguntas_kostick_controllers");
+import { todasLasPreguntasKostick } from "../controllers/preguntas_kostick_controllers.js";
 
-const getPreguntasKostick = async (req, res) => {
+export const getPreguntasKostick = async (req, res) => {
   try {
     const response = await todasLasPreguntasKostick();
 
@@ -10,8 +8,4 @@ const getPreguntasKostick = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getPreguntasKostick,
 };

@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getSugerencias,
   getSugerenciasActivas,
   getSugerenciasActivasNoRevisadas,
   getSugerencia,
   postSugerencia,
   deleteSugerencia,
-} = require("../handlers/sugerencias_handlers");
+} from "../handlers/sugerencias_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const sugerencias = Router();
 
@@ -21,4 +21,4 @@ sugerencias.post("/allSugerencias", getSugerencias);
 
 sugerencias.put("/inactivar", authenticateToken, deleteSugerencia);
 
-module.exports = sugerencias;
+export default sugerencias;

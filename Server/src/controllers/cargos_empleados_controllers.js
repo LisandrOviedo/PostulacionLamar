@@ -1,6 +1,7 @@
-const { conn, Cargos_Empleados } = require("../db");
+import { conn, models } from "../db.js";
+const { Cargos_Empleados } = models;
 
-const todosLosCargosEmpleados = async (empleado_id) => {
+export const todosLosCargosEmpleados = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -24,7 +25,7 @@ const todosLosCargosEmpleados = async (empleado_id) => {
   }
 };
 
-const todosLosCargosEmpleadosActivos = async (empleado_id) => {
+export const todosLosCargosEmpleadosActivos = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -46,7 +47,7 @@ const todosLosCargosEmpleadosActivos = async (empleado_id) => {
   }
 };
 
-const traerCargoEmpleado = async (cargo_empleado_id) => {
+export const traerCargoEmpleado = async (cargo_empleado_id) => {
   if (!cargo_empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -66,7 +67,7 @@ const traerCargoEmpleado = async (cargo_empleado_id) => {
   }
 };
 
-const crearCargoEmpleado = async (
+export const crearCargoEmpleado = async (
   empleado_id,
   { cargo_nivel_id, salario, fecha_ingreso }
 ) => {
@@ -115,7 +116,7 @@ const crearCargoEmpleado = async (
   }
 };
 
-const modificarCargoEmpleado = async (
+export const modificarCargoEmpleado = async (
   cargo_empleado_id,
   cargo_nivel_id,
   salario,
@@ -168,7 +169,7 @@ const modificarCargoEmpleado = async (
   }
 };
 
-const inactivarCargoEmpleado = async (cargo_nivel_id) => {
+export const inactivarCargoEmpleado = async (cargo_nivel_id) => {
   if (!cargo_nivel_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -200,13 +201,4 @@ const inactivarCargoEmpleado = async (cargo_nivel_id) => {
       `Error al inactivar el cargo de ese empleado: ${error.message}`
     );
   }
-};
-
-module.exports = {
-  todosLosCargosEmpleados,
-  todosLosCargosEmpleadosActivos,
-  traerCargoEmpleado,
-  crearCargoEmpleado,
-  modificarCargoEmpleado,
-  inactivarCargoEmpleado,
 };

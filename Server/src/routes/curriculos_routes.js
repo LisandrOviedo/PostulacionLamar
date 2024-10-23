@@ -1,5 +1,5 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getCurriculos,
   getCurriculo,
   getCurriculoPDF,
@@ -8,9 +8,9 @@ const {
   putCurriculo,
   putCurriculoEstado,
   deleteCurriculo,
-} = require("../handlers/curriculos_handlers");
+} from "../handlers/curriculos_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const curriculos = Router();
 
@@ -29,4 +29,4 @@ curriculos.put("/modificar", authenticateToken, putCurriculo);
 curriculos.put("/modificarEstado", authenticateToken, putCurriculoEstado);
 curriculos.put("/inactivar", authenticateToken, deleteCurriculo);
 
-module.exports = curriculos;
+export default curriculos;

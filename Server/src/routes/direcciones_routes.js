@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getDirecciones,
   getDireccionesActivas,
   getDireccion,
   postDireccion,
   putDireccion,
   deleteDireccion,
-} = require("../handlers/direcciones_handlers");
+} from "../handlers/direcciones_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const direcciones = Router();
 
@@ -25,4 +25,4 @@ direcciones.post("/", authenticateToken, postDireccion);
 direcciones.put("/modificar", authenticateToken, putDireccion);
 direcciones.put("/inactivar", authenticateToken, deleteDireccion);
 
-module.exports = direcciones;
+export default direcciones;

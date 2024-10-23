@@ -1,6 +1,6 @@
-const { DataTypes } = require("sequelize");
+import { DataTypes } from "sequelize";
 
-module.exports = (sequelize) => {
+export default (sequelize) => {
   sequelize.define("Titulos_Obtenidos", {
     titulo_obtenido_id: {
       type: DataTypes.INTEGER,

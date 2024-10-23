@@ -1,5 +1,5 @@
+import { conn, models } from "../db.js";
 const {
-  conn,
   Fichas_Ingresos,
   Empleados,
   Cargos_Niveles,
@@ -18,11 +18,11 @@ const {
   Municipios,
   Parroquias,
   Referencias_Personales,
-} = require("../db");
+} = models;
 
-const { calcularEdad } = require("../utils/formatearFecha");
+import { calcularEdad } from "../utils/formatearFecha.js";
 
-const todasLasFichasIngresos = async (empleado_id) => {
+export const todasLasFichasIngresos = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -44,7 +44,7 @@ const todasLasFichasIngresos = async (empleado_id) => {
   }
 };
 
-const traerFichaIngresoEmpleado = async (empleado_id) => {
+export const traerFichaIngresoEmpleado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -196,7 +196,7 @@ const traerFichaIngresoEmpleado = async (empleado_id) => {
   }
 };
 
-const traerFichaIngreso = async (ficha_ingreso_id) => {
+export const traerFichaIngreso = async (ficha_ingreso_id) => {
   if (!ficha_ingreso_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -214,7 +214,7 @@ const traerFichaIngreso = async (ficha_ingreso_id) => {
   }
 };
 
-const traerFichaIngresoPDF = async (empleado_id) => {
+export const traerFichaIngresoPDF = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -585,7 +585,7 @@ const traerFichaIngresoPDF = async (empleado_id) => {
   }
 };
 
-const crearFichaIngreso = async (
+export const crearFichaIngreso = async (
   empleado_id,
   { cargo_nivel_id, salario, fecha_ingreso, observaciones }
 ) => {
@@ -625,7 +625,7 @@ const crearFichaIngreso = async (
   }
 };
 
-const modificarFichaIngreso = async (
+export const modificarFichaIngreso = async (
   ficha_ingreso_id,
   cargo_nivel_id,
   salario,
@@ -670,7 +670,7 @@ const modificarFichaIngreso = async (
   }
 };
 
-const inactivarFichaIngreso = async (ficha_ingreso_id) => {
+export const inactivarFichaIngreso = async (ficha_ingreso_id) => {
   if (!ficha_ingreso_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -700,14 +700,4 @@ const inactivarFichaIngreso = async (ficha_ingreso_id) => {
 
     throw new Error(`Error al inactivar la ficha de ingreso: ${error.message}`);
   }
-};
-
-module.exports = {
-  todasLasFichasIngresos,
-  traerFichaIngresoEmpleado,
-  traerFichaIngreso,
-  traerFichaIngresoPDF,
-  crearFichaIngreso,
-  modificarFichaIngreso,
-  inactivarFichaIngreso,
 };

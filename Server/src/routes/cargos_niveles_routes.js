@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getCargosNiveles,
   getCargosNivelesActivos,
   getCargoNivel,
   postCargoNivel,
   putCargoNivel,
   deleteCargoNivel,
-} = require("../handlers/cargos_niveles_handlers");
+} from "../handlers/cargos_niveles_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const cargos_niveles = Router();
 
@@ -29,4 +29,4 @@ cargos_niveles.post("/", authenticateToken, postCargoNivel);
 cargos_niveles.put("/modificar", authenticateToken, putCargoNivel);
 cargos_niveles.put("/inactivar", authenticateToken, deleteCargoNivel);
 
-module.exports = cargos_niveles;
+export default cargos_niveles;

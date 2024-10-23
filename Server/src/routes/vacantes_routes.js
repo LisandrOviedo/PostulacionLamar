@@ -1,5 +1,5 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getVacantes,
   getVacante,
   getVacanteEmpleados,
@@ -7,9 +7,9 @@ const {
   postVacanteEmpleado,
   putVacante,
   deleteVacante,
-} = require("../handlers/vacantes_handlers");
+} from "../handlers/vacantes_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const vacantes = Router();
 
@@ -23,4 +23,4 @@ vacantes.post("/postulacion", authenticateToken, postVacanteEmpleado);
 vacantes.put("/modificar", authenticateToken, putVacante);
 vacantes.put("/inactivar", authenticateToken, deleteVacante);
 
-module.exports = vacantes;
+export default vacantes;

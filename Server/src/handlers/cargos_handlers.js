@@ -1,13 +1,13 @@
-const {
+import {
   todosLosCargos,
   todosLosCargosActivos,
   traerCargo,
   crearCargo,
   modificarCargo,
   inactivarCargo,
-} = require("../controllers/cargos_controllers");
+} from "../controllers/cargos_controllers.js";
 
-const getCargos = async (req, res) => {
+export const getCargos = async (req, res) => {
   const { departamento_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getCargos = async (req, res) => {
   }
 };
 
-const getCargosActivos = async (req, res) => {
+export const getCargosActivos = async (req, res) => {
   const { departamento_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getCargosActivos = async (req, res) => {
   }
 };
 
-const getCargo = async (req, res) => {
+export const getCargo = async (req, res) => {
   const { cargo_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getCargo = async (req, res) => {
   }
 };
 
-const postCargo = async (req, res) => {
+export const postCargo = async (req, res) => {
   const {
     departamento_id,
     codigo_cargo,
@@ -65,7 +65,7 @@ const postCargo = async (req, res) => {
   }
 };
 
-const putCargo = async (req, res) => {
+export const putCargo = async (req, res) => {
   const {
     cargo_id,
     departamento_id,
@@ -89,7 +89,7 @@ const putCargo = async (req, res) => {
   }
 };
 
-const deleteCargo = async (req, res) => {
+export const deleteCargo = async (req, res) => {
   const { cargo_id } = req.body;
 
   try {
@@ -99,13 +99,4 @@ const deleteCargo = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getCargos,
-  getCargosActivos,
-  getCargo,
-  postCargo,
-  putCargo,
-  deleteCargo,
 };

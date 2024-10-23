@@ -1,12 +1,12 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getPruebas,
   getPruebasEmpleado,
   getPrueba,
   postPrueba,
-} = require("../handlers/pruebas_empleados_handlers");
+} from "../handlers/pruebas_empleados_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const pruebas_empleados = Router();
 
@@ -21,4 +21,4 @@ pruebas_empleados.post("/allPruebasEmpleados", authenticateToken, getPruebas);
 
 pruebas_empleados.post("/", authenticateToken, postPrueba);
 
-module.exports = pruebas_empleados;
+export default pruebas_empleados;

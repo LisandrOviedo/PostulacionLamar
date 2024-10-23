@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getContactosEmergencia,
   getContactosEmergenciaActivas,
   getContactoEmergencia,
   postContactoEmergencia,
   putContactoEmergencia,
   deleteContactoEmergencia,
-} = require("../handlers/contactos_emergencia_handlers");
+} from "../handlers/contactos_emergencia_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const contactos_emergencia = Router();
 
@@ -41,4 +41,4 @@ contactos_emergencia.put(
   deleteContactoEmergencia
 );
 
-module.exports = contactos_emergencia;
+export default contactos_emergencia;

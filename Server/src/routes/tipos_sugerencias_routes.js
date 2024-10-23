@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getTiposSugerencias,
   getTiposSugerenciasActivas,
   getTipoSugerencia,
   postTipoSugerencia,
   putTipoSugerencia,
   deleteTipoSugerencia,
-} = require("../handlers/tipos_sugerencias_handlers");
+} from "../handlers/tipos_sugerencias_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const tipos_sugerencias = Router();
 
@@ -25,4 +25,4 @@ tipos_sugerencias.post("/", authenticateToken, postTipoSugerencia);
 tipos_sugerencias.put("/modificar", authenticateToken, putTipoSugerencia);
 tipos_sugerencias.put("/inactivar", authenticateToken, deleteTipoSugerencia);
 
-module.exports = tipos_sugerencias;
+export default tipos_sugerencias;

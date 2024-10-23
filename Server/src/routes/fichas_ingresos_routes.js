@@ -1,5 +1,5 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getFichasIngresosEmpleado,
   getFichaIngresoEmpleado,
   getFichaIngreso,
@@ -7,9 +7,9 @@ const {
   postFichaIngreso,
   putFichaIngreso,
   deleteFichaIngreso,
-} = require("../handlers/fichas_ingresos_handlers");
+} from "../handlers/fichas_ingresos_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const fichas_ingresos = Router();
 
@@ -35,4 +35,4 @@ fichas_ingresos.post("/detalle", authenticateToken, getFichaIngresoPDF);
 fichas_ingresos.put("/modificar", authenticateToken, putFichaIngreso);
 fichas_ingresos.put("/inactivar", authenticateToken, deleteFichaIngreso);
 
-module.exports = fichas_ingresos;
+export default fichas_ingresos;

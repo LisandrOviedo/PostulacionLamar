@@ -1,14 +1,13 @@
-const {
-  conn,
-  Vacantes,
-  Areas_Interes,
-  Vacantes_Empleados,
-  Empleados,
-} = require("../db");
+import { conn, models } from "../db.js";
+const { Vacantes, Areas_Interes, Vacantes_Empleados, Empleados } = models;
 
-const { traerEmpleado } = require("./empleados_controllers");
+import { traerEmpleado } from "./empleados_controllers.js";
 
-const todasLasVacantes = async (filtros, paginaActual, limitePorPagina) => {
+export const todasLasVacantes = async (
+  filtros,
+  paginaActual,
+  limitePorPagina
+) => {
   if (!paginaActual || !limitePorPagina) {
     throw new Error(`Datos faltantes`);
   }
@@ -41,7 +40,7 @@ const todasLasVacantes = async (filtros, paginaActual, limitePorPagina) => {
   }
 };
 
-const traerVacante = async (vacante_id) => {
+export const traerVacante = async (vacante_id) => {
   if (!vacante_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -64,7 +63,7 @@ const traerVacante = async (vacante_id) => {
   }
 };
 
-const traerVacanteEmpleados = async (
+export const traerVacanteEmpleados = async (
   filtros,
   paginaActual,
   limitePorPagina
@@ -116,7 +115,7 @@ const traerVacanteEmpleados = async (
   }
 };
 
-const crearVacante = async (area_interes_id, descripcion) => {
+export const crearVacante = async (area_interes_id, descripcion) => {
   if (!area_interes_id || !descripcion) {
     throw new Error(`Datos faltantes`);
   }
@@ -153,7 +152,11 @@ const crearVacante = async (area_interes_id, descripcion) => {
   }
 };
 
-const modificarVacante = async (vacante_id, area_interes_id, descripcion) => {
+export const modificarVacante = async (
+  vacante_id,
+  area_interes_id,
+  descripcion
+) => {
   if (!vacante_id || !area_interes_id || !descripcion) {
     throw new Error(`Datos faltantes`);
   }
@@ -190,7 +193,7 @@ const modificarVacante = async (vacante_id, area_interes_id, descripcion) => {
   }
 };
 
-const inactivarVacante = async (vacante_id) => {
+export const inactivarVacante = async (vacante_id) => {
   if (!vacante_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -222,7 +225,7 @@ const inactivarVacante = async (vacante_id) => {
   }
 };
 
-const postularVacanteEmpleado = async (vacante_id, empleado_id) => {
+export const postularVacanteEmpleado = async (vacante_id, empleado_id) => {
   if (!vacante_id || !empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -254,14 +257,4 @@ const postularVacanteEmpleado = async (vacante_id, empleado_id) => {
 
     throw new Error(`Error al postular a la vacante: ${error.message}`);
   }
-};
-
-module.exports = {
-  todasLasVacantes,
-  traerVacante,
-  traerVacanteEmpleados,
-  crearVacante,
-  modificarVacante,
-  inactivarVacante,
-  postularVacanteEmpleado,
 };

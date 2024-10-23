@@ -1,12 +1,10 @@
-const { Router } = require("express");
-const {
-  postRespuestasKostick,
-} = require("../handlers/respuestas_kostick_handlers");
+import { Router } from "express";
+import { postRespuestasKostick } from "../handlers/respuestas_kostick_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const respuestas_kostick = Router();
 
 respuestas_kostick.post("/", authenticateToken, postRespuestasKostick);
 
-module.exports = respuestas_kostick;
+export default respuestas_kostick;

@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getPaises,
   getPaisesActivos,
   getPais,
   postPais,
   putPais,
   deletePais,
-} = require("../handlers/paises_handlers");
+} from "../handlers/paises_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const paises = Router();
 
@@ -21,4 +21,4 @@ paises.post("/", authenticateToken, postPais);
 paises.put("/modificar", authenticateToken, putPais);
 paises.put("/inactivar", authenticateToken, deletePais);
 
-module.exports = paises;
+export default paises;

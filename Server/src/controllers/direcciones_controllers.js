@@ -1,6 +1,7 @@
-const { conn, Direcciones } = require("../db");
+import { conn, models } from "../db.js";
+const { Direcciones } = models;
 
-const todasLasDirecciones = async (empleado_id) => {
+export const todasLasDirecciones = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -20,7 +21,7 @@ const todasLasDirecciones = async (empleado_id) => {
   }
 };
 
-const todasLasDireccionesActivas = async (empleado_id) => {
+export const todasLasDireccionesActivas = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -40,7 +41,7 @@ const todasLasDireccionesActivas = async (empleado_id) => {
   }
 };
 
-const traerDireccion = async (direccion_id) => {
+export const traerDireccion = async (direccion_id) => {
   if (!direccion_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -58,7 +59,7 @@ const traerDireccion = async (direccion_id) => {
   }
 };
 
-const crearDireccion = async (
+export const crearDireccion = async (
   empleado_id,
   {
     calle_avenida,
@@ -120,7 +121,7 @@ const crearDireccion = async (
   }
 };
 
-const modificarDireccion = async (
+export const modificarDireccion = async (
   direccion_id,
   calle_avenida,
   parroquia_id,
@@ -183,7 +184,7 @@ const modificarDireccion = async (
   }
 };
 
-const inactivarDireccion = async (direccion_id) => {
+export const inactivarDireccion = async (direccion_id) => {
   if (!direccion_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -213,13 +214,4 @@ const inactivarDireccion = async (direccion_id) => {
 
     throw new Error(`Error al inactivar la dirección: ${error.message}`);
   }
-};
-
-module.exports = {
-  todasLasDirecciones,
-  todasLasDireccionesActivas,
-  traerDireccion,
-  crearDireccion,
-  modificarDireccion,
-  inactivarDireccion,
 };

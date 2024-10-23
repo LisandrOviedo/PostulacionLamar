@@ -1,6 +1,7 @@
-const { conn, Sugerencias_Pred } = require("../db");
+import { conn, models } from "../db.js";
+const { Sugerencias_Pred } = models;
 
-const todasLosSugerenciasPred = async (tipo_sugerencia_id) => {
+export const todasLosSugerenciasPred = async (tipo_sugerencia_id) => {
   if (!tipo_sugerencia_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -20,7 +21,7 @@ const todasLosSugerenciasPred = async (tipo_sugerencia_id) => {
   }
 };
 
-const todasLosSugerenciasPredActivas = async (tipo_sugerencia_id) => {
+export const todasLosSugerenciasPredActivas = async (tipo_sugerencia_id) => {
   if (!tipo_sugerencia_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -38,7 +39,7 @@ const todasLosSugerenciasPredActivas = async (tipo_sugerencia_id) => {
   }
 };
 
-const traerSugerenciaPred = async (sugerencia_pred_id) => {
+export const traerSugerenciaPred = async (sugerencia_pred_id) => {
   if (!sugerencia_pred_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -58,7 +59,7 @@ const traerSugerenciaPred = async (sugerencia_pred_id) => {
   }
 };
 
-const crearSugerenciaPred = async (tipo_sugerencia_id, descripcion) => {
+export const crearSugerenciaPred = async (tipo_sugerencia_id, descripcion) => {
   if (!tipo_sugerencia_id || !descripcion) {
     throw new Error(`Datos faltantes`);
   }
@@ -100,7 +101,7 @@ const crearSugerenciaPred = async (tipo_sugerencia_id, descripcion) => {
   }
 };
 
-const modificarSugerenciaPred = async (
+export const modificarSugerenciaPred = async (
   sugerencia_pred_id,
   tipo_sugerencia_id,
   descripcion
@@ -143,7 +144,7 @@ const modificarSugerenciaPred = async (
   }
 };
 
-const inactivarSugerenciaPred = async (sugerencia_pred_id) => {
+export const inactivarSugerenciaPred = async (sugerencia_pred_id) => {
   if (!sugerencia_pred_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -175,13 +176,4 @@ const inactivarSugerenciaPred = async (sugerencia_pred_id) => {
       `Error al inactivar la sugerencia predeterminada: ${error.message}`
     );
   }
-};
-
-module.exports = {
-  todasLosSugerenciasPred,
-  todasLosSugerenciasPredActivas,
-  traerSugerenciaPred,
-  crearSugerenciaPred,
-  modificarSugerenciaPred,
-  inactivarSugerenciaPred,
 };

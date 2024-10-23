@@ -1,12 +1,12 @@
-const {
+import {
   todosLosRoles,
   traerRol,
   crearRol,
   modificarRol,
   inactivarRol,
-} = require("../controllers/roles_controllers");
+} from "../controllers/roles_controllers.js";
 
-const getRoles = async (req, res) => {
+export const getRoles = async (req, res) => {
   try {
     const response = await todosLosRoles();
 
@@ -16,7 +16,7 @@ const getRoles = async (req, res) => {
   }
 };
 
-const getRol = async (req, res) => {
+export const getRol = async (req, res) => {
   const { rol_id } = req.params;
 
   try {
@@ -28,7 +28,7 @@ const getRol = async (req, res) => {
   }
 };
 
-const postRol = async (req, res) => {
+export const postRol = async (req, res) => {
   const { nombre, descripcion } = req.body;
 
   try {
@@ -40,7 +40,7 @@ const postRol = async (req, res) => {
   }
 };
 
-const putRol = async (req, res) => {
+export const putRol = async (req, res) => {
   const { rol_id, nombre, descripcion } = req.body;
 
   try {
@@ -52,7 +52,7 @@ const putRol = async (req, res) => {
   }
 };
 
-const deleteRol = async (req, res) => {
+export const deleteRol = async (req, res) => {
   const { rol_id } = req.body;
 
   try {
@@ -62,12 +62,4 @@ const deleteRol = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getRoles,
-  getRol,
-  postRol,
-  putRol,
-  deleteRol,
 };

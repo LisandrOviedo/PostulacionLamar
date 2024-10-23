@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getCargos,
   getCargosActivos,
   getCargo,
   postCargo,
   putCargo,
   deleteCargo,
-} = require("../handlers/cargos_handlers");
+} from "../handlers/cargos_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const cargos = Router();
 
@@ -21,4 +21,4 @@ cargos.post("/", authenticateToken, postCargo);
 cargos.put("/modificar", authenticateToken, putCargo);
 cargos.put("/inactivar", authenticateToken, deleteCargo);
 
-module.exports = cargos;
+export default cargos;

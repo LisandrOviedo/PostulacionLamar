@@ -1,13 +1,13 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getExperiencias,
   getExperiencia,
   postExperiencia,
   putExperiencia,
   deleteExperiencia,
-} = require("../handlers/experiencias_handlers");
+} from "../handlers/experiencias_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const experiencias = Router();
 
@@ -23,4 +23,4 @@ experiencias.post("/", authenticateToken, postExperiencia);
 experiencias.put("/modificar", authenticateToken, putExperiencia);
 experiencias.put("/inactivar", authenticateToken, deleteExperiencia);
 
-module.exports = experiencias;
+export default experiencias;

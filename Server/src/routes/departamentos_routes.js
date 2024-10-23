@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getDepartamentos,
   getDepartamentosActivos,
   getDepartamento,
   postDepartamento,
   putDepartamento,
   deleteDepartamento,
-} = require("../handlers/departamentos_handlers");
+} from "../handlers/departamentos_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const departamentos = Router();
 
@@ -18,11 +18,15 @@ departamentos.get(
   authenticateToken,
   getDepartamentosActivos
 );
-departamentos.get("/detalle/:departamento_id", authenticateToken, getDepartamento);
+departamentos.get(
+  "/detalle/:departamento_id",
+  authenticateToken,
+  getDepartamento
+);
 
 departamentos.post("/", authenticateToken, postDepartamento);
 
 departamentos.put("/modificar", authenticateToken, putDepartamento);
 departamentos.put("/inactivar", authenticateToken, deleteDepartamento);
 
-module.exports = departamentos;
+export default departamentos;

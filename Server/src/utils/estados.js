@@ -1,4 +1,4 @@
-const estados = [
+export const estados = [
   {
     pais: "Venezuela",
     estados: [
@@ -30,7 +30,3 @@ const estados = [
     ],
   },
 ];
-
-module.exports = {
-  estados,
-};

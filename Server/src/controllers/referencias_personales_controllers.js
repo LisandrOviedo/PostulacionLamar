@@ -1,6 +1,7 @@
-const { conn, Referencias_Personales } = require("../db");
+import { conn, models } from "../db.js";
+const { Referencias_Personales } = models;
 
-const todasLasReferenciasPersonales = async (empleado_id) => {
+export const todasLasReferenciasPersonales = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -22,7 +23,7 @@ const todasLasReferenciasPersonales = async (empleado_id) => {
   }
 };
 
-const todasLasReferenciasPersonalesActivas = async (empleado_id) => {
+export const todasLasReferenciasPersonalesActivas = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -44,7 +45,7 @@ const todasLasReferenciasPersonalesActivas = async (empleado_id) => {
   }
 };
 
-const traerReferenciaPersonal = async (referencia_personal_id) => {
+export const traerReferenciaPersonal = async (referencia_personal_id) => {
   if (!referencia_personal_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -64,7 +65,10 @@ const traerReferenciaPersonal = async (referencia_personal_id) => {
   }
 };
 
-const crearReferenciaPersonal = async (empleado_id, referencias_personales) => {
+export const crearReferenciaPersonal = async (
+  empleado_id,
+  referencias_personales
+) => {
   if (!empleado_id || !referencias_personales) {
     throw new Error(`Datos faltantes`);
   }
@@ -103,7 +107,7 @@ const crearReferenciaPersonal = async (empleado_id, referencias_personales) => {
   }
 };
 
-const modificarReferenciaPersonal = async (
+export const modificarReferenciaPersonal = async (
   referencia_personal_id,
   nombre_apellido,
   direccion,
@@ -156,7 +160,7 @@ const modificarReferenciaPersonal = async (
   }
 };
 
-const inactivarReferenciaPersonal = async (referencia_personal_id) => {
+export const inactivarReferenciaPersonal = async (referencia_personal_id) => {
   if (!referencia_personal_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -190,13 +194,4 @@ const inactivarReferenciaPersonal = async (referencia_personal_id) => {
       `Error al inactivar la referencia personal: ${error.message}`
     );
   }
-};
-
-module.exports = {
-  todasLasReferenciasPersonales,
-  todasLasReferenciasPersonalesActivas,
-  traerReferenciaPersonal,
-  crearReferenciaPersonal,
-  modificarReferenciaPersonal,
-  inactivarReferenciaPersonal,
 };

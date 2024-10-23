@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getClasesMovimientos,
   getClasesMovimientosActivos,
   getClaseMovimiento,
   postClaseMovimiento,
   putClaseMovimiento,
   deleteClaseMovimiento,
-} = require("../handlers/clases_movimientos_handlers");
+} from "../handlers/clases_movimientos_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const clases_movimientos = Router();
 
@@ -29,4 +29,4 @@ clases_movimientos.post("/", authenticateToken, postClaseMovimiento);
 clases_movimientos.put("/modificar", authenticateToken, putClaseMovimiento);
 clases_movimientos.put("/inactivar", authenticateToken, deleteClaseMovimiento);
 
-module.exports = clases_movimientos;
+export default clases_movimientos;

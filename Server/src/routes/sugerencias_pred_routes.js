@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getSugerenciasPred,
   getSugerenciasPredActivas,
   getSugerenciaPred,
   postSugerenciaPred,
   putSugerenciaPred,
   deleteSugerenciaPred,
-} = require("../handlers/sugerencias_pred_handlers");
+} from "../handlers/sugerencias_pred_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const sugerencias_pred = Router();
 
@@ -29,4 +29,4 @@ sugerencias_pred.post("/", authenticateToken, postSugerenciaPred);
 sugerencias_pred.put("/modificar", authenticateToken, putSugerenciaPred);
 sugerencias_pred.put("/inactivar", authenticateToken, deleteSugerenciaPred);
 
-module.exports = sugerencias_pred;
+export default sugerencias_pred;

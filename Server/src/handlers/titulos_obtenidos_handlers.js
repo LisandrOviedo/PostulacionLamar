@@ -1,12 +1,12 @@
-const {
+import {
   todosLosTitulosObtenidos,
   traerTituloObtenido,
   crearTitulosObtenidos,
   modificarTitulosObtenidos,
   inactivarTituloObtenido,
-} = require("../controllers/titulos_obtenidos_controllers");
+} from "../controllers/titulos_obtenidos_controllers.js";
 
-const getTitulosObtenidos = async (req, res) => {
+export const getTitulosObtenidos = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -18,7 +18,7 @@ const getTitulosObtenidos = async (req, res) => {
   }
 };
 
-const getTituloObtenido = async (req, res) => {
+export const getTituloObtenido = async (req, res) => {
   const { titulo_obtenido_id } = req.params;
 
   try {
@@ -30,7 +30,7 @@ const getTituloObtenido = async (req, res) => {
   }
 };
 
-const postTitulosObtenidos = async (req, res) => {
+export const postTitulosObtenidos = async (req, res) => {
   const { empleado_id, titulos_obtenidos } = req.body;
 
   try {
@@ -45,7 +45,7 @@ const postTitulosObtenidos = async (req, res) => {
   }
 };
 
-const putTituloObtenido = async (req, res) => {
+export const putTituloObtenido = async (req, res) => {
   const { empleado_id, titulos_obtenidos } = req.body;
 
   try {
@@ -60,7 +60,7 @@ const putTituloObtenido = async (req, res) => {
   }
 };
 
-const deleteTituloObtenido = async (req, res) => {
+export const deleteTituloObtenido = async (req, res) => {
   const { titulo_obtenido_id } = req.body;
 
   try {
@@ -70,12 +70,4 @@ const deleteTituloObtenido = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getTitulosObtenidos,
-  getTituloObtenido,
-  postTitulosObtenidos,
-  putTituloObtenido,
-  deleteTituloObtenido,
 };

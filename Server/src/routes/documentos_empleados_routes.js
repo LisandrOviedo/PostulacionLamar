@@ -1,19 +1,19 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getAnexos,
   postAnexos,
-} = require("../handlers/documentos_empleados_handlers");
+} from "../handlers/documentos_empleados_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
-const { DDMMYYYYHHMM } = require("../utils/formatearFecha");
+import { DDMMYYYYHHMM } from "../utils/formatearFecha.js";
 
 const documentos_empleados = Router();
 
-const multer = require("multer");
-const path = require("path");
+import multer from "multer";
+import path from "node:path";
 const MIMETYPES = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
-const fs = require("fs");
+import fs from "node:fs";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -47,16 +47,19 @@ const upload = multer({ storage: storage });
 
 documentos_empleados.get("/detalle/:empleado_id", authenticateToken, getAnexos);
 
-documentos_empleados.get("/documento/:identificacion/:originalname", (req, res) => {
-  const { identificacion, originalname } = req.params;
+documentos_empleados.get(
+  "/documento/:identificacion/:originalname",
+  (req, res) => {
+    const { identificacion, originalname } = req.params;
 
-  res.sendFile(
-    path.join(
-      __dirname,
-      `../../public/documentosEmpleados/${identificacion}/${originalname}`
-    )
-  );
-});
+    res.sendFile(
+      path.join(
+        __dirname,
+        `../../public/documentosEmpleados/${identificacion}/${originalname}`
+      )
+    );
+  }
+);
 
 documentos_empleados.post(
   "/",
@@ -75,4 +78,4 @@ documentos_empleados.post(
   postAnexos
 );
 
-module.exports = documentos_empleados;
+export default documentos_empleados;

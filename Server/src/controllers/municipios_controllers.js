@@ -1,8 +1,9 @@
-const { conn, Municipios, Paises, Estados } = require("../db");
+import { conn, models } from "../db.js";
+const { Municipios, Paises, Estados } = models;
 
-const { municipios } = require("../utils/municipios");
+import { municipios } from "../utils/municipios.js";
 
-const todosLosMunicipios = async (estado_id) => {
+export const todosLosMunicipios = async (estado_id) => {
   if (!estado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -21,7 +22,7 @@ const todosLosMunicipios = async (estado_id) => {
   }
 };
 
-const todosLosMunicipiosActivos = async (estado_id) => {
+export const todosLosMunicipiosActivos = async (estado_id) => {
   if (!estado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -38,7 +39,7 @@ const todosLosMunicipiosActivos = async (estado_id) => {
   }
 };
 
-const traerMunicipio = async (municipio_id) => {
+export const traerMunicipio = async (municipio_id) => {
   if (!municipio_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -56,7 +57,7 @@ const traerMunicipio = async (municipio_id) => {
   }
 };
 
-const cargarMunicipios = async () => {
+export const cargarMunicipios = async () => {
   let t;
 
   try {
@@ -112,7 +113,7 @@ const cargarMunicipios = async () => {
   }
 };
 
-const crearMunicipio = async (municipio_id, nombre) => {
+export const crearMunicipio = async (municipio_id, nombre) => {
   if (!municipio_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -147,7 +148,7 @@ const crearMunicipio = async (municipio_id, nombre) => {
   }
 };
 
-const modificarMunicipio = async (municipio_id, estado_id, nombre) => {
+export const modificarMunicipio = async (municipio_id, estado_id, nombre) => {
   if (!municipio_id || !estado_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -184,7 +185,7 @@ const modificarMunicipio = async (municipio_id, estado_id, nombre) => {
   }
 };
 
-const inactivarMunicipio = async (municipio_id) => {
+export const inactivarMunicipio = async (municipio_id) => {
   if (!municipio_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -214,14 +215,4 @@ const inactivarMunicipio = async (municipio_id) => {
 
     throw new Error(`Error al inactivar la municipio: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosMunicipios,
-  todosLosMunicipiosActivos,
-  traerMunicipio,
-  cargarMunicipios,
-  crearMunicipio,
-  modificarMunicipio,
-  inactivarMunicipio,
 };

@@ -1,12 +1,12 @@
-const {
+import {
   todosLosRolesMenus,
   traerRolMenu,
   crearRolMenu,
   modificarRolMenu,
   inactivarRolMenu,
-} = require("../controllers/roles_menus_controllers");
+} from "../controllers/roles_menus_controllers.js";
 
-const getRolesMenus = async (req, res) => {
+export const getRolesMenus = async (req, res) => {
   const { rol_id } = req.params;
 
   try {
@@ -18,7 +18,7 @@ const getRolesMenus = async (req, res) => {
   }
 };
 
-const getRolMenu = async (req, res) => {
+export const getRolMenu = async (req, res) => {
   const { rol_menu_id } = req.params;
 
   try {
@@ -30,7 +30,7 @@ const getRolMenu = async (req, res) => {
   }
 };
 
-const postRolMenu = async (req, res) => {
+export const postRolMenu = async (req, res) => {
   const { rol_id, menu_id } = req.body;
 
   try {
@@ -42,7 +42,7 @@ const postRolMenu = async (req, res) => {
   }
 };
 
-const putRolMenu = async (req, res) => {
+export const putRolMenu = async (req, res) => {
   const { rol_menu_id, rol_id, menu_id } = req.body;
 
   try {
@@ -54,7 +54,7 @@ const putRolMenu = async (req, res) => {
   }
 };
 
-const deleteRolMenu = async (req, res) => {
+export const deleteRolMenu = async (req, res) => {
   const { rol_menu_id } = req.body;
 
   try {
@@ -64,12 +64,4 @@ const deleteRolMenu = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getRolesMenus,
-  getRolMenu,
-  postRolMenu,
-  putRolMenu,
-  deleteRolMenu,
 };

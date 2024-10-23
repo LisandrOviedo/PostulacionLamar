@@ -1,9 +1,10 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 const { SECRET_KEY } = process.env;
 
-const { Sesiones } = require("../db");
+import { models } from "../db.js";
+const { Sesiones } = models;
 
-const authenticateToken = async (req, res, next) => {
+export const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
 
   const token = authHeader && authHeader.split(" ")[1];
@@ -28,8 +29,4 @@ const authenticateToken = async (req, res, next) => {
     req.user = user;
     next();
   });
-};
-
-module.exports = {
-  authenticateToken,
 };

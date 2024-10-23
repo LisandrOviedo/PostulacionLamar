@@ -1,13 +1,13 @@
-const {
+import {
   todosLosCargosEmpleados,
   todosLosCargosEmpleadosActivos,
   traerCargoEmpleado,
   crearCargoEmpleado,
   modificarCargoEmpleado,
   inactivarCargoEmpleado,
-} = require("../controllers/cargos_empleados_controllers");
+} from "../controllers/cargos_empleados_controllers.js";
 
-const getCargosEmpleadosEmpleados = async (req, res) => {
+export const getCargosEmpleadosEmpleados = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getCargosEmpleadosEmpleados = async (req, res) => {
   }
 };
 
-const getCargosEmpleadosEmpleadosActivos = async (req, res) => {
+export const getCargosEmpleadosEmpleadosActivos = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getCargosEmpleadosEmpleadosActivos = async (req, res) => {
   }
 };
 
-const getCargoEmpleado = async (req, res) => {
+export const getCargoEmpleado = async (req, res) => {
   const { cargo_empleado_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getCargoEmpleado = async (req, res) => {
   }
 };
 
-const postCargoEmpleado = async (req, res) => {
+export const postCargoEmpleado = async (req, res) => {
   const { empleado_id, datosIngreso } = req.body;
 
   try {
@@ -55,7 +55,7 @@ const postCargoEmpleado = async (req, res) => {
   }
 };
 
-const putCargoEmpleado = async (req, res) => {
+export const putCargoEmpleado = async (req, res) => {
   const {
     cargo_empleado_id,
     cargo_nivel_id,
@@ -79,7 +79,7 @@ const putCargoEmpleado = async (req, res) => {
   }
 };
 
-const deleteCargoEmpleado = async (req, res) => {
+export const deleteCargoEmpleado = async (req, res) => {
   const { cargo_empleado_id } = req.body;
 
   try {
@@ -89,13 +89,4 @@ const deleteCargoEmpleado = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getCargosEmpleadosEmpleados,
-  getCargosEmpleadosEmpleadosActivos,
-  getCargoEmpleado,
-  postCargoEmpleado,
-  putCargoEmpleado,
-  deleteCargoEmpleado,
 };

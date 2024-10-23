@@ -1,8 +1,13 @@
-const { Op } = require("sequelize");
+import { Op } from "sequelize";
 
-const { conn, Pruebas_Empleados, Empleados } = require("../db");
+import { conn, models } from "../db.js";
+const { Pruebas_Empleados, Empleados } = models;
 
-const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
+export const todasLasPruebas = async (
+  filtros,
+  paginaActual,
+  limitePorPagina
+) => {
   if (!paginaActual || !limitePorPagina) {
     throw new Error(`Datos faltantes`);
   }
@@ -85,7 +90,7 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
   }
 };
 
-const traerPruebasEmpleados = async (empleado_id, prueba) => {
+export const traerPruebasEmpleados = async (empleado_id, prueba) => {
   if (!empleado_id || !prueba) {
     throw new Error(`Datos faltantes`);
   }
@@ -107,7 +112,7 @@ const traerPruebasEmpleados = async (empleado_id, prueba) => {
   }
 };
 
-const traerPrueba = async (prueba_id) => {
+export const traerPrueba = async (prueba_id) => {
   if (!prueba_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -125,7 +130,7 @@ const traerPrueba = async (prueba_id) => {
   }
 };
 
-const crearPrueba = async (empleado_id, prueba) => {
+export const crearPrueba = async (empleado_id, prueba) => {
   if (!empleado_id || !prueba) {
     throw new Error(`Datos faltantes`);
   }
@@ -153,11 +158,4 @@ const crearPrueba = async (empleado_id, prueba) => {
 
     throw new Error(`Error al crear la prueba: ${error.message}`);
   }
-};
-
-module.exports = {
-  todasLasPruebas,
-  traerPruebasEmpleados,
-  traerPrueba,
-  crearPrueba,
 };

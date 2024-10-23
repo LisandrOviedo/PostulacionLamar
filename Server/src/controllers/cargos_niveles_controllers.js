@@ -1,6 +1,7 @@
-const { conn, Cargos_Niveles } = require("../db");
+import { conn, models } from "../db.js";
+const { Cargos_Niveles } = models;
 
-const todosLosCargosNiveles = async (cargo_id) => {
+export const todosLosCargosNiveles = async (cargo_id) => {
   if (!cargo_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -21,7 +22,7 @@ const todosLosCargosNiveles = async (cargo_id) => {
   }
 };
 
-const todosLosCargosNivelesActivos = async (cargo_id) => {
+export const todosLosCargosNivelesActivos = async (cargo_id) => {
   if (!cargo_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -40,7 +41,7 @@ const todosLosCargosNivelesActivos = async (cargo_id) => {
   }
 };
 
-const traerCargoNivel = async (cargo_nivel_id) => {
+export const traerCargoNivel = async (cargo_nivel_id) => {
   if (!cargo_nivel_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -58,7 +59,12 @@ const traerCargoNivel = async (cargo_nivel_id) => {
   }
 };
 
-const crearCargoNivel = async (cargo_id, nivel, salario_min, salario_max) => {
+export const crearCargoNivel = async (
+  cargo_id,
+  nivel,
+  salario_min,
+  salario_max
+) => {
   if (!cargo_id || !nivel || !salario_min || !salario_max) {
     throw new Error(`Datos faltantes`);
   }
@@ -98,7 +104,7 @@ const crearCargoNivel = async (cargo_id, nivel, salario_min, salario_max) => {
   }
 };
 
-const modificarCargoNivel = async (
+export const modificarCargoNivel = async (
   cargo_nivel_id,
   cargo_id,
   nivel,
@@ -145,7 +151,7 @@ const modificarCargoNivel = async (
   }
 };
 
-const inactivarCargoNivel = async (cargo_nivel_id) => {
+export const inactivarCargoNivel = async (cargo_nivel_id) => {
   if (!cargo_nivel_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -177,13 +183,4 @@ const inactivarCargoNivel = async (cargo_nivel_id) => {
       `Error al inactivar ese nivel de ese cargo: ${error.message}`
     );
   }
-};
-
-module.exports = {
-  todosLosCargosNiveles,
-  todosLosCargosNivelesActivos,
-  traerCargoNivel,
-  crearCargoNivel,
-  modificarCargoNivel,
-  inactivarCargoNivel,
 };

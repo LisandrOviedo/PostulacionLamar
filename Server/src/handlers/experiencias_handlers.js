@@ -1,12 +1,12 @@
-const {
+import {
   todasLasExperiencias,
   traerExperiencia,
   crearExperiencia,
   modificarExperiencia,
   inactivarExperiencia,
-} = require("../controllers/experiencias_controllers");
+} from "../controllers/experiencias_controllers.js";
 
-const getExperiencias = async (req, res) => {
+export const getExperiencias = async (req, res) => {
   try {
     const response = await todasLasExperiencias();
 
@@ -16,7 +16,7 @@ const getExperiencias = async (req, res) => {
   }
 };
 
-const getExperiencia = async (req, res) => {
+export const getExperiencia = async (req, res) => {
   const { experiencia_id } = req.params;
 
   try {
@@ -28,7 +28,7 @@ const getExperiencia = async (req, res) => {
   }
 };
 
-const postExperiencia = async (req, res) => {
+export const postExperiencia = async (req, res) => {
   const { empleado_id, experiencias } = req.body;
 
   try {
@@ -40,7 +40,7 @@ const postExperiencia = async (req, res) => {
   }
 };
 
-const putExperiencia = async (req, res) => {
+export const putExperiencia = async (req, res) => {
   const { empleado_id, experiencias } = req.body;
 
   try {
@@ -52,7 +52,7 @@ const putExperiencia = async (req, res) => {
   }
 };
 
-const deleteExperiencia = async (req, res) => {
+export const deleteExperiencia = async (req, res) => {
   const { experiencia_id } = req.body;
 
   try {
@@ -62,12 +62,4 @@ const deleteExperiencia = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getExperiencias,
-  getExperiencia,
-  postExperiencia,
-  putExperiencia,
-  deleteExperiencia,
 };

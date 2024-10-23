@@ -1,11 +1,11 @@
-const { Op } = require("sequelize");
+import { Op } from "sequelize";
 
-const axios = require("axios");
+import axios from "axios";
 
-const fs = require("fs");
+import fs from "fs";
 
+import { conn, models } from "../db.js";
 const {
-  conn,
   Empleados,
   Roles,
   Cargos_Niveles,
@@ -27,25 +27,29 @@ const {
   Movimientos,
   Clases_Movimientos,
   Menus,
-} = require("../db");
+} = models;
 
 const { API_EMPLEADOS } = process.env;
 
-const { YYYYMMDD, fechaHoraActual } = require("../utils/formatearFecha");
+import { YYYYMMDD, fechaHoraActual } from "../utils/formatearFecha.js";
 
-const { sanarTextoAPI } = require("../utils/formatearTexto");
+import { sanarTextoAPI } from "../utils/formatearTexto.js";
 
-const {
+import {
   crearSesion,
   traerSesion,
   cerrarSesion,
-} = require("./sesiones_controllers");
+} from "./sesiones_controllers.js";
 
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 const { SECRET_KEY } = process.env;
 
-const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
+export const todosLosEmpleados = async (
+  filtros,
+  paginaActual,
+  limitePorPagina
+) => {
   if (!paginaActual || !limitePorPagina) {
     throw new Error(`Datos faltantes`);
   }
@@ -145,7 +149,7 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
   }
 };
 
-const traerEmpleado = async (empleado_id) => {
+export const traerEmpleado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -235,7 +239,7 @@ const traerEmpleado = async (empleado_id) => {
   }
 };
 
-const traerEmpleadoExistencia = async (
+export const traerEmpleadoExistencia = async (
   tipo_identificacion,
   numero_identificacion,
   empresa_id
@@ -427,7 +431,7 @@ const traerEmpleadoExistencia = async (
   }
 };
 
-const traerFotoEmpleado = async (empleado_id) => {
+export const traerFotoEmpleado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -446,7 +450,11 @@ const traerFotoEmpleado = async (empleado_id) => {
   }
 };
 
-const login = async (tipo_identificacion, numero_identificacion, clave) => {
+export const login = async (
+  tipo_identificacion,
+  numero_identificacion,
+  clave
+) => {
   if (!tipo_identificacion || !numero_identificacion || !clave) {
     throw new Error(`Datos faltantes`);
   }
@@ -530,7 +538,7 @@ const login = async (tipo_identificacion, numero_identificacion, clave) => {
   }
 };
 
-const cargarEmpleados = async () => {
+export const cargarEmpleados = async () => {
   let t;
 
   try {
@@ -679,7 +687,7 @@ const cargarEmpleados = async () => {
   }
 };
 
-const crearEmpleado = async (
+export const crearEmpleado = async (
   empresa_id,
   nombres,
   apellidos,
@@ -804,7 +812,7 @@ const crearEmpleado = async (
   }
 };
 
-const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
+export const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
   if (!empleado_id || !clave) {
     throw new Error(`Datos faltantes`);
   }
@@ -860,7 +868,7 @@ const actualizarClaveTemporalEmpleado = async (empleado_id, clave) => {
   }
 };
 
-const modificarEmpleado = async (datosPersonales) => {
+export const modificarEmpleado = async (datosPersonales) => {
   if (!datosPersonales.empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -986,7 +994,7 @@ const modificarEmpleado = async (datosPersonales) => {
   }
 };
 
-const modificarFotoEmpleado = async (empleado_id, filename, path) => {
+export const modificarFotoEmpleado = async (empleado_id, filename, path) => {
   if (!empleado_id || !filename || !path) {
     throw new Error(`Datos faltantes`);
   }
@@ -1036,7 +1044,7 @@ const modificarFotoEmpleado = async (empleado_id, filename, path) => {
   }
 };
 
-const actualizarClaveEmpleado = async (
+export const actualizarClaveEmpleado = async (
   empleado_id,
   claveAnterior,
   claveNueva
@@ -1090,7 +1098,7 @@ const actualizarClaveEmpleado = async (
   }
 };
 
-const reiniciarClaveEmpleado = async (empleado_id) => {
+export const reiniciarClaveEmpleado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -1130,7 +1138,7 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
   }
 };
 
-const inactivarEmpleado = async (empleado_id) => {
+export const inactivarEmpleado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -1162,20 +1170,4 @@ const inactivarEmpleado = async (empleado_id) => {
 
     throw new Error(`Error al inactivar el empleado: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosEmpleados,
-  traerEmpleado,
-  traerEmpleadoExistencia,
-  traerFotoEmpleado,
-  login,
-  cargarEmpleados,
-  crearEmpleado,
-  actualizarClaveTemporalEmpleado,
-  modificarEmpleado,
-  modificarFotoEmpleado,
-  actualizarClaveEmpleado,
-  reiniciarClaveEmpleado,
-  inactivarEmpleado,
 };

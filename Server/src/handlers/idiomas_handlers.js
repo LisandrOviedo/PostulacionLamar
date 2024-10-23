@@ -1,4 +1,4 @@
-const {
+import {
   todosLosIdiomas,
   todosLosIdiomasActivos,
   traerIdioma,
@@ -6,9 +6,9 @@ const {
   modificarIdioma,
   inactivarIdioma,
   agregarIdiomasCurriculo,
-} = require("../controllers/idiomas_controllers");
+} from "../controllers/idiomas_controllers.js";
 
-const getIdiomas = async (req, res) => {
+export const getIdiomas = async (req, res) => {
   try {
     const response = await todosLosIdiomas();
 
@@ -18,7 +18,7 @@ const getIdiomas = async (req, res) => {
   }
 };
 
-const getIdiomasActivos = async (req, res) => {
+export const getIdiomasActivos = async (req, res) => {
   try {
     const response = await todosLosIdiomasActivos();
 
@@ -28,7 +28,7 @@ const getIdiomasActivos = async (req, res) => {
   }
 };
 
-const getIdioma = async (req, res) => {
+export const getIdioma = async (req, res) => {
   const { idioma_id } = req.params;
 
   try {
@@ -40,7 +40,7 @@ const getIdioma = async (req, res) => {
   }
 };
 
-const postIdioma = async (req, res) => {
+export const postIdioma = async (req, res) => {
   const { nombre } = req.body;
 
   try {
@@ -52,7 +52,7 @@ const postIdioma = async (req, res) => {
   }
 };
 
-const putIdioma = async (req, res) => {
+export const putIdioma = async (req, res) => {
   const { idioma_id, nombre } = req.body;
 
   try {
@@ -64,7 +64,7 @@ const putIdioma = async (req, res) => {
   }
 };
 
-const deleteIdioma = async (req, res) => {
+export const deleteIdioma = async (req, res) => {
   const { idioma_id } = req.body;
 
   try {
@@ -76,7 +76,7 @@ const deleteIdioma = async (req, res) => {
   }
 };
 
-const postIdiomasCurriculo = async (req, res) => {
+export const postIdiomasCurriculo = async (req, res) => {
   const { curriculo_id, idiomas } = req.body;
 
   try {
@@ -86,14 +86,4 @@ const postIdiomasCurriculo = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getIdiomas,
-  getIdiomasActivos,
-  getIdioma,
-  postIdioma,
-  putIdioma,
-  deleteIdioma,
-  postIdiomasCurriculo,
 };

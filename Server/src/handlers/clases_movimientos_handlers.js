@@ -1,13 +1,13 @@
-const {
+import {
   todasLasClasesMovimientos,
   todasLasClasesMovimientosActivas,
   traerClaseMovimiento,
   crearClaseMovimiento,
   modificarClaseMovimiento,
   inactivarClaseMovimiento,
-} = require("../controllers/clases_movimientos_controllers");
+} from "../controllers/clases_movimientos_controllers.js";
 
-const getClasesMovimientos = async (req, res) => {
+export const getClasesMovimientos = async (req, res) => {
   try {
     const response = await todasLasClasesMovimientos();
 
@@ -17,7 +17,7 @@ const getClasesMovimientos = async (req, res) => {
   }
 };
 
-const getClasesMovimientosActivos = async (req, res) => {
+export const getClasesMovimientosActivos = async (req, res) => {
   try {
     const response = await todasLasClasesMovimientosActivas();
 
@@ -27,7 +27,7 @@ const getClasesMovimientosActivos = async (req, res) => {
   }
 };
 
-const getClaseMovimiento = async (req, res) => {
+export const getClaseMovimiento = async (req, res) => {
   const { clase_movimiento_id } = req.params;
 
   try {
@@ -39,7 +39,7 @@ const getClaseMovimiento = async (req, res) => {
   }
 };
 
-const postClaseMovimiento = async (req, res) => {
+export const postClaseMovimiento = async (req, res) => {
   const { descripcion } = req.body;
 
   try {
@@ -51,7 +51,7 @@ const postClaseMovimiento = async (req, res) => {
   }
 };
 
-const putClaseMovimiento = async (req, res) => {
+export const putClaseMovimiento = async (req, res) => {
   const { clase_movimiento_id, descripcion } = req.body;
 
   try {
@@ -66,7 +66,7 @@ const putClaseMovimiento = async (req, res) => {
   }
 };
 
-const deleteClaseMovimiento = async (req, res) => {
+export const deleteClaseMovimiento = async (req, res) => {
   const { clase_movimiento_id } = req.body;
 
   try {
@@ -76,13 +76,4 @@ const deleteClaseMovimiento = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getClasesMovimientos,
-  getClasesMovimientosActivos,
-  getClaseMovimiento,
-  postClaseMovimiento,
-  putClaseMovimiento,
-  deleteClaseMovimiento,
 };

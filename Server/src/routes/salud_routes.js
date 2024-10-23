@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getSaluds,
   getSaludActivas,
   getSalud,
   postSalud,
   putSalud,
   deleteSalud,
-} = require("../handlers/salud_handlers");
+} from "../handlers/salud_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const salud = Router();
 
@@ -21,4 +21,4 @@ salud.post("/", authenticateToken, postSalud);
 salud.put("/modificar", authenticateToken, putSalud);
 salud.put("/inactivar", authenticateToken, deleteSalud);
 
-module.exports = salud;
+export default salud;

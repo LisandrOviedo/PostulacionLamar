@@ -1,13 +1,13 @@
-const {
+import {
   todosLosEstados,
   todosLosEstadosActivos,
   traerEstado,
   crearEstado,
   modificarEstado,
   inactivarEstado,
-} = require("../controllers/estados_controllers");
+} from "../controllers/estados_controllers.js";
 
-const getEstados = async (req, res) => {
+export const getEstados = async (req, res) => {
   const { pais_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getEstados = async (req, res) => {
   }
 };
 
-const getEstadosActivos = async (req, res) => {
+export const getEstadosActivos = async (req, res) => {
   const { pais_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getEstadosActivos = async (req, res) => {
   }
 };
 
-const getEstado = async (req, res) => {
+export const getEstado = async (req, res) => {
   const { estado_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getEstado = async (req, res) => {
   }
 };
 
-const postEstado = async (req, res) => {
+export const postEstado = async (req, res) => {
   const { pais_id, nombre } = req.body;
 
   try {
@@ -55,7 +55,7 @@ const postEstado = async (req, res) => {
   }
 };
 
-const putEstado = async (req, res) => {
+export const putEstado = async (req, res) => {
   const { estado_id, pais_id, nombre } = req.body;
 
   try {
@@ -67,7 +67,7 @@ const putEstado = async (req, res) => {
   }
 };
 
-const deleteEstado = async (req, res) => {
+export const deleteEstado = async (req, res) => {
   const { estado_id } = req.body;
 
   try {
@@ -77,13 +77,4 @@ const deleteEstado = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getEstados,
-  getEstadosActivos,
-  getEstado,
-  postEstado,
-  putEstado,
-  deleteEstado,
 };

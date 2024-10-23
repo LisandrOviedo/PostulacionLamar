@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getParroquias,
   getParroquiasActivos,
   getParroquia,
   postParroquia,
   putParroquia,
   deleteParroquia,
-} = require("../handlers/parroquias_handlers");
+} from "../handlers/parroquias_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const parroquias = Router();
 
@@ -25,4 +25,4 @@ parroquias.post("/", authenticateToken, postParroquia);
 parroquias.put("/modificar", authenticateToken, putParroquia);
 parroquias.put("/inactivar", authenticateToken, deleteParroquia);
 
-module.exports = parroquias;
+export default parroquias;

@@ -1,4 +1,4 @@
-const DDMMYYYYHHMM = () => {
+export const DDMMYYYYHHMM = () => {
   const fechaHoraActual = new Date();
   const dia = String(fechaHoraActual.getDate()).padStart(2, "0");
   const mes = String(fechaHoraActual.getMonth() + 1).padStart(2, "0");
@@ -12,7 +12,7 @@ const DDMMYYYYHHMM = () => {
   return fechaHoraFormateada;
 };
 
-const DDMMYYYYHHMM2 = () => {
+export const DDMMYYYYHHMM2 = () => {
   const fechaHoraActual = new Date();
   const dia = String(fechaHoraActual.getDate()).padStart(2, "0");
   const mes = String(fechaHoraActual.getMonth() + 1).padStart(2, "0");
@@ -26,7 +26,7 @@ const DDMMYYYYHHMM2 = () => {
   return fechaHoraFormateada;
 };
 
-const DDMMYYYY = (fecha) => {
+export const DDMMYYYY = (fecha) => {
   const isoDateString = fecha;
   const isoDate = new Date(isoDateString);
   const day = String(isoDate.getDate()).padStart(2, "0");
@@ -37,13 +37,13 @@ const DDMMYYYY = (fecha) => {
   return formattedDate;
 };
 
-const YYYYMMDD = (fecha) => {
+export const YYYYMMDD = (fecha) => {
   const date = new Date(fecha);
 
   return date.toISOString().slice(0, 10);
 };
 
-const calcularEdad = (edad) => {
+export const calcularEdad = (edad) => {
   const today = new Date();
   const birthDate = new Date(edad);
 
@@ -60,11 +60,11 @@ const calcularEdad = (edad) => {
   return age;
 };
 
-const fechaHoraActual = () => {
+export const fechaHoraActual = () => {
   return `[${new Date().toLocaleString()}]`;
 };
 
-const calcularAntiguedad = (fecha_ingreso) => {
+export const calcularAntiguedad = (fecha_ingreso) => {
   const fecha_actual = new Date(); // fecha actual del sistema
   const fechaIngreso = new Date(fecha_ingreso); // convertir fecha de ingreso a objeto Date
   // calcular la diferencia en milisegundos
@@ -73,14 +73,4 @@ const calcularAntiguedad = (fecha_ingreso) => {
   const antiguedad = Math.floor(diferencia / (1000 * 60 * 60 * 24));
 
   return antiguedad;
-};
-
-module.exports = {
-  DDMMYYYYHHMM,
-  DDMMYYYYHHMM2,
-  DDMMYYYY,
-  YYYYMMDD,
-  calcularEdad,
-  fechaHoraActual,
-  calcularAntiguedad,
 };

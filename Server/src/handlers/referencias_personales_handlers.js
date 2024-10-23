@@ -1,13 +1,13 @@
-const {
+import {
   todasLasReferenciasPersonales,
   todasLasReferenciasPersonalesActivas,
   traerReferenciaPersonal,
   crearReferenciaPersonal,
   modificarReferenciaPersonal,
   inactivarReferenciaPersonal,
-} = require("../controllers/referencias_personales_controllers");
+} from "../controllers/referencias_personales_controllers.js";
 
-const getReferenciasPersonales = async (req, res) => {
+export const getReferenciasPersonales = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getReferenciasPersonales = async (req, res) => {
   }
 };
 
-const getReferenciasPersonalesActivas = async (req, res) => {
+export const getReferenciasPersonalesActivas = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getReferenciasPersonalesActivas = async (req, res) => {
   }
 };
 
-const getReferenciaPersonal = async (req, res) => {
+export const getReferenciaPersonal = async (req, res) => {
   const { referencia_personal_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getReferenciaPersonal = async (req, res) => {
   }
 };
 
-const postReferenciaPersonal = async (req, res) => {
+export const postReferenciaPersonal = async (req, res) => {
   const { empleado_id, referencias_personales } = req.body;
 
   try {
@@ -58,7 +58,7 @@ const postReferenciaPersonal = async (req, res) => {
   }
 };
 
-const putReferenciaPersonal = async (req, res) => {
+export const putReferenciaPersonal = async (req, res) => {
   const {
     referencia_personal_id,
     nombre_apellido,
@@ -82,7 +82,7 @@ const putReferenciaPersonal = async (req, res) => {
   }
 };
 
-const deleteReferenciaPersonal = async (req, res) => {
+export const deleteReferenciaPersonal = async (req, res) => {
   const { referencia_personal_id } = req.body;
 
   try {
@@ -92,13 +92,4 @@ const deleteReferenciaPersonal = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getReferenciasPersonales,
-  getReferenciasPersonalesActivas,
-  getReferenciaPersonal,
-  postReferenciaPersonal,
-  putReferenciaPersonal,
-  deleteReferenciaPersonal,
 };

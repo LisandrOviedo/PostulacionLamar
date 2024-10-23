@@ -1,13 +1,13 @@
-const {
+import {
   todosLosSalud,
   todosLosSaludActivos,
   traerSalud,
   crearSalud,
   modificarSalud,
   inactivarSalud,
-} = require("../controllers/salud_controllers");
+} from "../controllers/salud_controllers.js";
 
-const getSaluds = async (req, res) => {
+export const getSaluds = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getSaluds = async (req, res) => {
   }
 };
 
-const getSaludActivas = async (req, res) => {
+export const getSaludActivas = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getSaludActivas = async (req, res) => {
   }
 };
 
-const getSalud = async (req, res) => {
+export const getSalud = async (req, res) => {
   const { salud_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getSalud = async (req, res) => {
   }
 };
 
-const postSalud = async (req, res) => {
+export const postSalud = async (req, res) => {
   const { empleado_id, datosIngreso } = req.body;
 
   try {
@@ -55,7 +55,7 @@ const postSalud = async (req, res) => {
   }
 };
 
-const putSalud = async (req, res) => {
+export const putSalud = async (req, res) => {
   const {
     salud_id,
     alergia_medicamentos,
@@ -93,13 +93,4 @@ const deleteSalud = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getSaluds,
-  getSaludActivas,
-  getSalud,
-  postSalud,
-  putSalud,
-  deleteSalud,
 };

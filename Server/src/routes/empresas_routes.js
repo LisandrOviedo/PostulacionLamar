@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getEmpresas,
   getEmpresasActivas,
   getEmpresa,
   postEmpresa,
   putEmpresa,
   deleteEmpresa,
-} = require("../handlers/empresas_handlers");
+} from "../handlers/empresas_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const empresas = Router();
 
@@ -21,4 +21,4 @@ empresas.post("/", authenticateToken, postEmpresa);
 empresas.put("/modificar", authenticateToken, putEmpresa);
 empresas.put("/inactivar", authenticateToken, deleteEmpresa);
 
-module.exports = empresas;
+export default empresas;

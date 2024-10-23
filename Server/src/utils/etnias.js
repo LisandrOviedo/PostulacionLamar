@@ -1,4 +1,4 @@
-const etnias = [
+export const etnias = [
   "Añú",
   "Akawayo",
   "Arekuna",
@@ -50,7 +50,3 @@ const etnias = [
   "Yanomami",
   "Yukpa",
 ];
-
-module.exports = {
-  etnias,
-};

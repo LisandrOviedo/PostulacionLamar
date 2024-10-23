@@ -1,8 +1,9 @@
-const { conn, Experiencias } = require("../db");
+const { conn, models } = require("../db.js");
+const { Experiencias } = models;
 
-const { traerEmpleado } = require("./empleados_controllers");
+const { traerEmpleado } = require("./empleados_controllers.js");
 
-const todasLasExperiencias = async () => {
+export const todasLasExperiencias = async () => {
   try {
     const experiencias = await Experiencias.findAll();
 
@@ -16,7 +17,7 @@ const todasLasExperiencias = async () => {
   }
 };
 
-const traerExperiencia = async (experiencia_id) => {
+export const traerExperiencia = async (experiencia_id) => {
   if (!experiencia_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -34,7 +35,7 @@ const traerExperiencia = async (experiencia_id) => {
   }
 };
 
-const crearExperiencia = async (empleado_id, experiencias) => {
+export const crearExperiencia = async (empleado_id, experiencias) => {
   if (!empleado_id || !experiencias) {
     throw new Error(`Datos faltantes`);
   }
@@ -80,7 +81,7 @@ const crearExperiencia = async (empleado_id, experiencias) => {
   }
 };
 
-const modificarExperiencia = async (
+export const modificarExperiencia = async (
   experiencia_id,
   tipo,
   empresa_centro_educativo,
@@ -137,7 +138,7 @@ const modificarExperiencia = async (
   }
 };
 
-const inactivarExperiencia = async (experiencia_id) => {
+export const inactivarExperiencia = async (experiencia_id) => {
   if (!experiencia_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -153,8 +154,8 @@ const inactivarExperiencia = async (experiencia_id) => {
       { activo: !experiencia.activo },
       {
         where: { experiencia_id: experiencia_id },
-        transaction: t 
-      },
+        transaction: t,
+      }
     );
 
     await t.commit();
@@ -169,7 +170,7 @@ const inactivarExperiencia = async (experiencia_id) => {
   }
 };
 
-const eliminarExperienciasEmpleado = async (empleado_id) => {
+export const eliminarExperienciasEmpleado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -196,12 +197,4 @@ const eliminarExperienciasEmpleado = async (empleado_id) => {
 
     throw new Error(`Error al eliminar las experiencias: ${error.message}`);
   }
-};
-
-module.exports = {
-  todasLasExperiencias,
-  traerExperiencia,
-  crearExperiencia,
-  modificarExperiencia,
-  inactivarExperiencia,
 };

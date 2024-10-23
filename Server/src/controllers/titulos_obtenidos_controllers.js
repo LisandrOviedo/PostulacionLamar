@@ -1,8 +1,9 @@
-const { conn, Titulos_Obtenidos } = require("../db");
+import { conn, models } from "../db.js";
+const { Titulos_Obtenidos } = models;
 
-const { traerEmpleado } = require("./empleados_controllers");
+import { traerEmpleado } from "./empleados_controllers.js";
 
-const todosLosTitulosObtenidos = async (empleado_id) => {
+export const todosLosTitulosObtenidos = async (empleado_id) => {
   try {
     const titulos_obtenidos = await Titulos_Obtenidos.findAll({
       where: { empleado_id: empleado_id },
@@ -18,7 +19,7 @@ const todosLosTitulosObtenidos = async (empleado_id) => {
   }
 };
 
-const traerTituloObtenido = async (titulo_obtenido_id) => {
+export const traerTituloObtenido = async (titulo_obtenido_id) => {
   if (!titulo_obtenido_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -38,7 +39,7 @@ const traerTituloObtenido = async (titulo_obtenido_id) => {
   }
 };
 
-const crearTitulosObtenidos = async (empleado_id, titulos_obtenidos) => {
+export const crearTitulosObtenidos = async (empleado_id, titulos_obtenidos) => {
   if (!empleado_id || !titulos_obtenidos) {
     throw new Error(`Datos faltantes`);
   }
@@ -81,7 +82,7 @@ const crearTitulosObtenidos = async (empleado_id, titulos_obtenidos) => {
   }
 };
 
-const modificarTitulosObtenidos = async (
+export const modificarTitulosObtenidos = async (
   titulo_obtenido_id,
   grado_instruccion,
   fecha_desde,
@@ -137,7 +138,7 @@ const modificarTitulosObtenidos = async (
   }
 };
 
-const inactivarTituloObtenido = async (titulo_obtenido_id) => {
+export const inactivarTituloObtenido = async (titulo_obtenido_id) => {
   if (!titulo_obtenido_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -169,7 +170,7 @@ const inactivarTituloObtenido = async (titulo_obtenido_id) => {
   }
 };
 
-const eliminarTitulosEmpleado = async (empleado_id) => {
+export const eliminarTitulosEmpleado = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -198,12 +199,4 @@ const eliminarTitulosEmpleado = async (empleado_id) => {
       `Error al eliminar los títulos obtenidos: ${error.message}`
     );
   }
-};
-
-module.exports = {
-  todosLosTitulosObtenidos,
-  traerTituloObtenido,
-  crearTitulosObtenidos,
-  modificarTitulosObtenidos,
-  inactivarTituloObtenido,
 };

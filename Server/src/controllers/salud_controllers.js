@@ -1,6 +1,7 @@
-const { conn, Salud } = require("../db");
+import { conn, models } from "../db.js";
+const { Salud } = models;
 
-const todosLosSalud = async (empleado_id) => {
+export const todosLosSalud = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -18,7 +19,7 @@ const todosLosSalud = async (empleado_id) => {
   }
 };
 
-const todosLosSaludActivos = async (empleado_id) => {
+export const todosLosSaludActivos = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -38,7 +39,7 @@ const todosLosSaludActivos = async (empleado_id) => {
   }
 };
 
-const traerSalud = async (salud_id) => {
+export const traerSalud = async (salud_id) => {
   if (!salud_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -56,7 +57,7 @@ const traerSalud = async (salud_id) => {
   }
 };
 
-const crearSalud = async (
+export const crearSalud = async (
   empleado_id,
   {
     alergia_medicamentos,
@@ -102,7 +103,7 @@ const crearSalud = async (
   }
 };
 
-const modificarSalud = async (
+export const modificarSalud = async (
   salud_id,
   alergia_medicamentos,
   alergia_alimentos,
@@ -159,7 +160,7 @@ const modificarSalud = async (
   }
 };
 
-const inactivarSalud = async (salud_id) => {
+export const inactivarSalud = async (salud_id) => {
   if (!salud_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -189,13 +190,4 @@ const inactivarSalud = async (salud_id) => {
 
     throw new Error(`Error al inactivar la salud: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosSalud,
-  todosLosSaludActivos,
-  traerSalud,
-  crearSalud,
-  modificarSalud,
-  inactivarSalud,
 };

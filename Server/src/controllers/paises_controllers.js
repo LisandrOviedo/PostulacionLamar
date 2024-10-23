@@ -1,8 +1,9 @@
-const { conn, Paises } = require("../db");
+import { conn, models } from "../db.js";
+const { Paises } = models;
 
-const { paises } = require("../utils/paises");
+import { paises } from "../utils/paises.js";
 
-const todosLosPaises = async () => {
+export const todosLosPaises = async () => {
   try {
     const paises = await Paises.findAll({
       order: [["nombre", "ASC"]],
@@ -14,7 +15,7 @@ const todosLosPaises = async () => {
   }
 };
 
-const todosLosPaisesActivos = async () => {
+export const todosLosPaisesActivos = async () => {
   try {
     const paises = await Paises.findAll({
       where: { activo: true },
@@ -27,7 +28,7 @@ const todosLosPaisesActivos = async () => {
   }
 };
 
-const traerPais = async (pais_id) => {
+export const traerPais = async (pais_id) => {
   if (!pais_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -45,7 +46,7 @@ const traerPais = async (pais_id) => {
   }
 };
 
-const cargarPaises = async () => {
+export const cargarPaises = async () => {
   let t;
 
   try {
@@ -78,7 +79,7 @@ const cargarPaises = async () => {
   }
 };
 
-const crearPais = async (nombre) => {
+export const crearPais = async (nombre) => {
   if (!nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -112,7 +113,7 @@ const crearPais = async (nombre) => {
   }
 };
 
-const modificarPais = async (pais_id, nombre) => {
+export const modificarPais = async (pais_id, nombre) => {
   if (!pais_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -148,7 +149,7 @@ const modificarPais = async (pais_id, nombre) => {
   }
 };
 
-const inactivarPais = async (pais_id) => {
+export const inactivarPais = async (pais_id) => {
   if (!pais_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -178,14 +179,4 @@ const inactivarPais = async (pais_id) => {
 
     throw new Error(`Error al inactivar la país: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosPaises,
-  todosLosPaisesActivos,
-  traerPais,
-  cargarPaises,
-  crearPais,
-  modificarPais,
-  inactivarPais,
 };

@@ -1,8 +1,6 @@
-const {
-  crearRespuestasKostick,
-} = require("../controllers/respuestas_kostick_controllers");
+import { crearRespuestasKostick } from "../controllers/respuestas_kostick_controllers.js";
 
-const postRespuestasKostick = async (req, res) => {
+export const postRespuestasKostick = async (req, res) => {
   const { empleado_id, prueba_id, prueba } = req.body;
 
   try {
@@ -16,8 +14,4 @@ const postRespuestasKostick = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  postRespuestasKostick,
 };

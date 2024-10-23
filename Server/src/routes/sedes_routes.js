@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getSedes,
   getSedesActivas,
   getSede,
   postSede,
   putSede,
   deleteSede,
-} = require("../handlers/sedes_handlers");
+} from "../handlers/sedes_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const sedes = Router();
 
@@ -21,4 +21,4 @@ sedes.post("/", authenticateToken, postSede);
 sedes.put("/modificar", authenticateToken, putSede);
 sedes.put("/inactivar", authenticateToken, deleteSede);
 
-module.exports = sedes;
+export default sedes;

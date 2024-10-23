@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getMunicipios,
   getMunicipiosActivos,
   getMunicipio,
   postMunicipio,
   putMunicipio,
   deleteMunicipio,
-} = require("../handlers/municipios_handlers");
+} from "../handlers/municipios_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const municipios = Router();
 
@@ -21,4 +21,4 @@ municipios.post("/", authenticateToken, postMunicipio);
 municipios.put("/modificar", authenticateToken, putMunicipio);
 municipios.put("/inactivar", authenticateToken, deleteMunicipio);
 
-module.exports = municipios;
+export default municipios;

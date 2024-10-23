@@ -1,6 +1,7 @@
-const { conn, Sesiones } = require("../db");
+import { conn, models } from "../db.js";
+const { Sesiones } = models;
 
-const cerrarSesiones = async () => {
+export const cerrarSesiones = async () => {
   let t;
 
   try {
@@ -30,7 +31,7 @@ const cerrarSesiones = async () => {
   }
 };
 
-const cerrarSesion = async (empleado_id) => {
+export const cerrarSesion = async (empleado_id) => {
   let t;
 
   try {
@@ -59,7 +60,7 @@ const cerrarSesion = async (empleado_id) => {
   }
 };
 
-const traerSesion = async (empleado_id) => {
+export const traerSesion = async (empleado_id) => {
   if (!empleado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -81,7 +82,7 @@ const traerSesion = async (empleado_id) => {
   }
 };
 
-const crearSesion = async (empleado_id, token) => {
+export const crearSesion = async (empleado_id, token) => {
   if (!empleado_id || !token) {
     throw new Error(`Datos faltantes`);
   }
@@ -130,11 +131,4 @@ const crearSesion = async (empleado_id, token) => {
 
     throw new Error(`Error al crear la sesión del empleado: ${error.message}`);
   }
-};
-
-module.exports = {
-  cerrarSesiones,
-  cerrarSesion,
-  traerSesion,
-  crearSesion,
 };

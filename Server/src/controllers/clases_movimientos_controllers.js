@@ -1,8 +1,9 @@
-const { conn, Clases_Movimientos } = require("../db");
+import { conn, models } from "../db.js";
+const { Clases_Movimientos } = models;
 
-const { clasesMovimientos } = require("../utils/clasesMovimientos");
+import { clasesMovimientos } from "../utils/clasesMovimientos.js";
 
-const todasLasClasesMovimientos = async () => {
+export const todasLasClasesMovimientos = async () => {
   try {
     const clases_movimientos = await Clases_Movimientos.findAll({
       order: [["descripcion", "ASC"]],
@@ -20,7 +21,7 @@ const todasLasClasesMovimientos = async () => {
   }
 };
 
-const todasLasClasesMovimientosActivas = async () => {
+export const todasLasClasesMovimientosActivas = async () => {
   try {
     const clases_movimientos = await Clases_Movimientos.findAll({
       where: { activo: true },
@@ -39,7 +40,7 @@ const todasLasClasesMovimientosActivas = async () => {
   }
 };
 
-const traerClaseMovimiento = async (clase_movimiento_id) => {
+export const traerClaseMovimiento = async (clase_movimiento_id) => {
   if (!clase_movimiento_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -59,7 +60,7 @@ const traerClaseMovimiento = async (clase_movimiento_id) => {
   }
 };
 
-const cargarClasesMovimientos = async () => {
+export const cargarClasesMovimientos = async () => {
   let t;
 
   try {
@@ -94,7 +95,7 @@ const cargarClasesMovimientos = async () => {
   }
 };
 
-const crearClaseMovimiento = async (descripcion) => {
+export const crearClaseMovimiento = async (descripcion) => {
   if (!descripcion) {
     throw new Error(`Datos faltantes`);
   }
@@ -128,7 +129,10 @@ const crearClaseMovimiento = async (descripcion) => {
   }
 };
 
-const modificarClaseMovimiento = async (clase_movimiento_id, descripcion) => {
+export const modificarClaseMovimiento = async (
+  clase_movimiento_id,
+  descripcion
+) => {
   if (!clase_movimiento_id || !descripcion) {
     throw new Error(`Datos faltantes`);
   }
@@ -166,7 +170,7 @@ const modificarClaseMovimiento = async (clase_movimiento_id, descripcion) => {
   }
 };
 
-const inactivarClaseMovimiento = async (clase_movimiento_id) => {
+export const inactivarClaseMovimiento = async (clase_movimiento_id) => {
   if (!clase_movimiento_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -198,14 +202,4 @@ const inactivarClaseMovimiento = async (clase_movimiento_id) => {
       `Error al inactivar la clase de movimiento: ${error.message}`
     );
   }
-};
-
-module.exports = {
-  todasLasClasesMovimientos,
-  todasLasClasesMovimientosActivas,
-  traerClaseMovimiento,
-  cargarClasesMovimientos,
-  crearClaseMovimiento,
-  modificarClaseMovimiento,
-  inactivarClaseMovimiento,
 };

@@ -1,8 +1,9 @@
-const { conn, Estados, Paises } = require("../db");
+import { conn, models } from "../db.js";
+const { Estados, Paises } = models;
 
-const { estados } = require("../utils/estados");
+import { estados } from "../utils/estados.js";
 
-const todosLosEstados = async (pais_id) => {
+export const todosLosEstados = async (pais_id) => {
   if (!pais_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -21,7 +22,7 @@ const todosLosEstados = async (pais_id) => {
   }
 };
 
-const todosLosEstadosActivos = async (pais_id) => {
+export const todosLosEstadosActivos = async (pais_id) => {
   if (!pais_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -38,7 +39,7 @@ const todosLosEstadosActivos = async (pais_id) => {
   }
 };
 
-const traerEstado = async (estado_id) => {
+export const traerEstado = async (estado_id) => {
   if (!estado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -56,7 +57,7 @@ const traerEstado = async (estado_id) => {
   }
 };
 
-const cargarEstados = async () => {
+export const cargarEstados = async () => {
   let t;
 
   try {
@@ -103,7 +104,7 @@ const cargarEstados = async () => {
   }
 };
 
-const crearEstado = async (pais_id, nombre) => {
+export const crearEstado = async (pais_id, nombre) => {
   if (!pais_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -138,7 +139,7 @@ const crearEstado = async (pais_id, nombre) => {
   }
 };
 
-const modificarEstado = async (estado_id, pais_id, nombre) => {
+export const modificarEstado = async (estado_id, pais_id, nombre) => {
   if (!estado_id || !pais_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -175,7 +176,7 @@ const modificarEstado = async (estado_id, pais_id, nombre) => {
   }
 };
 
-const inactivarEstado = async (estado_id) => {
+export const inactivarEstado = async (estado_id) => {
   if (!estado_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -205,14 +206,4 @@ const inactivarEstado = async (estado_id) => {
 
     throw new Error(`Error al inactivar el estado: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosEstados,
-  todosLosEstadosActivos,
-  traerEstado,
-  cargarEstados,
-  crearEstado,
-  modificarEstado,
-  inactivarEstado,
 };

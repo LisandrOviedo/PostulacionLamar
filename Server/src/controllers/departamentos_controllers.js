@@ -1,6 +1,7 @@
-const { conn, Departamentos } = require("../db");
+import { conn, models } from "../db.js";
+const { Departamentos } = models;
 
-const todosLosDepartamentos = async (empresa_id) => {
+export const todosLosDepartamentos = async (empresa_id) => {
   if (!empresa_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -19,7 +20,7 @@ const todosLosDepartamentos = async (empresa_id) => {
   }
 };
 
-const todosLosDepartamentosActivos = async (empresa_id) => {
+export const todosLosDepartamentosActivos = async (empresa_id) => {
   if (!empresa_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -36,7 +37,7 @@ const todosLosDepartamentosActivos = async (empresa_id) => {
   }
 };
 
-const traerDepartamento = async (departamento_id) => {
+export const traerDepartamento = async (departamento_id) => {
   if (!departamento_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -54,7 +55,7 @@ const traerDepartamento = async (departamento_id) => {
   }
 };
 
-const crearDepartamento = async (empresa_id, nombre, descripcion) => {
+export const crearDepartamento = async (empresa_id, nombre, descripcion) => {
   if (!empresa_id || !nombre || !descripcion) {
     throw new Error(`Datos faltantes`);
   }
@@ -95,7 +96,7 @@ const crearDepartamento = async (empresa_id, nombre, descripcion) => {
   }
 };
 
-const modificarDepartamento = async (
+export const modificarDepartamento = async (
   departamento_id,
   empresa_id,
   nombre,
@@ -138,7 +139,7 @@ const modificarDepartamento = async (
   }
 };
 
-const inactivarDepartamento = async (departamento_id) => {
+export const inactivarDepartamento = async (departamento_id) => {
   if (!departamento_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -168,13 +169,4 @@ const inactivarDepartamento = async (departamento_id) => {
 
     throw new Error(`Error al inactivar la departamento: ${error.message}`);
   }
-};
-
-module.exports = {
-  todosLosDepartamentos,
-  todosLosDepartamentosActivos,
-  traerDepartamento,
-  crearDepartamento,
-  modificarDepartamento,
-  inactivarDepartamento,
 };

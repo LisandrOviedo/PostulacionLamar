@@ -1,5 +1,5 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getAreasInteres,
   getAreasInteresActivas,
   getAreaInteres,
@@ -7,9 +7,9 @@ const {
   postAreasInteresCurriculo,
   putAreaInteres,
   deleteAreaInteres,
-} = require("../handlers/areas_interes_handlers");
+} from "../handlers/areas_interes_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const areas_interes = Router();
 
@@ -31,4 +31,4 @@ areas_interes.post(
 areas_interes.put("/modificar", authenticateToken, putAreaInteres);
 areas_interes.put("/inactivar", authenticateToken, deleteAreaInteres);
 
-module.exports = areas_interes;
+export default areas_interes;

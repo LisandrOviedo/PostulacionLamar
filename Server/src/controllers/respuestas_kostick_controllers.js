@@ -1,22 +1,26 @@
+import { conn, models } from "../db.js";
 const {
-  conn,
   Preguntas_Kostick,
   Respuestas_Kostick,
   Pruebas_Empleados,
   Titulos_Obtenidos,
-} = require("../db");
+} = models;
 
-const { traerEmpleado } = require("./empleados_controllers");
-const { todosLosTitulosObtenidos } = require("./titulos_obtenidos_controllers");
+import { traerEmpleado } from "./empleados_controllers.js";
+import { todosLosTitulosObtenidos } from "./titulos_obtenidos_controllers.js";
 
-const XlsxPopulate = require("xlsx-populate");
-const path = require("path");
+import XlsxPopulate from "xlsx-populate";
+import path from "node:path";
 
-const { calcularEdad, DDMMYYYY } = require("../utils/formatearFecha");
+import { calcularEdad, DDMMYYYY } from "../utils/formatearFecha.js";
 
-const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
+import { crearCarpetaSiNoExiste } from "../utils/pruebaKostick.js";
 
-const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
+export const crearRespuestasKostick = async (
+  empleado_id,
+  prueba_id,
+  prueba
+) => {
   if (!empleado_id || !prueba_id || !prueba) {
     throw new Error(`Datos faltantes`);
   }
@@ -161,8 +165,4 @@ const crearRespuestasKostick = async (empleado_id, prueba_id, prueba) => {
       `Error al crear las respuestas de la prueba kostick: ${error.message}`
     );
   }
-};
-
-module.exports = {
-  crearRespuestasKostick,
 };

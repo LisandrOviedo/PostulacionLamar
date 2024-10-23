@@ -1,10 +1,10 @@
-const { Router } = require("express");
-const { deleteSesion } = require("../handlers/sesiones_handlers");
+import { Router } from "express";
+import { deleteSesion } from "../handlers/sesiones_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const sesiones = Router();
 
 sesiones.put("/inactivar", authenticateToken, deleteSesion);
 
-module.exports = sesiones;
+export default sesiones;

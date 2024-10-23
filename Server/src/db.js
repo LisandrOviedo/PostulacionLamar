@@ -1,6 +1,6 @@
-const { Sequelize } = require("sequelize");
-const fs = require("fs");
-const path = require("path");
+import { Sequelize } from "sequelize";
+import fs from "node:fs";
+import path from "node:path";
 
 const { DB, USERDB, PASSWORD, HOST, DIALECT, PORT_DB } = process.env;
 
@@ -39,7 +39,7 @@ let capsEntries = entries.map((entry) => [
 sequelize.models = Object.fromEntries(capsEntries);
 
 const {
-  Areas_Interes_Curriculos,
+  // Areas_Interes_Curriculos,
   Areas_Interes,
   Cargos_Empleados,
   Cargos_Niveles,
@@ -50,7 +50,7 @@ const {
   Datos_Bancarios,
   Departamentos,
   Direcciones,
-  Divisiones,
+  // Divisiones,
   Documentos_Empleados,
   Empleados,
   Empresas,
@@ -58,7 +58,7 @@ const {
   Etnias,
   Experiencias,
   Fichas_Ingresos,
-  Idiomas_Curriculos,
+  // Idiomas_Curriculos,
   Idiomas,
   Menus,
   Movimientos,
@@ -68,13 +68,13 @@ const {
   Preguntas_Kostick,
   Pruebas_Empleados,
   Referencias_Personales,
-  Respuestas_Kostick,
-  Roles_Menus,
+  // Respuestas_Kostick,
+  // Roles_Menus,
   Roles,
   Salud,
   Sedes,
   Sesiones,
-  Sugerencias_Pred,
+  // Sugerencias_Pred,
   Sugerencias,
   Tipos_Sugerencias,
   Titulos_Obtenidos,
@@ -684,48 +684,5 @@ Vacantes_Empleados.belongsTo(Vacantes, {
   },
 });
 
-module.exports = {
-  ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
-  conn: sequelize, // para importart la conexión { conn } = require('./db.js');
-  Areas_Interes_Curriculos,
-  Areas_Interes,
-  Cargos_Empleados,
-  Cargos_Niveles,
-  Cargos,
-  Clases_Movimientos,
-  Contactos_Emergencia,
-  Curriculos,
-  Datos_Bancarios,
-  Departamentos,
-  Direcciones,
-  Divisiones,
-  Documentos_Empleados,
-  Empleados,
-  Empresas,
-  Estados,
-  Etnias,
-  Experiencias,
-  Fichas_Ingresos,
-  Idiomas_Curriculos,
-  Idiomas,
-  Menus,
-  Movimientos,
-  Municipios,
-  Paises,
-  Parroquias,
-  Preguntas_Kostick,
-  Pruebas_Empleados,
-  Referencias_Personales,
-  Respuestas_Kostick,
-  Roles_Menus,
-  Roles,
-  Salud,
-  Sedes,
-  Sesiones,
-  Sugerencias_Pred,
-  Sugerencias,
-  Tipos_Sugerencias,
-  Titulos_Obtenidos,
-  Vacantes_Empleados,
-  Vacantes,
-};
+export const conn = sequelize;
+export const models = sequelize.models;

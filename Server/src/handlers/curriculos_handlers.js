@@ -1,4 +1,4 @@
-const {
+import {
   todosLosCurriculos,
   traerCurriculo,
   traerCurriculoPDF,
@@ -7,20 +7,18 @@ const {
   traerCurriculoEmpleado,
   modificarCurriculo,
   inactivarCurriculo,
-} = require("../controllers/curriculos_controllers");
+} from "../controllers/curriculos_controllers.js";
 
-const {
-  crearCurriculoPDF,
-} = require("../controllers/documentos_empleados_controllers");
+import { crearCurriculoPDF } from "../controllers/documentos_empleados_controllers.js";
 
-const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
+import { crearCarpetaSiNoExiste } from "../utils/pruebaKostick.js";
 
-const path = require("path");
-const PDFDocument = require("pdfkit-table");
-const fs = require("fs");
-const JSZip = require("jszip");
+import path from "node:path";
+import PDFDocument from "pdfkit-table";
+import fs from "node:fs";
+import JSZip from "jszip";
 
-const getCurriculos = async (req, res) => {
+export const getCurriculos = async (req, res) => {
   const { filtros, paginaActual, limitePorPagina } = req.body;
 
   try {
@@ -36,7 +34,7 @@ const getCurriculos = async (req, res) => {
   }
 };
 
-const getCurriculo = async (req, res) => {
+export const getCurriculo = async (req, res) => {
   const { curriculo_id } = req.body;
 
   try {
@@ -48,7 +46,7 @@ const getCurriculo = async (req, res) => {
   }
 };
 
-const getCurriculoPDF = async (req, res) => {
+export const getCurriculoPDF = async (req, res) => {
   const { empleado_id, identificacion } = req.body;
   const filename = "Perfil Profesional.pdf";
 
@@ -241,7 +239,7 @@ const getCurriculoPDF = async (req, res) => {
   }
 };
 
-const getCurriculoPDFAnexos = async (req, res) => {
+export const getCurriculoPDFAnexos = async (req, res) => {
   const { empleado_id, identificacion } = req.body;
   const filename = `Anexos ${identificacion}.zip`;
 
@@ -278,7 +276,7 @@ const getCurriculoPDFAnexos = async (req, res) => {
   }
 };
 
-const getCurriculoEmpleado = async (req, res) => {
+export const getCurriculoEmpleado = async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
@@ -290,7 +288,7 @@ const getCurriculoEmpleado = async (req, res) => {
   }
 };
 
-const putCurriculo = async (req, res) => {
+export const putCurriculo = async (req, res) => {
   const {
     empleado_id,
     curriculo_id,
@@ -314,7 +312,7 @@ const putCurriculo = async (req, res) => {
   }
 };
 
-const putCurriculoEstado = async (req, res) => {
+export const putCurriculoEstado = async (req, res) => {
   const { empleado_id, revisado_por_id } = req.body;
 
   try {
@@ -326,7 +324,7 @@ const putCurriculoEstado = async (req, res) => {
   }
 };
 
-const deleteCurriculo = async (req, res) => {
+export const deleteCurriculo = async (req, res) => {
   const { curriculo_id } = req.body;
 
   try {
@@ -336,15 +334,4 @@ const deleteCurriculo = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getCurriculos,
-  getCurriculo,
-  getCurriculoPDF,
-  getCurriculoPDFAnexos,
-  getCurriculoEmpleado,
-  putCurriculo,
-  putCurriculoEstado,
-  deleteCurriculo,
 };

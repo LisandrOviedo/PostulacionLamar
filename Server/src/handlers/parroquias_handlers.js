@@ -1,13 +1,13 @@
-const {
+import {
   todasLasParroquias,
   todasLasParroquiasActivas,
   traerParroquia,
   crearParroquia,
   modificarParroquia,
   inactivarParroquia,
-} = require("../controllers/parroquias_controllers");
+} from "../controllers/parroquias_controllers.js";
 
-const getParroquias = async (req, res) => {
+export const getParroquias = async (req, res) => {
   const { municipio_id } = req.params;
 
   try {
@@ -19,7 +19,7 @@ const getParroquias = async (req, res) => {
   }
 };
 
-const getParroquiasActivos = async (req, res) => {
+export const getParroquiasActivos = async (req, res) => {
   const { municipio_id } = req.params;
 
   try {
@@ -31,7 +31,7 @@ const getParroquiasActivos = async (req, res) => {
   }
 };
 
-const getParroquia = async (req, res) => {
+export const getParroquia = async (req, res) => {
   const { parroquia_id } = req.params;
 
   try {
@@ -43,7 +43,7 @@ const getParroquia = async (req, res) => {
   }
 };
 
-const postParroquia = async (req, res) => {
+export const postParroquia = async (req, res) => {
   const { municipio_id, nombre } = req.body;
 
   try {
@@ -55,7 +55,7 @@ const postParroquia = async (req, res) => {
   }
 };
 
-const putParroquia = async (req, res) => {
+export const putParroquia = async (req, res) => {
   const { parroquia_id, municipio_id, nombre } = req.body;
 
   try {
@@ -71,7 +71,7 @@ const putParroquia = async (req, res) => {
   }
 };
 
-const deleteParroquia = async (req, res) => {
+export const deleteParroquia = async (req, res) => {
   const { parroquia_id } = req.body;
 
   try {
@@ -81,13 +81,4 @@ const deleteParroquia = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getParroquias,
-  getParroquiasActivos,
-  getParroquia,
-  postParroquia,
-  putParroquia,
-  deleteParroquia,
 };

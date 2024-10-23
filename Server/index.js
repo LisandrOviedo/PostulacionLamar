@@ -1,48 +1,36 @@
-require("dotenv").config();
+import "dotenv/config";
 
-const server = require("./src/server.js");
-const { conn } = require("./src/db.js");
+import server from "./src/server.js";
+import { conn } from "./src/db.js";
 const PORT = process.env.PORT_SERVER || 4055;
 
-const { fechaHoraActual } = require("./src/utils/formatearFecha.js");
+import { fechaHoraActual } from "./src/utils/formatearFecha.js";
 
-const {
-  cargarPreguntasKostick,
-} = require("./src/controllers/preguntas_kostick_controllers.js");
+import { cargarPreguntasKostick } from "./src/controllers/preguntas_kostick_controllers.js";
 
-const {
-  cargarAreaInteres,
-} = require("./src/controllers/areas_interes_controllers.js");
+import { cargarAreaInteres } from "./src/controllers/areas_interes_controllers.js";
 
-const { cargarIdiomas } = require("./src/controllers/idiomas_controllers.js");
+import { cargarIdiomas } from "./src/controllers/idiomas_controllers.js";
 
-const { cargarRoles } = require("./src/controllers/roles_controllers.js");
+import { cargarRoles } from "./src/controllers/roles_controllers.js";
 
-const {
-  cargarEmpleados,
-} = require("./src/controllers/empleados_controllers.js");
+import { cargarEmpleados } from "./src/controllers/empleados_controllers.js";
 
-const { cerrarSesiones } = require("./src/controllers/sesiones_controllers.js");
+import { cerrarSesiones } from "./src/controllers/sesiones_controllers.js";
 
-const { cargarEtnias } = require("./src/controllers/etnias_controllers.js");
+import { cargarEtnias } from "./src/controllers/etnias_controllers.js";
 
-const { cargarPaises } = require("./src/controllers/paises_controllers.js");
+import { cargarPaises } from "./src/controllers/paises_controllers.js";
 
-const { cargarEstados } = require("./src/controllers/estados_controllers.js");
+import { cargarEstados } from "./src/controllers/estados_controllers.js";
 
-const {
-  cargarMunicipios,
-} = require("./src/controllers/municipios_controllers.js");
+import { cargarMunicipios } from "./src/controllers/municipios_controllers.js";
 
-const {
-  cargarParroquias,
-} = require("./src/controllers/parroquias_controllers.js");
+import { cargarParroquias } from "./src/controllers/parroquias_controllers.js";
 
-const { cargarEmpresas } = require("./src/controllers/empresas_controllers.js");
+import { cargarEmpresas } from "./src/controllers/empresas_controllers.js";
 
-const {
-  cargarClasesMovimientos,
-} = require("./src/controllers/clases_movimientos_controllers.js");
+import { cargarClasesMovimientos } from "./src/controllers/clases_movimientos_controllers.js";
 
 conn
   .sync()

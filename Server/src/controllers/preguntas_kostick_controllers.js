@@ -1,8 +1,9 @@
-const { conn, Preguntas_Kostick } = require("../db");
+import { conn, models } from "../db.js";
+const { Preguntas_Kostick } = models;
 
-const { pruebaKostick } = require("../utils/pruebaKostick");
+import { pruebaKostick } from "../utils/pruebaKostick.js";
 
-const todasLasPreguntasKostick = async () => {
+export const todasLasPreguntasKostick = async () => {
   try {
     const preguntas_kostick = await Preguntas_Kostick.findAll({
       order: [
@@ -29,7 +30,7 @@ const todasLasPreguntasKostick = async () => {
   }
 };
 
-const cargarPreguntasKostick = async () => {
+export const cargarPreguntasKostick = async () => {
   let t;
 
   try {
@@ -62,9 +63,4 @@ const cargarPreguntasKostick = async () => {
 
     throw new Error(`Error al crear las preguntas kostick: ${error.message}`);
   }
-};
-
-module.exports = {
-  todasLasPreguntasKostick,
-  cargarPreguntasKostick,
 };

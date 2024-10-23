@@ -1,14 +1,14 @@
-const { Router } = require("express");
-const {
+import { Router } from "express";
+import {
   getMenus,
   getMenusActivos,
   getMenu,
   postMenu,
   putMenu,
   deleteMenu,
-} = require("../handlers/menus_handlers");
+} from "../handlers/menus_handlers.js";
 
-const { authenticateToken } = require("../auth/index");
+import { authenticateToken } from "../auth/index.js";
 
 const menus = Router();
 
@@ -21,4 +21,4 @@ menus.post("/", authenticateToken, postMenu);
 menus.put("/modificar", authenticateToken, putMenu);
 menus.put("/inactivar", authenticateToken, deleteMenu);
 
-module.exports = menus;
+export default menus;

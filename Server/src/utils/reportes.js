@@ -1,7 +1,7 @@
-const path = require("path");
-const fs = require("fs");
+import path from "node:path";
+import fs from "node:fs";
 
-const { DDMMYYYYHHMM2 } = require("./formatearFecha");
+import { DDMMYYYYHHMM2 } from "./formatearFecha.js";
 
 const crearTabla = (valores, propiedades, encabezados) => {
   return `${
@@ -31,7 +31,7 @@ ${valores
   `;
 };
 
-const reporteFichaIngreso = (content, foto_empleado) => {
+export const reporteFichaIngreso = (content, foto_empleado) => {
   const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
 
   const logo = fs.readFileSync(logoPath).toString("base64");
@@ -229,7 +229,7 @@ border: 1px solid #000;
 `;
 };
 
-const reporteMovimiento = (content) => {
+export const reporteMovimiento = (content) => {
   const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
 
   const logo = fs.readFileSync(logoPath).toString("base64");
@@ -318,9 +318,4 @@ border: 1px solid #000;
   </body>
 </html>
 `;
-};
-
-module.exports = {
-  reporteFichaIngreso,
-  reporteMovimiento,
 };

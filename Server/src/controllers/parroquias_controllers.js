@@ -1,8 +1,9 @@
-const { conn, Parroquias, Paises, Estados, Municipios } = require("../db");
+import { conn, models } from "../db.js";
+const { Parroquias, Paises, Estados, Municipios } = models;
 
-const { parroquias } = require("../utils/parroquias");
+import { parroquias } from "../utils/parroquias.js";
 
-const todasLasParroquias = async (municipio_id) => {
+export const todasLasParroquias = async (municipio_id) => {
   if (!municipio_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -21,7 +22,7 @@ const todasLasParroquias = async (municipio_id) => {
   }
 };
 
-const todasLasParroquiasActivas = async (municipio_id) => {
+export const todasLasParroquiasActivas = async (municipio_id) => {
   if (!municipio_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -38,7 +39,7 @@ const todasLasParroquiasActivas = async (municipio_id) => {
   }
 };
 
-const traerParroquia = async (parroquia_id) => {
+export const traerParroquia = async (parroquia_id) => {
   if (!parroquia_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -56,7 +57,7 @@ const traerParroquia = async (parroquia_id) => {
   }
 };
 
-const cargarParroquias = async () => {
+export const cargarParroquias = async () => {
   let t;
 
   try {
@@ -123,7 +124,7 @@ const cargarParroquias = async () => {
   }
 };
 
-const crearParroquia = async (municipio_id, nombre) => {
+export const crearParroquia = async (municipio_id, nombre) => {
   if (!municipio_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -158,7 +159,11 @@ const crearParroquia = async (municipio_id, nombre) => {
   }
 };
 
-const modificarParroquia = async (parroquia_id, municipio_id, nombre) => {
+export const modificarParroquia = async (
+  parroquia_id,
+  municipio_id,
+  nombre
+) => {
   if (!parroquia_id || !municipio_id || !nombre) {
     throw new Error(`Datos faltantes`);
   }
@@ -195,7 +200,7 @@ const modificarParroquia = async (parroquia_id, municipio_id, nombre) => {
   }
 };
 
-const inactivarParroquia = async (parroquia_id) => {
+export const inactivarParroquia = async (parroquia_id) => {
   if (!parroquia_id) {
     throw new Error(`Datos faltantes`);
   }
@@ -225,14 +230,4 @@ const inactivarParroquia = async (parroquia_id) => {
 
     throw new Error(`Error al inactivar la parroquia: ${error.message}`);
   }
-};
-
-module.exports = {
-  todasLasParroquias,
-  todasLasParroquiasActivas,
-  traerParroquia,
-  cargarParroquias,
-  crearParroquia,
-  modificarParroquia,
-  inactivarParroquia,
 };

@@ -1,4 +1,4 @@
-const idiomas = [
+export const idiomas = [
   "Alemán",
   "Árabe",
   "Bengalí",
@@ -15,7 +15,3 @@ const idiomas = [
   "Turco",
   "Vietnamita",
 ];
-
-module.exports = {
-  idiomas,
-};
