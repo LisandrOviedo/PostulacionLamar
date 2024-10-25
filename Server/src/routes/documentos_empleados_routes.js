@@ -11,9 +11,9 @@ const { DDMMYYYYHHMM } = require("../utils/formatearFecha");
 const documentos_empleados = Router();
 
 const multer = require("multer");
-const path = require("path");
+const path = require("node:path");
 const MIMETYPES = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
-const fs = require("fs");
+const fs = require("node:fs");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -47,16 +47,19 @@ const upload = multer({ storage: storage });
 
 documentos_empleados.get("/detalle/:empleado_id", authenticateToken, getAnexos);
 
-documentos_empleados.get("/documento/:identificacion/:originalname", (req, res) => {
-  const { identificacion, originalname } = req.params;
+documentos_empleados.get(
+  "/documento/:identificacion/:originalname",
+  (req, res) => {
+    const { identificacion, originalname } = req.params;
 
-  res.sendFile(
-    path.join(
-      __dirname,
-      `../../public/documentosEmpleados/${identificacion}/${originalname}`
-    )
-  );
-});
+    res.sendFile(
+      path.join(
+        __dirname,
+        `../../public/documentosEmpleados/${identificacion}/${originalname}`
+      )
+    );
+  }
+);
 
 documentos_empleados.post(
   "/",

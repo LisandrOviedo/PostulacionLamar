@@ -2,7 +2,7 @@ const { Op } = require("sequelize");
 
 const axios = require("axios");
 
-const fs = require("fs");
+const fs = require("node:fs");
 
 const {
   conn,
