@@ -73,6 +73,7 @@ const {
   Roles,
   Salud,
   Sedes,
+  Seguro_Social,
   Sesiones,
   Sugerencias_Pred,
   Sugerencias,
@@ -684,6 +685,18 @@ Vacantes_Empleados.belongsTo(Vacantes, {
   },
 });
 
+// Seguro_Social 1:M Empresas
+Seguro_Social.hasMany(Empresas, {
+  foreignKey: {
+    name: "seguro_social_id",
+  },
+});
+Empresas.belongsTo(Seguro_Social, {
+  foreignKey: {
+    name: "seguro_social_id",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -721,6 +734,7 @@ module.exports = {
   Roles,
   Salud,
   Sedes,
+  Seguro_Social,
   Sesiones,
   Sugerencias_Pred,
   Sugerencias,
