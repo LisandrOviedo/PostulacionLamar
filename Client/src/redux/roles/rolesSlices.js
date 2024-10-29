@@ -1,63 +1,57 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  roles: [],
-  rol:[], //revisar esto despues por si me da error
-  paginaActual: 1,
-  limitePorPagina: 2,
-  filtros: {
-    nombre: "",
-    descripcion: "",
-   
-  },
-};
-
-export const rolesSlice = createSlice({
-  name: "roles",
-  initialState,
-  reducers: {
-    allRoles: (state, action) => {
-      state.roles = action.payload;
-    },
-    paginaActual: (state, action) => {
-      state.paginaActual = action.payload;
-    },
-    limitePorPagina: (state, action) => {
-      state.limitePorPagina = action.payload;
-    },
-    filtros: (state, action) => {
-      state.filtros = action.payload;
-    },
-    resetFilters: (state) => {
-      state.filtros = {
+    roles: [],
+    rol: null, // Inicialmente no hay rol cargado
+    paginaActual: 1,
+    limitePorPagina: 2,
+    filtros: {
         nombre: "",
         descripcion: "",
-      };
     },
-    resetState: () => {
-      return initialState;
+};
+
+const rolesSlice = createSlice({
+    name: "roles",
+    initialState,
+    reducers: {
+        allRoles: (state, action) => {
+            state.roles = action.payload; // Actualiza el estado con todos los roles
+        },
+        detallesRol: (state, action) => {
+            state.rol = action.payload; // Actualiza el rol con los detalles
+        },
+        paginaActual: (state, action) => {
+            state.paginaActual = action.payload; // Actualiza la página actual
+        },
+        limitePorPagina: (state, action) => {
+            state.limitePorPagina = action.payload; // Actualiza el límite por página
+        },
+        filtros: (state, action) => {
+            state.filtros = action.payload; // Actualiza los filtros
+        },
+        resetFilters: (state) => {
+            state.filtros = {
+                nombre: "",
+                descripcion: "",
+            }; // Resetea los filtros a su estado inicial
+        },
+        resetState: () => {
+            return initialState; // Resetea el estado a su valor inicial
+        },
     },
-  },
 });
 
-export const rolSlice = createSlice({
-  name: "rol",
-  initialState,
-  reducers: {
-    detalles: (state, action) => {
-      state.rol = action.payload;
-    },
-  },
-});
-
+// Exporta las acciones
 export const {
-  allRoles,
-  paginaActual,
-  limitePorPagina,
-  filtros,
-  resetFilters,
-  resetState,
-  Rol
-  
+    allRoles,
+    detallesRol,
+    paginaActual,
+    limitePorPagina,
+    filtros,
+    resetFilters,
+    resetState,
 } = rolesSlice.actions;
+
+// Exporta el reducer
 export default rolesSlice.reducer;
