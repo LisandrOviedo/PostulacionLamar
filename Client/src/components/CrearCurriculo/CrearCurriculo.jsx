@@ -4,13 +4,18 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresActions";
+
 import { getAllIdiomasActivos } from "../../redux/idiomas/idiomasActions";
+
 import {
   putCurriculo,
   postCurriculoPDF,
   getCurriculoEmpleado,
 } from "../../redux/curriculos/curriculosActions";
+
 import { postPostulacionVacante } from "../../redux/vacantes/vacantesActions";
+
+import { getVacanteDetail } from "../../redux/vacantes/vacantesActions";
 
 import {
   Button,
@@ -49,6 +54,8 @@ export function CrearCurriculo() {
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
+  const vacanteDetail = useSelector((state) => state.vacantes.vacanteDetail);
+
   const areas_interes_activas = useSelector(
     (state) => state.areas_interes.areas_interes_activas
   );
@@ -83,9 +90,19 @@ export function CrearCurriculo() {
   useEffect(() => {
     window.scroll(0, 0);
 
+    dispatch(getCurriculoEmpleado(token, empleado.empleado_id));
+
     dispatch(getAllAreasInteresActivas(token));
 
     dispatch(getAllIdiomasActivos(token));
+
+    if (searchParams.get("vacante")) {
+      const vacante_id = searchParams.get("vacante");
+
+      const filtros = {};
+
+      dispatch(getVacanteDetail(token, vacante_id, filtros, 1, 1));
+    }
 
     Swal.fire({
       title: "Perfil Profesional",
@@ -104,6 +121,28 @@ export function CrearCurriculo() {
 
   useEffect(() => {
     window.scroll(0, 0);
+
+    if (curriculoEmpleado) {
+      setDatosCurriculo({
+        empleado_id: empleado.empleado_id,
+        curriculo_id: curriculoEmpleado?.Curriculo?.curriculo_id || "",
+        titulos_obtenidos: curriculoEmpleado?.Titulos_Obtenidos || [],
+        disponibilidad_viajar:
+          curriculoEmpleado?.Curriculo?.disponibilidad_viajar || false,
+        disponibilidad_cambio_residencia:
+          curriculoEmpleado?.Curriculo?.disponibilidad_cambio_residencia ||
+          false,
+        habilidades_tecnicas:
+          curriculoEmpleado?.Curriculo?.habilidades_tecnicas || "",
+        areas_interes: curriculoEmpleado?.Curriculo?.Areas_Interes || [],
+        experiencias: curriculoEmpleado?.Experiencias || [],
+        idiomas: curriculoEmpleado?.Curriculo?.Idiomas || [],
+      });
+
+      setIsLoad({
+        areas_interes: datosCurriculo.areas_interes.length ? true : false,
+      });
+    }
   }, [curriculoEmpleado]);
 
   const handleInputChangeCurriculo = (event) => {
@@ -432,7 +471,7 @@ export function CrearCurriculo() {
     });
   };
 
-  const handleSaveCurriculo = async () => {
+  const handleSaveCurriculo = () => {
     if (!datosCurriculo.areas_interes.length) {
       return Swal.fire({
         title: "Oops...",
@@ -454,31 +493,29 @@ export function CrearCurriculo() {
               empleado.empleado_id,
               `${empleado.tipo_identificacion}${empleado.numero_identificacion}`
             )
-          )
-            .then(async (response) => {
-              if (searchParams.get("vacante")) {
-                const vacante_id = searchParams.get("vacante");
+          ).then(async (response) => {
+            if (searchParams.get("vacante")) {
+              const vacante_id = searchParams.get("vacante");
 
-                await Swal.fire({
-                  text: "¿Deseas postularte a la vacante?",
-                  icon: "info",
-                  showCancelButton: true,
-                  confirmButtonColor: "#3085d6",
-                  cancelButtonColor: "#d33",
-                  confirmButtonText: "Si",
-                  cancelButtonText: "No",
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    postPostulacionVacante(
-                      token,
-                      vacante_id,
-                      empleado.empleado_id
-                    );
-                  }
-                });
+              const result = await Swal.fire({
+                text: `¿Deseas postularte a la vacante ${vacanteDetail.vacante.descripcion} (${vacanteDetail.vacante.Areas_Intere.nombre})?`,
+                icon: "info",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si",
+                cancelButtonText: "No",
+              });
+
+              if (result.isConfirmed) {
+                await postPostulacionVacante(
+                  token,
+                  vacante_id,
+                  empleado.empleado_id
+                );
               }
-
-              await Swal.fire({
+            } else {
+              const result = await Swal.fire({
                 text: "¿Deseas observar / descargar tu perfil?",
                 icon: "info",
                 showCancelButton: true,
@@ -486,24 +523,26 @@ export function CrearCurriculo() {
                 cancelButtonColor: "#d33",
                 confirmButtonText: "Si",
                 cancelButtonText: "No",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${response.data}`;
-                  window.open(URL_GET_PDF, "_blank");
-                }
               });
 
-              navigate("/inicio");
-            })
-            .catch((error) => {
-              return error;
-            });
+              if (result.isConfirmed) {
+                const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${response.data}`;
+                window.open(URL_GET_PDF, "_blank");
+              }
+            }
+          });
         })
-        .catch((error) => {
-          return error;
+        .finally(() => {
+          navigate("/inicio");
         });
     } catch (error) {
-      return error;
+      Swal.fire({
+        title: "Oops...",
+        text: `${error.response.data.error}`,
+        icon: "error",
+        showConfirmButton: false,
+        timer: 3000,
+      });
     }
   };
 
