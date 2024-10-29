@@ -168,13 +168,9 @@ export function Empleados() {
   };
 
   const handleVerDetalles = (empleado_id) => {
-    dispatch(getEmpleadoDetail(token, empleado_id))
-      .then(() => {
-        navigate(`/admin/empleado/${empleado_id}`);
-      })
-      .catch((error) => {
-        return error;
-      });
+    dispatch(getEmpleadoDetail(token, empleado_id)).then(() => {
+      navigate(`/admin/empleados/${empleado_id}`);
+    });
   };
 
   const changeOrder = (e) => {
@@ -446,8 +442,7 @@ export function Empleados() {
               </tr>
             </thead>
             <tbody>
-              {empleados === "No existen empleados" ||
-              !empleados.empleados?.length ? (
+              {!empleados.empleados?.length ? (
                 <tr>
                   <td colSpan="9" className="text-center p-2">
                     <p>¡No existen registros!</p>
@@ -475,9 +470,7 @@ export function Empleados() {
                     <td className="p-4">
                       {empleado.activo ? "Activo" : "Inactivo"}
                     </td>
-                    <td className="p-4">
-                      {DDMMYYYY(empleado.updatedAt)}
-                    </td>
+                    <td className="p-4">{DDMMYYYY(empleado.updatedAt)}</td>
                     <td className="p-4 flex gap-2">
                       {empleado.Fichas_Ingresos[0]?.ficha_ingreso_id && (
                         <Button

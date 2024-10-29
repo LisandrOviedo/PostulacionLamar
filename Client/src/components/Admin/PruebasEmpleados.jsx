@@ -440,8 +440,7 @@ export function PruebasEmpleados() {
               </tr>
             </thead>
             <tbody>
-              {pruebas_empleados === "No existen respuestas de empleados" ||
-              !pruebas_empleados.pruebas_empleados?.length ? (
+              {!pruebas_empleados.pruebas_empleados?.length ? (
                 <tr>
                   <td colSpan="9" className="text-center p-2">
                     <p>¡No existen registros!</p>
