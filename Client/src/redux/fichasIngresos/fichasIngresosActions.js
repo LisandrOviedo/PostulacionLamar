@@ -61,7 +61,7 @@ export const saveFichaIngreso = (token, datosIngreso) => {
         text: "¡Ingreso exitoso!",
         icon: "success",
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3000,
       });
     } catch (error) {
       alertError(error);

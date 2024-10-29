@@ -71,10 +71,10 @@ export const postPruebaKostick = async (token, empleado_id, prueba) => {
     );
 
     return Swal.fire({
-      text: "Prueba enviada exitosamente",
+      text: "¡Prueba enviada exitosamente!",
       icon: "success",
       showConfirmButton: false,
-      timer: 2000,
+      timer: 3000,
     });
   } catch (error) {
     alertError(error);

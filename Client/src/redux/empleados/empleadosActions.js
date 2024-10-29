@@ -220,7 +220,7 @@ export const putFotoEmpleado = (token, formData) => {
         text: "¡Cambios guardados exitosamente!",
         icon: "success",
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3000,
         width: "20em",
       });
     } catch (error) {
