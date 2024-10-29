@@ -23,7 +23,7 @@ import {
 
 import { DDMMYYYY } from "../../utils/formatearFecha";
 
-export function Postulaciones() {
+export function PerfilesProfesionales() {
   const tableRef = useRef(null);
 
   const dispatch = useDispatch();
@@ -137,13 +137,13 @@ export function Postulaciones() {
   useEffect(() => {
     window.scroll(0, 0);
 
+    handleFind();
+
     dispatch(getAllAreasInteresActivas(token));
 
     dispatch(getAllIdiomasActivos(token));
 
-    handleFind();
-
-    document.title = "Grupo Lamar - Postulaciones (Admin)";
+    document.title = "Grupo Lamar - Perfiles Profesionales (Admin)";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -235,7 +235,7 @@ export function Postulaciones() {
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <Title>Postulaciones</Title>
+        <Title>Perfiles Profesionales</Title>
       </div>
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
         <div className="flex flex-col place-content-between">
@@ -445,8 +445,7 @@ export function Postulaciones() {
               </tr>
             </thead>
             <tbody>
-              {curriculos === "No existen curriculos" ||
-              !curriculos.curriculos?.length ? (
+              {!curriculos.curriculos?.length ? (
                 <tr>
                   <td colSpan="9" className="text-center p-2">
                     <p>¡No existen registros!</p>
@@ -483,9 +482,7 @@ export function Postulaciones() {
                           }`
                       )}
                     </td>
-                    <td className="p-4">
-                      {DDMMYYYY(curriculo.updatedAt)}
-                    </td>
+                    <td className="p-4">{DDMMYYYY(curriculo.updatedAt)}</td>
                     <td className="p-4">
                       {curriculo.revisado_por_id
                         ? "Revisado"
@@ -498,7 +495,7 @@ export function Postulaciones() {
                     </td>
                     <td className="p-4 flex gap-2 items-center">
                       <Button
-                        className="m-0 w-auto"
+                        className="m-0 w-auto text-xs"
                         onClick={() =>
                           handleVerDetalles(
                             `${curriculo.Empleado.tipo_identificacion}${curriculo.Empleado.numero_identificacion}`,
@@ -507,10 +504,10 @@ export function Postulaciones() {
                           )
                         }
                       >
-                        PDF
+                        Ver Perfil
                       </Button>
                       <Button
-                        className="m-0 w-auto"
+                        className="m-0 w-auto text-xs"
                         onClick={() =>
                           handleVerDetallesAnexos(
                             curriculo.Empleado.empleado_id,
@@ -518,7 +515,7 @@ export function Postulaciones() {
                           )
                         }
                       >
-                        Anexos
+                        Descargar Anexos
                       </Button>
                     </td>
                   </tr>
