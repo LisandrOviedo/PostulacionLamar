@@ -404,8 +404,7 @@ export function AsignacionRoles() {
                 </tr>
               </thead>
               <tbody>
-                {empleados === "No existen empleados" ||
-                !empleados.empleados?.length ? (
+                {!empleados.empleados?.length ? (
                   <tr>
                     <td colSpan="4" className="text-center p-2">
                       <p>¡No existen registros de empleados!</p>
