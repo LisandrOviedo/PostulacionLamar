@@ -63,7 +63,6 @@ const todosLosRoles = async () => {
     throw new Error(`Error al traer todos los roles: ${error.message}`);
   }
 };
-
 const traerRol = async (rol_id) => {
   if (!rol_id) {
     throw new Error(`Datos faltantes`);
@@ -73,7 +72,7 @@ const traerRol = async (rol_id) => {
     const rol = await Roles.findByPk(rol_id);
 
     if (!rol) {
-      throw new Error(`No existe ese rol`);
+      throw new Error(`No existe ese rol`); 
     }
 
     return rol;
