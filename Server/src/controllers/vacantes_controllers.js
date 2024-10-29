@@ -1,32 +1,67 @@
+const { Op } = require("sequelize");
+
 const {
   conn,
   Vacantes,
   Areas_Interes,
   Vacantes_Empleados,
   Empleados,
+  Documentos_Empleados,
 } = require("../db");
 
 const { traerEmpleado } = require("./empleados_controllers");
 
-const todasLasVacantes = async (filtros, paginaActual, limitePorPagina) => {
+const todasLasVacantes = async (
+  paginaActual,
+  limitePorPagina,
+  buscar_por,
+  buscar,
+  orden_campo,
+  orden_por,
+  area_interes_id,
+  activo
+) => {
   if (!paginaActual || !limitePorPagina) {
     throw new Error(`Datos faltantes`);
   }
 
+  let condicionesVacantes = {};
+
+  if (buscar_por && buscar) {
+    condicionesVacantes[buscar_por] = { [Op.like]: `%${buscar}%` };
+  }
+
+  if (area_interes_id) {
+    condicionesVacantes.area_interes_id = area_interes_id;
+  }
+
+  if (activo) {
+    condicionesVacantes.activo = activo;
+  }
+
   try {
     const { count: totalRegistros, rows: dataVacantes } =
-      await Vacantes.findAll({
-        where: filtros.area_interes_id
-          ? { area_interes_id: filtros.area_interes_id }
-          : {},
-        include: {
-          model: Areas_Interes,
-          attributes: ["nombre"],
-        },
+      await Vacantes.findAndCountAll({
+        where: condicionesVacantes,
+        include: [
+          { model: Areas_Interes, attributes: ["nombre"] },
+          {
+            model: Empleados,
+            as: "CreadoPor",
+            attributes: [
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
+          },
+          {
+            model: Empleados,
+            attributes: ["empleado_id"],
+          },
+        ],
         distinct: true,
-        order: [
-          filtros.orden_campo ? [filtros.orden_campo, filtros.orden_por] : null,
-        ].filter(Boolean),
+        order: [orden_campo ? [orden_campo, orden_por] : null].filter(Boolean),
       });
 
     const indexEnd = paginaActual * limitePorPagina;
@@ -41,24 +76,85 @@ const todasLasVacantes = async (filtros, paginaActual, limitePorPagina) => {
   }
 };
 
-const traerVacante = async (vacante_id) => {
-  if (!vacante_id) {
+const traerVacante = async (
+  vacante_id,
+  paginaActual,
+  limitePorPagina,
+  buscar_por,
+  buscar,
+  orden_campo,
+  orden_por,
+  activo
+) => {
+  if (!vacante_id || !paginaActual || !limitePorPagina) {
     throw new Error(`Datos faltantes`);
+  }
+
+  let condicionesEmpleados = {};
+
+  if (buscar_por && buscar) {
+    condicionesEmpleados[buscar_por] = { [Op.like]: `%${buscar}%` };
+  }
+
+  if (activo) {
+    condicionesEmpleados.activo = activo;
   }
 
   try {
     const vacante = await Vacantes.findByPk(vacante_id, {
-      include: {
-        model: Areas_Interes,
-        attributes: ["nombre"],
-      },
+      include: [
+        { model: Areas_Interes, attributes: ["nombre"] },
+        {
+          model: Empleados,
+          as: "CreadoPor",
+          attributes: [
+            "nombres",
+            "apellidos",
+            "tipo_identificacion",
+            "numero_identificacion",
+          ],
+        },
+      ],
     });
 
-    if (!vacante) {
-      throw new Error(`No existe esa vacante`);
-    }
+    const { count: totalRegistros, rows: dataEmpleados } =
+      await Empleados.findAndCountAll({
+        attributes: [
+          "empleado_id",
+          "nombres",
+          "apellidos",
+          "tipo_identificacion",
+          "numero_identificacion",
+          "telefono",
+          "correo",
+          "activo",
+          "updatedAt",
+        ],
+        where: condicionesEmpleados,
+        include: [
+          {
+            model: Vacantes,
+            attributes: ["vacante_id"],
+            where: { vacante_id: vacante_id },
+          },
+          {
+            model: Documentos_Empleados,
+            attributes: ["tipo", "nombre"],
+            where: { tipo: "perfil_pdf" },
+            required: false,
+          },
+        ],
+        distinct: true,
+        order: [orden_campo ? [orden_campo, orden_por] : null].filter(Boolean),
+      });
 
-    return vacante;
+    const indexEnd = paginaActual * limitePorPagina;
+    const indexStart = indexEnd - limitePorPagina;
+
+    const empleados = dataEmpleados.slice(indexStart, indexEnd);
+    const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
+
+    return { cantidadPaginas, totalRegistros, empleados, vacante };
   } catch (error) {
     throw new Error(`Error al traer la vacante: ${error.message}`);
   }
@@ -230,23 +326,24 @@ const postularVacanteEmpleado = async (vacante_id, empleado_id) => {
   let t;
 
   try {
-    await traerVacante(vacante_id);
-
     await traerEmpleado(empleado_id);
 
     t = await conn.transaction();
 
-    await Vacantes_Empleados.create(
-      {
+    const [vacanteEmpleado, created] = await Vacantes_Empleados.findOrCreate({
+      where: { vacante_id: vacante_id, empleado_id: empleado_id },
+      defaults: {
         vacante_id: vacante_id,
         empleado_id: empleado_id,
       },
-      { transaction: t }
-    );
+      transaction: t,
+    });
 
     await t.commit();
 
-    return await traerVacante(vacante_id);
+    if (created) {
+      return vacanteEmpleado;
+    }
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
