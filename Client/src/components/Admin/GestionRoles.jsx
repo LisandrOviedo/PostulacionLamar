@@ -8,7 +8,7 @@ import {
   deleteFiltros,
   getAllRolesFiltrados,
   postCrearRol,
-  getRol
+  getRol,
 } from "../../redux/roles/rolesActions";
 
 import { Button, Input, Label, Select, Span, Title } from "../UI";
@@ -35,7 +35,7 @@ export function GestionRoles() {
 
   const roles = useSelector((state) => state.roles.roles);
 
-  const rol = useSelector((state) => state.roles.rol); 
+  const rol = useSelector((state) => state.roles.rol);
 
   const filtros = useSelector((state) => state.roles.filtros);
 
@@ -51,13 +51,16 @@ export function GestionRoles() {
     nombre: "",
     descripcion: "",
   });
-
-
-//codigo para getRoll
-const [listaRoles, setListaRoles] = useState([]);
-//finaliza
+ 
+  const [rolNombre, setRolNombre] = useState("");
+  const [rolDescripcion, setRolDescripcion] = useState("");
+  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
-  // const [showModalListaRoll, setShowModalListaRoll] = useState(false); //revisar esto despues
+  const [rolDetalles, setRolDetalles] = useState({ nombre: "", descripcion: "" });
+  const [showDetallesRolModal, setShowDetallesRolModal] = useState(false);
+  const [showCrearRolModal, setShowCrearRolModal] = useState(false);
+
+
   const tableRef = useRef(null);
 
   const handleChangePagination = (e) => {
@@ -167,20 +170,57 @@ const [listaRoles, setListaRoles] = useState([]);
     }
   };
 
-  //nuevo codigo getRoll
+  
+  const handleOpenCrearRolModal = () => {
+    setNuevoRol({ nombre: "", descripcion: "" });
+    setShowCrearRolModal(true);
+};
 
-  const handleVerDetalles = async () => {
+const handleOpenDetallesRolModal = (rolId) => {
+  setRolDetalles({ nombre: "", descripcion: "" }); // Resetea los detalles a valores vacíos
+  setShowDetallesRolModal(true);
+};
+
+  const handleValidateRol = () => {
     try {
-      await dispatch(getRol(token, setListaRoles)); // Asegúrate de que getRol acepte estos parámetros
-    } catch (error) {
-      console.error("Rol no encontrado:", error);
+      // Verificación inicial
+      if (!rolDetalles || !rolDetalles.nombre || !rolDetalles.descripcion) {
+        setError("Por favor, completa todos los campos.");
+        return;
+      }
+  
+      // Validar que el rol existe
+      const rolExistente = roles.roles.find(rol => rol.nombre === rolDetalles.nombre);
+      if (!rolExistente) {
+        Swal.fire({
+          text: "El rol no existe.",
+          icon: "error",
+        });
+        return;
+      }
+  
       Swal.fire({
-        text: "Error al buscar el rol",
+        text: "Rol validado con éxito.",
+        icon: "success",
+      });
+      
+      setError(""); // Resetea errores si la validación es exitosa
+      handleCloseModal(); // Cerrar el modal tras la validación exitosa
+  
+    } catch (error) {
+      console.error("Error al validar el rol:", error);
+      Swal.fire({
+        text: "Error al validar el rol.",
         icon: "error",
       });
     }
   };
-//finaliza nuevo codigo
+// Nuevo handler para cerrar el modal
+const handleCloseModal = () => {
+  setShowModal(false); // Cierra el modal
+  setRolDetalles({}); // Resetea los detalles del rol
+};
+  //finaliza nuevo codigo
 
   const changeOrder = (e) => {
     const { name } = e.target;
@@ -238,10 +278,6 @@ const [listaRoles, setListaRoles] = useState([]);
     }
   };
 
-  const handleCerrarModal = () => {
-    setShowModal(false);
-    setNuevoRol({});
-  };
 
   const handleValidate = (e) => {
     const { name, value } = e.target;
@@ -316,17 +352,17 @@ const [listaRoles, setListaRoles] = useState([]);
             </div>
             <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
               <div className="flex space-x-4">
-                <Button
-                  className="m-0 w-auto bg-green-600"
-                  onClick={() => setShowModal(true)}
-                >
-                  Crear rol
-                </Button>
+              <Button
+    className="m-0 w-auto bg-green-600"
+    onClick={handleOpenCrearRolModal}
+>
+    Crear rol
+</Button>
               </div>
             </div>
           </div>
         </div>
-  
+
         <div className="mt-8 sm:mx-auto w-full">
           <div className="overflow-x-auto shadow-md rounded-lg">
             <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400">
@@ -393,7 +429,7 @@ const [listaRoles, setListaRoles] = useState([]);
                 </tr>
               </thead>
               <tbody>
-                {roles === "No existen roles" || !roles.roles?.length ? (
+                {!roles.roles?.length ? (
                   <tr>
                     <td colSpan="2" className="text-center p-2">
                       <p>¡No existen registros!</p>
@@ -409,19 +445,12 @@ const [listaRoles, setListaRoles] = useState([]);
                       <td className="p-4">{rol.descripcion}</td>
                       <td className="p-4">{DDMMYYYY(rol.updatedAt)}</td>
                       <td className="p-4 flex gap-2">
+      <button onClick={() => handleOpenDetallesRolModal(rol.id)}>Ver Detalles</button>
+
+      
                         <Button
                           className="m-0 w-auto text-xs"
-                          onClick={() =>
-                            handleVerDetalles(rol.empleado_id, rol.rol_id)
-                          }
-                        >
-                          Editar
-                        </Button>
-                        <Button
-                          className="m-0 w-auto text-xs"
-                          onClick={() =>
-                            handleVerDetalles(rol.empleado_id)
-                          }
+                          onClick={() => handleVerDetalles(rol.empleado_id)}
                         >
                           Asignar Menús
                         </Button>
@@ -432,7 +461,7 @@ const [listaRoles, setListaRoles] = useState([]);
               </tbody>
             </table>
           </div>
-  
+
           <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">
             {infoPaginador(paginaActual, limitePorPagina, roles.totalRegistros)}
             <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
@@ -440,13 +469,18 @@ const [listaRoles, setListaRoles] = useState([]);
                 <Span
                   onClick={paginaAnterior}
                   className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
-                    paginaActual <= 1 ? "cursor-default" : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                    paginaActual <= 1
+                      ? "cursor-default"
+                      : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
                   }`}
                 >
                   Pág. Anterior
                 </Span>
               </li>
-              {calcularPaginasARenderizar(paginaActual, roles.cantidadPaginas).map((page) => (
+              {calcularPaginasARenderizar(
+                paginaActual,
+                roles.cantidadPaginas
+              ).map((page) => (
                 <li key={page}>
                   <Span
                     onClick={() => {
@@ -455,7 +489,9 @@ const [listaRoles, setListaRoles] = useState([]);
                       });
                     }}
                     className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
-                      page === paginaActual ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50" : ""
+                      page === paginaActual
+                        ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"
+                        : ""
                     }`}
                   >
                     {page}
@@ -466,7 +502,9 @@ const [listaRoles, setListaRoles] = useState([]);
                 <Span
                   onClick={paginaSiguiente}
                   className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
-                    paginaActual >= roles.cantidadPaginas ? "cursor-default" : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                    paginaActual >= roles.cantidadPaginas
+                      ? "cursor-default"
+                      : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
                   }`}
                 >
                   Pág. Siguiente
@@ -476,51 +514,87 @@ const [listaRoles, setListaRoles] = useState([]);
           </nav>
         </div>
       </div>
-  
-      {showModal && (
-        <div className="fixed z-50 inset-0 flex items-center justify-center mx-[6%]">
-          <div className="bg-gray-400 rounded-lg border-2 border-white p-6">
-            <div className="flex flex-col">
-              <Label htmlFor="nombre" className="font-bold">
-                Nombre del rol:
-              </Label>
-              <Input
-                type="text"
-                id="nombre"
-                name="nombre"
-                value={nuevoRol.nombre}
-                onChange={handleValidate}
-              />
-            </div>
-            <div className="flex flex-col">
-              <Label htmlFor="descripcion" className="font-bold">
-                Descripción del rol:
-              </Label>
-              <Input
-                type="text"
-                id="descripcion"
-                name="descripcion"
-                value={nuevoRol.descripcion}
-                onChange={handleValidate}
-              />
-            </div>
-  
-            <div className="flex justify-end space-x-4 mt-4">
-              <Button
-                className="m-0 md:w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
-                onClick={handleGuardarRol}
-              >
-                Guardar
-              </Button>
-              <Button
-                className="m-0 md:w-auto text-xs"
-                onClick={handleCerrarModal}
-              >
-                Cancelar
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );}
+
+     
+            {/* Modal para crear rol */}
+            {showCrearRolModal && (
+                <div className="fixed z-50 inset-0 flex items-center justify-center mx-[6%]">
+                    <div className="bg-gray-400 rounded-lg border-2 border-white p-6">
+                        <div className="flex flex-col">
+                            <Label htmlFor="nombre" className="font-bold">Nombre del rol:</Label>
+                            <Input
+                                type="text"
+                                id="nombre"
+                                name="nombre"
+                                value={nuevoRol.nombre}
+                                onChange={handleValidate}
+                            />
+                        </div>
+                        <div className="flex flex-col">
+                            <Label htmlFor="descripcion" className="font-bold">Descripción del rol:</Label>
+                            <Input
+                                type="text"
+                                id="descripcion"
+                                name="descripcion"
+                                value={nuevoRol.descripcion}
+                                onChange={handleValidate}
+                            />
+                        </div>
+                        <div className="flex justify-end space-x-4 mt-4">
+                            <Button
+                                className="m-0 md:w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
+                                onClick={handleGuardarRol}
+                            >
+                                Guardar
+                            </Button>
+                            <Button
+                                className="m-0 md:w-auto text-xs"
+                                onClick={() => setShowCrearRolModal(false)}
+                            >
+                                Cerrar
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+  {showDetallesRolModal && rolDetalles && (
+                <div className="fixed z-50 inset-0 flex items-center justify-center mx-[6%]">
+                    <div className="bg-gray-400 rounded-lg border-2 border-white p-6">
+                        <Label htmlFor="nombre" className="font-bold">Nombre del rol</Label>
+                        <Input
+                           type="text"
+                           placeholder="Nombre del rol"
+                           value={rolDetalles.nombre}
+                           onChange={(e) => setRolDetalles({ ...rolDetalles, nombre: e.target.value })}
+                     
+                        />
+                        <div className="flex flex-col mt-4">
+                            <Label htmlFor="descripcion" className="font-bold">Descripción del rol:</Label>
+                            <Input
+                             type="text"
+                             placeholder="Descripción del rol"
+                             value={rolDetalles.descripcion}
+                             onChange={(e) => setRolDetalles({ ...rolDetalles, descripcion: e.target.value })}
+                            
+                            />
+                        </div>
+                        <div className="flex justify-end space-x-4 mt-4">
+                        <Button
+                                className="m-0 md:w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
+                                onClick={handleValidateRol}
+                            >
+                                Validar
+                            </Button>
+                            <Button
+                                className="m-0 md:w-auto text-xs"
+                                onClick={() => setShowDetallesRolModal(false)}
+                            >
+                                Cerrar
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
+    );
+};
