@@ -5,10 +5,22 @@ const initialState = {
   vacanteDetail: {},
   paginaActual: 1,
   limitePorPagina: 2,
+  paginaActualDetail: 1,
+  limitePorPaginaDetail: 2,
   filtros: {
+    buscar_por: "",
+    buscar: "",
+    activo: "",
+    area_interes_id: "",
     orden_campo: "",
     orden_por: "",
-    empresa_id: "",
+  },
+  filtrosDetail: {
+    buscar_por: "",
+    buscar: "",
+    activo: "",
+    orden_campo: "",
+    orden_por: "",
   },
 };
 
@@ -31,11 +43,32 @@ export const vacanteSlice = createSlice({
     filtros: (state, action) => {
       state.filtros = action.payload;
     },
+    paginaActualDetail: (state, action) => {
+      state.paginaActualDetail = action.payload;
+    },
+    limitePorPaginaDetail: (state, action) => {
+      state.limitePorPaginaDetail = action.payload;
+    },
+    filtrosDetail: (state, action) => {
+      state.filtrosDetail = action.payload;
+    },
     resetFilters: (state) => {
       state.filtros = {
+        buscar_por: "",
+        buscar: "",
+        activo: "",
+        area_interes_id: "",
         orden_campo: "",
         orden_por: "",
-        empresa_id: state.filtros.empresa_id,
+      };
+    },
+    resetFiltersDetail: (state) => {
+      state.filtrosDetail = {
+        buscar_por: "",
+        buscar: "",
+        activo: "",
+        orden_campo: "",
+        orden_por: "",
       };
     },
     resetState: () => {
@@ -51,6 +84,10 @@ export const {
   limitePorPagina,
   filtros,
   resetFilters,
+  paginaActualDetail,
+  limitePorPaginaDetail,
+  filtrosDetail,
+  resetFiltersDetail,
   resetState,
 } = vacanteSlice.actions;
 export default vacanteSlice.reducer;
