@@ -11,7 +11,7 @@ import {
   filtros,
   resetFilters,
   resetState,
-  Rol
+  detallesRol
 } from "./rolesSlices";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
@@ -63,24 +63,21 @@ export const getAllRoles = (token) => {
   };
 };
 
-export const getRol = (token) => {
-  const URL_DETALLES = `${URL_SERVER}/roles/detalle`;
+export const getRol = (token, rolId) => {
+    const URL_DETALLES = `${URL_SERVER}/roles/detalle/${rolId}`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios(URL_DETALLES, {
-       
-        headers: { authorization: `Bearer ${token}` },
-      });
-
-      return dispatch(Rol(data));
-    } catch (error) {
-      alertError(error);
-      throw new Error();
-    }
-  };
+    return async (dispatch) => {
+        try {
+            const { data } = await axios.get(URL_DETALLES, {
+                headers: { authorization: `Bearer ${token}` },
+            });
+            dispatch(detallesRol(data)); // Dispatch para actualizar el estado
+        } catch (error) {
+            alertError(error);
+            throw new Error(error.response?.data?.error || "Error al obtener detalles del rol");
+        }
+    };
 };
-
 export const putRolEmpleado = async (token, rol_id, empleado_id) => {
   const URL_CAMBIAR_ROL_EMPLEADO = `${URL_SERVER}/roles/cambiarRolEmpleado`;
 
