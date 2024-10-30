@@ -11,7 +11,7 @@ import {
   filtros,
   resetFilters,
   resetState,
-  detallesRol
+  rolDetail,
 } from "./rolesSlices";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
@@ -63,21 +63,23 @@ export const getAllRoles = (token) => {
   };
 };
 
-export const getRol = (token, rolId) => {
-    const URL_DETALLES = `${URL_SERVER}/roles/detalle/${rolId}`;
+export const getRol = (token, rol_id) => {
+  const URL_DETALLES_ROL = `${URL_SERVER}/roles/detalle/${rol_id}`;
 
-    return async (dispatch) => {
-        try {
-            const { data } = await axios.get(URL_DETALLES, {
-                headers: { authorization: `Bearer ${token}` },
-            });
-            dispatch(detallesRol(data)); // Dispatch para actualizar el estado
-        } catch (error) {
-            alertError(error);
-            throw new Error(error.response?.data?.error || "Error al obtener detalles del rol");
-        }
-    };
+  return async (dispatch) => {
+    try {
+      const { data } = await axios(URL_DETALLES_ROL, {
+        headers: { authorization: `Bearer ${token}` },
+      });
+
+      dispatch(rolDetail(data)); // Dispatch para actualizar el estado
+    } catch (error) {
+      alertError(error);
+      throw new Error();
+    }
+  };
 };
+
 export const putRolEmpleado = async (token, rol_id, empleado_id) => {
   const URL_CAMBIAR_ROL_EMPLEADO = `${URL_SERVER}/roles/cambiarRolEmpleado`;
 
@@ -95,6 +97,30 @@ export const putRolEmpleado = async (token, rol_id, empleado_id) => {
       icon: "success",
       showConfirmButton: false,
       timer: 2000,
+    });
+  } catch (error) {
+    alertError(error);
+    throw new Error();
+  }
+};
+
+export const putModificarRol = async (token, rol_id, nombre, descripcion) => {
+  const URL_CAMBIAR_ROL = `${URL_SERVER}/roles/modificar`;
+
+  try {
+    await axios.put(
+      URL_CAMBIAR_ROL,
+      { rol_id, nombre, descripcion },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+
+    return Swal.fire({
+      text: "¡Rol modificado exitosamente!",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 3000,
     });
   } catch (error) {
     alertError(error);
@@ -165,10 +191,10 @@ export const resetRoles = () => {
 export const postCrearRol = async (token, nuevoRol) => {
   const URL_CREAR_ROL = `${URL_SERVER}/roles`;
 
-  try {
-    const { nombre, descripcion } = nuevoRol;
+  const { nombre, descripcion } = nuevoRol;
 
-    const { data } = await axios.post(
+  try {
+    await axios.post(
       URL_CREAR_ROL,
       { nombre, descripcion }, // Enviar nombre y descripción en el cuerpo
       {
@@ -177,16 +203,14 @@ export const postCrearRol = async (token, nuevoRol) => {
     );
 
     // Mostrar el mensaje de éxito
-    await Swal.fire({
+    return Swal.fire({
       text: "¡Rol creado exitosamente!",
       icon: "success",
       showConfirmButton: false,
-      timer: 2000,
+      timer: 3000,
     });
-
-    return data; // Retornar los datos del rol creado
   } catch (error) {
     alertError(error);
-    throw new Error(error.response?.data?.error || "Error al crear el rol"); // Mejorar el manejo de errores
+    throw new Error();
   }
 };
