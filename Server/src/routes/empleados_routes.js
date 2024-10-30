@@ -20,9 +20,9 @@ const { authenticateToken } = require("../auth/index");
 const empleados = Router();
 
 const multer = require("multer");
-const path = require("path");
+const path = require("node:path");
 const MIMETYPES = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
-const fs = require("fs");
+const fs = require("node:fs");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

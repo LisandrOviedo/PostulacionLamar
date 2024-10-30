@@ -9,13 +9,27 @@ const {
 } = require("../controllers/vacantes_controllers");
 
 const getVacantes = async (req, res) => {
-  const { filtros, paginaActual, limitePorPagina } = req.params;
+  const {
+    paginaActual,
+    limitePorPagina,
+    buscar_por,
+    buscar,
+    orden_campo,
+    orden_por,
+    area_interes_id,
+    activo,
+  } = req.query;
 
   try {
     const response = await todasLasVacantes(
-      filtros,
       paginaActual,
-      limitePorPagina
+      limitePorPagina,
+      buscar_por,
+      buscar,
+      orden_campo,
+      orden_por,
+      area_interes_id,
+      activo
     );
 
     return res.json(response);
@@ -27,8 +41,27 @@ const getVacantes = async (req, res) => {
 const getVacante = async (req, res) => {
   const { vacante_id } = req.params;
 
+  const {
+    paginaActual,
+    limitePorPagina,
+    buscar_por,
+    buscar,
+    orden_campo,
+    orden_por,
+    activo,
+  } = req.query;
+
   try {
-    const response = await traerVacante(vacante_id);
+    const response = await traerVacante(
+      vacante_id,
+      paginaActual,
+      limitePorPagina,
+      buscar_por,
+      buscar,
+      orden_campo,
+      orden_por,
+      activo
+    );
 
     return res.json(response);
   } catch (error) {

@@ -11,21 +11,6 @@ import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
 import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
 
 import {
-  getAllDepartamentosActivos,
-  resetDepartamentos,
-} from "../../redux/departamentos/departamentosActions";
-
-import {
-  getAllCargosNivelesActivos,
-  resetCargosNiveles,
-} from "../../redux/cargosNiveles/cargosNivelesActions";
-
-import {
-  getAllCargosActivos,
-  resetCargos,
-} from "../../redux/cargos/cargosActions";
-
-import {
   Button,
   Date,
   Input,
@@ -57,19 +42,6 @@ export function Liquidaciones() {
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const empresas_activas = useSelector(
-    (state) => state.empresas.empresas_activas
-  );
-
-  const departamentos_activos = useSelector(
-    (state) => state.departamentos.departamentos_activos
-  );
-
-  const cargos_activos = useSelector((state) => state.cargos.cargos_activos);
-
-  const cargos_niveles_activos = useSelector(
-    (state) => state.cargos_niveles.cargos_niveles_activos
-  );
   const [datosEmpleado, setDatosEmpleado] = useState({});
   //setErrors es la función que usarás para actualizar el estado "errors"
   const [errors, setErrors] = useState({});
@@ -84,7 +56,7 @@ export function Liquidaciones() {
 
   useEffect(() => {
     window.scroll(0, 0); // Desplaza la ventana a la parte superior izquierda de la página.
-    document.title = "Grupo Lamar - Movimientos (Admin)";
+    document.title = "Grupo Lamar - Liquidaciones (Admin)";
 
     dispatch(getAllEmpresasActivas(token));
 
@@ -93,63 +65,6 @@ export function Liquidaciones() {
     };
   }, []);
 
-  useEffect(() => {
-    if (
-      datosLiquidaciones.empresa_id &&
-      datosLiquidaciones.empresa_id !== "Seleccione"
-    ) {
-      dispatch(resetDepartamentos());
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setLiquidaciones({
-        ...datosLiquidaciones,
-        departamento_id: "Seleccione",
-      });
-      dispatch(
-        getAllDepartamentosActivos(token, datosLiquidaciones.empresa_id)
-      );
-    } else {
-      dispatch(resetDepartamentos());
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setLiquidaciones({
-        ...datosLiquidaciones,
-        departamento_id: "Seleccione",
-      });
-    }
-  }, [datosLiquidaciones.empresa_id]);
-
-  useEffect(() => {
-    if (
-      datosLiquidaciones.departamento_id &&
-      datosLiquidaciones.departamento_id !== "Seleccione"
-    ) {
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setLiquidaciones({ ...datosLiquidaciones, cargo_id: "Seleccione" });
-      dispatch(getAllCargosActivos(token, datosLiquidaciones.departamento_id));
-    } else {
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setLiquidaciones({ ...datosLiquidaciones, cargo_id: "Seleccione" });
-    }
-  }, [datosLiquidaciones.departamento_id]);
-
-  useEffect(() => {
-    if (
-      datosLiquidaciones.cargo_id &&
-      datosLiquidaciones.cargo_id !== "Seleccione"
-    ) {
-      dispatch(resetCargosNiveles());
-      setLiquidaciones({ ...datosLiquidaciones, cargo_nivel_id: "Seleccione" });
-      dispatch(getAllCargosNivelesActivos(token, datosLiquidaciones.cargo_id));
-    } else {
-      dispatch(resetCargosNiveles());
-      setLiquidaciones({ ...datosLiquidaciones, cargo_nivel_id: "Seleccione" });
-    }
-  }, [datosLiquidaciones.cargo_id]);
-
-  //Cada vez que el usuario cambia el valor de un campo, handleValidate se encarga de validar la entrada y actualizar el estado del formulario.
   const handleValidate = (e) => {
     const { name, value, options } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (Input).
 
@@ -185,12 +100,6 @@ export function Liquidaciones() {
         })
       );
     }
-  };
-
-  const handleCheckedValidate = (event) => {
-    const { name, checked } = event.target;
-
-    setLiquidaciones({ ...datosLiquidaciones, [name]: checked });
   };
 
   const handleExistenciaEmpleado = async () => {
@@ -249,15 +158,14 @@ export function Liquidaciones() {
     }
   };
 
-  //Este es el código que renderiza un formulario para los movimientos.
-  /*En este caso, el return está devolviendo un conjunto de elementos JSX que forman la estructura del formulario para movimientos */
+  //Este es el código que renderiza un formulario para las liquidaciones.
+  /*En este caso, el return está devolviendo un conjunto de elementos JSX que forman la estructura del formulario para liquidaciones */
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Title>Liquidaciones</Title>
       </div>
       <Hr />
-
       <div className="flex flex-col place-content-between my-6">
         <Label
           htmlFor="numero_identificacion"
@@ -377,11 +285,9 @@ export function Liquidaciones() {
           </div>
         </div>
       )}
-
       <br />
-
       <Title>Detalles de la Liquidación</Title>
-      <Hr className="w-full my-5 " />
+      <Hr className="w-full my-5" />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div className="relative w-full">
@@ -404,12 +310,11 @@ export function Liquidaciones() {
         </div>
 
         <div className="flex flex-col justify-start">
-          <Label htmlFor="fecha" errors={errors.fecha}>
+          <Label htmlFor="fecha_egreso" errors={errors.fecha}>
             Fecha egreso
           </Label>
           <div className="relative">
             <Date
-              type="date"
               id="fecha_egreso"
               name="fecha_egreso"
               onChange={handleValidate}
@@ -554,13 +459,13 @@ export function Liquidaciones() {
               type="number"
               min="1"
             />
-             {errors.poliza_hcm && (
-                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
-              )}
-            </div>
             {errors.poliza_hcm && (
-              <Span className="m-0">{errors.poliza_hcm}</Span>
+              <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
             )}
+          </div>
+          {errors.poliza_hcm && (
+            <Span className="m-0">{errors.poliza_hcm}</Span>
+          )}
         </div>
         <div>
           <div className="flex flex-col justify-start">
@@ -590,7 +495,6 @@ export function Liquidaciones() {
         </div>
       </div>
       <br />
-
       <div className="mx-auto sm:col-span-2 md:col-span-3">
         <Button
           className="w-auto flex items-center gap-2"

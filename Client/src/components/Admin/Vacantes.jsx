@@ -1,61 +1,57 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
-  getAllPruebasEmpleados,
+  getAllVacantes,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
+  postFiltrosDetail,
   deleteFiltros,
-} from "../../redux/pruebasEmpleados/pruebasEmpleadosActions";
+} from "../../redux/vacantes/vacantesActions";
 
-import { Button, Date, Input, Label, Select, Span, Title } from "../UI";
+import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresActions";
+
+import { Button, Input, Label, Select, Title } from "../UI";
 
 import {
   calcularPaginasARenderizar,
   infoPaginador,
 } from "../../utils/paginacion";
 
-import validations from "../../utils/validacionesPruebasEmpleados";
+import { DDMMYYYYHHMM2 } from "../../utils/formatearFecha";
 
-import { DDMMYYYY } from "../../utils/formatearFecha";
+export function Vacantes() {
+  const navigate = useNavigate();
 
-export function PruebasEmpleados() {
   const tableRef = useRef(null);
 
   const dispatch = useDispatch();
 
-  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
-
   const token = useSelector((state) => state.empleados.token);
 
-  const empleado = useSelector((state) => state.empleados.empleado);
+  const vacantes = useSelector((state) => state.vacantes.vacantes);
 
-  const pruebas_empleados = useSelector(
-    (state) => state.pruebas_empleados.pruebas_empleados
-  );
-
-  const paginaActual = useSelector(
-    (state) => state.pruebas_empleados.paginaActual
-  );
+  const paginaActual = useSelector((state) => state.vacantes.paginaActual);
 
   const limitePorPagina = useSelector(
-    (state) => state.pruebas_empleados.limitePorPagina
+    (state) => state.vacantes.limitePorPagina
   );
 
-  const filtros = useSelector((state) => state.pruebas_empleados.filtros);
+  const filtros = useSelector((state) => state.vacantes.filtros);
 
-  const [errors, setErrors] = useState({});
+  const areas_interes_activas = useSelector(
+    (state) => state.areas_interes.areas_interes_activas
+  );
 
   const [filters, setFilters] = useState({
-    numero_identificacion: filtros.numero_identificacion || "",
-    apellidos: filtros.apellidos || "",
-    prueba: filtros.prueba || "",
+    buscar_por: filtros.buscar_por || "descripcion",
+    buscar: filtros.buscar || "",
+    area_interes_id: filtros.area_interes_id || "",
+    activo: filtros.activo || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
-    empresa_id: empleado.empresa_id,
-    fecha_desde: filtros.fecha_desde || "",
-    fecha_hasta: filtros.fecha_hasta || "",
   });
 
   const handleChangePagination = (e) => {
@@ -72,74 +68,29 @@ export function PruebasEmpleados() {
     const { name, value } = e.target;
 
     setFilters({ ...filters, [name]: value });
-
-    setErrors(validations({ ...filters, [name]: value }));
-  };
-
-  const handleChangeFiltersInput = (e) => {
-    const { value } = e.target;
-
-    const buscarPor = document.getElementById("buscar_por");
-    const valueBuscarPor = buscarPor.value;
-
-    setFilters({ ...filters, [valueBuscarPor]: value });
   };
 
   const handleChangeFiltersSelect = (e) => {
     const { value } = e.target;
 
-    const buscarPor = document.getElementById("input_search");
-    const valueBuscarPor = buscarPor.value;
-
-    if (valueBuscarPor) {
-      setFilters((prevFilters) => {
-        let updatedFilters = { ...prevFilters };
-
-        if (value === "numero_identificacion") {
-          updatedFilters.apellidos = "";
-        } else if (value === "apellidos") {
-          updatedFilters.numero_identificacion = "";
-        }
-
-        return { ...updatedFilters, [value]: valueBuscarPor };
-      });
-    }
+    setFilters({ ...filters, ["buscar_por"]: value });
   };
 
   const handleResetFilters = () => {
     setFilters({
-      numero_identificacion: "",
-      apellidos: "",
-      prueba: "",
+      buscar_por: "descripcion",
+      buscar: "",
+      area_interes_id: "",
+      activo: "",
       orden_campo: "",
       orden_por: "",
-      empresa_id: empleado.empresa_id,
-      fecha_desde: "",
-      fecha_hasta: "",
     });
 
-    setErrors(
-      validations({
-        numero_identificacion: "",
-        apellidos: "",
-        prueba: "",
-        orden_campo: "",
-        orden_por: "",
-        empresa_id: empleado.empresa_id,
-        fecha_desde: "",
-        fecha_hasta: "",
-      })
-    );
+    const buscar_por = document.getElementById("buscar_por");
+    const buscar = document.getElementById("buscar");
 
-    const buscarPor = document.getElementById("buscar_por");
-    const inputSearch = document.getElementById("input_search");
-    const fecha_desde = document.getElementById("fecha_desde");
-    const fecha_hasta = document.getElementById("fecha_hasta");
-
-    buscarPor.selectedIndex = 0;
-    inputSearch.value = null;
-    fecha_desde.value = null;
-    fecha_hasta.value = null;
+    buscar_por.selectedIndex = 0;
+    buscar.value = "";
 
     dispatch(deleteFiltros());
   };
@@ -155,7 +106,9 @@ export function PruebasEmpleados() {
 
     handleFind();
 
-    document.title = "Grupo Lamar - Pruebas Empleados (Admin)";
+    dispatch(getAllAreasInteresActivas(token));
+
+    document.title = "Grupo Lamar - Vacantes (Admin)";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -163,9 +116,7 @@ export function PruebasEmpleados() {
   }, []);
 
   useEffect(() => {
-    dispatch(
-      getAllPruebasEmpleados(token, filtros, paginaActual, limitePorPagina)
-    );
+    dispatch(getAllVacantes(token, filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
 
   const changeOrder = (e) => {
@@ -217,94 +168,83 @@ export function PruebasEmpleados() {
   };
 
   const paginaSiguiente = () => {
-    if (paginaActual < pruebas_empleados.cantidadPaginas) {
+    if (paginaActual < vacantes.cantidadPaginas) {
       dispatch(postPaginaActual(paginaActual + 1)).then(() => {
         tableRef.current.scrollIntoView({ behavior: "smooth" });
       });
     }
   };
 
-  const handleVerResultados = (identificacion, prueba_nombre) => {
-    const URL_GET_RESULTADOS = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${prueba_nombre}`;
-
-    window.open(URL_GET_RESULTADOS, "_blank");
+  const handleVerDetalles = (vacante_id) => {
+    navigate(`/admin/vacantes/${vacante_id}`);
   };
 
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <Title>Pruebas de Empleados</Title>
+        <Title>Vacantes</Title>
       </div>
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
-        <div>
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
+        <div className="flex flex-col place-content-between">
           <Label htmlFor="buscar_por">Buscar por</Label>
           <Select
             id="buscar_por"
             name="buscar_por"
             onChange={handleChangeFiltersSelect}
-            defaultValue={
-              filtros.apellidos ? "apellidos" : "numero_identificacion"
-            }
+            value={filters.buscar_por}
           >
-            <option value="numero_identificacion">
-              Número de identificación
-            </option>
-            <option value="apellidos">Apellidos</option>
+            <option value="descripcion">Descripción de la vacante</option>
           </Select>
         </div>
-        <div className="flex items-end">
+        <div className="flex w-full items-end">
           <Input
+            id="buscar"
             type="text"
-            id="input_search"
             placeholder="Escribe aquí tu búsqueda"
-            onChange={handleChangeFiltersInput}
-            defaultValue={
-              filtros.apellidos
-                ? `${filtros.apellidos}`
-                : filtros.numero_identificacion
-                ? `${filtros.numero_identificacion}`
-                : ""
-            }
+            name="buscar"
+            onChange={handleChangeFilters}
+            value={filters.buscar}
           />
         </div>
-        <div>
-          <Label htmlFor="prueba">Filtrar por prueba</Label>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="area_interes_id">Filtrar por área de interés</Label>
           <Select
-            id="prueba"
-            name="prueba"
+            id="area_interes_id"
+            name="area_interes_id"
             onChange={handleChangeFilters}
-            value={filters.prueba}
+            value={filters.area_interes_id}
           >
             <option value="">Todos</option>
-            <option value="Kostick">Kostick</option>
+            {areas_interes_activas?.length
+              ? areas_interes_activas?.map(
+                  (area, i) =>
+                    area.activo && (
+                      <option
+                        key={i}
+                        name={area.nombre}
+                        value={area.area_interes_id}
+                      >
+                        {area.nombre}
+                      </option>
+                    )
+                )
+              : null}
           </Select>
         </div>
-        <div>
-          <Label htmlFor="fecha_desde" errors={errors.fechas}>
-            Fecha desde
-          </Label>
-          <Date
-            id="fecha_desde"
-            type="datetime-local"
-            name="fecha_desde"
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="activo">Filtrar por activo / inactivo</Label>
+          <Select
+            id="activo"
+            name="activo"
             onChange={handleChangeFilters}
-            errors={errors.fechas}
-          />
+            defaultValue={filters.activo}
+          >
+            <option value="">Todos</option>
+            <option value="1">Activos</option>
+            <option value="0">Inactivos</option>
+          </Select>
         </div>
-        <div>
-          <Label htmlFor="fecha_hasta" errors={errors.fechas}>
-            Fecha hasta
-          </Label>
-          <Date
-            id="fecha_hasta"
-            type="datetime-local"
-            name="fecha_hasta"
-            onChange={handleChangeFilters}
-            errors={errors.fechas}
-          />
-          {errors.fechas && <Span className="m-0">{errors.fechas}</Span>}
-        </div>
-        <div>
+        <div className="flex flex-col place-content-between">
           <Label htmlFor="limitePorPagina">Límite por página</Label>
           <Select
             id="limitePorPagina"
@@ -321,23 +261,17 @@ export function PruebasEmpleados() {
         <div
           id="tabla"
           ref={tableRef}
-          className="flex justify-center sm:col-span-2 md:col-span-3 gap-2"
+          className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start gap-2"
         >
-          <div
-            className={`${Object.keys(errors).length && "opacity-50"}`}
-            disabled={Object.keys(errors).length}
-          >
-            <Button className="m-0 w-auto" onClick={handleFind}>
-              Buscar
-            </Button>
-          </div>
-
+          <Button className="m-0 w-auto" onClick={handleFind}>
+            Buscar
+          </Button>
           <Button className="m-0 w-auto" onClick={handleResetFilters}>
             Restablecer Filtros
           </Button>
         </div>
       </div>
-      <div className="mt-6 sm:mx-auto w-full">
+      <div className="mt-8 sm:mx-auto w-full">
         <div className=" overflow-x-auto shadow-md rounded-lg">
           <table
             id="tabla"
@@ -348,19 +282,19 @@ export function PruebasEmpleados() {
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
                     <span
-                      id="apellidos"
-                      name="apellidos"
+                      id="descripcion"
+                      name="descripcion"
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Nombre Completos
+                      Descripción De La Vacante
                       <img
-                        name="apellidos"
+                        name="descripcion"
                         src={
-                          filters.orden_campo === "apellidos" &&
+                          filters.orden_campo === "descripcion" &&
                           filters.orden_por === "ASC"
                             ? "./SortAZ.svg"
-                            : filters.orden_campo === "apellidos" &&
+                            : filters.orden_campo === "descripcion" &&
                               filters.orden_por === "DESC"
                             ? "./SortZA.svg"
                             : "./SortDefault.svg"
@@ -372,41 +306,10 @@ export function PruebasEmpleados() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    Número de identificación
-                  </div>
+                  <div className="flex items-center">Área De Interés</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Teléfono</div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Correo</div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    <span
-                      id="prueba"
-                      name="prueba"
-                      onClick={changeOrder}
-                      className="text-black hover:text-black flex items-center"
-                    >
-                      Prueba
-                      <img
-                        name="prueba"
-                        src={
-                          filters.orden_campo === "prueba" &&
-                          filters.orden_por === "ASC"
-                            ? "./SortAZ.svg"
-                            : filters.orden_campo === "prueba" &&
-                              filters.orden_por === "DESC"
-                            ? "./SortZA.svg"
-                            : "./SortDefault.svg"
-                        }
-                        alt="Icon Sort"
-                        className="w-5 h-5 ms-1.5 cursor-pointer"
-                      />
-                    </span>
-                  </div>
+                  <div className="flex items-center">Estado</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
@@ -416,7 +319,7 @@ export function PruebasEmpleados() {
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Fecha Aplicación
+                      Creado
                       <img
                         name="createdAt"
                         src={
@@ -435,49 +338,74 @@ export function PruebasEmpleados() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Creado Por</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">
+                    <span
+                      id="updatedAt"
+                      name="updatedAt"
+                      onClick={changeOrder}
+                      className="text-black hover:text-black flex items-center"
+                    >
+                      Últ. Modif.
+                      <img
+                        name="updatedAt"
+                        src={
+                          filters.orden_campo === "updatedAt" &&
+                          filters.orden_por === "ASC"
+                            ? "./SortAZ.svg"
+                            : filters.orden_campo === "updatedAt" &&
+                              filters.orden_por === "DESC"
+                            ? "./SortZA.svg"
+                            : "./SortDefault.svg"
+                        }
+                        alt="Icon Sort"
+                        className="w-5 h-5 ms-1.5 cursor-pointer"
+                      />
+                    </span>
+                  </div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Postulados</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {!pruebas_empleados.pruebas_empleados?.length ? (
+              {!vacantes.vacantes?.length ? (
                 <tr>
                   <td colSpan="9" className="text-center p-2">
                     <p>¡No existen registros!</p>
                   </td>
                 </tr>
               ) : (
-                pruebas_empleados.pruebas_empleados?.map((prueba, i) => (
+                vacantes.vacantes?.map((vacante, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
+                    <td className="p-4">{vacante.descripcion}</td>
+                    <td className="p-4">{vacante.Areas_Intere.nombre}</td>
                     <td className="p-4">
-                      {prueba.Empleado.apellidos} {prueba.Empleado.nombres}
+                      {vacante.activo ? "Activo" : "Inactivo"}
                     </td>
+                    <td className="p-4">{DDMMYYYYHHMM2(vacante.createdAt)}</td>
                     <td className="p-4">
-                      {prueba.Empleado.tipo_identificacion}
-                      {prueba.Empleado.numero_identificacion}
+                      {vacante.CreadoPor.nombres} {vacante.CreadoPor.apellidos}{" "}
+                      ({vacante.CreadoPor.tipo_identificacion}-
+                      {vacante.CreadoPor.numero_identificacion})
                     </td>
+                    <td className="p-4">{DDMMYYYYHHMM2(vacante.updatedAt)}</td>
+                    <td className="p-4">{vacante.Empleados.length}</td>
                     <td className="p-4">
-                      {prueba.Empleado.telefono || "Sin registrar"}
-                    </td>
-                    <td className="p-4">
-                      {prueba.Empleado.correo || "Sin registrar"}
-                    </td>
-                    <td className="p-4">{prueba.prueba}</td>
-                    <td className="p-4">{DDMMYYYY(prueba.createdAt)}</td>
-                    <td className="p-4 flex gap-2 items-center">
                       <Button
-                        className="m-0 w-auto"
-                        onClick={() =>
-                          handleVerResultados(
-                            `${prueba.Empleado.tipo_identificacion}${prueba.Empleado.numero_identificacion}`,
-                            prueba.nombre
-                          )
-                        }
+                        className="m-0 w-auto text-xs"
+                        onClick={() => handleVerDetalles(vacante.vacante_id)}
                       >
-                        Ver resultados
+                        Ver postulados
                       </Button>
                     </td>
                   </tr>
@@ -490,25 +418,25 @@ export function PruebasEmpleados() {
           {infoPaginador(
             paginaActual,
             limitePorPagina,
-            pruebas_empleados.totalRegistros
+            vacantes.totalRegistros
           )}
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
               <span
                 onClick={paginaAnterior}
-                className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
-                ${
-                  paginaActual <= 1
-                    ? "cursor-default"
-                    : "cursor-pointer hover:text-black hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
-                }`}
+                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                  ${
+                    paginaActual <= 1
+                      ? "cursor-default"
+                      : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                  }`}
               >
                 Pág. Anterior
               </span>
             </li>
             {calcularPaginasARenderizar(
               paginaActual,
-              pruebas_empleados.cantidadPaginas
+              vacantes.cantidadPaginas
             ).map((page) => (
               <li key={page}>
                 <span
@@ -530,11 +458,11 @@ export function PruebasEmpleados() {
             <li>
               <span
                 onClick={paginaSiguiente}
-                className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
+                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
-                  paginaActual >= pruebas_empleados.cantidadPaginas
+                  paginaActual >= vacantes.cantidadPaginas
                     ? "cursor-default"
-                    : "cursor-pointer hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white"
+                    : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}
               >
                 Pág. Siguiente

@@ -16,6 +16,11 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    creado_por_id: {
+      // Campo relacionado
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     activo: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,

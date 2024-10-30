@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const { DB, USERDB, PASSWORD, HOST, DIALECT, PORT_DB } = process.env;
 
@@ -73,6 +73,7 @@ const {
   Roles,
   Salud,
   Sedes,
+  Seguro_Social,
   Sesiones,
   Sugerencias_Pred,
   Sugerencias,
@@ -660,27 +661,43 @@ Vacantes.belongsTo(Areas_Interes, {
   },
 });
 
-// Empleados 1:M Vacantes_Empleados
-Empleados.hasMany(Vacantes_Empleados, {
+// Vacantes M:M Empleados
+Vacantes.belongsToMany(Empleados, {
+  through: "Vacantes_Empleados",
   foreignKey: {
-    name: "empleado_id",
+    name: "vacante_id",
   },
 });
-Vacantes_Empleados.belongsTo(Empleados, {
+Empleados.belongsToMany(Vacantes, {
+  through: "Vacantes_Empleados",
   foreignKey: {
     name: "empleado_id",
   },
 });
 
-// Vacantes 1:M Vacantes_Empleados
-Vacantes.hasMany(Vacantes_Empleados, {
+// Empleados 1:M Vacantes
+Empleados.hasMany(Vacantes, {
   foreignKey: {
-    name: "vacante_id",
+    name: "creado_por_id",
+  },
+  as: "CreadoPor",
+});
+Vacantes.belongsTo(Empleados, {
+  foreignKey: {
+    name: "creado_por_id",
+  },
+  as: "CreadoPor",
+});
+
+// Seguro_Social 1:M Empresas
+Seguro_Social.hasMany(Empresas, {
+  foreignKey: {
+    name: "seguro_social_id",
   },
 });
-Vacantes_Empleados.belongsTo(Vacantes, {
+Empresas.belongsTo(Seguro_Social, {
   foreignKey: {
-    name: "vacante_id",
+    name: "seguro_social_id",
   },
 });
 
@@ -721,6 +738,7 @@ module.exports = {
   Roles,
   Salud,
   Sedes,
+  Seguro_Social,
   Sesiones,
   Sugerencias_Pred,
   Sugerencias,

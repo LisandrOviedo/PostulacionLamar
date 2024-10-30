@@ -2,60 +2,63 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
-  getAllPruebasEmpleados,
+  getAllCurriculos,
+  getCurriculoPDFAnexos,
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
+  putCambiarEstado,
   deleteFiltros,
-} from "../../redux/pruebasEmpleados/pruebasEmpleadosActions";
+} from "../../redux/curriculos/curriculosActions";
 
-import { Button, Date, Input, Label, Select, Span, Title } from "../UI";
+import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresActions";
+import { getAllIdiomasActivos } from "../../redux/idiomas/idiomasActions";
+
+import { Button, Input, Label, Select, Title } from "../UI";
 
 import {
   calcularPaginasARenderizar,
   infoPaginador,
 } from "../../utils/paginacion";
 
-import validations from "../../utils/validacionesPruebasEmpleados";
-
 import { DDMMYYYY } from "../../utils/formatearFecha";
 
-export function PruebasEmpleados() {
+export function PerfilesProfesionales() {
   const tableRef = useRef(null);
 
   const dispatch = useDispatch();
 
-  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
-
   const token = useSelector((state) => state.empleados.token);
+
+  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const pruebas_empleados = useSelector(
-    (state) => state.pruebas_empleados.pruebas_empleados
-  );
+  const curriculos = useSelector((state) => state.curriculos.curriculos);
 
-  const paginaActual = useSelector(
-    (state) => state.pruebas_empleados.paginaActual
-  );
+  const paginaActual = useSelector((state) => state.curriculos.paginaActual);
 
   const limitePorPagina = useSelector(
-    (state) => state.pruebas_empleados.limitePorPagina
+    (state) => state.curriculos.limitePorPagina
   );
 
-  const filtros = useSelector((state) => state.pruebas_empleados.filtros);
+  const filtros = useSelector((state) => state.curriculos.filtros);
 
-  const [errors, setErrors] = useState({});
+  const areas_interes_activas = useSelector(
+    (state) => state.areas_interes.areas_interes_activas
+  );
+
+  const idiomas_activos = useSelector((state) => state.idiomas.idiomas_activos);
 
   const [filters, setFilters] = useState({
     numero_identificacion: filtros.numero_identificacion || "",
     apellidos: filtros.apellidos || "",
-    prueba: filtros.prueba || "",
+    area_interes_id: filtros.area_interes_id || "",
+    estado: filtros.estado || "",
+    idioma_id: filtros.idioma_id || "",
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
     empresa_id: empleado.empresa_id,
-    fecha_desde: filtros.fecha_desde || "",
-    fecha_hasta: filtros.fecha_hasta || "",
   });
 
   const handleChangePagination = (e) => {
@@ -72,8 +75,6 @@ export function PruebasEmpleados() {
     const { name, value } = e.target;
 
     setFilters({ ...filters, [name]: value });
-
-    setErrors(validations({ ...filters, [name]: value }));
   };
 
   const handleChangeFiltersInput = (e) => {
@@ -110,36 +111,19 @@ export function PruebasEmpleados() {
     setFilters({
       numero_identificacion: "",
       apellidos: "",
-      prueba: "",
+      area_interes_id: "",
+      estado: "",
+      idioma_id: "",
       orden_campo: "",
       orden_por: "",
       empresa_id: empleado.empresa_id,
-      fecha_desde: "",
-      fecha_hasta: "",
     });
-
-    setErrors(
-      validations({
-        numero_identificacion: "",
-        apellidos: "",
-        prueba: "",
-        orden_campo: "",
-        orden_por: "",
-        empresa_id: empleado.empresa_id,
-        fecha_desde: "",
-        fecha_hasta: "",
-      })
-    );
 
     const buscarPor = document.getElementById("buscar_por");
     const inputSearch = document.getElementById("input_search");
-    const fecha_desde = document.getElementById("fecha_desde");
-    const fecha_hasta = document.getElementById("fecha_hasta");
 
     buscarPor.selectedIndex = 0;
-    inputSearch.value = null;
-    fecha_desde.value = null;
-    fecha_hasta.value = null;
+    inputSearch.value = "";
 
     dispatch(deleteFiltros());
   };
@@ -155,7 +139,11 @@ export function PruebasEmpleados() {
 
     handleFind();
 
-    document.title = "Grupo Lamar - Pruebas Empleados (Admin)";
+    dispatch(getAllAreasInteresActivas(token));
+
+    dispatch(getAllIdiomasActivos(token));
+
+    document.title = "Grupo Lamar - Perfiles Profesionales (Admin)";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -163,10 +151,30 @@ export function PruebasEmpleados() {
   }, []);
 
   useEffect(() => {
-    dispatch(
-      getAllPruebasEmpleados(token, filtros, paginaActual, limitePorPagina)
-    );
+    dispatch(getAllCurriculos(token, filtros, paginaActual, limitePorPagina));
   }, [filtros, paginaActual, limitePorPagina]);
+
+  const handleVerDetalles = async (identificacion, nombre, empleado_id) => {
+    await putCambiarEstado(token, empleado_id, empleado.empleado_id).then(
+      () => {
+        const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${nombre}`;
+
+        window.open(URL_GET_PDF, "_blank");
+      }
+    );
+  };
+
+  const handleVerDetallesAnexos = (empleado_id, identificacion) => {
+    dispatch(getCurriculoPDFAnexos(token, empleado_id, identificacion))
+      .then(() => {
+        const URL_GET_PDF_ANEXOS = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/Anexos ${identificacion}.zip`;
+
+        window.open(URL_GET_PDF_ANEXOS, "_blank");
+      })
+      .catch((error) => {
+        return error;
+      });
+  };
 
   const changeOrder = (e) => {
     const { name } = e.target;
@@ -217,26 +225,20 @@ export function PruebasEmpleados() {
   };
 
   const paginaSiguiente = () => {
-    if (paginaActual < pruebas_empleados.cantidadPaginas) {
+    if (paginaActual < curriculos.cantidadPaginas) {
       dispatch(postPaginaActual(paginaActual + 1)).then(() => {
         tableRef.current.scrollIntoView({ behavior: "smooth" });
       });
     }
   };
 
-  const handleVerResultados = (identificacion, prueba_nombre) => {
-    const URL_GET_RESULTADOS = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${prueba_nombre}`;
-
-    window.open(URL_GET_RESULTADOS, "_blank");
-  };
-
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <Title>Pruebas de Empleados</Title>
+        <Title>Perfiles Profesionales</Title>
       </div>
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
-        <div>
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
+        <div className="flex flex-col place-content-between">
           <Label htmlFor="buscar_por">Buscar por</Label>
           <Select
             id="buscar_por"
@@ -252,7 +254,7 @@ export function PruebasEmpleados() {
             <option value="apellidos">Apellidos</option>
           </Select>
         </div>
-        <div className="flex items-end">
+        <div className="flex w-full items-end">
           <Input
             type="text"
             id="input_search"
@@ -267,44 +269,70 @@ export function PruebasEmpleados() {
             }
           />
         </div>
-        <div>
-          <Label htmlFor="prueba">Filtrar por prueba</Label>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="area_interes_id">Filtrar por área de interés</Label>
           <Select
-            id="prueba"
-            name="prueba"
+            id="area_interes_id"
+            name="area_interes_id"
             onChange={handleChangeFilters}
-            value={filters.prueba}
+            value={filters.area_interes_id}
           >
             <option value="">Todos</option>
-            <option value="Kostick">Kostick</option>
+            {areas_interes_activas?.length
+              ? areas_interes_activas?.map(
+                  (area, i) =>
+                    area.activo && (
+                      <option
+                        key={i}
+                        name={area.nombre}
+                        value={area.area_interes_id}
+                      >
+                        {area.nombre}
+                      </option>
+                    )
+                )
+              : null}
           </Select>
         </div>
-        <div>
-          <Label htmlFor="fecha_desde" errors={errors.fechas}>
-            Fecha desde
-          </Label>
-          <Date
-            id="fecha_desde"
-            type="datetime-local"
-            name="fecha_desde"
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="idioma_id">Filtrar por idiomas</Label>
+          <Select
+            id="idioma_id"
+            name="idioma_id"
             onChange={handleChangeFilters}
-            errors={errors.fechas}
-          />
+            value={filters.idioma_id}
+          >
+            <option value="">Todos</option>
+            {idiomas_activos?.length
+              ? idiomas_activos?.map(
+                  (idioma, i) =>
+                    idioma.activo && (
+                      <option
+                        key={i}
+                        name={idioma.nombre}
+                        value={idioma.idioma_id}
+                      >
+                        {idioma.nombre}
+                      </option>
+                    )
+                )
+              : null}
+          </Select>
         </div>
-        <div>
-          <Label htmlFor="fecha_hasta" errors={errors.fechas}>
-            Fecha hasta
-          </Label>
-          <Date
-            id="fecha_hasta"
-            type="datetime-local"
-            name="fecha_hasta"
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="estado">Filtrar por estado</Label>
+          <Select
+            id="estado"
+            name="estado"
             onChange={handleChangeFilters}
-            errors={errors.fechas}
-          />
-          {errors.fechas && <Span className="m-0">{errors.fechas}</Span>}
+            value={filters.estado}
+          >
+            <option value="">Todos</option>
+            <option value="Pendiente por revisar">Pendiente por revisar</option>
+            <option value="Revisado">Revisado</option>
+          </Select>
         </div>
-        <div>
+        <div className="flex flex-col place-content-between">
           <Label htmlFor="limitePorPagina">Límite por página</Label>
           <Select
             id="limitePorPagina"
@@ -321,23 +349,17 @@ export function PruebasEmpleados() {
         <div
           id="tabla"
           ref={tableRef}
-          className="flex justify-center sm:col-span-2 md:col-span-3 gap-2"
+          className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start gap-2"
         >
-          <div
-            className={`${Object.keys(errors).length && "opacity-50"}`}
-            disabled={Object.keys(errors).length}
-          >
-            <Button className="m-0 w-auto" onClick={handleFind}>
-              Buscar
-            </Button>
-          </div>
-
+          <Button className="m-0 w-auto" onClick={handleFind}>
+            Buscar
+          </Button>
           <Button className="m-0 w-auto" onClick={handleResetFilters}>
             Restablecer Filtros
           </Button>
         </div>
       </div>
-      <div className="mt-6 sm:mx-auto w-full">
+      <div className="mt-8 sm:mx-auto w-full">
         <div className=" overflow-x-auto shadow-md rounded-lg">
           <table
             id="tabla"
@@ -383,21 +405,24 @@ export function PruebasEmpleados() {
                   <div className="flex items-center">Correo</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Áreas de Interés</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
                     <span
-                      id="prueba"
-                      name="prueba"
+                      id="updatedAt"
+                      name="updatedAt"
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Prueba
+                      Últ. Modif.
                       <img
-                        name="prueba"
+                        name="updatedAt"
                         src={
-                          filters.orden_campo === "prueba" &&
+                          filters.orden_campo === "updatedAt" &&
                           filters.orden_por === "ASC"
                             ? "./SortAZ.svg"
-                            : filters.orden_campo === "prueba" &&
+                            : filters.orden_campo === "updatedAt" &&
                               filters.orden_por === "DESC"
                             ? "./SortZA.svg"
                             : "./SortDefault.svg"
@@ -409,30 +434,10 @@ export function PruebasEmpleados() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    <span
-                      id="createdAt"
-                      name="createdAt"
-                      onClick={changeOrder}
-                      className="text-black hover:text-black flex items-center"
-                    >
-                      Fecha Aplicación
-                      <img
-                        name="createdAt"
-                        src={
-                          filters.orden_campo === "createdAt" &&
-                          filters.orden_por === "ASC"
-                            ? "./SortAZ.svg"
-                            : filters.orden_campo === "createdAt" &&
-                              filters.orden_por === "DESC"
-                            ? "./SortZA.svg"
-                            : "./SortDefault.svg"
-                        }
-                        alt="Icon Sort"
-                        className="w-5 h-5 ms-1.5 cursor-pointer"
-                      />
-                    </span>
-                  </div>
+                  <div className="flex items-center">Estado</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Revisado Por</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
@@ -440,44 +445,77 @@ export function PruebasEmpleados() {
               </tr>
             </thead>
             <tbody>
-              {!pruebas_empleados.pruebas_empleados?.length ? (
+              {!curriculos.curriculos?.length ? (
                 <tr>
                   <td colSpan="9" className="text-center p-2">
                     <p>¡No existen registros!</p>
                   </td>
                 </tr>
               ) : (
-                pruebas_empleados.pruebas_empleados?.map((prueba, i) => (
+                curriculos.curriculos?.map((curriculo, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
                     <td className="p-4">
-                      {prueba.Empleado.apellidos} {prueba.Empleado.nombres}
+                      {curriculo.Empleado.apellidos}{" "}
+                      {curriculo.Empleado.nombres}
                     </td>
                     <td className="p-4">
-                      {prueba.Empleado.tipo_identificacion}
-                      {prueba.Empleado.numero_identificacion}
+                      {curriculo.Empleado.tipo_identificacion}
+                      {curriculo.Empleado.numero_identificacion}
                     </td>
                     <td className="p-4">
-                      {prueba.Empleado.telefono || "Sin registrar"}
+                      {curriculo.Empleado.telefono ||
+                        "Sin registrar / No posee"}
                     </td>
                     <td className="p-4">
-                      {prueba.Empleado.correo || "Sin registrar"}
+                      {curriculo.Empleado.correo || "Sin registrar / No posee"}
                     </td>
-                    <td className="p-4">{prueba.prueba}</td>
-                    <td className="p-4">{DDMMYYYY(prueba.createdAt)}</td>
+                    <td className="p-4">
+                      {curriculo.Areas_Interes?.map(
+                        (area, index) =>
+                          `${area.nombre}${
+                            index !== curriculo.Areas_Interes.length - 1
+                              ? ", "
+                              : ""
+                          }`
+                      )}
+                    </td>
+                    <td className="p-4">{DDMMYYYY(curriculo.updatedAt)}</td>
+                    <td className="p-4">
+                      {curriculo.revisado_por_id
+                        ? "Revisado"
+                        : "Pendiente por revisar"}
+                    </td>
+                    <td className="p-4">
+                      {curriculo.revisado_por_id
+                        ? `${curriculo.RevisadoPor.nombres} ${curriculo.RevisadoPor.apellidos} (${curriculo.RevisadoPor.tipo_identificacion}-${curriculo.RevisadoPor.numero_identificacion})`
+                        : "Pendiente por revisar"}
+                    </td>
                     <td className="p-4 flex gap-2 items-center">
                       <Button
-                        className="m-0 w-auto"
+                        className="m-0 w-auto text-xs"
                         onClick={() =>
-                          handleVerResultados(
-                            `${prueba.Empleado.tipo_identificacion}${prueba.Empleado.numero_identificacion}`,
-                            prueba.nombre
+                          handleVerDetalles(
+                            `${curriculo.Empleado.tipo_identificacion}${curriculo.Empleado.numero_identificacion}`,
+                            curriculo.Empleado.Documentos_Empleados[0].nombre,
+                            curriculo.Empleado.empleado_id
                           )
                         }
                       >
-                        Ver resultados
+                        Ver Perfil
+                      </Button>
+                      <Button
+                        className="m-0 w-auto text-xs"
+                        onClick={() =>
+                          handleVerDetallesAnexos(
+                            curriculo.Empleado.empleado_id,
+                            `${curriculo.Empleado.tipo_identificacion}${curriculo.Empleado.numero_identificacion}`
+                          )
+                        }
+                      >
+                        Descargar Anexos
                       </Button>
                     </td>
                   </tr>
@@ -490,25 +528,25 @@ export function PruebasEmpleados() {
           {infoPaginador(
             paginaActual,
             limitePorPagina,
-            pruebas_empleados.totalRegistros
+            curriculos.totalRegistros
           )}
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
               <span
                 onClick={paginaAnterior}
-                className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
-                ${
-                  paginaActual <= 1
-                    ? "cursor-default"
-                    : "cursor-pointer hover:text-black hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white"
-                }`}
+                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                  ${
+                    paginaActual <= 1
+                      ? "cursor-default"
+                      : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                  }`}
               >
                 Pág. Anterior
               </span>
             </li>
             {calcularPaginasARenderizar(
               paginaActual,
-              pruebas_empleados.cantidadPaginas
+              curriculos.cantidadPaginas
             ).map((page) => (
               <li key={page}>
                 <span
@@ -530,11 +568,11 @@ export function PruebasEmpleados() {
             <li>
               <span
                 onClick={paginaSiguiente}
-                className={`flex items-center hover:text-gray-500 justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
+                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
-                  paginaActual >= pruebas_empleados.cantidadPaginas
+                  paginaActual >= curriculos.cantidadPaginas
                     ? "cursor-default"
-                    : "cursor-pointer hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white"
+                    : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}
               >
                 Pág. Siguiente

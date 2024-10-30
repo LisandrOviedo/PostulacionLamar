@@ -214,7 +214,7 @@ export const putCurriculo = (token, datosCurriculo) => {
         text: "¡Perfil profesional actualizado exitosamente!",
         icon: "success",
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3000,
       });
     } catch (error) {
       alertError(error);

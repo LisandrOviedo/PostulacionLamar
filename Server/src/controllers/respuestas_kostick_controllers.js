@@ -10,7 +10,7 @@ const { traerEmpleado } = require("./empleados_controllers");
 const { todosLosTitulosObtenidos } = require("./titulos_obtenidos_controllers");
 
 const XlsxPopulate = require("xlsx-populate");
-const path = require("path");
+const path = require("node:path");
 
 const { calcularEdad, DDMMYYYY } = require("../utils/formatearFecha");
 

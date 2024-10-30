@@ -91,7 +91,7 @@ export const putAprobarMovimiento = async (
       text: "¡Movimiento aprobado exitosamente!",
       icon: "success",
       showConfirmButton: false,
-      timer: 2000,
+      timer: 3000,
     });
   } catch (error) {
     alertError(error);
@@ -125,7 +125,7 @@ export const putDenegarMovimiento = async (
       text: "¡Movimiento denegado exitosamente!",
       icon: "success",
       showConfirmButton: false,
-      timer: 2000,
+      timer: 3000,
     });
   } catch (error) {
     alertError(error);
@@ -146,7 +146,7 @@ export const postMovimiento = async (token, datosMovimiento) => {
       text: "¡Movimiento realizado exitosamente!",
       icon: "success",
       showConfirmButton: false,
-      timer: 2000,
+      timer: 3000,
     });
   } catch (error) {
     alertError(error);

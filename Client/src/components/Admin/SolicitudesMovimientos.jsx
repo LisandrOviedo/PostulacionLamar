@@ -586,8 +586,7 @@ export function SolicitudesMovimientos() {
                 </tr>
               </thead>
               <tbody>
-                {movimientos === "No existen movimientos" ||
-                !movimientos.movimientos?.length ? (
+                {!movimientos.movimientos?.length ? (
                   <tr>
                     <td colSpan="4" className="text-center p-2">
                       <p>¡No existen registros de movimientos!</p>

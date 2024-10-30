@@ -322,6 +322,10 @@ const traerCurriculoPDFAnexos = async (empleado_id) => {
       anexos.push(documento.ruta);
     });
 
+    if (!anexos.length) {
+      throw new Error(`El empleado no posee anexos registrados`);
+    }
+
     return anexos;
   } catch (error) {
     throw new Error(`Error al traer el curriculo: ${error.message}`);
