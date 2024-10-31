@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import {
   getPruebaKostick,
@@ -19,18 +19,15 @@ import {
 } from "../../utils/pruebaKostick";
 
 export function PruebaKostick() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const prueba_kostick = useSelector(
-    (state) => state.pruebas_empleados.prueba_kostick
-  );
-
   const [prueba, setPrueba] = useState({});
+
+  const [pruebaKostick, setPruebaKostick] = useState([]);
 
   const [mostrarPrueba, setMostrarPrueba] = useState(false);
 
@@ -41,9 +38,7 @@ export function PruebaKostick() {
     setPrueba({ ...prueba, [pregunta]: respuesta });
   };
 
-  const handleSendTest = (event) => {
-    event.preventDefault();
-
+  const handleSendTest = () => {
     if (Object.keys(prueba).length < 90) {
       const faltan = 90 - Object.keys(prueba).length;
 
@@ -76,9 +71,10 @@ export function PruebaKostick() {
           });
           navigate("/inicio");
         } else {
-          dispatch(getPruebaKostick(token)).then(() => {
-            setMostrarPrueba(true);
-          });
+          const data = await getPruebaKostick(token);
+
+          setPruebaKostick(data);
+          setMostrarPrueba(true);
         }
       }
     );
@@ -119,7 +115,7 @@ export function PruebaKostick() {
       <div className="grid gap-10 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
         {mostrarPrueba && (
           <>
-            {prueba_kostick.map((respuestas, index) => (
+            {pruebaKostick.map((respuestas, index) => (
               <div key={index + 1} className="flex flex-col gap-4">
                 <span
                   className={`font-bold text-center md:text-left ${
