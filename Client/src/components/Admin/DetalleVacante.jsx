@@ -217,10 +217,10 @@ export function DetalleVacante() {
           <div>
             <Span className="font-bold">Creado por: </Span>
             <Span>
-              {vacanteDetail.vacante.CreadoPor.nombres}{" "}
-              {vacanteDetail.vacante.CreadoPor.apellidos} (
-              {vacanteDetail.vacante.CreadoPor.tipo_identificacion}-
-              {vacanteDetail.vacante.CreadoPor.numero_identificacion})
+              {vacanteDetail?.vacante?.CreadoPor?.nombres}{" "}
+              {vacanteDetail?.vacante?.CreadoPor?.apellidos} (
+              {vacanteDetail?.vacante?.CreadoPor?.tipo_identificacion}-
+              {vacanteDetail?.vacante?.CreadoPor?.numero_identificacion})
             </Span>
           </div>
           <div>
