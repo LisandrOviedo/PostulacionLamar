@@ -21,11 +21,11 @@ export function DatosPersonales() {
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const etnias_activas = useSelector((state) => state.etnias.etnias_activas);
-
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${empleado.foto_perfil_nombre}`;
+
+  const [etniasActivas, setEtniasActivas] = useState([]);
 
   const [imagen, setImagen] = useState(
     empleado.foto_perfil_nombre ? FOTO_PERFIL : "./Person.svg"
@@ -63,7 +63,11 @@ export function DatosPersonales() {
 
     document.title = "Grupo Lamar - Datos Personales";
 
-    dispatch(getAllEtniasActivas(token));
+    (async function () {
+      const data = await getAllEtniasActivas(token);
+
+      setEtniasActivas(data);
+    })();
 
     return () => {
       document.title = "Grupo Lamar";
@@ -329,19 +333,14 @@ export function DatosPersonales() {
               disabled={!modificar.etnia_id}
             >
               <option value="Ninguna">Ninguna</option>
-              {etnias_activas?.length &&
-                etnias_activas?.map(
-                  (etnia, i) =>
-                    etnia.activo && (
-                      <option
-                        key={i}
-                        name={etnia.nombre}
-                        value={etnia.etnia_id}
-                      >
-                        {etnia.nombre}
-                      </option>
-                    )
-                )}
+              {etniasActivas?.map(
+                (etnia, i) =>
+                  etnia.activo && (
+                    <option key={i} name={etnia.nombre} value={etnia.etnia_id}>
+                      {etnia.nombre}
+                    </option>
+                  )
+              )}
             </Select>
           </div>
           <div>

@@ -11,7 +11,6 @@ import departamentos from "./departamentos/departamentosSlices";
 import empleados from "./empleados/empleadosSlices";
 import empresas from "./empresas/empresasSlices";
 import estados from "./estados/estadosSlices";
-import etnias from "./etnias/etniasSlices";
 import idiomas from "./idiomas/idiomasSlices";
 import movimientos from "./movimientos/movimientosSlices";
 import municipios from "./municipios/municipiosSlices";
@@ -21,7 +20,6 @@ import pruebas_empleados from "./pruebasEmpleados/pruebasEmpleadosSlices";
 import roles from "./roles/rolesSlices";
 import sedes from "./sedes/sedesSlices";
 import sugerencias from "./sugerencias/sugerenciasSlices";
-import sugerencias_pred from "./sugerenciasPred/sugerenciasPredSlices";
 import tipos_sugerencias from "./tiposSugerencias/tiposSugerenciasSlices";
 import vacantes from "./vacantes/vacantesSlices";
 
@@ -43,7 +41,6 @@ const rootReducer = combineReducers({
   empleados: empleados,
   empresas: empresas,
   estados: estados,
-  etnias: etnias,
   idiomas: idiomas,
   movimientos: movimientos,
   municipios: municipios,
@@ -53,7 +50,6 @@ const rootReducer = combineReducers({
   roles: roles,
   sedes: sedes,
   sugerencias: sugerencias,
-  sugerencias_pred: sugerencias_pred,
   tipos_sugerencias: tipos_sugerencias,
   vacantes: vacantes,
 });

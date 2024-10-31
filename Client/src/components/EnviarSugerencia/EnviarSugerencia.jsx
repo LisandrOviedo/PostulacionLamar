@@ -12,11 +12,6 @@ import {
 
 import { getAllTiposSugerenciasActivas } from "../../redux/tiposSugerencias/tiposSugerenciasActions";
 
-// import {
-//   getAllSugerenciasPredActivas,
-//   resetSugerenciasPredActivas,
-// } from "../../redux/sugerenciasPred/sugerenciasPredActions";
-
 import { postSugerencia } from "../../redux/sugerencias/sugerenciasActions";
 
 import { Button, Hr, Label, Select, TextArea, Title } from "../UI";
@@ -35,10 +30,6 @@ export function EnviarSugerencia() {
   const tipos_sugerencias_activas = useSelector(
     (state) => state.tipos_sugerencias.tipos_sugerencias_activas
   );
-
-  // const sugerencias_pred_activas = useSelector(
-  //   (state) => state.sugerencias_pred.sugerencias_pred_activas
-  // );
 
   const URL_INTRANET = import.meta.env.VITE_URL_INTRANET;
 
@@ -66,19 +57,6 @@ export function EnviarSugerencia() {
       setSugerencia({ ...sugerencia, sede_id: "Seleccione" });
     }
   }, [sugerencia.empresa_id]);
-
-  // useEffect(() => {
-  //   if (
-  //     sugerencia.tipo_sugerencia_id &&
-  //     sugerencia.tipo_sugerencia_id !== "Seleccione"
-  //   ) {
-  //     setSugerencia({ ...sugerencia, sugerencia_pred_id: "Seleccione" });
-  //     dispatch(getAllSugerenciasPredActivas(sugerencia.tipo_sugerencia_id));
-  //   } else {
-  //     dispatch(resetSugerenciasPredActivas());
-  //     setSugerencia({ ...sugerencia, sugerencia_pred_id: "Seleccione" });
-  //   }
-  // }, [sugerencia.tipo_sugerencia_id]);
 
   const handleValidate = (event) => {
     const { name, value } = event.target;
@@ -187,30 +165,6 @@ export function EnviarSugerencia() {
               : null}
           </Select>
         </div>
-
-        {/* <div>
-          <Label htmlFor="sugerencia_pred_id">Sugerencia</Label>
-
-          <Select
-            id="sugerencia_pred_id"
-            name="sugerencia_pred_id"
-            value={sugerencia.sugerencia_pred_id}
-            onChange={handleValidate}
-          >
-            <option>Seleccione</option>
-            {sugerencias_pred_activas?.length
-              ? sugerencias_pred_activas?.map((sugerencia_pred, i) => (
-                  <option
-                    key={i}
-                    name={sugerencia_pred.descripcion}
-                    value={sugerencia_pred.sugerencia_pred_id}
-                  >
-                    {sugerencia_pred.descripcion}
-                  </option>
-                ))
-              : null}
-          </Select>
-        </div> */}
 
         <div className="col-span-1 sm:col-span-2 md:col-span-3">
           <Label htmlFor="descripcion">
