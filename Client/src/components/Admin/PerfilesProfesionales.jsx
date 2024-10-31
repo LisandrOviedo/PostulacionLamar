@@ -444,15 +444,9 @@ export function PerfilesProfesionales() {
                 </th>
               </tr>
             </thead>
-            <tbody>
-              {!curriculos.curriculos?.length ? (
-                <tr>
-                  <td colSpan="9" className="text-center p-2">
-                    <p>¡No existen registros!</p>
-                  </td>
-                </tr>
-              ) : (
-                curriculos.curriculos?.map((curriculo, i) => (
+            {curriculos.curriculos && curriculos.curriculos.length > 0 && (
+              <tbody>
+                {curriculos.curriculos.map((curriculo, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
@@ -519,9 +513,9 @@ export function PerfilesProfesionales() {
                       </Button>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
+                ))}
+              </tbody>
+            )}
           </table>
         </div>
         <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">

@@ -585,62 +585,57 @@ export function SolicitudesMovimientos() {
                   </th>
                 </tr>
               </thead>
-              <tbody>
-                {!movimientos.movimientos?.length ? (
-                  <tr>
-                    <td colSpan="4" className="text-center p-2">
-                      <p>¡No existen registros de movimientos!</p>
-                    </td>
-                  </tr>
-                ) : (
-                  movimientos.movimientos?.map((movimiento, i) => (
-                    <tr
-                      key={i}
-                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
-                    >
-                      <td className="p-4">
-                        {movimiento.Empleado.apellidos}{" "}
-                        {movimiento.Empleado.nombres}
-                      </td>
-                      <td className="p-4">
-                        {movimiento.Empleado.tipo_identificacion}
-                        {movimiento.Empleado.numero_identificacion}
-                      </td>
-                      <td className="p-4">
-                        {movimiento.Clases_Movimiento.descripcion}
-                      </td>
-                      <td className="p-4">
-                        {DDMMYYYYHHMM2(movimiento.createdAt)}
-                      </td>
-                      <td className="p-4">{movimiento.estado_solicitud}</td>
-                      <td className="p-4">
-                        {DDMMYYYYHHMM2(movimiento.updatedAt)}
-                      </td>
-                      <td className="p-4 flex gap-2">
-                        <Button
-                          className="m-0 w-auto text-xs"
-                          onClick={() =>
-                            handleVerDetalles(movimiento.movimiento_id)
-                          }
-                        >
-                          Detalles
-                        </Button>
-                        <Button
-                          className="m-0 w-auto text-xs bg-red-600 hover:bg-red-600/[.5] text-white"
-                          onClick={() =>
-                            handleVerDetallesPDF(
-                              movimiento.movimiento_id,
-                              `${movimiento.Empleado.tipo_identificacion}${movimiento.Empleado.numero_identificacion}`
-                            )
-                          }
-                        >
-                          PDF
-                        </Button>
-                      </td>
-                    </tr>
-                  ))
+              {movimientos.movimientos &&
+                movimientos.movimientos.length > 0 && (
+                  <tbody>
+                    {movimientos.movimientos.map((movimiento, i) => (
+                      <tr
+                        key={i}
+                        className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                      >
+                        <td className="p-4">
+                          {movimiento.Empleado.apellidos}{" "}
+                          {movimiento.Empleado.nombres}
+                        </td>
+                        <td className="p-4">
+                          {movimiento.Empleado.tipo_identificacion}
+                          {movimiento.Empleado.numero_identificacion}
+                        </td>
+                        <td className="p-4">
+                          {movimiento.Clases_Movimiento.descripcion}
+                        </td>
+                        <td className="p-4">
+                          {DDMMYYYYHHMM2(movimiento.createdAt)}
+                        </td>
+                        <td className="p-4">{movimiento.estado_solicitud}</td>
+                        <td className="p-4">
+                          {DDMMYYYYHHMM2(movimiento.updatedAt)}
+                        </td>
+                        <td className="p-4 flex gap-2">
+                          <Button
+                            className="m-0 w-auto text-xs"
+                            onClick={() =>
+                              handleVerDetalles(movimiento.movimiento_id)
+                            }
+                          >
+                            Detalles
+                          </Button>
+                          <Button
+                            className="m-0 w-auto text-xs bg-red-600 hover:bg-red-600/[.5] text-white"
+                            onClick={() =>
+                              handleVerDetallesPDF(
+                                movimiento.movimiento_id,
+                                `${movimiento.Empleado.tipo_identificacion}${movimiento.Empleado.numero_identificacion}`
+                              )
+                            }
+                          >
+                            PDF
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
                 )}
-              </tbody>
             </table>
           </div>
 

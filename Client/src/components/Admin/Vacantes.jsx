@@ -374,15 +374,9 @@ export function Vacantes() {
                 </th>
               </tr>
             </thead>
-            <tbody>
-              {!vacantes.vacantes?.length ? (
-                <tr>
-                  <td colSpan="9" className="text-center p-2">
-                    <p>¡No existen registros!</p>
-                  </td>
-                </tr>
-              ) : (
-                vacantes.vacantes?.map((vacante, i) => (
+            {vacantes.vacantes && vacantes.vacantes.length > 0 && (
+              <tbody>
+                {vacantes.vacantes.map((vacante, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
@@ -409,9 +403,9 @@ export function Vacantes() {
                       </Button>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
+                ))}
+              </tbody>
+            )}
           </table>
         </div>
         <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">

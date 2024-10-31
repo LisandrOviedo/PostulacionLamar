@@ -355,53 +355,50 @@ export function Sugerencias() {
                   </th>
                 </tr>
               </thead>
-              <tbody>
-                {!sugerencias.sugerencias?.length ? (
-                  <tr>
-                    <td colSpan="9" className="text-center p-2">
-                      <p>¡No existen registros!</p>
-                    </td>
-                  </tr>
-                ) : (
-                  sugerencias.sugerencias?.map((sugerencia, i) => (
-                    <tr
-                      key={i}
-                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
-                    >
-                      <td className="p-4">{sugerencia.Sede.Empresa.nombre}</td>
-                      <td className="p-4">{sugerencia.Sede.nombre}</td>
-                      <td className="p-4">
-                        {sugerencia.Tipos_Sugerencia.descripcion}
-                      </td>
-                      <td className="p-4">
-                        {sugerencia.Empleado?.nombres ? (
-                          <>
-                            {sugerencia.Empleado?.nombres}{" "}
-                            {sugerencia.Empleado?.apellidos}
-                          </>
-                        ) : (
-                          "No revisado"
-                        )}
-                      </td>
-                      <td className="p-4">
-                        {sugerencia.fecha_revision
-                          ? DDMMYYYYHHMM2(sugerencia.fecha_revision)
-                          : "No revisado"}
-                      </td>
-                      <td className="p-4 flex gap-2">
-                        <Button
-                          className="m-0 w-auto text-xs"
-                          onClick={() =>
-                            handleVerDetalles(sugerencia.sugerencia_id)
-                          }
-                        >
-                          Ver Sugerencia
-                        </Button>
-                      </td>
-                    </tr>
-                  ))
+              {sugerencias.sugerencias &&
+                sugerencias.sugerencias.length > 0 && (
+                  <tbody>
+                    {sugerencias.sugerencias.map((sugerencia, i) => (
+                      <tr
+                        key={i}
+                        className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                      >
+                        <td className="p-4">
+                          {sugerencia.Sede.Empresa.nombre}
+                        </td>
+                        <td className="p-4">{sugerencia.Sede.nombre}</td>
+                        <td className="p-4">
+                          {sugerencia.Tipos_Sugerencia.descripcion}
+                        </td>
+                        <td className="p-4">
+                          {sugerencia.Empleado?.nombres ? (
+                            <>
+                              {sugerencia.Empleado?.nombres}{" "}
+                              {sugerencia.Empleado?.apellidos}
+                            </>
+                          ) : (
+                            "No revisado"
+                          )}
+                        </td>
+                        <td className="p-4">
+                          {sugerencia.fecha_revision
+                            ? DDMMYYYYHHMM2(sugerencia.fecha_revision)
+                            : "No revisado"}
+                        </td>
+                        <td className="p-4 flex gap-2">
+                          <Button
+                            className="m-0 w-auto text-xs"
+                            onClick={() =>
+                              handleVerDetalles(sugerencia.sugerencia_id)
+                            }
+                          >
+                            Ver Sugerencia
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
                 )}
-              </tbody>
             </table>
           </div>
           <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">

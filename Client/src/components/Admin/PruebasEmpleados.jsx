@@ -439,51 +439,46 @@ export function PruebasEmpleados() {
                 </th>
               </tr>
             </thead>
-            <tbody>
-              {!pruebas_empleados.pruebas_empleados?.length ? (
-                <tr>
-                  <td colSpan="9" className="text-center p-2">
-                    <p>¡No existen registros!</p>
-                  </td>
-                </tr>
-              ) : (
-                pruebas_empleados.pruebas_empleados?.map((prueba, i) => (
-                  <tr
-                    key={i}
-                    className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
-                  >
-                    <td className="p-4">
-                      {prueba.Empleado.apellidos} {prueba.Empleado.nombres}
-                    </td>
-                    <td className="p-4">
-                      {prueba.Empleado.tipo_identificacion}
-                      {prueba.Empleado.numero_identificacion}
-                    </td>
-                    <td className="p-4">
-                      {prueba.Empleado.telefono || "Sin registrar"}
-                    </td>
-                    <td className="p-4">
-                      {prueba.Empleado.correo || "Sin registrar"}
-                    </td>
-                    <td className="p-4">{prueba.prueba}</td>
-                    <td className="p-4">{DDMMYYYY(prueba.createdAt)}</td>
-                    <td className="p-4 flex gap-2 items-center">
-                      <Button
-                        className="m-0 w-auto"
-                        onClick={() =>
-                          handleVerResultados(
-                            `${prueba.Empleado.tipo_identificacion}${prueba.Empleado.numero_identificacion}`,
-                            prueba.nombre
-                          )
-                        }
-                      >
-                        Ver resultados
-                      </Button>
-                    </td>
-                  </tr>
-                ))
+            {pruebas_empleados.pruebas_empleados &&
+              pruebas_empleados.pruebas_empleados.length > 0 && (
+                <tbody>
+                  {pruebas_empleados.pruebas_empleados.map((prueba, i) => (
+                    <tr
+                      key={i}
+                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <td className="p-4">
+                        {prueba.Empleado.apellidos} {prueba.Empleado.nombres}
+                      </td>
+                      <td className="p-4">
+                        {prueba.Empleado.tipo_identificacion}
+                        {prueba.Empleado.numero_identificacion}
+                      </td>
+                      <td className="p-4">
+                        {prueba.Empleado.telefono || "Sin registrar"}
+                      </td>
+                      <td className="p-4">
+                        {prueba.Empleado.correo || "Sin registrar"}
+                      </td>
+                      <td className="p-4">{prueba.prueba}</td>
+                      <td className="p-4">{DDMMYYYY(prueba.createdAt)}</td>
+                      <td className="p-4 flex gap-2 items-center">
+                        <Button
+                          className="m-0 w-auto"
+                          onClick={() =>
+                            handleVerResultados(
+                              `${prueba.Empleado.tipo_identificacion}${prueba.Empleado.numero_identificacion}`,
+                              prueba.nombre
+                            )
+                          }
+                        >
+                          Ver resultados
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               )}
-            </tbody>
           </table>
         </div>
         <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">
