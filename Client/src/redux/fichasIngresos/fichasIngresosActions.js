@@ -268,27 +268,29 @@ const postFichaIngreso = async (token, empleado_id, datosIngreso) => {
 
 // FIN POST FICHA INGRESO
 
-export const postFichaIngresoPDF = (token, empleado_id, identificacion) => {
+export const postFichaIngresoPDF = async (
+  token,
+  empleado_id,
+  identificacion
+) => {
   const URL_POST_FICHA_INGRESO_PDF = `${URL_SERVER}/fichas_ingresos/detalle`;
 
-  return async () => {
-    try {
-      const response = await axios.post(
-        URL_POST_FICHA_INGRESO_PDF,
-        {
-          empleado_id: empleado_id,
-          identificacion: identificacion,
-        },
-        {
-          headers: { authorization: `Bearer ${token}` },
-        }
-      );
+  try {
+    const response = await axios.post(
+      URL_POST_FICHA_INGRESO_PDF,
+      {
+        empleado_id: empleado_id,
+        identificacion: identificacion,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
 
-      return response;
-    } catch (error) {
-      alertError(error);
+    return response;
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
