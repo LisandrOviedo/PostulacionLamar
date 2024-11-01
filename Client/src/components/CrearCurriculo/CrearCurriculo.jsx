@@ -51,6 +51,14 @@ export function CrearCurriculo() {
 
   const [datosCurriculo, setDatosCurriculo] = useState({
     empleado_id: empleado.empleado_id,
+    curriculo_id: "",
+    titulos_obtenidos: [],
+    disponibilidad_viajar: false,
+    disponibilidad_cambio_residencia: false,
+    habilidades_tecnicas: "",
+    areas_interes: [],
+    experiencias: [],
+    idiomas: [],
   });
 
   const [idiomasActivos, setIdiomasActivos] = useState([]);
@@ -68,7 +76,7 @@ export function CrearCurriculo() {
   const [isHiddenIdioma, setIsHiddenIdioma] = useState(true);
 
   const [isLoad, setIsLoad] = useState({
-    areas_interes: datosCurriculo.areas_interes.length ? true : false,
+    areas_interes: datosCurriculo.areas_interes?.length ? true : false,
   });
 
   useEffect(() => {
@@ -99,6 +107,12 @@ export function CrearCurriculo() {
         areas_interes: dataCurriculoEmpleado?.Curriculo?.Areas_Interes || [],
         experiencias: dataCurriculoEmpleado?.Experiencias || [],
         idiomas: dataCurriculoEmpleado?.Curriculo?.Idiomas || [],
+      });
+
+      setIsLoad({
+        areas_interes: dataCurriculoEmpleado?.Curriculo?.Areas_Interes?.length
+          ? true
+          : false,
       });
 
       if (searchParams.get("vacante")) {
@@ -673,7 +687,7 @@ export function CrearCurriculo() {
               </tr>
             </thead>
             <tbody>
-              {datosCurriculo.titulos_obtenidos.map((titulo_obtenido, i) => (
+              {datosCurriculo.titulos_obtenidos?.map((titulo_obtenido, i) => (
                 <tr
                   key={i}
                   className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
@@ -777,7 +791,7 @@ export function CrearCurriculo() {
               </tr>
             </thead>
             <tbody>
-              {datosCurriculo.areas_interes.map((area, i) => (
+              {datosCurriculo.areas_interes?.map((area, i) => (
                 <tr
                   key={i}
                   className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
@@ -931,7 +945,7 @@ export function CrearCurriculo() {
               </tr>
             </thead>
             <tbody>
-              {datosCurriculo.experiencias.map((experiencia, i) => (
+              {datosCurriculo.experiencias?.map((experiencia, i) => (
                 <tr
                   key={i}
                   className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
@@ -1011,7 +1025,7 @@ export function CrearCurriculo() {
               </tr>
             </thead>
             <tbody>
-              {datosCurriculo.idiomas.map((idioma, i) => (
+              {datosCurriculo.idiomas?.map((idioma, i) => (
                 <tr
                   key={i}
                   className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
