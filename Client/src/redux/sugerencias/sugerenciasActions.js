@@ -85,24 +85,22 @@ export const getSugerencia = (token, sugerencia_id, empleado_id) => {
   };
 };
 
-export const postSugerencia = (sugerencia) => {
+export const postSugerencia = async (sugerencia) => {
   const URL_POST_SUGERENCIA = `${URL_SERVER}/sugerencias`;
 
-  return async () => {
-    try {
-      await axios.post(`${URL_POST_SUGERENCIA}`, sugerencia);
+  try {
+    await axios.post(`${URL_POST_SUGERENCIA}`, sugerencia);
 
-      return Swal.fire({
-        text: "¡Sugerencia enviada exitosamente!",
-        icon: "success",
-        showConfirmButton: true,
-      });
-    } catch (error) {
-      alertError(error);
+    return Swal.fire({
+      text: "¡Sugerencia enviada exitosamente!",
+      icon: "success",
+      showConfirmButton: true,
+    });
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
 export const postPaginaActual = (pagina_actual) => {

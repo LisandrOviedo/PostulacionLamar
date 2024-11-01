@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { useSelector, useDispatch } from "react-redux";
-
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
 
-import {
-  getAllSedesActivas,
-  resetSedesActivas,
-} from "../../redux/sedes/sedesActions";
+import { getAllSedesActivas } from "../../redux/sedes/sedesActions";
 
 import { getAllTiposSugerenciasActivas } from "../../redux/tiposSugerencias/tiposSugerenciasActions";
 
@@ -19,29 +14,28 @@ import { Button, Hr, Label, Select, TextArea, Title } from "../UI";
 import Swal from "sweetalert2";
 
 export function EnviarSugerencia() {
-  const dispatch = useDispatch();
-
-  const empresas_activas = useSelector(
-    (state) => state.empresas.empresas_activas
-  );
-
-  const sedes_activas = useSelector((state) => state.sedes.sedes_activas);
-
-  const tipos_sugerencias_activas = useSelector(
-    (state) => state.tipos_sugerencias.tipos_sugerencias_activas
-  );
-
   const URL_INTRANET = import.meta.env.VITE_URL_INTRANET;
 
   const [sugerencia, setSugerencia] = useState({});
+
+  const [empresasActivas, setEmpresasActivas] = useState([]);
+
+  const [tiposSugerencias, setTiposSugerencias] = useState([]);
+
+  const [sedesActivas, setSedesActivas] = useState([]);
 
   useEffect(() => {
     window.scroll(0, 0);
 
     document.title = "Grupo Lamar - Buzón de Sugerencias";
 
-    dispatch(getAllEmpresasActivas());
-    dispatch(getAllTiposSugerenciasActivas());
+    (async function () {
+      const dataEmpresasActivas = await getAllEmpresasActivas();
+      const dataTiposSugerenciasActivas = await getAllTiposSugerenciasActivas();
+
+      setEmpresasActivas(dataEmpresasActivas);
+      setTiposSugerencias(dataTiposSugerenciasActivas);
+    })();
 
     return () => {
       document.title = "Grupo Lamar";
@@ -49,13 +43,17 @@ export function EnviarSugerencia() {
   }, []);
 
   useEffect(() => {
-    if (sugerencia.empresa_id && sugerencia.empresa_id !== "Seleccione") {
-      setSugerencia({ ...sugerencia, sede_id: "Seleccione" });
-      dispatch(getAllSedesActivas(sugerencia.empresa_id));
-    } else {
-      dispatch(resetSedesActivas());
-      setSugerencia({ ...sugerencia, sede_id: "Seleccione" });
-    }
+    (async function () {
+      if (sugerencia.empresa_id && sugerencia.empresa_id !== "Seleccione") {
+        setSugerencia({ ...sugerencia, sede_id: "Seleccione" });
+        const data = await getAllSedesActivas(sugerencia.empresa_id);
+
+        setSedesActivas(data);
+      } else {
+        setSedesActivas([]);
+        setSugerencia({ ...sugerencia, sede_id: "Seleccione" });
+      }
+    })();
   }, [sugerencia.empresa_id]);
 
   const handleValidate = (event) => {
@@ -72,9 +70,9 @@ export function EnviarSugerencia() {
       sugerencia.tipo_sugerencia_id !== "Seleccione" &&
       sugerencia.descripcion
     ) {
-      dispatch(postSugerencia(sugerencia)).then(() => {
-        window.location.href = URL_INTRANET;
-      });
+      await postSugerencia(sugerencia);
+
+      window.location.href = URL_INTRANET;
     } else {
       Swal.fire({
         title: "Oops...",
@@ -108,17 +106,11 @@ export function EnviarSugerencia() {
             onChange={handleValidate}
           >
             <option>Seleccione</option>
-            {empresas_activas?.length
-              ? empresas_activas?.map((empresa, i) => (
-                  <option
-                    key={i}
-                    name={empresa.nombre}
-                    value={empresa.empresa_id}
-                  >
-                    {empresa.nombre}
-                  </option>
-                ))
-              : null}
+            {empresasActivas.map((empresa, i) => (
+              <option key={i} name={empresa.nombre} value={empresa.empresa_id}>
+                {empresa.nombre}
+              </option>
+            ))}
           </Select>
         </div>
 
@@ -132,8 +124,8 @@ export function EnviarSugerencia() {
             onChange={handleValidate}
           >
             <option>Seleccione</option>
-            {sedes_activas?.length
-              ? sedes_activas?.map((sede, i) => (
+            {sedesActivas?.length
+              ? sedesActivas?.map((sede, i) => (
                   <option key={i} name={sede.nombre} value={sede.sede_id}>
                     {sede.nombre}
                   </option>
@@ -152,8 +144,8 @@ export function EnviarSugerencia() {
             onChange={handleValidate}
           >
             <option>Seleccione</option>
-            {tipos_sugerencias_activas?.length
-              ? tipos_sugerencias_activas?.map((tipo_sugerencia, i) => (
+            {tiposSugerencias?.length
+              ? tiposSugerencias?.map((tipo_sugerencia, i) => (
                   <option
                     key={i}
                     name={tipo_sugerencia.descripcion}

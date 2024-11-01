@@ -333,7 +333,7 @@ export function DatosPersonales() {
               disabled={!modificar.etnia_id}
             >
               <option value="Ninguna">Ninguna</option>
-              {etniasActivas?.map(
+              {etniasActivas.map(
                 (etnia, i) =>
                   etnia.activo && (
                     <option key={i} name={etnia.nombre} value={etnia.etnia_id}>

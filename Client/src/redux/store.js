@@ -9,16 +9,13 @@ import clases_movimientos from "./clasesMovimientos/clasesMovimientosSlices";
 import curriculos from "./curriculos/curriculosSlices";
 import departamentos from "./departamentos/departamentosSlices";
 import empleados from "./empleados/empleadosSlices";
-import empresas from "./empresas/empresasSlices";
 import estados from "./estados/estadosSlices";
 import idiomas from "./idiomas/idiomasSlices";
 import movimientos from "./movimientos/movimientosSlices";
 import municipios from "./municipios/municipiosSlices";
 import paises from "./paises/paisesSlices";
 import parroquias from "./parroquias/parroquiasSlices";
-import pruebas_empleados from "./pruebasEmpleados/pruebasEmpleadosSlices";
 import roles from "./roles/rolesSlices";
-import sedes from "./sedes/sedesSlices";
 import sugerencias from "./sugerencias/sugerenciasSlices";
 import tipos_sugerencias from "./tiposSugerencias/tiposSugerenciasSlices";
 import vacantes from "./vacantes/vacantesSlices";
@@ -27,7 +24,7 @@ import vacantes from "./vacantes/vacantesSlices";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["curriculos", "empleados", "pruebas_empleados"],
+  whitelist: ["empleados"],
 };
 
 // Combinar el userReducer con Redux Persist
@@ -39,16 +36,13 @@ const rootReducer = combineReducers({
   curriculos: curriculos,
   departamentos: departamentos,
   empleados: empleados,
-  empresas: empresas,
   estados: estados,
   idiomas: idiomas,
   movimientos: movimientos,
   municipios: municipios,
   paises: paises,
   parroquias: parroquias,
-  pruebas_empleados: pruebas_empleados,
   roles: roles,
-  sedes: sedes,
   sugerencias: sugerencias,
   tipos_sugerencias: tipos_sugerencias,
   vacantes: vacantes,
