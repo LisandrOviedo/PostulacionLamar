@@ -7,7 +7,6 @@ import {
   postPaginaActual,
   postLimitePorPagina,
   postFiltros,
-  postFiltrosDetail,
   deleteFiltros,
 } from "../../redux/vacantes/vacantesActions";
 
@@ -41,9 +40,7 @@ export function Vacantes() {
 
   const filtros = useSelector((state) => state.vacantes.filtros);
 
-  const areas_interes_activas = useSelector(
-    (state) => state.areas_interes.areas_interes_activas
-  );
+  const [areasInteresActivas, setAreasInteresActivas] = useState([]);
 
   const [filters, setFilters] = useState({
     buscar_por: filtros.buscar_por || "descripcion",
@@ -106,7 +103,11 @@ export function Vacantes() {
 
     handleFind();
 
-    dispatch(getAllAreasInteresActivas(token));
+    (async function () {
+      const dataAreasInteresActivas = await getAllAreasInteresActivas(token);
+
+      setAreasInteresActivas(dataAreasInteresActivas);
+    })();
 
     document.title = "Grupo Lamar - Vacantes (Admin)";
 
@@ -215,8 +216,8 @@ export function Vacantes() {
             value={filters.area_interes_id}
           >
             <option value="">Todos</option>
-            {areas_interes_activas?.length
-              ? areas_interes_activas?.map(
+            {areasInteresActivas?.length
+              ? areasInteresActivas?.map(
                   (area, i) =>
                     area.activo && (
                       <option

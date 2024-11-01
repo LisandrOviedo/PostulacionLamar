@@ -58,7 +58,7 @@ export function Sugerencias() {
 
   const [empresasActivas, setEmpresasActivas] = useState([]);
 
-  const [tiposSugerencias, setTiposSugerencias] = useState([]);
+  const [tiposSugerenciasActivas, setTiposSugerenciasActivas] = useState([]);
 
   const [sedesActivas, setSedesActivas] = useState([]);
 
@@ -114,7 +114,7 @@ export function Sugerencias() {
       const dataTiposSugerenciasActivas = await getAllTiposSugerenciasActivas();
 
       setEmpresasActivas(dataEmpresasActivas);
-      setTiposSugerencias(dataTiposSugerenciasActivas);
+      setTiposSugerenciasActivas(dataTiposSugerenciasActivas);
     })();
 
     handleFind();
