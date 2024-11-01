@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresActions";
 
@@ -39,7 +39,6 @@ import { MdCancel } from "react-icons/md";
 import Swal from "sweetalert2";
 
 export function CrearCurriculo() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -48,61 +47,90 @@ export function CrearCurriculo() {
 
   const token = useSelector((state) => state.empleados.token);
 
-  const curriculoEmpleado = useSelector(
-    (state) => state.curriculos.curriculoEmpleado
-  );
-
   const empleado = useSelector((state) => state.empleados.empleado);
-
-  const vacanteDetail = useSelector((state) => state.vacantes.vacanteDetail);
-
-  const areas_interes_activas = useSelector(
-    (state) => state.areas_interes.areas_interes_activas
-  );
-
-  const idiomas_activos = useSelector((state) => state.idiomas.idiomas_activos);
 
   const [datosCurriculo, setDatosCurriculo] = useState({
     empleado_id: empleado.empleado_id,
-    curriculo_id: curriculoEmpleado?.Curriculo?.curriculo_id || "",
-    titulos_obtenidos: curriculoEmpleado?.Titulos_Obtenidos || [],
-    disponibilidad_viajar:
-      curriculoEmpleado?.Curriculo?.disponibilidad_viajar || false,
-    disponibilidad_cambio_residencia:
-      curriculoEmpleado?.Curriculo?.disponibilidad_cambio_residencia || false,
-    habilidades_tecnicas:
-      curriculoEmpleado?.Curriculo?.habilidades_tecnicas || "",
-    areas_interes: curriculoEmpleado?.Curriculo?.Areas_Interes || [],
-    experiencias: curriculoEmpleado?.Experiencias || [],
-    idiomas: curriculoEmpleado?.Curriculo?.Idiomas || [],
+    curriculo_id: "",
+    titulos_obtenidos: [],
+    disponibilidad_viajar: false,
+    disponibilidad_cambio_residencia: false,
+    habilidades_tecnicas: "",
+    areas_interes: [],
+    experiencias: [],
+    idiomas: [],
   });
 
+  const [idiomasActivos, setIdiomasActivos] = useState([]);
+
+  const [areasInteresActivas, setAreasInteresActivas] = useState([]);
+
+  const [vacanteDetail, setVacanteDetail] = useState({});
+
   const [errors, setErrors] = useState({});
+
   const [inputsToValidate, setInputsToValidate] = useState({});
 
   const [isHidden, setIsHidden] = useState(true);
+
   const [isHiddenIdioma, setIsHiddenIdioma] = useState(true);
 
   const [isLoad, setIsLoad] = useState({
-    areas_interes: datosCurriculo.areas_interes.length ? true : false,
+    areas_interes: datosCurriculo.areas_interes?.length ? true : false,
   });
 
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getCurriculoEmpleado(token, empleado.empleado_id));
+    (async function () {
+      const dataIdiomasActivos = await getAllIdiomasActivos(token);
+      const dataAreasInteresActivas = await getAllAreasInteresActivas(token);
+      const dataCurriculoEmpleado = await getCurriculoEmpleado(
+        token,
+        empleado.empleado_id
+      );
 
-    dispatch(getAllAreasInteresActivas(token));
+      setIdiomasActivos(dataIdiomasActivos);
+      setAreasInteresActivas(dataAreasInteresActivas);
 
-    dispatch(getAllIdiomasActivos(token));
+      setDatosCurriculo({
+        empleado_id: empleado.empleado_id,
+        curriculo_id: dataCurriculoEmpleado?.Curriculo?.curriculo_id || "",
+        titulos_obtenidos: dataCurriculoEmpleado?.Titulos_Obtenidos || [],
+        disponibilidad_viajar:
+          dataCurriculoEmpleado?.Curriculo?.disponibilidad_viajar || false,
+        disponibilidad_cambio_residencia:
+          dataCurriculoEmpleado?.Curriculo?.disponibilidad_cambio_residencia ||
+          false,
+        habilidades_tecnicas:
+          dataCurriculoEmpleado?.Curriculo?.habilidades_tecnicas || "",
+        areas_interes: dataCurriculoEmpleado?.Curriculo?.Areas_Interes || [],
+        experiencias: dataCurriculoEmpleado?.Experiencias || [],
+        idiomas: dataCurriculoEmpleado?.Curriculo?.Idiomas || [],
+      });
 
-    if (searchParams.get("vacante")) {
-      const vacante_id = searchParams.get("vacante");
+      setIsLoad({
+        areas_interes: dataCurriculoEmpleado?.Curriculo?.Areas_Interes?.length
+          ? true
+          : false,
+      });
 
-      const filtros = {};
+      if (searchParams.get("vacante")) {
+        const vacante_id = searchParams.get("vacante");
 
-      dispatch(getVacanteDetail(token, vacante_id, filtros, 1, 1));
-    }
+        const filtros = {};
+
+        const dataVacanteDetail = await getVacanteDetail(
+          token,
+          vacante_id,
+          filtros,
+          1,
+          1
+        );
+
+        setVacanteDetail(dataVacanteDetail);
+      }
+    })();
 
     Swal.fire({
       title: "Perfil Profesional",
@@ -118,32 +146,6 @@ export function CrearCurriculo() {
       document.title = "Grupo Lamar";
     };
   }, []);
-
-  useEffect(() => {
-    window.scroll(0, 0);
-
-    if (curriculoEmpleado) {
-      setDatosCurriculo({
-        empleado_id: empleado.empleado_id,
-        curriculo_id: curriculoEmpleado?.Curriculo?.curriculo_id || "",
-        titulos_obtenidos: curriculoEmpleado?.Titulos_Obtenidos || [],
-        disponibilidad_viajar:
-          curriculoEmpleado?.Curriculo?.disponibilidad_viajar || false,
-        disponibilidad_cambio_residencia:
-          curriculoEmpleado?.Curriculo?.disponibilidad_cambio_residencia ||
-          false,
-        habilidades_tecnicas:
-          curriculoEmpleado?.Curriculo?.habilidades_tecnicas || "",
-        areas_interes: curriculoEmpleado?.Curriculo?.Areas_Interes || [],
-        experiencias: curriculoEmpleado?.Experiencias || [],
-        idiomas: curriculoEmpleado?.Curriculo?.Idiomas || [],
-      });
-
-      setIsLoad({
-        areas_interes: datosCurriculo.areas_interes.length ? true : false,
-      });
-    }
-  }, [curriculoEmpleado]);
 
   const handleInputChangeCurriculo = (event) => {
     const { name, value } = event.target;
@@ -471,7 +473,7 @@ export function CrearCurriculo() {
     });
   };
 
-  const handleSaveCurriculo = () => {
+  const handleSaveCurriculo = async () => {
     if (!datosCurriculo.areas_interes.length) {
       return Swal.fire({
         title: "Oops...",
@@ -483,58 +485,50 @@ export function CrearCurriculo() {
     }
 
     try {
-      dispatch(putCurriculo(token, datosCurriculo))
-        .then(() => {
-          dispatch(getCurriculoEmpleado(token, empleado.empleado_id));
+      await putCurriculo(token, datosCurriculo);
 
-          dispatch(
-            postCurriculoPDF(
-              token,
-              empleado.empleado_id,
-              `${empleado.tipo_identificacion}${empleado.numero_identificacion}`
-            )
-          ).then(async (response) => {
-            if (searchParams.get("vacante")) {
-              const vacante_id = searchParams.get("vacante");
+      await getCurriculoEmpleado(token, empleado.empleado_id);
 
-              const result = await Swal.fire({
-                text: `¿Deseas postularte a la vacante ${vacanteDetail.vacante.descripcion} (${vacanteDetail.vacante.Areas_Intere.nombre})?`,
-                icon: "info",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Si",
-                cancelButtonText: "No",
-              });
+      const response = await postCurriculoPDF(
+        token,
+        empleado.empleado_id,
+        `${empleado.tipo_identificacion}${empleado.numero_identificacion}`
+      );
 
-              if (result.isConfirmed) {
-                await postPostulacionVacante(
-                  token,
-                  vacante_id,
-                  empleado.empleado_id
-                );
-              }
-            } else {
-              const result = await Swal.fire({
-                text: "¿Deseas observar / descargar tu perfil?",
-                icon: "info",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Si",
-                cancelButtonText: "No",
-              });
+      if (searchParams.get("vacante")) {
+        const vacante_id = searchParams.get("vacante");
 
-              if (result.isConfirmed) {
-                const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${response.data}`;
-                window.open(URL_GET_PDF, "_blank");
-              }
-            }
-          });
-        })
-        .finally(() => {
-          navigate("/inicio");
+        const result = await Swal.fire({
+          text: `¿Deseas postularte a la vacante ${vacanteDetail.vacante.descripcion} (${vacanteDetail.vacante.Areas_Intere.nombre})?`,
+          icon: "info",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Si",
+          cancelButtonText: "No",
         });
+
+        if (result.isConfirmed) {
+          await postPostulacionVacante(token, vacante_id, empleado.empleado_id);
+        }
+      } else {
+        const result = await Swal.fire({
+          text: "¿Deseas observar / descargar tu perfil?",
+          icon: "info",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Si",
+          cancelButtonText: "No",
+        });
+
+        if (result.isConfirmed) {
+          const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${response.data}`;
+          window.open(URL_GET_PDF, "_blank");
+        }
+      }
+
+      navigate("/inicio");
     } catch (error) {
       Swal.fire({
         title: "Oops...",
@@ -693,7 +687,7 @@ export function CrearCurriculo() {
               </tr>
             </thead>
             <tbody>
-              {datosCurriculo.titulos_obtenidos.map((titulo_obtenido, i) => (
+              {datosCurriculo.titulos_obtenidos?.map((titulo_obtenido, i) => (
                 <tr
                   key={i}
                   className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
@@ -736,8 +730,8 @@ export function CrearCurriculo() {
               isLoad.areas_interes ? null : "border-red-600"
             }`}
           >
-            {areas_interes_activas?.length
-              ? areas_interes_activas?.map(
+            {areasInteresActivas?.length
+              ? areasInteresActivas?.map(
                   (area, i) =>
                     area.activo && (
                       <option
@@ -797,7 +791,7 @@ export function CrearCurriculo() {
               </tr>
             </thead>
             <tbody>
-              {datosCurriculo.areas_interes.map((area, i) => (
+              {datosCurriculo.areas_interes?.map((area, i) => (
                 <tr
                   key={i}
                   className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
@@ -951,7 +945,7 @@ export function CrearCurriculo() {
               </tr>
             </thead>
             <tbody>
-              {datosCurriculo.experiencias.map((experiencia, i) => (
+              {datosCurriculo.experiencias?.map((experiencia, i) => (
                 <tr
                   key={i}
                   className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
@@ -980,8 +974,8 @@ export function CrearCurriculo() {
           <Label htmlFor="idiomas">Conocimiento de idiomas</Label>
           <Select id="idiomas" name="idiomas" onChange={handleIdiomaSelected}>
             <option value="Ninguno">Ninguno</option>
-            {idiomas_activos?.length
-              ? idiomas_activos?.map(
+            {idiomasActivos?.length
+              ? idiomasActivos?.map(
                   (idioma, i) =>
                     idioma.activo && (
                       <option
@@ -1031,7 +1025,7 @@ export function CrearCurriculo() {
               </tr>
             </thead>
             <tbody>
-              {datosCurriculo.idiomas.map((idioma, i) => (
+              {datosCurriculo.idiomas?.map((idioma, i) => (
                 <tr
                   key={i}
                   className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"

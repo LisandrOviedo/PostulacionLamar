@@ -11,17 +11,13 @@ import {
   postLimitePorPagina,
   postFiltros,
   deleteFiltros,
-  clearMovimientoDetail,
 } from "../../redux/movimientos/movimientosActions";
 
 import { getAllClasesMovimientosActivas } from "../../redux/clasesMovimientos/clasesMovimientosActions";
 
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
 
-import {
-  getAllSedesActivas,
-  resetSedesActivas,
-} from "../../redux/sedes/sedesActions";
+import { getAllSedesActivas } from "../../redux/sedes/sedesActions";
 
 import { Button, Input, Label, Select, Span, Title } from "../UI";
 
@@ -48,24 +44,21 @@ export function SolicitudesMovimientos() {
 
   const movimiento = useSelector((state) => state.movimientos.movimientoDetail);
 
-  const movimientos = useSelector((state) => state.movimientos.movimientos);
-
   const paginaActual = useSelector((state) => state.movimientos.paginaActual);
-
-  const empresas_activas = useSelector(
-    (state) => state.empresas.empresas_activas
-  );
-  const clases_movimientos_activas = useSelector(
-    (state) => state.clases_movimientos.clases_movimientos_activas
-  );
-
-  const sedes_activas = useSelector((state) => state.sedes.sedes_activas);
 
   const limitePorPagina = useSelector(
     (state) => state.movimientos.limitePorPagina
   );
 
   const filtros = useSelector((state) => state.movimientos.filtros);
+
+  const [empresasActivas, setEmpresasActivas] = useState([]);
+
+  const [clasesMovimientosActivas, setClasesMovimientosActivas] = useState([]);
+
+  const [sedesActivas, setSedesActivas] = useState([]);
+
+  const [movimientos, setMovimientos] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -139,8 +132,15 @@ export function SolicitudesMovimientos() {
 
     handleFind();
 
-    dispatch(getAllEmpresasActivas(token));
-    dispatch(getAllClasesMovimientosActivas(token));
+    (async function () {
+      const dataEmpresasActivas = await getAllEmpresasActivas();
+      const dataClasesMovimientosActivas = await getAllClasesMovimientosActivas(
+        token
+      );
+
+      setEmpresasActivas(dataEmpresasActivas);
+      setClasesMovimientosActivas(dataClasesMovimientosActivas);
+    })();
 
     document.title = "Grupo Lamar - Solicitudes Movimientos (Admin)";
 
@@ -157,17 +157,31 @@ export function SolicitudesMovimientos() {
   }, [showModal]);
 
   useEffect(() => {
-    dispatch(getAllMovimientos(token, filtros, paginaActual, limitePorPagina));
+    (async function () {
+      const data = await getAllMovimientos(
+        token,
+        filtros,
+        paginaActual,
+        limitePorPagina
+      );
+
+      setMovimientos(data);
+    })();
   }, [filtros, paginaActual, limitePorPagina]);
 
   useEffect(() => {
-    if (filters.empresa_id && filters.empresa_id !== "Seleccione") {
-      setFilters({ ...filters, sede_id: "Seleccione" });
-      dispatch(getAllSedesActivas(filters.empresa_id));
-    } else {
-      dispatch(resetSedesActivas());
-      setFilters({ ...filters, sede_id: "Seleccione" });
-    }
+    (async function () {
+      if (filters.empresa_id && filters.empresa_id !== "Seleccione") {
+        setFilters({ ...filters, sede_id: "Seleccione" });
+
+        const data = await getAllSedesActivas(filters.empresa_id);
+
+        setSedesActivas(data);
+      } else {
+        setSedesActivas([]);
+        setFilters({ ...filters, sede_id: "Seleccione" });
+      }
+    })();
   }, [filters.empresa_id]);
 
   const handleVerDetalles = (movimiento_id) => {
@@ -389,8 +403,8 @@ export function SolicitudesMovimientos() {
               value={filters.clase_movimiento_id}
             >
               <option value="Seleccione">Seleccione</option>
-              {clases_movimientos_activas?.length &&
-                clases_movimientos_activas?.map((clase_movimiento, i) => (
+              {clasesMovimientosActivas?.length &&
+                clasesMovimientosActivas?.map((clase_movimiento, i) => (
                   <option
                     key={i}
                     name={clase_movimiento.descripcion}
@@ -411,8 +425,8 @@ export function SolicitudesMovimientos() {
               onChange={handleChangeFilters}
             >
               <option>Seleccione</option>
-              {empresas_activas?.length &&
-                empresas_activas?.map((empresa, i) => (
+              {empresasActivas?.length &&
+                empresasActivas?.map((empresa, i) => (
                   <option
                     key={i}
                     name={empresa.nombre}
@@ -432,8 +446,8 @@ export function SolicitudesMovimientos() {
               onChange={handleChangeFilters}
             >
               <option>Seleccione</option>
-              {sedes_activas?.length &&
-                sedes_activas?.map((sede, i) => (
+              {sedesActivas?.length &&
+                sedesActivas?.map((sede, i) => (
                   <option key={i} name={sede.nombre} value={sede.sede_id}>
                     {sede.nombre}
                   </option>

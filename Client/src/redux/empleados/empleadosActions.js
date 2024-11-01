@@ -9,7 +9,6 @@ import {
   allEmpleados,
   empleadoLogin,
   empleadoDetail,
-  allDocumentos,
   paginaActual,
   limitePorPagina,
   filtros,
@@ -179,7 +178,6 @@ export const postDocumentos = async (token, formData) => {
 
     window.scroll(0, 0);
     window.location.reload();
-    return;
   } catch (error) {
     alertError(error);
 
@@ -187,22 +185,20 @@ export const postDocumentos = async (token, formData) => {
   }
 };
 
-export const getDocumentos = (token, empleado_id) => {
+export const getDocumentos = async (token, empleado_id) => {
   const URL_GET_DOCUMENTOS = `${URL_SERVER}/documentos_empleados/detalle/${empleado_id}`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios(URL_GET_DOCUMENTOS, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+  try {
+    const { data } = await axios(URL_GET_DOCUMENTOS, {
+      headers: { authorization: `Bearer ${token}` },
+    });
 
-      return dispatch(allDocumentos(data));
-    } catch (error) {
-      alertError(error);
+    return data;
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
 export const putFotoEmpleado = (token, formData) => {

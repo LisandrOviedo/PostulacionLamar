@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { Button, Hr, Title, InputFile } from "../UI";
 
@@ -17,14 +17,13 @@ import Swal from "sweetalert2";
 import { alertError } from "../../utils/sweetAlert2";
 
 export function SubirDocumentos() {
-  const dispatch = useDispatch();
-
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
-  const anexos = useSelector((state) => state.empleados.documentos);
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
+
+  const [anexos, setAnexos] = useState([]);
 
   const [isLoad, setIsLoad] = useState({
     foto_carnet: false,
@@ -43,7 +42,11 @@ export function SubirDocumentos() {
 
     document.title = "Grupo Lamar - Mis Documentos";
 
-    dispatch(getDocumentos(token, empleado.empleado_id));
+    (async function () {
+      const data = await getDocumentos(token, empleado.empleado_id);
+
+      setAnexos(data);
+    })();
 
     return () => {
       document.title = "Grupo Lamar";
@@ -257,11 +260,7 @@ export function SubirDocumentos() {
         formData.append("cuenta_bancaria", cuenta_bancaria_file);
       }
 
-      try {
-        dispatch(postDocumentos(token, formData));
-      } catch (error) {
-        return error;
-      }
+      await postDocumentos(token, formData);
     }
 
     Swal.fire({

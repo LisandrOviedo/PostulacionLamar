@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  prueba_kostick: [],
   pruebas_empleados: [],
   paginaActual: 1,
   limitePorPagina: 2,
@@ -21,9 +20,6 @@ export const pruebasEmpleadosSlice = createSlice({
   name: "pruebas_empleados",
   initialState,
   reducers: {
-    prueba_kostick: (state, action) => {
-      state.prueba_kostick = action.payload;
-    },
     pruebas_empleados: (state, action) => {
       state.pruebas_empleados = action.payload;
     },
@@ -55,7 +51,6 @@ export const pruebasEmpleadosSlice = createSlice({
 });
 
 export const {
-  prueba_kostick,
   pruebas_empleados,
   paginaActual,
   limitePorPagina,

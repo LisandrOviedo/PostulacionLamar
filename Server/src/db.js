@@ -690,16 +690,16 @@ Vacantes.belongsTo(Empleados, {
 });
 
 // Seguro_Social 1:M Empresas
-Seguro_Social.hasMany(Empresas, {
-  foreignKey: {
-    name: "seguro_social_id",
-  },
-});
-Empresas.belongsTo(Seguro_Social, {
-  foreignKey: {
-    name: "seguro_social_id",
-  },
-});
+// Seguro_Social.hasMany(Empresas, {
+//   foreignKey: {
+//     name: "seguro_social_id",
+//   },
+// });
+// Empresas.belongsTo(Seguro_Social, {
+//   foreignKey: {
+//     name: "seguro_social_id",
+//   },
+// });
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');

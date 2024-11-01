@@ -12,10 +12,7 @@ import {
 
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
 
-import {
-  getAllSedesActivas,
-  resetSedesActivas,
-} from "../../redux/sedes/sedesActions";
+import { getAllSedesActivas } from "../../redux/sedes/sedesActions";
 
 import { getAllTiposSugerenciasActivas } from "../../redux/tiposSugerencias/tiposSugerenciasActions";
 
@@ -43,16 +40,6 @@ export function Sugerencias() {
 
   const sugerencia = useSelector((state) => state.sugerencias.sugerenciaDetail);
 
-  const empresas_activas = useSelector(
-    (state) => state.empresas.empresas_activas
-  );
-
-  const sedes_activas = useSelector((state) => state.sedes.sedes_activas);
-
-  const tipos_sugerencias_activas = useSelector(
-    (state) => state.tipos_sugerencias.tipos_sugerencias_activas
-  );
-
   const paginaActual = useSelector((state) => state.sugerencias.paginaActual);
 
   const limitePorPagina = useSelector(
@@ -68,6 +55,12 @@ export function Sugerencias() {
     orden_campo: filtros.orden_campo || "",
     orden_por: filtros.orden_por || "",
   });
+
+  const [empresasActivas, setEmpresasActivas] = useState([]);
+
+  const [tiposSugerenciasActivas, setTiposSugerenciasActivas] = useState([]);
+
+  const [sedesActivas, setSedesActivas] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -116,8 +109,13 @@ export function Sugerencias() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllEmpresasActivas());
-    dispatch(getAllTiposSugerenciasActivas());
+    (async function () {
+      const dataEmpresasActivas = await getAllEmpresasActivas();
+      const dataTiposSugerenciasActivas = await getAllTiposSugerenciasActivas();
+
+      setEmpresasActivas(dataEmpresasActivas);
+      setTiposSugerenciasActivas(dataTiposSugerenciasActivas);
+    })();
 
     handleFind();
 
@@ -129,13 +127,18 @@ export function Sugerencias() {
   }, []);
 
   useEffect(() => {
-    if (filters.empresa_id && filters.empresa_id !== "Seleccione") {
-      setFilters({ ...filters, sede_id: "Seleccione" });
-      dispatch(getAllSedesActivas(filters.empresa_id));
-    } else {
-      dispatch(resetSedesActivas());
-      setFilters({ ...filters, sede_id: "Seleccione" });
-    }
+    (async function () {
+      if (filters.empresa_id && filters.empresa_id !== "Seleccione") {
+        setFilters({ ...filters, sede_id: "Seleccione" });
+
+        const data = await getAllSedesActivas(sugerencia.empresa_id);
+
+        setSedesActivas(data);
+      } else {
+        setSedesActivas([]);
+        setFilters({ ...filters, sede_id: "Seleccione" });
+      }
+    })();
   }, [filters.empresa_id]);
 
   useEffect(() => {
@@ -225,8 +228,8 @@ export function Sugerencias() {
               onChange={handleChangeFilters}
             >
               <option>Seleccione</option>
-              {empresas_activas?.length
-                ? empresas_activas?.map((empresa, i) => (
+              {empresasActivas?.length
+                ? empresasActivas?.map((empresa, i) => (
                     <option
                       key={i}
                       name={empresa.nombre}
@@ -248,8 +251,8 @@ export function Sugerencias() {
               onChange={handleChangeFilters}
             >
               <option>Seleccione</option>
-              {sedes_activas?.length
-                ? sedes_activas?.map((sede, i) => (
+              {sedesActivas?.length
+                ? sedesActivas?.map((sede, i) => (
                     <option key={i} name={sede.nombre} value={sede.sede_id}>
                       {sede.nombre}
                     </option>
@@ -267,8 +270,8 @@ export function Sugerencias() {
               onChange={handleChangeFilters}
             >
               <option>Seleccione</option>
-              {tipos_sugerencias_activas?.length
-                ? tipos_sugerencias_activas?.map((tipo_sugerencia, i) => (
+              {tiposSugerenciasActivas?.length
+                ? tiposSugerenciasActivas?.map((tipo_sugerencia, i) => (
                     <option
                       key={i}
                       name={tipo_sugerencia.descripcion}

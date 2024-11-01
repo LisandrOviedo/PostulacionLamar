@@ -44,11 +44,9 @@ export function PerfilesProfesionales() {
 
   const filtros = useSelector((state) => state.curriculos.filtros);
 
-  const areas_interes_activas = useSelector(
-    (state) => state.areas_interes.areas_interes_activas
-  );
+  const [areasInteresActivas, setAreasInteresActivas] = useState([]);
 
-  const idiomas_activos = useSelector((state) => state.idiomas.idiomas_activos);
+  const [idiomasActivos, setIdiomasActivos] = useState([]);
 
   const [filters, setFilters] = useState({
     numero_identificacion: filtros.numero_identificacion || "",
@@ -139,9 +137,13 @@ export function PerfilesProfesionales() {
 
     handleFind();
 
-    dispatch(getAllAreasInteresActivas(token));
+    (async function () {
+      const dataIdiomasActivos = await getAllIdiomasActivos(token);
+      const dataAreasInteresActivas = await getAllAreasInteresActivas(token);
 
-    dispatch(getAllIdiomasActivos(token));
+      setIdiomasActivos(dataIdiomasActivos);
+      setAreasInteresActivas(dataAreasInteresActivas);
+    })();
 
     document.title = "Grupo Lamar - Perfiles Profesionales (Admin)";
 
@@ -278,8 +280,8 @@ export function PerfilesProfesionales() {
             value={filters.area_interes_id}
           >
             <option value="">Todos</option>
-            {areas_interes_activas?.length
-              ? areas_interes_activas?.map(
+            {areasInteresActivas?.length
+              ? areasInteresActivas?.map(
                   (area, i) =>
                     area.activo && (
                       <option
@@ -303,8 +305,8 @@ export function PerfilesProfesionales() {
             value={filters.idioma_id}
           >
             <option value="">Todos</option>
-            {idiomas_activos?.length
-              ? idiomas_activos?.map(
+            {idiomasActivos?.length
+              ? idiomasActivos?.map(
                   (idioma, i) =>
                     idioma.activo && (
                       <option
