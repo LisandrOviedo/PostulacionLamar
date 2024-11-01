@@ -158,7 +158,7 @@ const traerEmpleado = async (empleado_id) => {
       include: [
         {
           model: Roles,
-          attributes: ["nombre", "descripcion", "acceso_admin"],
+          attributes: ["nombre", "descripcion", "acceso_admin", "activo"],
           include: [
             {
               model: Menus,
@@ -509,7 +509,7 @@ const login = async (tipo_identificacion, numero_identificacion, clave) => {
 
     const infoEmpleado = await traerEmpleado(empleado.empleado_id);
 
-    if (!infoEmpleado.Role.Menus.length) {
+    if (!infoEmpleado.Role.Menus.length || !infoEmpleado.Role.activo) {
       throw new Error(`El rol de su usuario no posee menús asociados`);
     }
 
