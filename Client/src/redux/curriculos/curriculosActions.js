@@ -15,7 +15,7 @@ import {
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-export const getAllCurriculos = (
+export const getAllCurriculos = async (
   token,
   filtros,
   paginaActual,
@@ -23,27 +23,25 @@ export const getAllCurriculos = (
 ) => {
   const URL_ALL_CURRICULOS = `${URL_SERVER}/curriculos/allCurriculos`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios.post(
-        URL_ALL_CURRICULOS,
-        {
-          filtros,
-          paginaActual,
-          limitePorPagina,
-        },
-        {
-          headers: { authorization: `Bearer ${token}` },
-        }
-      );
+  try {
+    const { data } = await axios.post(
+      URL_ALL_CURRICULOS,
+      {
+        filtros,
+        paginaActual,
+        limitePorPagina,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
 
-      return dispatch(allCurriculos(data));
-    } catch (error) {
-      alertError(error);
+    return data;
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
 export const postPaginaActual = (pagina_actual) => {
@@ -117,27 +115,29 @@ export const postCurriculoPDF = async (token, empleado_id, identificacion) => {
   }
 };
 
-export const getCurriculoPDFAnexos = (token, empleado_id, identificacion) => {
+export const getCurriculoPDFAnexos = async (
+  token,
+  empleado_id,
+  identificacion
+) => {
   const URL_CURRICULO = `${URL_SERVER}/curriculos/detalleAnexos`;
 
-  return async () => {
-    try {
-      await axios.post(
-        URL_CURRICULO,
-        {
-          empleado_id: empleado_id,
-          identificacion: identificacion,
-        },
-        {
-          headers: { authorization: `Bearer ${token}` },
-        }
-      );
-    } catch (error) {
-      alertError(error);
+  try {
+    await axios.post(
+      URL_CURRICULO,
+      {
+        empleado_id: empleado_id,
+        identificacion: identificacion,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
 export const getCurriculoEmpleado = async (token, empleado_id) => {

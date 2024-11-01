@@ -1,14 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import {
   getAllEmpleados,
-  getEmpleadoDetail,
-  postPaginaActual,
-  postLimitePorPagina,
-  postFiltros,
-  deleteFiltros,
   putActivo,
   resetPassword,
 } from "../../redux/empleados/empleadosActions";
@@ -29,7 +24,6 @@ import Swal from "sweetalert2";
 export function Empleados() {
   const tableRef = useRef(null);
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
@@ -38,33 +32,33 @@ export function Empleados() {
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const empleados = useSelector((state) => state.empleados.empleados);
+  const [empleados, setEmpleados] = useState([]);
 
-  const paginaActual = useSelector((state) => state.empleados.paginaActual);
+  const [paginaActual, setPaginaActual] = useState(1);
 
-  const limitePorPagina = useSelector(
-    (state) => state.empleados.limitePorPagina
-  );
-
-  const filtros = useSelector((state) => state.empleados.filtros);
+  const [limitePorPagina, setLimitePorPagina] = useState(2);
 
   const [filters, setFilters] = useState({
-    numero_identificacion: filtros.numero_identificacion || "",
-    apellidos: filtros.apellidos || "",
-    activo: filtros.activo || "",
-    orden_campo: filtros.orden_campo || "",
-    orden_por: filtros.orden_por || "",
+    numero_identificacion: "",
+    apellidos: "",
+    activo: "",
+    orden_campo: "",
+    orden_por: "",
     empresa_id: empleado.empresa_id,
   });
 
-  const handleChangePagination = (e) => {
+  const handleChangePagination = async (e) => {
     const { value } = e.target;
 
-    dispatch(postLimitePorPagina(value));
+    setLimitePorPagina(value);
 
     if (paginaActual !== 1) {
-      dispatch(postPaginaActual(1));
+      setPaginaActual(1);
     }
+
+    const dataEmpleados = await getAllEmpleados(token, filters, 1, value);
+
+    setEmpleados(dataEmpleados);
   };
 
   const handleChangeFilters = (e) => {
@@ -103,7 +97,7 @@ export function Empleados() {
     }
   };
 
-  const handleResetFilters = () => {
+  const handleResetFilters = async () => {
     setFilters({
       numero_identificacion: "",
       apellidos: "",
@@ -121,13 +115,36 @@ export function Empleados() {
     inputSearch.value = "";
     activo.selectedIndex = 0;
 
-    dispatch(deleteFiltros());
+    const dataEmpleados = await getAllEmpleados(
+      token,
+      {
+        numero_identificacion: "",
+        apellidos: "",
+        activo: "",
+        orden_campo: "",
+        orden_por: "",
+        empresa_id: empleado.empresa_id,
+      },
+      1,
+      limitePorPagina
+    );
+
+    setEmpleados(dataEmpleados);
   };
 
-  const handleFind = () => {
-    dispatch(postPaginaActual(1)).then(() => {
-      dispatch(postFiltros(filters));
-    });
+  const handleFind = async () => {
+    if (paginaActual !== 1) {
+      setPaginaActual(1);
+    }
+
+    const dataEmpleados = await getAllEmpleados(
+      token,
+      filters,
+      1,
+      limitePorPagina
+    );
+
+    setEmpleados(dataEmpleados);
   };
 
   useEffect(() => {
@@ -142,38 +159,34 @@ export function Empleados() {
     };
   }, []);
 
-  useEffect(() => {
-    dispatch(getAllEmpleados(token, filtros, paginaActual, limitePorPagina));
-  }, [filtros, paginaActual, limitePorPagina]);
-
-  const handleVerFicha = (empleado_id, identificacion) => {
-    dispatch(postFichaIngresoPDF(token, empleado_id, identificacion)).then(
-      (response) => {
-        Swal.fire({
-          text: `Ficha de ingreso del empleado ${identificacion} generada ¿Deseas abrirla?`,
-          icon: "info",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Si",
-          cancelButtonText: "No",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${response.data}`;
-            window.open(URL_GET_PDF, "_blank");
-          }
-        });
-      }
+  const handleVerFicha = async (empleado_id, identificacion) => {
+    const response = await postFichaIngresoPDF(
+      token,
+      empleado_id,
+      identificacion
     );
-  };
 
-  const handleVerDetalles = (empleado_id) => {
-    dispatch(getEmpleadoDetail(token, empleado_id)).then(() => {
-      navigate(`/admin/empleados/${empleado_id}`);
+    Swal.fire({
+      text: `Ficha de ingreso del empleado ${identificacion} generada ¿Deseas abrirla?`,
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${response.data}`;
+        window.open(URL_GET_PDF, "_blank");
+      }
     });
   };
 
-  const changeOrder = (e) => {
+  const handleVerDetalles = async (empleado_id) => {
+    navigate(`/admin/empleados/${empleado_id}`);
+  };
+
+  const changeOrder = async (e) => {
     const { name } = e.target;
 
     if (!filters.orden_campo) {
@@ -183,13 +196,28 @@ export function Empleados() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
-    } else if (filters.orden_campo === name && filters.orden_por === "ASC") {
-      setFilters((prevFilters) => ({ ...prevFilters, orden_por: "DESC" }));
 
-      return dispatch(postFiltros({ ...filters, orden_por: "DESC" }));
+      setEmpleados(dataEmpleados);
+    } else if (filters.orden_campo === name && filters.orden_por === "ASC") {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        orden_por: "DESC",
+      }));
+
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        { ...filters, orden_por: "DESC" },
+        1,
+        limitePorPagina
+      );
+
+      setEmpleados(dataEmpleados);
     } else if (filters.orden_campo === name && filters.orden_por === "DESC") {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -197,9 +225,14 @@ export function Empleados() {
         orden_por: "",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: "", orden_por: "" })
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        { ...filters, orden_campo: "", orden_por: "" },
+        1,
+        limitePorPagina
       );
+
+      setEmpleados(dataEmpleados);
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -207,25 +240,48 @@ export function Empleados() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
+
+      setEmpleados(dataEmpleados);
     }
   };
 
-  const paginaAnterior = () => {
+  const paginaAnterior = async () => {
     if (paginaActual > 1) {
-      dispatch(postPaginaActual(paginaActual - 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual - 1);
+
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        filters,
+        paginaActual - 1,
+        limitePorPagina
+      );
+
+      setEmpleados(dataEmpleados);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const paginaSiguiente = () => {
+  const paginaSiguiente = async () => {
     if (paginaActual < empleados.cantidadPaginas) {
-      dispatch(postPaginaActual(paginaActual + 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual + 1);
+
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        filters,
+        paginaActual + 1,
+        limitePorPagina
+      );
+
+      setEmpleados(dataEmpleados);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -241,9 +297,15 @@ export function Empleados() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await putActivo(token, empleado_id);
-        dispatch(
-          getAllEmpleados(token, filtros, paginaActual, limitePorPagina)
+
+        const dataEmpleados = await getAllEmpleados(
+          token,
+          filters,
+          paginaActual,
+          limitePorPagina
         );
+
+        setEmpleados(dataEmpleados);
       }
     });
   };
@@ -260,11 +322,25 @@ export function Empleados() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await resetPassword(token, empleado_id);
-        dispatch(
-          getAllEmpleados(token, filtros, paginaActual, limitePorPagina)
-        );
       }
     });
+  };
+
+  const handleChangePage = async (page) => {
+    if (paginaActual !== page) {
+      setPaginaActual(page);
+
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        filters,
+        page,
+        limitePorPagina
+      );
+
+      setEmpleados(dataEmpleados);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -280,7 +356,7 @@ export function Empleados() {
             name="buscar_por"
             onChange={handleChangeFiltersSelect}
             defaultValue={
-              filtros.apellidos ? "apellidos" : "numero_identificacion"
+              filters.apellidos ? "apellidos" : "numero_identificacion"
             }
           >
             <option value="numero_identificacion">
@@ -296,10 +372,10 @@ export function Empleados() {
             placeholder="Escribe aquí tu búsqueda"
             onChange={handleChangeFiltersInput}
             defaultValue={
-              filtros.apellidos
-                ? `${filtros.apellidos}`
-                : filtros.numero_identificacion
-                ? `${filtros.numero_identificacion}`
+              filters.apellidos
+                ? `${filters.apellidos}`
+                : filters.numero_identificacion
+                ? `${filters.numero_identificacion}`
                 : ""
             }
           />
@@ -537,11 +613,7 @@ export function Empleados() {
             ).map((page) => (
               <li key={page}>
                 <span
-                  onClick={() =>
-                    dispatch(postPaginaActual(page)).then(() => {
-                      tableRef.current.scrollIntoView({ behavior: "smooth" });
-                    })
-                  }
+                  onClick={() => handleChangePage(page)}
                   className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                     page === paginaActual
                       ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"

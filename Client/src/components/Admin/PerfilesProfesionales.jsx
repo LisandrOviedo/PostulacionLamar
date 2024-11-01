@@ -1,14 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import {
   getAllCurriculos,
   getCurriculoPDFAnexos,
-  postPaginaActual,
-  postLimitePorPagina,
-  postFiltros,
   putCambiarEstado,
-  deleteFiltros,
 } from "../../redux/curriculos/curriculosActions";
 
 import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresActions";
@@ -26,47 +22,45 @@ import { DDMMYYYY } from "../../utils/formatearFecha";
 export function PerfilesProfesionales() {
   const tableRef = useRef(null);
 
-  const dispatch = useDispatch();
-
   const token = useSelector((state) => state.empleados.token);
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const curriculos = useSelector((state) => state.curriculos.curriculos);
+  const [paginaActual, setPaginaActual] = useState(1);
 
-  const paginaActual = useSelector((state) => state.curriculos.paginaActual);
+  const [limitePorPagina, setLimitePorPagina] = useState(2);
 
-  const limitePorPagina = useSelector(
-    (state) => state.curriculos.limitePorPagina
-  );
-
-  const filtros = useSelector((state) => state.curriculos.filtros);
+  const [curriculos, setCurriculos] = useState([]);
 
   const [areasInteresActivas, setAreasInteresActivas] = useState([]);
 
   const [idiomasActivos, setIdiomasActivos] = useState([]);
 
   const [filters, setFilters] = useState({
-    numero_identificacion: filtros.numero_identificacion || "",
-    apellidos: filtros.apellidos || "",
-    area_interes_id: filtros.area_interes_id || "",
-    estado: filtros.estado || "",
-    idioma_id: filtros.idioma_id || "",
-    orden_campo: filtros.orden_campo || "",
-    orden_por: filtros.orden_por || "",
+    numero_identificacion: "",
+    apellidos: "",
+    area_interes_id: "",
+    estado: "",
+    idioma_id: "",
+    orden_campo: "",
+    orden_por: "",
     empresa_id: empleado.empresa_id,
   });
 
-  const handleChangePagination = (e) => {
+  const handleChangePagination = async (e) => {
     const { value } = e.target;
 
-    dispatch(postLimitePorPagina(value));
+    setLimitePorPagina(value);
 
     if (paginaActual !== 1) {
-      dispatch(postPaginaActual(1));
+      setPaginaActual(1);
     }
+
+    const dataCurriculos = await getAllCurriculos(token, filters, 1, value);
+
+    setCurriculos(dataCurriculos);
   };
 
   const handleChangeFilters = (e) => {
@@ -105,7 +99,7 @@ export function PerfilesProfesionales() {
     }
   };
 
-  const handleResetFilters = () => {
+  const handleResetFilters = async () => {
     setFilters({
       numero_identificacion: "",
       apellidos: "",
@@ -123,13 +117,38 @@ export function PerfilesProfesionales() {
     buscarPor.selectedIndex = 0;
     inputSearch.value = "";
 
-    dispatch(deleteFiltros());
+    const dataCurriculos = await getAllCurriculos(
+      token,
+      {
+        numero_identificacion: "",
+        apellidos: "",
+        area_interes_id: "",
+        estado: "",
+        idioma_id: "",
+        orden_campo: "",
+        orden_por: "",
+        empresa_id: empleado.empresa_id,
+      },
+      1,
+      limitePorPagina
+    );
+
+    setCurriculos(dataCurriculos);
   };
 
-  const handleFind = () => {
-    dispatch(postPaginaActual(1)).then(() => {
-      dispatch(postFiltros(filters));
-    });
+  const handleFind = async () => {
+    if (paginaActual !== 1) {
+      setPaginaActual(1);
+    }
+
+    const dataCurriculos = await getAllCurriculos(
+      token,
+      filters,
+      1,
+      limitePorPagina
+    );
+
+    setCurriculos(dataCurriculos);
   };
 
   useEffect(() => {
@@ -152,33 +171,23 @@ export function PerfilesProfesionales() {
     };
   }, []);
 
-  useEffect(() => {
-    dispatch(getAllCurriculos(token, filtros, paginaActual, limitePorPagina));
-  }, [filtros, paginaActual, limitePorPagina]);
-
   const handleVerDetalles = async (identificacion, nombre, empleado_id) => {
-    await putCambiarEstado(token, empleado_id, empleado.empleado_id).then(
-      () => {
-        const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${nombre}`;
+    await putCambiarEstado(token, empleado_id, empleado.empleado_id);
 
-        window.open(URL_GET_PDF, "_blank");
-      }
-    );
+    const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${nombre}`;
+
+    window.open(URL_GET_PDF, "_blank");
   };
 
-  const handleVerDetallesAnexos = (empleado_id, identificacion) => {
-    dispatch(getCurriculoPDFAnexos(token, empleado_id, identificacion))
-      .then(() => {
-        const URL_GET_PDF_ANEXOS = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/Anexos ${identificacion}.zip`;
+  const handleVerDetallesAnexos = async (empleado_id, identificacion) => {
+    await getCurriculoPDFAnexos(token, empleado_id, identificacion);
 
-        window.open(URL_GET_PDF_ANEXOS, "_blank");
-      })
-      .catch((error) => {
-        return error;
-      });
+    const URL_GET_PDF_ANEXOS = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/Anexos ${identificacion}.zip`;
+
+    window.open(URL_GET_PDF_ANEXOS, "_blank");
   };
 
-  const changeOrder = (e) => {
+  const changeOrder = async (e) => {
     const { name } = e.target;
 
     if (!filters.orden_campo) {
@@ -188,13 +197,25 @@ export function PerfilesProfesionales() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
+
+      setCurriculos(dataCurriculos);
     } else if (filters.orden_campo === name && filters.orden_por === "ASC") {
       setFilters((prevFilters) => ({ ...prevFilters, orden_por: "DESC" }));
 
-      return dispatch(postFiltros({ ...filters, orden_por: "DESC" }));
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        { ...filters, orden_por: "DESC" },
+        1,
+        limitePorPagina
+      );
+
+      setCurriculos(dataCurriculos);
     } else if (filters.orden_campo === name && filters.orden_por === "DESC") {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -202,9 +223,14 @@ export function PerfilesProfesionales() {
         orden_por: "",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: "", orden_por: "" })
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        { ...filters, orden_campo: "", orden_por: "" },
+        1,
+        limitePorPagina
       );
+
+      setCurriculos(dataCurriculos);
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -212,25 +238,65 @@ export function PerfilesProfesionales() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
+
+      setCurriculos(dataCurriculos);
     }
   };
 
-  const paginaAnterior = () => {
+  const paginaAnterior = async () => {
     if (paginaActual > 1) {
-      dispatch(postPaginaActual(paginaActual - 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual - 1);
+
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        filters,
+        paginaActual - 1,
+        limitePorPagina
+      );
+
+      setCurriculos(dataCurriculos);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const paginaSiguiente = () => {
+  const paginaSiguiente = async () => {
     if (paginaActual < curriculos.cantidadPaginas) {
-      dispatch(postPaginaActual(paginaActual + 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual + 1);
+
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        filters,
+        paginaActual + 1,
+        limitePorPagina
+      );
+
+      setCurriculos(dataCurriculos);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleChangePage = async (page) => {
+    if (paginaActual !== page) {
+      setPaginaActual(page);
+
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        filters,
+        page,
+        limitePorPagina
+      );
+
+      setCurriculos(dataCurriculos);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -247,7 +313,7 @@ export function PerfilesProfesionales() {
             name="buscar_por"
             onChange={handleChangeFiltersSelect}
             defaultValue={
-              filtros.apellidos ? "apellidos" : "numero_identificacion"
+              filters.apellidos ? "apellidos" : "numero_identificacion"
             }
           >
             <option value="numero_identificacion">
@@ -263,10 +329,10 @@ export function PerfilesProfesionales() {
             placeholder="Escribe aquí tu búsqueda"
             onChange={handleChangeFiltersInput}
             defaultValue={
-              filtros.apellidos
-                ? `${filtros.apellidos}`
-                : filtros.numero_identificacion
-                ? `${filtros.numero_identificacion}`
+              filters.apellidos
+                ? `${filters.apellidos}`
+                : filters.numero_identificacion
+                ? `${filters.numero_identificacion}`
                 : ""
             }
           />
@@ -546,11 +612,7 @@ export function PerfilesProfesionales() {
             ).map((page) => (
               <li key={page}>
                 <span
-                  onClick={() =>
-                    dispatch(postPaginaActual(page)).then(() => {
-                      tableRef.current.scrollIntoView({ behavior: "smooth" });
-                    })
-                  }
+                  onClick={() => handleChangePage(page)}
                   className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                     page === paginaActual
                       ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"
