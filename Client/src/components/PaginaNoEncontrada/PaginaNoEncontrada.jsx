@@ -1,10 +1,11 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { Button, Title, Hr } from "../UI";
 
 export function PaginaNoEncontrada() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     window.scroll(0, 0);
@@ -18,7 +19,14 @@ export function PaginaNoEncontrada() {
       <br />
       <Hr />
       <br />
-      <Button className="m-0 w-auto" onClick={() => navigate(-1)}>
+      <Button
+        className="m-0 w-auto"
+        onClick={() => {
+          pathname.startsWith("/admin/")
+            ? navigate("/admin/panel")
+            : navigate("/");
+        }}
+      >
         Volver
       </Button>
     </div>
