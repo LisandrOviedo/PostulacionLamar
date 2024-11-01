@@ -72,7 +72,7 @@ const traerRol = async (rol_id) => {
     const rol = await Roles.findByPk(rol_id);
 
     if (!rol) {
-      throw new Error(`No existe ese rol`); 
+      throw new Error(`No existe ese rol`);
     }
 
     return rol;
@@ -116,7 +116,7 @@ const cargarRoles = async () => {
   }
 };
 
-const crearRol = async (nombre, descripcion) => {
+const crearRol = async (nombre, descripcion, acceso_admin) => {
   if (!nombre || !descripcion) {
     throw new Error(`Datos faltantes`);
   }
@@ -124,24 +124,30 @@ const crearRol = async (nombre, descripcion) => {
   let t;
 
   try {
+    const buscarExistenciaRol = await Roles.findOne({
+      where: {
+        [Op.or]: [{ nombre: nombre }, { descripcion: descripcion }],
+      },
+    });
+
+    if (buscarExistenciaRol) {
+      throw new Error(`Ya existe un rol con ese nombre o descripción`);
+    }
+
     t = await conn.transaction();
 
-    const [rol, created] = await Roles.findOrCreate({
-      where: { nombre: nombre },
-      defaults: {
+    const rol = await Roles.create(
+      {
         nombre: nombre,
         descripcion: descripcion,
+        acceso_admin: acceso_admin,
       },
-      transaction: t,
-    });
+      { transaction: t }
+    );
 
     await t.commit();
 
-    if (created) {
-      return rol;
-    }
-
-    throw new Error(`Ya existe un rol con ese nombre`);
+    return rol;
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -151,7 +157,7 @@ const crearRol = async (nombre, descripcion) => {
   }
 };
 
-const modificarRol = async (rol_id, nombre, descripcion) => {
+const modificarRol = async (rol_id, nombre, descripcion, acceso_admin) => {
   if (!rol_id || !nombre || !descripcion) {
     throw new Error(`Datos faltantes`);
   }
@@ -159,15 +165,27 @@ const modificarRol = async (rol_id, nombre, descripcion) => {
   let t;
 
   try {
-    t = await conn.transaction();
+    const buscarExistenciaRol = await Roles.findOne({
+      where: {
+        [Op.or]: [{ nombre: nombre }, { descripcion: descripcion }],
+        rol_id: { [Op.ne]: rol_id },
+      },
+    });
+
+    if (buscarExistenciaRol) {
+      throw new Error(`Ya existe un rol con ese nombre o descripción`);
+    }
 
     await traerRol(rol_id);
+
+    t = await conn.transaction();
 
     await Roles.update(
       {
         rol_id: rol_id,
         nombre: nombre,
         descripcion: descripcion,
+        acceso_admin: acceso_admin,
       },
       {
         where: {
