@@ -4,7 +4,6 @@ import Swal from "sweetalert2";
 
 import {
   allVacantes,
-  vacanteDetail,
   paginaActual,
   limitePorPagina,
   filtros,
@@ -59,7 +58,7 @@ export const getAllVacantes = (
   };
 };
 
-export const getVacanteDetail = (
+export const getVacanteDetail = async (
   token,
   vacante_id,
   filtros,
@@ -80,19 +79,17 @@ export const getVacanteDetail = (
     URL_VACANTE_DETAIL = `${URL_VACANTE_DETAIL}&activo=${filtros.activo}`;
   }
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios(URL_VACANTE_DETAIL, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+  try {
+    const { data } = await axios(URL_VACANTE_DETAIL, {
+      headers: { authorization: `Bearer ${token}` },
+    });
 
-      return dispatch(vacanteDetail(data));
-    } catch (error) {
-      alertError(error);
+    return data;
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
 export const postPostulacionVacante = async (

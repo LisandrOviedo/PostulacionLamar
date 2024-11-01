@@ -6,7 +6,6 @@ import { alertError } from "../../utils/sweetAlert2";
 
 import {
   allCurriculos,
-  curriculoEmpleado,
   paginaActual,
   limitePorPagina,
   filtros,
@@ -95,29 +94,27 @@ export const deleteFiltros = () => {
   };
 };
 
-export const postCurriculoPDF = (token, empleado_id, identificacion) => {
+export const postCurriculoPDF = async (token, empleado_id, identificacion) => {
   const URL_CURRICULO = `${URL_SERVER}/curriculos/detalle`;
 
-  return async () => {
-    try {
-      const response = await axios.post(
-        URL_CURRICULO,
-        {
-          empleado_id: empleado_id,
-          identificacion: identificacion,
-        },
-        {
-          headers: { authorization: `Bearer ${token}` },
-        }
-      );
+  try {
+    const response = await axios.post(
+      URL_CURRICULO,
+      {
+        empleado_id: empleado_id,
+        identificacion: identificacion,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
 
-      return response;
-    } catch (error) {
-      alertError(error);
+    return response;
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
 export const getCurriculoPDFAnexos = (token, empleado_id, identificacion) => {
@@ -143,22 +140,20 @@ export const getCurriculoPDFAnexos = (token, empleado_id, identificacion) => {
   };
 };
 
-export const getCurriculoEmpleado = (token, empleado_id) => {
+export const getCurriculoEmpleado = async (token, empleado_id) => {
   const URL_CURRICULO_DETAIL = `${URL_SERVER}/curriculos/detalleEmpleado/${empleado_id}`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios(URL_CURRICULO_DETAIL, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+  try {
+    const { data } = await axios(URL_CURRICULO_DETAIL, {
+      headers: { authorization: `Bearer ${token}` },
+    });
 
-      return dispatch(curriculoEmpleado(data));
-    } catch (error) {
-      alertError(error);
+    return data;
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
 export const resetCurriculos = () => {
@@ -175,53 +170,51 @@ export const resetCurriculos = () => {
 
 // UPDATE CURRICULO
 
-export const putCurriculo = (token, datosCurriculo) => {
+export const putCurriculo = async (token, datosCurriculo) => {
   const URL_PUT_CURRICULO = `${URL_SERVER}/curriculos/modificar`;
 
-  return async () => {
-    try {
-      const { data } = await axios.put(`${URL_PUT_CURRICULO}`, datosCurriculo, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+  try {
+    const { data } = await axios.put(`${URL_PUT_CURRICULO}`, datosCurriculo, {
+      headers: { authorization: `Bearer ${token}` },
+    });
 
-      await putAreasInteres(
+    await putAreasInteres(
+      token,
+      data.curriculo_id,
+      datosCurriculo.areas_interes
+    );
+
+    if (datosCurriculo.titulos_obtenidos.length) {
+      await putTitulosObtenidos(
         token,
-        data.curriculo_id,
-        datosCurriculo.areas_interes
+        datosCurriculo.empleado_id,
+        datosCurriculo.titulos_obtenidos
       );
-
-      if (datosCurriculo.titulos_obtenidos.length) {
-        await putTitulosObtenidos(
-          token,
-          datosCurriculo.empleado_id,
-          datosCurriculo.titulos_obtenidos
-        );
-      }
-
-      if (datosCurriculo.experiencias.length) {
-        await putExperiencias(
-          token,
-          datosCurriculo.empleado_id,
-          datosCurriculo.experiencias
-        );
-      }
-
-      if (datosCurriculo.idiomas.length) {
-        await putIdiomas(token, data.curriculo_id, datosCurriculo.idiomas);
-      }
-
-      return Swal.fire({
-        text: "¡Perfil profesional actualizado exitosamente!",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 3000,
-      });
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
     }
-  };
+
+    if (datosCurriculo.experiencias.length) {
+      await putExperiencias(
+        token,
+        datosCurriculo.empleado_id,
+        datosCurriculo.experiencias
+      );
+    }
+
+    if (datosCurriculo.idiomas.length) {
+      await putIdiomas(token, data.curriculo_id, datosCurriculo.idiomas);
+    }
+
+    return Swal.fire({
+      text: "¡Perfil profesional actualizado exitosamente!",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 3000,
+    });
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
 };
 
 const putAreasInteres = async (token, curriculo_id, areas_interes) => {

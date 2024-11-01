@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   vacantes: [],
-  vacanteDetail: {},
   paginaActual: 1,
   limitePorPagina: 2,
   paginaActualDetail: 1,
@@ -30,9 +29,6 @@ export const vacanteSlice = createSlice({
   reducers: {
     allVacantes: (state, action) => {
       state.vacantes = action.payload;
-    },
-    vacanteDetail: (state, action) => {
-      state.vacanteDetail = action.payload;
     },
     paginaActual: (state, action) => {
       state.paginaActual = action.payload;
@@ -79,7 +75,6 @@ export const vacanteSlice = createSlice({
 
 export const {
   allVacantes,
-  vacanteDetail,
   paginaActual,
   limitePorPagina,
   filtros,

@@ -5,7 +5,6 @@ const initialState = {
   empleados: {},
   empleado: {},
   empleadoDetail: {},
-  documentos: [],
   paginaActual: 1,
   limitePorPagina: 2,
   filtros: {
@@ -33,9 +32,6 @@ export const empleadoSlice = createSlice({
     },
     empleadoDetail: (state, action) => {
       state.empleadoDetail = action.payload;
-    },
-    allDocumentos: (state, action) => {
-      state.documentos = action.payload;
     },
     paginaActual: (state, action) => {
       state.paginaActual = action.payload;
@@ -67,7 +63,6 @@ export const {
   allEmpleados,
   empleadoLogin,
   empleadoDetail,
-  allDocumentos,
   paginaActual,
   limitePorPagina,
   filtros,
