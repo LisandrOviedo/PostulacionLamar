@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 // import Webcam from "react-webcam";
 
 import { getAllEtniasActivas } from "../../redux/etnias/etniasActions";
@@ -9,38 +9,21 @@ import { getAllPaisesActivos } from "../../redux/paises/paisesActions";
 import {
   getAllEstadosResidencia,
   getAllEstadosNacimiento,
-  resetEstadosNacimiento,
-  resetEstadosResidencia,
 } from "../../redux/estados/estadosActions";
 
-import {
-  getAllMunicipiosActivos,
-  resetMunicipios,
-} from "../../redux/municipios/municipiosActions";
+import { getAllMunicipiosActivos } from "../../redux/municipios/municipiosActions";
 
-import {
-  getAllParroquiasActivas,
-  resetParroquias,
-} from "../../redux/parroquias/parroquiasActions";
+import { getAllParroquiasActivas } from "../../redux/parroquias/parroquiasActions";
 
 import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
 
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
 
-import {
-  getAllDepartamentosActivos,
-  resetDepartamentos,
-} from "../../redux/departamentos/departamentosActions";
+import { getAllDepartamentosActivos } from "../../redux/departamentos/departamentosActions";
 
-import {
-  getAllCargosNivelesActivos,
-  resetCargosNiveles,
-} from "../../redux/cargosNiveles/cargosNivelesActions";
+import { getAllCargosNivelesActivos } from "../../redux/cargosNiveles/cargosNivelesActions";
 
-import {
-  getAllCargosActivos,
-  resetCargos,
-} from "../../redux/cargos/cargosActions";
+import { getAllCargosActivos } from "../../redux/cargos/cargosActions";
 
 import { saveFichaIngreso } from "../../redux/fichasIngresos/fichasIngresosActions";
 
@@ -75,47 +58,31 @@ import validations from "../../utils/validacionesFormularioIngreso";
 import Swal from "sweetalert2";
 
 export function FormularioIngreso() {
-  const dispatch = useDispatch();
-
   const token = useSelector((state) => state.empleados.token);
-
-  const etnias_activas = useSelector((state) => state.etnias.etnias_activas);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const paises_activos = useSelector((state) => state.paises.paises_activos);
-
-  const estados_residencia = useSelector(
-    (state) => state.estados.estados_residencia
-  );
-
-  const estados_nacimiento = useSelector(
-    (state) => state.estados.estados_nacimiento
-  );
-
-  const municipios_activos = useSelector(
-    (state) => state.municipios.municipios_activos
-  );
-
-  const parroquias_activas = useSelector(
-    (state) => state.parroquias.parroquias_activas
-  );
-
-  const empresas_activas = useSelector(
-    (state) => state.empresas.empresas_activas
-  );
-
-  const departamentos_activos = useSelector(
-    (state) => state.departamentos.departamentos_activos
-  );
-
-  const cargos_activos = useSelector((state) => state.cargos.cargos_activos);
-
-  const cargos_niveles_activos = useSelector(
-    (state) => state.cargos_niveles.cargos_niveles_activos
-  );
-
   // const URL_SERVER = import.meta.env.VITE_URL_SERVER;
+
+  const [etniasActivas, setEtniasActivas] = useState([]);
+
+  const [paisesActivos, setPaisesActivos] = useState([]);
+
+  const [empresasActivas, setEmpresasActivas] = useState([]);
+
+  const [estadosNacimiento, setEstadosNacimiento] = useState([]);
+
+  const [estadosResidencia, setEstadosResidencia] = useState([]);
+
+  const [municipiosActivos, setMunicipiosActivos] = useState([]);
+
+  const [parroquiasActivas, setParroquiasActivas] = useState([]);
+
+  const [departamentosActivos, setDepartamentosActivos] = useState([]);
+
+  const [cargosActivos, setCargosActivos] = useState([]);
+
+  const [cargosNivelesActivos, setCargosNivelesActivos] = useState([]);
 
   const [errors, setErrors] = useState({});
 
@@ -161,9 +128,15 @@ export function FormularioIngreso() {
     window.scroll(0, 0);
     document.title = "Grupo Lamar - Formulario de Ingreso (Admin)";
 
-    dispatch(getAllEtniasActivas(token));
-    dispatch(getAllPaisesActivos(token));
-    dispatch(getAllEmpresasActivas());
+    (async function () {
+      const dataEtniasActivas = await getAllEtniasActivas(token);
+      const dataPaisesActivos = await getAllPaisesActivos(token);
+      const dataEmpresasActivas = await getAllEmpresasActivas();
+
+      setEtniasActivas(dataEtniasActivas);
+      setPaisesActivos(dataPaisesActivos);
+      setEmpresasActivas(dataEmpresasActivas);
+    })();
 
     return () => {
       document.title = "Grupo Lamar";
@@ -171,100 +144,174 @@ export function FormularioIngreso() {
   }, []);
 
   useEffect(() => {
-    if (
-      datosIngreso.nacimiento_pais_id &&
-      datosIngreso.nacimiento_pais_id !== "Seleccione"
-    ) {
-      setDatosIngreso({ ...datosIngreso, nacimiento_estado_id: "Seleccione" });
-      dispatch(getAllEstadosNacimiento(token, datosIngreso.nacimiento_pais_id));
-    } else {
-      dispatch(resetEstadosNacimiento());
-      setDatosIngreso({ ...datosIngreso, nacimiento_estado_id: "Seleccione" });
-    }
+    (async function () {
+      if (
+        datosIngreso.nacimiento_pais_id &&
+        datosIngreso.nacimiento_pais_id !== "Seleccione"
+      ) {
+        setDatosIngreso({
+          ...datosIngreso,
+          nacimiento_estado_id: "Seleccione",
+        });
+
+        const dataEstadosNacimiento = await getAllEstadosNacimiento(
+          token,
+          datosIngreso.nacimiento_pais_id
+        );
+
+        setEstadosNacimiento(dataEstadosNacimiento);
+      } else {
+        setEstadosNacimiento([]);
+
+        setDatosIngreso({
+          ...datosIngreso,
+          nacimiento_estado_id: "Seleccione",
+        });
+      }
+    })();
   }, [datosIngreso.nacimiento_pais_id]);
 
   useEffect(() => {
-    if (datosIngreso.pais_id && datosIngreso.pais_id !== "Seleccione") {
-      dispatch(resetEstadosResidencia());
-      dispatch(resetMunicipios());
-      dispatch(resetParroquias());
-      setDatosIngreso({ ...datosIngreso, estado_id: "Seleccione" });
-      dispatch(getAllEstadosResidencia(token, datosIngreso.pais_id));
-    } else {
-      dispatch(resetEstadosResidencia());
-      dispatch(resetMunicipios());
-      dispatch(resetParroquias());
-      setDatosIngreso({ ...datosIngreso, estado_id: "Seleccione" });
-    }
+    (async function () {
+      if (datosIngreso.pais_id && datosIngreso.pais_id !== "Seleccione") {
+        setEstadosResidencia([]);
+        setMunicipiosActivos([]);
+        setParroquiasActivas([]);
+
+        setDatosIngreso({ ...datosIngreso, estado_id: "Seleccione" });
+
+        const dataEstadosResidencia = await getAllEstadosResidencia(
+          token,
+          datosIngreso.pais_id
+        );
+
+        setEstadosResidencia(dataEstadosResidencia);
+      } else {
+        setEstadosResidencia([]);
+        setMunicipiosActivos([]);
+        setParroquiasActivas([]);
+
+        setDatosIngreso({ ...datosIngreso, estado_id: "Seleccione" });
+      }
+    })();
   }, [datosIngreso.pais_id]);
 
   useEffect(() => {
-    if (datosIngreso.estado_id && datosIngreso.estado_id !== "Seleccione") {
-      dispatch(resetMunicipios());
-      dispatch(resetParroquias());
-      setDatosIngreso({ ...datosIngreso, municipio_id: "Seleccione" });
-      dispatch(getAllMunicipiosActivos(token, datosIngreso.estado_id));
-    } else {
-      dispatch(resetMunicipios());
-      dispatch(resetParroquias());
-      setDatosIngreso({ ...datosIngreso, municipio_id: "Seleccione" });
-    }
+    (async function () {
+      if (datosIngreso.estado_id && datosIngreso.estado_id !== "Seleccione") {
+        setMunicipiosActivos([]);
+        setParroquiasActivas([]);
+
+        setDatosIngreso({ ...datosIngreso, municipio_id: "Seleccione" });
+
+        const dataMunicipiosActivos = await getAllMunicipiosActivos(
+          token,
+          datosIngreso.estado_id
+        );
+
+        setMunicipiosActivos(dataMunicipiosActivos);
+      } else {
+        setMunicipiosActivos([]);
+        setParroquiasActivas([]);
+        setDatosIngreso({ ...datosIngreso, municipio_id: "Seleccione" });
+      }
+    })();
   }, [datosIngreso.estado_id]);
 
   useEffect(() => {
-    if (
-      datosIngreso.municipio_id &&
-      datosIngreso.municipio_id !== "Seleccione"
-    ) {
-      dispatch(resetParroquias());
-      setDatosIngreso({ ...datosIngreso, parroquia_id: "Seleccione" });
-      dispatch(getAllParroquiasActivas(token, datosIngreso.municipio_id));
-    } else {
-      dispatch(resetParroquias());
-      setDatosIngreso({ ...datosIngreso, parroquia_id: "Seleccione" });
-    }
+    (async function () {
+      if (
+        datosIngreso.municipio_id &&
+        datosIngreso.municipio_id !== "Seleccione"
+      ) {
+        setParroquiasActivas([]);
+
+        setDatosIngreso({ ...datosIngreso, parroquia_id: "Seleccione" });
+
+        const dataParroquiasActivas = await getAllParroquiasActivas(
+          token,
+          datosIngreso.municipio_id
+        );
+
+        setParroquiasActivas(dataParroquiasActivas);
+      } else {
+        setParroquiasActivas([]);
+
+        setDatosIngreso({ ...datosIngreso, parroquia_id: "Seleccione" });
+      }
+    })();
   }, [datosIngreso.municipio_id]);
 
   useEffect(() => {
-    if (datosIngreso.empresa_id && datosIngreso.empresa_id !== "Seleccione") {
-      dispatch(resetDepartamentos());
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setDatosIngreso({ ...datosIngreso, departamento_id: "Seleccione" });
-      dispatch(getAllDepartamentosActivos(token, datosIngreso.empresa_id));
-    } else {
-      dispatch(resetDepartamentos());
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setDatosIngreso({ ...datosIngreso, departamento_id: "Seleccione" });
-    }
+    (async function () {
+      if (datosIngreso.empresa_id && datosIngreso.empresa_id !== "Seleccione") {
+        setDepartamentosActivos([]);
+        setCargosActivos([]);
+        setCargosNivelesActivos([]);
+
+        setDatosIngreso({ ...datosIngreso, departamento_id: "Seleccione" });
+
+        const dataDepartamentosActivos = await getAllDepartamentosActivos(
+          token,
+          datosIngreso.empresa_id
+        );
+
+        setDepartamentosActivos(dataDepartamentosActivos);
+      } else {
+        setDepartamentosActivos([]);
+        setCargosActivos([]);
+        setCargosNivelesActivos([]);
+
+        setDatosIngreso({ ...datosIngreso, departamento_id: "Seleccione" });
+      }
+    })();
   }, [datosIngreso.empresa_id]);
 
   useEffect(() => {
-    if (
-      datosIngreso.departamento_id &&
-      datosIngreso.departamento_id !== "Seleccione"
-    ) {
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setDatosIngreso({ ...datosIngreso, cargo_id: "Seleccione" });
-      dispatch(getAllCargosActivos(token, datosIngreso.departamento_id));
-    } else {
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setDatosIngreso({ ...datosIngreso, cargo_id: "Seleccione" });
-    }
+    (async function () {
+      if (
+        datosIngreso.departamento_id &&
+        datosIngreso.departamento_id !== "Seleccione"
+      ) {
+        setCargosActivos([]);
+        setCargosNivelesActivos([]);
+
+        setDatosIngreso({ ...datosIngreso, cargo_id: "Seleccione" });
+
+        const dataCargosActivos = await getAllCargosActivos(
+          token,
+          datosIngreso.departamento_id
+        );
+
+        setCargosActivos(dataCargosActivos);
+      } else {
+        setCargosActivos([]);
+        setCargosNivelesActivos([]);
+
+        setDatosIngreso({ ...datosIngreso, cargo_id: "Seleccione" });
+      }
+    })();
   }, [datosIngreso.departamento_id]);
 
   useEffect(() => {
-    if (datosIngreso.cargo_id && datosIngreso.cargo_id !== "Seleccione") {
-      dispatch(resetCargosNiveles());
-      setDatosIngreso({ ...datosIngreso, cargo_nivel_id: "Seleccione" });
-      dispatch(getAllCargosNivelesActivos(token, datosIngreso.cargo_id));
-    } else {
-      dispatch(resetCargosNiveles());
-      setDatosIngreso({ ...datosIngreso, cargo_nivel_id: "Seleccione" });
-    }
+    (async function () {
+      if (datosIngreso.cargo_id && datosIngreso.cargo_id !== "Seleccione") {
+        setCargosNivelesActivos([]);
+
+        setDatosIngreso({ ...datosIngreso, cargo_nivel_id: "Seleccione" });
+
+        const dataCargosNivelesActivos = await getAllCargosNivelesActivos(
+          token,
+          datosIngreso.cargo_id
+        );
+
+        setCargosNivelesActivos(dataCargosNivelesActivos);
+      } else {
+        setCargosNivelesActivos([]);
+
+        setDatosIngreso({ ...datosIngreso, cargo_nivel_id: "Seleccione" });
+      }
+    })();
   }, [datosIngreso.cargo_id]);
 
   const handleValidate = (e) => {
@@ -647,7 +694,7 @@ export function FormularioIngreso() {
     }
   };
 
-  const handleSaveFicha = () => {
+  const handleSaveFicha = async () => {
     const numero_identificacion = document.getElementById(
       "numero_identificacion"
     );
@@ -690,9 +737,6 @@ export function FormularioIngreso() {
       !nombres.value ||
       !apellidos.value ||
       !estado_civil.value ||
-      !rif.value ||
-      !telefono.value ||
-      !correo.value ||
       !fecha_nacimiento.value ||
       !nacimiento_lugar.value ||
       !nacimiento_pais_id.value ||
@@ -730,7 +774,7 @@ export function FormularioIngreso() {
     ) {
       Swal.fire({
         title: "Oops...",
-        text: "Datos Faltantes",
+        text: "Datos Faltantes jiji",
         icon: "error",
         showConfirmButton: false,
         timer: 3000,
@@ -739,10 +783,10 @@ export function FormularioIngreso() {
       return;
     }
 
-    dispatch(saveFichaIngreso(token, datosIngreso)).then(() => {
-      window.scroll(0, 0);
-      window.location.reload();
-    });
+    await saveFichaIngreso(token, datosIngreso);
+
+    window.scroll(0, 0);
+    window.location.reload();
   };
 
   const handleConvertirADecimales = (e) => {
@@ -948,8 +992,8 @@ export function FormularioIngreso() {
               onChange={handleValidate}
             >
               <option value="Ninguna">Ninguna</option>
-              {etnias_activas?.length
-                ? etnias_activas?.map(
+              {etniasActivas?.length
+                ? etniasActivas?.map(
                     (etnia, i) =>
                       etnia.activo && (
                         <option
@@ -1078,8 +1122,8 @@ export function FormularioIngreso() {
               onChange={handleValidate}
             >
               <option name="Seleccione">Seleccione</option>
-              {paises_activos?.length
-                ? paises_activos?.map(
+              {paisesActivos?.length
+                ? paisesActivos?.map(
                     (pais, i) =>
                       pais.activo && (
                         <option key={i} name={pais.nombre} value={pais.pais_id}>
@@ -1099,8 +1143,8 @@ export function FormularioIngreso() {
               onChange={handleValidate}
             >
               <option name="Seleccione">Seleccione</option>
-              {estados_nacimiento?.length
-                ? estados_nacimiento?.map(
+              {estadosNacimiento?.length
+                ? estadosNacimiento?.map(
                     (estado, i) =>
                       estado.activo && (
                         <option
@@ -1125,16 +1169,14 @@ export function FormularioIngreso() {
               onChange={handleValidate}
             >
               <option name="Seleccione">Seleccione</option>
-              {paises_activos?.length
-                ? paises_activos?.map(
-                    (pais, i) =>
-                      pais.activo && (
-                        <option key={i} name={pais.nombre} value={pais.pais_id}>
-                          {pais.nombre}
-                        </option>
-                      )
+              {paisesActivos?.map(
+                (pais, i) =>
+                  pais.activo && (
+                    <option key={i} name={pais.nombre} value={pais.pais_id}>
+                      {pais.nombre}
+                    </option>
                   )
-                : null}
+              )}
             </Select>
           </div>
           <div>
@@ -1146,8 +1188,8 @@ export function FormularioIngreso() {
               onChange={handleValidate}
             >
               <option name="Seleccione">Seleccione</option>
-              {estados_residencia?.length
-                ? estados_residencia?.map(
+              {estadosResidencia?.length
+                ? estadosResidencia?.map(
                     (estado, i) =>
                       estado.activo && (
                         <option
@@ -1171,8 +1213,8 @@ export function FormularioIngreso() {
               onChange={handleValidate}
             >
               <option name="Seleccione">Seleccione</option>
-              {municipios_activos?.length
-                ? municipios_activos?.map(
+              {municipiosActivos?.length
+                ? municipiosActivos?.map(
                     (municipio, i) =>
                       municipio.activo && (
                         <option
@@ -1196,8 +1238,8 @@ export function FormularioIngreso() {
               onChange={handleValidate}
             >
               <option name="Seleccione">Seleccione</option>
-              {parroquias_activas?.length
-                ? parroquias_activas?.map(
+              {parroquiasActivas?.length
+                ? parroquiasActivas?.map(
                     (parroquia, i) =>
                       parroquia.activo && (
                         <option
@@ -2432,8 +2474,8 @@ export function FormularioIngreso() {
                   onChange={handleValidate}
                 >
                   <option>Seleccione</option>
-                  {empresas_activas?.length
-                    ? empresas_activas?.map(
+                  {empresasActivas?.length
+                    ? empresasActivas?.map(
                         (empresa, i) =>
                           empresa.activo && (
                             <option
@@ -2459,8 +2501,8 @@ export function FormularioIngreso() {
                 onChange={handleValidate}
               >
                 <option>Seleccione</option>
-                {departamentos_activos?.length
-                  ? departamentos_activos?.map(
+                {departamentosActivos?.length
+                  ? departamentosActivos?.map(
                       (departamento, i) =>
                         departamento.activo && (
                           <option
@@ -2484,8 +2526,8 @@ export function FormularioIngreso() {
                 onChange={handleValidate}
               >
                 <option>Seleccione</option>
-                {cargos_activos?.length
-                  ? cargos_activos?.map(
+                {cargosActivos?.length
+                  ? cargosActivos?.map(
                       (cargo, i) =>
                         cargo.activo && (
                           <option
@@ -2509,8 +2551,8 @@ export function FormularioIngreso() {
                 onChange={handleValidate}
               >
                 <option>Seleccione</option>
-                {cargos_niveles_activos?.length
-                  ? cargos_niveles_activos?.map(
+                {cargosNivelesActivos?.length
+                  ? cargosNivelesActivos?.map(
                       (cargo_nivel, i) =>
                         cargo_nivel.activo && (
                           <option

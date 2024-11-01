@@ -2,16 +2,9 @@ import { persistReducer, persistStore } from "redux-persist";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 
-import cargos from "./cargos/cargosSlices";
-import cargos_niveles from "./cargosNiveles/cargosNivelesSlices";
 import curriculos from "./curriculos/curriculosSlices";
-import departamentos from "./departamentos/departamentosSlices";
 import empleados from "./empleados/empleadosSlices";
-import estados from "./estados/estadosSlices";
 import movimientos from "./movimientos/movimientosSlices";
-import municipios from "./municipios/municipiosSlices";
-import paises from "./paises/paisesSlices";
-import parroquias from "./parroquias/parroquiasSlices";
 import roles from "./roles/rolesSlices";
 import sugerencias from "./sugerencias/sugerenciasSlices";
 import tipos_sugerencias from "./tiposSugerencias/tiposSugerenciasSlices";
@@ -26,16 +19,9 @@ const persistConfig = {
 
 // Combinar el userReducer con Redux Persist
 const rootReducer = combineReducers({
-  cargos: cargos,
-  cargos_niveles: cargos_niveles,
   curriculos: curriculos,
-  departamentos: departamentos,
   empleados: empleados,
-  estados: estados,
   movimientos: movimientos,
-  municipios: municipios,
-  paises: paises,
-  parroquias: parroquias,
   roles: roles,
   sugerencias: sugerencias,
   tipos_sugerencias: tipos_sugerencias,

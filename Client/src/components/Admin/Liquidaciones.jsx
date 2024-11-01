@@ -4,9 +4,7 @@ import { useState, useEffect } from "react";
 
 //useDispatch es un Hook que te permite llenar un estado de Redux.
 //useSelector es un Hook que te permite extraer datos del store (estado) de Redux.
-import { useDispatch, useSelector } from "react-redux";
-
-import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
+import { useSelector } from "react-redux";
 
 import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
 
@@ -33,9 +31,6 @@ import { calcularAntiguedad } from "../../utils/formatearFecha";
 import Swal from "sweetalert2";
 
 export function Liquidaciones() {
-  //dispatch es esencial para comunicar cambios en el estado de tu aplicación a través de acciones
-  const dispatch = useDispatch();
-
   /*En este caso, está accediendo a state.empleados.token, 
   lo que significa que está extrayendo el valor del token del objeto empleados dentro del estado. */
   const token = useSelector((state) => state.empleados.token);
@@ -43,6 +38,7 @@ export function Liquidaciones() {
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const [datosEmpleado, setDatosEmpleado] = useState({});
+
   //setErrors es la función que usarás para actualizar el estado "errors"
   const [errors, setErrors] = useState({});
 
@@ -58,27 +54,13 @@ export function Liquidaciones() {
     window.scroll(0, 0); // Desplaza la ventana a la parte superior izquierda de la página.
     document.title = "Grupo Lamar - Liquidaciones (Admin)";
 
-    dispatch(getAllEmpresasActivas(token));
-
     return () => {
       document.title = "Grupo Lamar";
     };
   }, []);
 
   const handleValidate = (e) => {
-    const { name, value, options } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (Input).
-
-    if (e.target.tagName === "SELECT" && name === "clase_liquidaciones_id") {
-      if (options[e.target.selectedIndex].text === "Liquidaciones") {
-        setMovEntreEmpresas(false);
-      } else {
-        setMovEntreEmpresas(true);
-        setLiquidaciones({
-          ...datosLiquidaciones,
-          empresa_id: empleado.empresa_id,
-        });
-      }
-    }
+    const { name, value } = e.target; //Este parámetro representa el evento que desencadenó la función. En este caso, es un evento de entrada (Input).
 
     setLiquidaciones({ ...datosLiquidaciones, [name]: value }); //... y el nombre del estado hace que se mantenga la información del estado
 
@@ -137,26 +119,7 @@ export function Liquidaciones() {
     }
   };
 
-  const handlePostLiquidaciones = async () => {
-    const select = document.getElementById("clase_liquidaciones_id");
-    const opcionSeleccionada = select.options[select.selectedIndex];
-    const tipoSeleccionado = opcionSeleccionada.getAttribute("name");
-
-    if (tipoSeleccionado !== "Liquidaciones") {
-      Swal.fire({
-        title: "Oops...",
-        text: "Datos faltantes",
-        icon: "error",
-        showConfirmButton: false,
-        timer: 3000,
-      });
-    } else {
-      await postLiquidaciones(token, datosLiquidaciones).then(() => {
-        window.scroll(0, 0);
-        window.location.reload();
-      });
-    }
-  };
+  const handlePostLiquidaciones = async () => {};
 
   //Este es el código que renderiza un formulario para las liquidaciones.
   /*En este caso, el return está devolviendo un conjunto de elementos JSX que forman la estructura del formulario para liquidaciones */
@@ -355,7 +318,7 @@ export function Liquidaciones() {
           <TextArea id="ssst" name="ssst" onChange={handleValidate} rows="5" />
         </div>
 
-        <div className="flex flex-col justify-start" grid>
+        <div className="flex flex-col justify-start">
           <Label
             htmlFor="anticipos_prestamos"
             errors={errors.anticipos_prestamos}
@@ -442,7 +405,7 @@ export function Liquidaciones() {
             )}
           </div>
         </div>
-        <div className="flex flex-col justify-start" grid>
+        <div className="flex flex-col justify-start">
           <Label htmlFor="poliza_hcm" errors={errors.poliza_hcm}>
             Poliza HCM
           </Label>
