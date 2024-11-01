@@ -47,10 +47,10 @@ const getRol = async (req, res) => {
 };
 
 const postRol = async (req, res) => {
-  const { nombre, descripcion } = req.body;
+  const { nombre, descripcion, acceso_admin } = req.body;
 
   try {
-    const response = await crearRol(nombre, descripcion);
+    const response = await crearRol(nombre, descripcion, acceso_admin);
 
     return res.status(201).json(response);
   } catch (error) {
