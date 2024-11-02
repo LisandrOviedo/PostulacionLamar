@@ -92,11 +92,13 @@ export function BarraNavegacion() {
 
   useEffect(() => {
     if (pathname.startsWith("/admin/")) {
-      dispatch(getSugerenciasActivasNoRevisadas()).then((data) => {
+      (async function () {
+        const data = await getSugerenciasActivasNoRevisadas();
+
         if (data > 0) {
           setNotificaciones({ ...notificaciones, sugerencias: data });
         }
-      });
+      })();
     }
 
     const resultadoMenu = organizedMenus(empleado.Role.Menus);

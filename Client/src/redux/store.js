@@ -4,8 +4,6 @@ import storage from "redux-persist/lib/storage";
 
 import empleados from "./empleados/empleadosSlices";
 import roles from "./roles/rolesSlices";
-import sugerencias from "./sugerencias/sugerenciasSlices";
-import tipos_sugerencias from "./tiposSugerencias/tiposSugerenciasSlices";
 
 // Configuración de Redux Persist
 const persistConfig = {
@@ -18,8 +16,6 @@ const persistConfig = {
 const rootReducer = combineReducers({
   empleados: empleados,
   roles: roles,
-  sugerencias: sugerencias,
-  tipos_sugerencias: tipos_sugerencias,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
