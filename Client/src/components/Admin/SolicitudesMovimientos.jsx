@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import {
   getAllMovimientos,
@@ -7,10 +7,6 @@ import {
   putAprobarMovimiento,
   putDenegarMovimiento,
   postMovimientoPDF,
-  postPaginaActual,
-  postLimitePorPagina,
-  postFiltros,
-  deleteFiltros,
 } from "../../redux/movimientos/movimientosActions";
 
 import { getAllClasesMovimientosActivas } from "../../redux/clasesMovimientos/clasesMovimientosActions";
@@ -34,23 +30,18 @@ import Swal from "sweetalert2";
 
 export function SolicitudesMovimientos() {
   const tableRef = useRef(null);
-  const modalContentRef = useRef(null);
 
-  const dispatch = useDispatch();
+  const modalContentRef = useRef(null);
 
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const movimiento = useSelector((state) => state.movimientos.movimientoDetail);
+  const [movimiento, setMovimiento] = useState({});
 
-  const paginaActual = useSelector((state) => state.movimientos.paginaActual);
+  const [paginaActual, setPaginaActual] = useState(1);
 
-  const limitePorPagina = useSelector(
-    (state) => state.movimientos.limitePorPagina
-  );
-
-  const filtros = useSelector((state) => state.movimientos.filtros);
+  const [limitePorPagina, setLimitePorPagina] = useState(2);
 
   const [empresasActivas, setEmpresasActivas] = useState([]);
 
@@ -63,26 +54,30 @@ export function SolicitudesMovimientos() {
   const [showModal, setShowModal] = useState(false);
 
   const [filters, setFilters] = useState({
-    numero_identificacion: filtros.numero_identificacion || "",
-    apellidos: filtros.numero_identificacion || "",
-    clase_movimiento_id: filtros.clase_movimiento_id || "Seleccione",
-    estado_solicitud: filtros.estado_solicitud || "",
-    orden_campo: filtros.orden_campo || "",
-    orden_por: filtros.orden_por || "",
-    empresa_id: filtros.empresa_id || "Seleccione",
-    sede_id: filtros.sede_id || "Seleccione",
+    numero_identificacion: "",
+    apellidos: "",
+    clase_movimiento_id: "Seleccione",
+    estado_solicitud: "",
+    orden_campo: "",
+    orden_por: "",
+    empresa_id: "Seleccione",
+    sede_id: "Seleccione",
   });
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-  const handleChangePagination = (e) => {
+  const handleChangePagination = async (e) => {
     const { value } = e.target;
 
-    dispatch(postLimitePorPagina(value));
+    setLimitePorPagina(value);
 
     if (paginaActual !== 1) {
-      dispatch(postPaginaActual(1));
+      setPaginaActual(1);
     }
+
+    const dataMovimientos = await getAllMovimientos(token, filters, 1, value);
+
+    setMovimientos(dataMovimientos);
   };
 
   const handleChangeFilters = (e) => {
@@ -100,7 +95,7 @@ export function SolicitudesMovimientos() {
     setFilters({ ...filters, [valueBuscarPor]: value });
   };
 
-  const handleResetFilters = () => {
+  const handleResetFilters = async () => {
     setFilters({
       numero_identificacion: "",
       apellidos: "",
@@ -118,13 +113,38 @@ export function SolicitudesMovimientos() {
     buscarPor.selectedIndex = 0;
     inputSearch.value = "";
 
-    dispatch(deleteFiltros());
+    const dataMovimientos = await getAllMovimientos(
+      token,
+      {
+        numero_identificacion: "",
+        apellidos: "",
+        clase_movimiento_id: "Seleccione",
+        estado_solicitud: "",
+        orden_campo: "",
+        orden_por: "",
+        empresa_id: "Seleccione",
+        sede_id: "Seleccione",
+      },
+      1,
+      limitePorPagina
+    );
+
+    setMovimientos(dataMovimientos);
   };
 
-  const handleFind = () => {
-    dispatch(postPaginaActual(1)).then(() => {
-      dispatch(postFiltros(filters));
-    });
+  const handleFind = async () => {
+    if (paginaActual !== 1) {
+      setPaginaActual(1);
+    }
+
+    const dataMovimientos = await getAllMovimientos(
+      token,
+      filters,
+      1,
+      limitePorPagina
+    );
+
+    setMovimientos(dataMovimientos);
   };
 
   useEffect(() => {
@@ -158,19 +178,6 @@ export function SolicitudesMovimientos() {
 
   useEffect(() => {
     (async function () {
-      const data = await getAllMovimientos(
-        token,
-        filtros,
-        paginaActual,
-        limitePorPagina
-      );
-
-      setMovimientos(data);
-    })();
-  }, [filtros, paginaActual, limitePorPagina]);
-
-  useEffect(() => {
-    (async function () {
       if (filters.empresa_id && filters.empresa_id !== "Seleccione") {
         setFilters({ ...filters, sede_id: "Seleccione" });
 
@@ -184,15 +191,21 @@ export function SolicitudesMovimientos() {
     })();
   }, [filters.empresa_id]);
 
-  const handleVerDetalles = (movimiento_id) => {
+  const handleVerDetalles = async (movimiento_id) => {
     if (!showModal) {
       setShowModal(true);
     }
 
-    dispatch(getMovimientoDetail(token, movimiento_id, empleado.empleado_id));
+    const data = await getMovimientoDetail(
+      token,
+      movimiento_id,
+      empleado.empleado_id
+    );
+
+    setMovimiento(data);
   };
 
-  const changeOrder = (e) => {
+  const changeOrder = async (e) => {
     const { name } = e.target;
 
     if (!filters.orden_campo) {
@@ -202,13 +215,25 @@ export function SolicitudesMovimientos() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataMovimientos = await getAllMovimientos(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
+
+      setMovimientos(dataMovimientos);
     } else if (filters.orden_campo === name && filters.orden_por === "ASC") {
       setFilters((prevFilters) => ({ ...prevFilters, orden_por: "DESC" }));
 
-      return dispatch(postFiltros({ ...filters, orden_por: "DESC" }));
+      const dataMovimientos = await getAllMovimientos(
+        token,
+        { ...filters, orden_por: "DESC" },
+        1,
+        limitePorPagina
+      );
+
+      setMovimientos(dataMovimientos);
     } else if (filters.orden_campo === name && filters.orden_por === "DESC") {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -216,9 +241,14 @@ export function SolicitudesMovimientos() {
         orden_por: "",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: "", orden_por: "" })
+      const dataMovimientos = await getAllMovimientos(
+        token,
+        { ...filters, orden_campo: "", orden_por: "" },
+        1,
+        limitePorPagina
       );
+
+      setMovimientos(dataMovimientos);
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -226,25 +256,48 @@ export function SolicitudesMovimientos() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataMovimientos = await getAllMovimientos(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
+
+      setMovimientos(dataMovimientos);
     }
   };
 
-  const paginaAnterior = () => {
+  const paginaAnterior = async () => {
     if (paginaActual > 1) {
-      dispatch(postPaginaActual(paginaActual - 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual - 1);
+
+      const dataMovimientos = await getAllMovimientos(
+        token,
+        filters,
+        paginaActual - 1,
+        limitePorPagina
+      );
+
+      setMovimientos(dataMovimientos);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const paginaSiguiente = () => {
+  const paginaSiguiente = async () => {
     if (paginaActual < movimientos.cantidadPaginas) {
-      dispatch(postPaginaActual(paginaActual + 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual + 1);
+
+      const dataMovimientos = await getAllMovimientos(
+        token,
+        filters,
+        paginaActual + 1,
+        limitePorPagina
+      );
+
+      setMovimientos(dataMovimientos);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -300,7 +353,8 @@ export function SolicitudesMovimientos() {
 
   const handleCerrarModal = () => {
     setShowModal(false);
-    clearMovimientoDetail();
+
+    setMovimiento({});
   };
 
   const handleChangeFiltersSelect = (e) => {
@@ -324,30 +378,45 @@ export function SolicitudesMovimientos() {
     }
   };
 
-  const handleVerDetallesPDF = (movimiento_id, identificacion) => {
-    dispatch(
-      postMovimientoPDF(
-        token,
-        movimiento_id,
-        empleado.empleado_id,
-        identificacion
-      )
-    ).then((response) => {
-      Swal.fire({
-        text: `Movimiento del empleado ${identificacion} generado ¿Deseas abrirlo?`,
-        icon: "info",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Si",
-        cancelButtonText: "No",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${response.data}`;
-          window.open(URL_GET_PDF, "_blank");
-        }
-      });
+  const handleVerDetallesPDF = async (movimiento_id, identificacion) => {
+    const response = await postMovimientoPDF(
+      token,
+      movimiento_id,
+      empleado.empleado_id,
+      identificacion
+    );
+
+    Swal.fire({
+      text: `Movimiento del empleado ${identificacion} generado ¿Deseas abrirlo?`,
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${response.data}`;
+        window.open(URL_GET_PDF, "_blank");
+      }
     });
+  };
+
+  const handleChangePage = async (page) => {
+    if (paginaActual !== page) {
+      setPaginaActual(page);
+
+      const dataMovimientos = await getAllMovimientos(
+        token,
+        filters,
+        page,
+        limitePorPagina
+      );
+
+      setMovimientos(dataMovimientos);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -368,7 +437,7 @@ export function SolicitudesMovimientos() {
               name="buscar_por"
               onChange={handleChangeFiltersSelect}
               defaultValue={
-                filtros.apellidos ? "apellidos" : "numero_identificacion"
+                filters.apellidos ? "apellidos" : "numero_identificacion"
               }
             >
               <option value="numero_identificacion">
@@ -384,10 +453,10 @@ export function SolicitudesMovimientos() {
               placeholder="Escribe aquí tu búsqueda"
               onChange={handleChangeFiltersInput}
               defaultValue={
-                filtros.apellidos
-                  ? `${filtros.apellidos}`
-                  : filtros.numero_identificacion
-                  ? `${filtros.numero_identificacion}`
+                filters.apellidos
+                  ? `${filters.apellidos}`
+                  : filters.numero_identificacion
+                  ? `${filters.numero_identificacion}`
                   : ""
               }
             />
@@ -663,7 +732,7 @@ export function SolicitudesMovimientos() {
               <li>
                 <span
                   onClick={paginaAnterior}
-                  className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                  className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
                   paginaActual <= 1
                     ? "cursor-default"
@@ -679,12 +748,8 @@ export function SolicitudesMovimientos() {
               ).map((page) => (
                 <li key={page}>
                   <span
-                    onClick={() =>
-                      dispatch(postPaginaActual(page)).then(() => {
-                        tableRef.current.scrollIntoView({ behavior: "smooth" });
-                      })
-                    }
-                    className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                    onClick={() => handleChangePage(page)}
+                    className={`cursor-pointer select-none text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                       page === paginaActual
                         ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"
                         : ""
@@ -697,7 +762,7 @@ export function SolicitudesMovimientos() {
               <li>
                 <span
                   onClick={paginaSiguiente}
-                  className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                  className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
                   paginaActual >= movimientos.cantidadPaginas
                     ? "cursor-default"
