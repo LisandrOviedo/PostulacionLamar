@@ -596,7 +596,7 @@ export function PerfilesProfesionales() {
             <li>
               <span
                 onClick={paginaAnterior}
-                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                   ${
                     paginaActual <= 1
                       ? "cursor-default"
@@ -613,7 +613,7 @@ export function PerfilesProfesionales() {
               <li key={page}>
                 <span
                   onClick={() => handleChangePage(page)}
-                  className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                  className={`cursor-pointer select-none text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                     page === paginaActual
                       ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"
                       : ""
@@ -626,7 +626,7 @@ export function PerfilesProfesionales() {
             <li>
               <span
                 onClick={paginaSiguiente}
-                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
                   paginaActual >= curriculos.cantidadPaginas
                     ? "cursor-default"

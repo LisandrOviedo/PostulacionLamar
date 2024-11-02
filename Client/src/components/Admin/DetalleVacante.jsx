@@ -1,14 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
-import {
-  getVacanteDetail,
-  postPaginaActualDetail,
-  postLimitePorPaginaDetail,
-  postFiltrosDetail,
-  deleteFiltrosDetail,
-} from "../../redux/vacantes/vacantesActions";
+import { getVacanteDetail } from "../../redux/vacantes/vacantesActions";
 
 import { putCambiarEstado } from "../../redux/curriculos/curriculosActions";
 
@@ -28,42 +22,44 @@ export function DetalleVacante() {
 
   const tableRef = useRef(null);
 
-  const dispatch = useDispatch();
-
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
   const token = useSelector((state) => state.empleados.token);
 
-  const vacanteDetail = useSelector((state) => state.vacantes.vacanteDetail);
+  const [vacanteDetail, setVacanteDetail] = useState({});
 
-  const paginaActual = useSelector(
-    (state) => state.vacantes.paginaActualDetail
-  );
+  const [paginaActual, setPaginaActual] = useState(1);
 
-  const limitePorPagina = useSelector(
-    (state) => state.vacantes.limitePorPaginaDetail
-  );
-
-  const filtros = useSelector((state) => state.vacantes.filtrosDetail);
+  const [limitePorPagina, setLimitePorPagina] = useState(2);
 
   const [filters, setFilters] = useState({
-    buscar_por: filtros.buscar_por || "numero_identificacion",
-    buscar: filtros.buscar || "",
-    activo: filtros.activo || "",
-    orden_campo: filtros.orden_campo || "",
-    orden_por: filtros.orden_por || "",
+    buscar_por: "numero_identificacion",
+    buscar: "",
+    activo: "",
+    orden_campo: "",
+    orden_por: "",
   });
 
-  const handleChangePagination = (e) => {
+  const handleChangePagination = async (e) => {
     const { value } = e.target;
 
-    dispatch(postLimitePorPaginaDetail(value));
+    setLimitePorPagina(value);
 
     if (paginaActual !== 1) {
-      dispatch(postPaginaActualDetail(1));
+      setPaginaActual(1);
     }
+
+    const dataVacanteDetail = await getVacanteDetail(
+      token,
+      vacante_id,
+      filters,
+      1,
+      value
+    );
+
+    setVacanteDetail(dataVacanteDetail);
   };
 
   const handleChangeFilters = (e) => {
@@ -78,7 +74,7 @@ export function DetalleVacante() {
     setFilters({ ...filters, ["buscar_por"]: value });
   };
 
-  const handleResetFilters = () => {
+  const handleResetFilters = async () => {
     setFilters({
       buscar_por: "numero_identificacion",
       buscar: "",
@@ -93,13 +89,37 @@ export function DetalleVacante() {
     buscar_por.selectedIndex = 0;
     buscar.value = "";
 
-    dispatch(deleteFiltrosDetail());
+    const dataVacanteDetail = await getVacanteDetail(
+      token,
+      vacante_id,
+      {
+        buscar_por: "numero_identificacion",
+        buscar: "",
+        activo: "",
+        orden_campo: "",
+        orden_por: "",
+      },
+      paginaActual,
+      limitePorPagina
+    );
+
+    setVacanteDetail(dataVacanteDetail);
   };
 
-  const handleFind = () => {
-    dispatch(postPaginaActualDetail(1)).then(() => {
-      dispatch(postFiltrosDetail(filters));
-    });
+  const handleFind = async () => {
+    if (paginaActual !== 1) {
+      setPaginaActual(1);
+    }
+
+    const dataVacanteDetail = await getVacanteDetail(
+      token,
+      vacante_id,
+      filters,
+      1,
+      limitePorPagina
+    );
+
+    setVacanteDetail(dataVacanteDetail);
   };
 
   useEffect(() => {
@@ -114,19 +134,7 @@ export function DetalleVacante() {
     };
   }, []);
 
-  useEffect(() => {
-    dispatch(
-      getVacanteDetail(
-        token,
-        vacante_id,
-        filtros,
-        paginaActual,
-        limitePorPagina
-      )
-    );
-  }, [filtros, paginaActual, limitePorPagina]);
-
-  const changeOrder = (e) => {
+  const changeOrder = async (e) => {
     const { name } = e.target;
 
     if (!filters.orden_campo) {
@@ -136,13 +144,27 @@ export function DetalleVacante() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltrosDetail({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataVacanteDetail = await getVacanteDetail(
+        token,
+        vacante_id,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        paginaActual,
+        limitePorPagina
       );
+
+      setVacanteDetail(dataVacanteDetail);
     } else if (filters.orden_campo === name && filters.orden_por === "ASC") {
       setFilters((prevFilters) => ({ ...prevFilters, orden_por: "DESC" }));
 
-      return dispatch(postFiltrosDetail({ ...filters, orden_por: "DESC" }));
+      const dataVacanteDetail = await getVacanteDetail(
+        token,
+        vacante_id,
+        { ...filters, orden_por: "DESC" },
+        paginaActual,
+        limitePorPagina
+      );
+
+      setVacanteDetail(dataVacanteDetail);
     } else if (filters.orden_campo === name && filters.orden_por === "DESC") {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -150,9 +172,15 @@ export function DetalleVacante() {
         orden_por: "",
       }));
 
-      return dispatch(
-        postFiltrosDetail({ ...filters, orden_campo: "", orden_por: "" })
+      const dataVacanteDetail = await getVacanteDetail(
+        token,
+        vacante_id,
+        { ...filters, orden_campo: "", orden_por: "" },
+        paginaActual,
+        limitePorPagina
       );
+
+      setVacanteDetail(dataVacanteDetail);
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -160,36 +188,78 @@ export function DetalleVacante() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltrosDetail({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataVacanteDetail = await getVacanteDetail(
+        token,
+        vacante_id,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        paginaActual,
+        limitePorPagina
       );
+
+      setVacanteDetail(dataVacanteDetail);
     }
   };
 
-  const paginaAnterior = () => {
+  const paginaAnterior = async () => {
     if (paginaActual > 1) {
-      dispatch(postPaginaActualDetail(paginaActual - 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual - 1);
+
+      const dataVacanteDetail = await getVacanteDetail(
+        token,
+        vacante_id,
+        filters,
+        paginaActual - 1,
+        limitePorPagina
+      );
+
+      setVacanteDetail(dataVacanteDetail);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const paginaSiguiente = () => {
+  const paginaSiguiente = async () => {
     if (paginaActual < vacanteDetail.cantidadPaginas) {
-      dispatch(postPaginaActualDetail(paginaActual + 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual + 1);
+
+      const dataVacanteDetail = await getVacanteDetail(
+        token,
+        vacante_id,
+        filters,
+        paginaActual + 1,
+        limitePorPagina
+      );
+
+      setVacanteDetail(dataVacanteDetail);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   const handleVerDetalles = async (identificacion, nombre, empleado_id) => {
-    await putCambiarEstado(token, empleado_id, empleado.empleado_id).then(
-      () => {
-        const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${nombre}`;
+    await putCambiarEstado(token, empleado_id, empleado.empleado_id);
 
-        window.open(URL_GET_PDF, "_blank");
-      }
-    );
+    const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${nombre}`;
+
+    window.open(URL_GET_PDF, "_blank");
+  };
+
+  const handleChangePage = async (page) => {
+    if (paginaActual !== page) {
+      setPaginaActual(page);
+
+      const dataVacanteDetail = await getVacanteDetail(
+        token,
+        vacante_id,
+        filters,
+        page,
+        limitePorPagina
+      );
+
+      setVacanteDetail(dataVacanteDetail);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -468,7 +538,7 @@ export function DetalleVacante() {
             <li>
               <span
                 onClick={paginaAnterior}
-                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                   ${
                     paginaActual <= 1
                       ? "cursor-default"
@@ -484,12 +554,8 @@ export function DetalleVacante() {
             ).map((page) => (
               <li key={page}>
                 <span
-                  onClick={() =>
-                    dispatch(postPaginaActualDetail(page)).then(() => {
-                      tableRef.current.scrollIntoView({ behavior: "smooth" });
-                    })
-                  }
-                  className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                  onClick={() => handleChangePage(page)}
+                  className={`cursor-pointer select-none text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                     page === paginaActual
                       ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"
                       : ""
@@ -502,7 +568,7 @@ export function DetalleVacante() {
             <li>
               <span
                 onClick={paginaSiguiente}
-                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
                   paginaActual >= vacanteDetail.cantidadPaginas
                     ? "cursor-default"
