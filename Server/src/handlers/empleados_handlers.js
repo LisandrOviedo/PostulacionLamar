@@ -18,8 +18,8 @@ const getEmpleados = async (req, res) => {
   try {
     const response = await todosLosEmpleados(
       filtros,
-      parseInt(paginaActual),
-      parseInt(limitePorPagina)
+      paginaActual,
+      limitePorPagina
     );
 
     return res.json(response);

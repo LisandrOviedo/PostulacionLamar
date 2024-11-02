@@ -76,10 +76,10 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
     const indexEnd = paginaActual * limitePorPagina;
     const indexStart = indexEnd - limitePorPagina;
 
-    const pruebas_empleados = dataPruebasEmpleados.slice(indexStart, indexEnd);
+    const pruebasEmpleados = dataPruebasEmpleados.slice(indexStart, indexEnd);
     const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
 
-    return { cantidadPaginas, totalRegistros, pruebas_empleados };
+    return { cantidadPaginas, totalRegistros, pruebasEmpleados };
   } catch (error) {
     throw new Error(`Error al traer todas las pruebas: ${error.message}`);
   }

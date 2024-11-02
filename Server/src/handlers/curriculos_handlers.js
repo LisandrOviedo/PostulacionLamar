@@ -26,8 +26,8 @@ const getCurriculos = async (req, res) => {
   try {
     const response = await todosLosCurriculos(
       filtros,
-      parseInt(paginaActual),
-      parseInt(limitePorPagina)
+      paginaActual,
+      limitePorPagina
     );
 
     return res.json(response);
