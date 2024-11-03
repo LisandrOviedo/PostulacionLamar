@@ -36,12 +36,13 @@ export function Sugerencias() {
 
   const [paginaActual, setPaginaActual] = useState(1);
 
-  const [limitePorPagina, setLimitePorPagina] = useState(1);
+  const [limitePorPagina, setLimitePorPagina] = useState(2);
 
   const [filters, setFilters] = useState({
     empresa_id: "",
     sede_id: "",
     tipo_sugerencia_id: "",
+    estado: "",
     orden_campo: "",
     orden_por: "",
   });
@@ -79,6 +80,7 @@ export function Sugerencias() {
       empresa_id: "",
       sede_id: "",
       tipo_sugerencia_id: "",
+      estado: "",
       orden_campo: "",
       orden_por: "",
     });
@@ -97,6 +99,7 @@ export function Sugerencias() {
         empresa_id: "",
         sede_id: "",
         tipo_sugerencia_id: "",
+        estado: "",
         orden_campo: "",
         orden_por: "",
       },
@@ -356,6 +359,21 @@ export function Sugerencias() {
                     </option>
                   ))
                 : null}
+            </Select>
+          </div>
+          <div className="flex flex-col place-content-between">
+            <Label htmlFor="estado">Filtrar por estado</Label>
+            <Select
+              id="estado"
+              name="estado"
+              onChange={handleChangeFilters}
+              value={filters.estado}
+            >
+              <option value="">Todos</option>
+              <option value="Pendiente por revisar">
+                Pendiente por revisar
+              </option>
+              <option value="Revisado">Revisado</option>
             </Select>
           </div>
           <div className="flex flex-col place-content-between">
