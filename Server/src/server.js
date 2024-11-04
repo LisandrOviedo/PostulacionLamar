@@ -12,7 +12,7 @@ server.use(
     origin: (origin, callback) => {
       const ACCEPTED_ORIGINS = [
         "http://localhost:5173",
-        "http://10.10.0.46/tthh/",
+        "http://10.10.0.46",
       ];
 
       if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
