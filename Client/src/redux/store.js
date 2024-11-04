@@ -3,7 +3,6 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 
 import empleados from "./empleados/empleadosSlices";
-import roles from "./roles/rolesSlices";
 
 // Configuración de Redux Persist
 const persistConfig = {
@@ -15,7 +14,6 @@ const persistConfig = {
 // Combinar el userReducer con Redux Persist
 const rootReducer = combineReducers({
   empleados: empleados,
-  roles: roles,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -420,7 +420,7 @@ export function SolicitudesMovimientos() {
   };
 
   return (
-    <div>
+    <>
       <div
         className={`mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8 ${
           showModal && "opacity-50 pointer-events-none"
@@ -1127,6 +1127,6 @@ export function SolicitudesMovimientos() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
