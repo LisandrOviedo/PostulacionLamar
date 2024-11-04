@@ -403,15 +403,9 @@ export function AsignacionRoles() {
                   </th>
                 </tr>
               </thead>
-              <tbody>
-                {!empleados.empleados?.length ? (
-                  <tr>
-                    <td colSpan="4" className="text-center p-2">
-                      <p>¡No existen registros de empleados!</p>
-                    </td>
-                  </tr>
-                ) : (
-                  empleados.empleados?.map((empleado, i) => (
+              {empleados.empleados && empleados.empleados.length > 0 && (
+                <tbody>
+                  {empleados.empleados.map((empleado, i) => (
                     <tr
                       key={i}
                       className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
@@ -455,9 +449,9 @@ export function AsignacionRoles() {
                         </Button>
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
+                  ))}
+                </tbody>
+              )}
             </table>
           </div>
 
