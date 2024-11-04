@@ -4,28 +4,24 @@ import Swal from "sweetalert2";
 
 import { alertError } from "../../utils/sweetAlert2";
 
-import { prueba_kostick } from "../pruebasEmpleados/pruebasEmpleadosSlices";
-
 import { postPruebaEmpleado } from "../pruebasEmpleados/pruebasEmpleadosActions";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-export const getPruebaKostick = (token) => {
+export const getPruebaKostick = async (token) => {
   const URL_PRUEBA = `${URL_SERVER}/preguntas_kostick`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios(URL_PRUEBA, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+  try {
+    const { data } = await axios(URL_PRUEBA, {
+      headers: { authorization: `Bearer ${token}` },
+    });
 
-      return dispatch(prueba_kostick(data));
-    } catch (error) {
-      alertError(error);
+    return data;
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
 export const getPruebaKostickEmpleado = async (token, empleado_id, prueba) => {

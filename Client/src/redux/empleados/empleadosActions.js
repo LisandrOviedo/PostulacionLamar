@@ -4,18 +4,7 @@ import Swal from "sweetalert2";
 
 import { alertError } from "../../utils/sweetAlert2";
 
-import {
-  token,
-  allEmpleados,
-  empleadoLogin,
-  empleadoDetail,
-  allDocumentos,
-  paginaActual,
-  limitePorPagina,
-  filtros,
-  resetFilters,
-  resetState,
-} from "./empleadosSlices";
+import { token, empleadoLogin, resetState } from "./empleadosSlices";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
@@ -45,22 +34,20 @@ export const getLogin = (tipo_identificacion, numero_identificacion, clave) => {
   };
 };
 
-export const getEmpleadoDetail = (token, empleado_id) => {
+export const getEmpleadoDetail = async (token, empleado_id) => {
   const URL_EMPLEADO_DETAIL = `${URL_SERVER}/empleados/detalle/${empleado_id}`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios(URL_EMPLEADO_DETAIL, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+  try {
+    const { data } = await axios(URL_EMPLEADO_DETAIL, {
+      headers: { authorization: `Bearer ${token}` },
+    });
 
-      return dispatch(empleadoDetail(data));
-    } catch (error) {
-      alertError(error);
+    return data;
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
 export const getEmpleadoExistencia = async (
@@ -179,7 +166,6 @@ export const postDocumentos = async (token, formData) => {
 
     window.scroll(0, 0);
     window.location.reload();
-    return;
   } catch (error) {
     alertError(error);
 
@@ -187,22 +173,20 @@ export const postDocumentos = async (token, formData) => {
   }
 };
 
-export const getDocumentos = (token, empleado_id) => {
+export const getDocumentos = async (token, empleado_id) => {
   const URL_GET_DOCUMENTOS = `${URL_SERVER}/documentos_empleados/detalle/${empleado_id}`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios(URL_GET_DOCUMENTOS, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+  try {
+    const { data } = await axios(URL_GET_DOCUMENTOS, {
+      headers: { authorization: `Bearer ${token}` },
+    });
 
-      return dispatch(allDocumentos(data));
-    } catch (error) {
-      alertError(error);
+    return data;
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
 export const putFotoEmpleado = (token, formData) => {
@@ -277,7 +261,7 @@ const putCerrarSesion = async (token, empleado_id) => {
   }
 };
 
-export const getAllEmpleados = (
+export const getAllEmpleados = async (
   token,
   filtros,
   paginaActual,
@@ -285,27 +269,25 @@ export const getAllEmpleados = (
 ) => {
   const URL_ALL_EMPLEADOS = `${URL_SERVER}/empleados/allEmpleados`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios.post(
-        URL_ALL_EMPLEADOS,
-        {
-          filtros,
-          paginaActual,
-          limitePorPagina,
-        },
-        {
-          headers: { authorization: `Bearer ${token}` },
-        }
-      );
+  try {
+    const { data } = await axios.post(
+      URL_ALL_EMPLEADOS,
+      {
+        filtros,
+        paginaActual,
+        limitePorPagina,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
 
-      return dispatch(allEmpleados(data));
-    } catch (error) {
-      alertError(error);
+    return data;
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
 export const postPaginaActual = (pagina_actual) => {

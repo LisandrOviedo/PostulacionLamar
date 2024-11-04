@@ -24,16 +24,14 @@ export function ActualizarClaveTemporal() {
       clave: data.clave,
     };
 
-    try {
-      await putPasswordTemporal(body);
-      if (empleado.rol === "admin") {
-        navigate("/admin/acceso");
-        return;
-      }
-      navigate("/");
-    } catch (error) {
-      return error;
+    await putPasswordTemporal(body);
+
+    if (empleado.rol === "admin") {
+      navigate("/admin/acceso");
+      return;
     }
+
+    navigate("/");
   };
 
   const handleKeyDown = (e) => {
@@ -111,6 +109,7 @@ export function ActualizarClaveTemporal() {
               id="confirmarClave"
               value={data.confirmarClave}
               onChange={handleOnChange}
+              onKeyDown={handleKeyDown}
               minLength="4"
               maxLength="4"
               required

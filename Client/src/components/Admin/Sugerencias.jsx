@@ -1,21 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import {
   getAllSugerencias,
   getSugerencia,
-  postPaginaActual,
-  postLimitePorPagina,
-  postFiltros,
-  deleteFiltros,
 } from "../../redux/sugerencias/sugerenciasActions";
 
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
 
-import {
-  getAllSedesActivas,
-  resetSedesActivas,
-} from "../../redux/sedes/sedesActions";
+import { getAllSedesActivas } from "../../redux/sedes/sedesActions";
 
 import { getAllTiposSugerenciasActivas } from "../../redux/tiposSugerencias/tiposSugerenciasActions";
 
@@ -33,52 +26,47 @@ import Swal from "sweetalert2";
 export function Sugerencias() {
   const tableRef = useRef(null);
 
-  const dispatch = useDispatch();
-
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const sugerencias = useSelector((state) => state.sugerencias.sugerencias);
+  const [sugerencias, setSugerencias] = useState([]);
 
-  const sugerencia = useSelector((state) => state.sugerencias.sugerenciaDetail);
+  const [sugerencia, setSugerencia] = useState({});
 
-  const empresas_activas = useSelector(
-    (state) => state.empresas.empresas_activas
-  );
+  const [paginaActual, setPaginaActual] = useState(1);
 
-  const sedes_activas = useSelector((state) => state.sedes.sedes_activas);
-
-  const tipos_sugerencias_activas = useSelector(
-    (state) => state.tipos_sugerencias.tipos_sugerencias_activas
-  );
-
-  const paginaActual = useSelector((state) => state.sugerencias.paginaActual);
-
-  const limitePorPagina = useSelector(
-    (state) => state.sugerencias.limitePorPagina
-  );
-
-  const filtros = useSelector((state) => state.sugerencias.filtros);
+  const [limitePorPagina, setLimitePorPagina] = useState(2);
 
   const [filters, setFilters] = useState({
-    empresa_id: filtros.empresa_id || "",
-    sede_id: filtros.sede_id || "",
-    tipo_sugerencia_id: filtros.tipo_sugerencia_id || "",
-    orden_campo: filtros.orden_campo || "",
-    orden_por: filtros.orden_por || "",
+    empresa_id: "",
+    sede_id: "",
+    tipo_sugerencia_id: "",
+    estado: "",
+    orden_campo: "",
+    orden_por: "",
   });
+
+  const [empresasActivas, setEmpresasActivas] = useState([]);
+
+  const [tiposSugerenciasActivas, setTiposSugerenciasActivas] = useState([]);
+
+  const [sedesActivas, setSedesActivas] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
 
-  const handleChangePagination = (e) => {
+  const handleChangePagination = async (e) => {
     const { value } = e.target;
 
-    dispatch(postLimitePorPagina(value));
+    setLimitePorPagina(value);
 
     if (paginaActual !== 1) {
-      dispatch(postPaginaActual(1));
+      setPaginaActual(1);
     }
+
+    const dataSugerencias = await getAllSugerencias(token, filters, 1, value);
+
+    setSugerencias(dataSugerencias);
   };
 
   const handleChangeFilters = (e) => {
@@ -87,11 +75,12 @@ export function Sugerencias() {
     setFilters({ ...filters, [name]: value });
   };
 
-  const handleResetFilters = () => {
+  const handleResetFilters = async () => {
     setFilters({
       empresa_id: "",
       sede_id: "",
       tipo_sugerencia_id: "",
+      estado: "",
       orden_campo: "",
       orden_por: "",
     });
@@ -104,22 +93,50 @@ export function Sugerencias() {
     sede_id.selectedIndex = 0;
     tipo_sugerencia_id.selectedIndex = 0;
 
-    dispatch(deleteFiltros());
+    const dataSugerencias = await getAllSugerencias(
+      token,
+      {
+        empresa_id: "",
+        sede_id: "",
+        tipo_sugerencia_id: "",
+        estado: "",
+        orden_campo: "",
+        orden_por: "",
+      },
+      1,
+      limitePorPagina
+    );
+
+    setSugerencias(dataSugerencias);
   };
 
-  const handleFind = () => {
-    dispatch(postPaginaActual(1)).then(() => {
-      dispatch(postFiltros(filters));
-    });
+  const handleFind = async () => {
+    if (paginaActual !== 1) {
+      setPaginaActual(1);
+    }
+
+    const dataSugerencias = await getAllSugerencias(
+      token,
+      filters,
+      1,
+      limitePorPagina
+    );
+
+    setSugerencias(dataSugerencias);
   };
 
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllEmpresasActivas());
-    dispatch(getAllTiposSugerenciasActivas());
-
     handleFind();
+
+    (async function () {
+      const dataEmpresasActivas = await getAllEmpresasActivas();
+      const dataTiposSugerenciasActivas = await getAllTiposSugerenciasActivas();
+
+      setEmpresasActivas(dataEmpresasActivas);
+      setTiposSugerenciasActivas(dataTiposSugerenciasActivas);
+    })();
 
     document.title = "Grupo Lamar - Sugerencias (Admin)";
 
@@ -129,26 +146,33 @@ export function Sugerencias() {
   }, []);
 
   useEffect(() => {
-    if (filters.empresa_id && filters.empresa_id !== "Seleccione") {
-      setFilters({ ...filters, sede_id: "Seleccione" });
-      dispatch(getAllSedesActivas(filters.empresa_id));
-    } else {
-      dispatch(resetSedesActivas());
-      setFilters({ ...filters, sede_id: "Seleccione" });
-    }
+    (async function () {
+      if (filters.empresa_id && filters.empresa_id !== "Seleccione") {
+        setFilters({ ...filters, sede_id: "Seleccione" });
+
+        const data = await getAllSedesActivas(filters.empresa_id);
+
+        setSedesActivas(data);
+      } else {
+        setSedesActivas([]);
+        setFilters({ ...filters, sede_id: "Seleccione" });
+      }
+    })();
   }, [filters.empresa_id]);
 
-  useEffect(() => {
-    dispatch(getAllSugerencias(token, filtros, paginaActual, limitePorPagina));
-  }, [filtros, paginaActual, limitePorPagina]);
-
-  const handleVerDetalles = (sugerencia_id) => {
+  const handleVerDetalles = async (sugerencia_id) => {
     setShowModal(true);
 
-    dispatch(getSugerencia(token, sugerencia_id, empleado.empleado_id));
+    const dataSugerencia = await getSugerencia(
+      token,
+      sugerencia_id,
+      empleado.empleado_id
+    );
+
+    setSugerencia(dataSugerencia);
   };
 
-  const changeOrder = (e) => {
+  const changeOrder = async (e) => {
     const { name } = e.target;
 
     if (!filters.orden_campo) {
@@ -158,13 +182,25 @@ export function Sugerencias() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataSugerencias = await getAllSugerencias(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
+
+      setSugerencias(dataSugerencias);
     } else if (filters.orden_campo === name && filters.orden_por === "ASC") {
       setFilters((prevFilters) => ({ ...prevFilters, orden_por: "DESC" }));
 
-      return dispatch(postFiltros({ ...filters, orden_por: "DESC" }));
+      const dataSugerencias = await getAllSugerencias(
+        token,
+        { ...filters, orden_por: "DESC" },
+        1,
+        limitePorPagina
+      );
+
+      setSugerencias(dataSugerencias);
     } else if (filters.orden_campo === name && filters.orden_por === "DESC") {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -172,9 +208,14 @@ export function Sugerencias() {
         orden_por: "",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: "", orden_por: "" })
+      const dataSugerencias = await getAllSugerencias(
+        token,
+        { ...filters, orden_campo: "", orden_por: "" },
+        1,
+        limitePorPagina
       );
+
+      setSugerencias(dataSugerencias);
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -182,25 +223,65 @@ export function Sugerencias() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataSugerencias = await getAllSugerencias(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
+
+      setSugerencias(dataSugerencias);
     }
   };
 
-  const paginaAnterior = () => {
+  const paginaAnterior = async () => {
     if (paginaActual > 1) {
-      dispatch(postPaginaActual(paginaActual - 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual - 1);
+
+      const dataSugerencias = await getAllSugerencias(
+        token,
+        filters,
+        paginaActual - 1,
+        limitePorPagina
+      );
+
+      setSugerencias(dataSugerencias);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const paginaSiguiente = () => {
+  const paginaSiguiente = async () => {
     if (paginaActual < sugerencias.cantidadPaginas) {
-      dispatch(postPaginaActual(paginaActual + 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual + 1);
+
+      const dataSugerencias = await getAllSugerencias(
+        token,
+        filters,
+        paginaActual + 1,
+        limitePorPagina
+      );
+
+      setSugerencias(dataSugerencias);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleChangePage = async (page) => {
+    if (paginaActual !== page) {
+      setPaginaActual(page);
+
+      const dataSugerencias = await getAllSugerencias(
+        token,
+        filters,
+        page,
+        limitePorPagina
+      );
+
+      setSugerencias(dataSugerencias);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -225,8 +306,8 @@ export function Sugerencias() {
               onChange={handleChangeFilters}
             >
               <option>Seleccione</option>
-              {empresas_activas?.length
-                ? empresas_activas?.map((empresa, i) => (
+              {empresasActivas?.length
+                ? empresasActivas?.map((empresa, i) => (
                     <option
                       key={i}
                       name={empresa.nombre}
@@ -248,8 +329,8 @@ export function Sugerencias() {
               onChange={handleChangeFilters}
             >
               <option>Seleccione</option>
-              {sedes_activas?.length
-                ? sedes_activas?.map((sede, i) => (
+              {sedesActivas?.length
+                ? sedesActivas?.map((sede, i) => (
                     <option key={i} name={sede.nombre} value={sede.sede_id}>
                       {sede.nombre}
                     </option>
@@ -267,8 +348,8 @@ export function Sugerencias() {
               onChange={handleChangeFilters}
             >
               <option>Seleccione</option>
-              {tipos_sugerencias_activas?.length
-                ? tipos_sugerencias_activas?.map((tipo_sugerencia, i) => (
+              {tiposSugerenciasActivas?.length
+                ? tiposSugerenciasActivas?.map((tipo_sugerencia, i) => (
                     <option
                       key={i}
                       name={tipo_sugerencia.descripcion}
@@ -278,6 +359,21 @@ export function Sugerencias() {
                     </option>
                   ))
                 : null}
+            </Select>
+          </div>
+          <div className="flex flex-col place-content-between">
+            <Label htmlFor="estado">Filtrar por estado</Label>
+            <Select
+              id="estado"
+              name="estado"
+              onChange={handleChangeFilters}
+              value={filters.estado}
+            >
+              <option value="">Todos</option>
+              <option value="Pendiente por revisar">
+                Pendiente por revisar
+              </option>
+              <option value="Revisado">Revisado</option>
             </Select>
           </div>
           <div className="flex flex-col place-content-between">
@@ -355,53 +451,50 @@ export function Sugerencias() {
                   </th>
                 </tr>
               </thead>
-              <tbody>
-                {!sugerencias.sugerencias?.length ? (
-                  <tr>
-                    <td colSpan="9" className="text-center p-2">
-                      <p>¡No existen registros!</p>
-                    </td>
-                  </tr>
-                ) : (
-                  sugerencias.sugerencias?.map((sugerencia, i) => (
-                    <tr
-                      key={i}
-                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
-                    >
-                      <td className="p-4">{sugerencia.Sede.Empresa.nombre}</td>
-                      <td className="p-4">{sugerencia.Sede.nombre}</td>
-                      <td className="p-4">
-                        {sugerencia.Tipos_Sugerencia.descripcion}
-                      </td>
-                      <td className="p-4">
-                        {sugerencia.Empleado?.nombres ? (
-                          <>
-                            {sugerencia.Empleado?.nombres}{" "}
-                            {sugerencia.Empleado?.apellidos}
-                          </>
-                        ) : (
-                          "No revisado"
-                        )}
-                      </td>
-                      <td className="p-4">
-                        {sugerencia.fecha_revision
-                          ? DDMMYYYYHHMM2(sugerencia.fecha_revision)
-                          : "No revisado"}
-                      </td>
-                      <td className="p-4 flex gap-2">
-                        <Button
-                          className="m-0 w-auto text-xs"
-                          onClick={() =>
-                            handleVerDetalles(sugerencia.sugerencia_id)
-                          }
-                        >
-                          Ver Sugerencia
-                        </Button>
-                      </td>
-                    </tr>
-                  ))
+              {sugerencias.sugerencias &&
+                sugerencias.sugerencias.length > 0 && (
+                  <tbody>
+                    {sugerencias.sugerencias.map((sugerencia, i) => (
+                      <tr
+                        key={i}
+                        className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                      >
+                        <td className="p-4">
+                          {sugerencia.Sede.Empresa.nombre}
+                        </td>
+                        <td className="p-4">{sugerencia.Sede.nombre}</td>
+                        <td className="p-4">
+                          {sugerencia.Tipos_Sugerencia.descripcion}
+                        </td>
+                        <td className="p-4">
+                          {sugerencia.Empleado?.nombres ? (
+                            <>
+                              {sugerencia.Empleado?.nombres}{" "}
+                              {sugerencia.Empleado?.apellidos}
+                            </>
+                          ) : (
+                            "No revisado"
+                          )}
+                        </td>
+                        <td className="p-4">
+                          {sugerencia.fecha_revision
+                            ? DDMMYYYYHHMM2(sugerencia.fecha_revision)
+                            : "No revisado"}
+                        </td>
+                        <td className="p-4 flex gap-2">
+                          <Button
+                            className="m-0 w-auto text-xs"
+                            onClick={() =>
+                              handleVerDetalles(sugerencia.sugerencia_id)
+                            }
+                          >
+                            Ver Sugerencia
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
                 )}
-              </tbody>
             </table>
           </div>
           <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">
@@ -414,7 +507,7 @@ export function Sugerencias() {
               <li>
                 <span
                   onClick={paginaAnterior}
-                  className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                  className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
                   paginaActual <= 1
                     ? "cursor-default"
@@ -430,12 +523,8 @@ export function Sugerencias() {
               ).map((page) => (
                 <li key={page}>
                   <span
-                    onClick={() =>
-                      dispatch(postPaginaActual(page)).then(() => {
-                        tableRef.current.scrollIntoView({ behavior: "smooth" });
-                      })
-                    }
-                    className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                    onClick={() => handleChangePage(page)}
+                    className={`cursor-pointer select-none text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                       page === paginaActual
                         ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"
                         : ""
@@ -448,7 +537,7 @@ export function Sugerencias() {
               <li>
                 <span
                   onClick={paginaSiguiente}
-                  className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                  className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
                   paginaActual >= sugerencias.cantidadPaginas
                     ? "cursor-default"

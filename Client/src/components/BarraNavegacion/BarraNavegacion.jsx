@@ -4,11 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { deleteSesion } from "../../redux/sesiones/sesionesActions";
 
-import { resetAreasInteres } from "../../redux/areasInteres/areasInteresActions";
-import { resetCurriculos } from "../../redux/curriculos/curriculosActions";
 import { resetEmpleados } from "../../redux/empleados/empleadosActions";
-import { resetIdiomas } from "../../redux/idiomas/idiomasActions";
-import { resetPruebas } from "../../redux/pruebasEmpleados/pruebasEmpleadosActions";
 import { getSugerenciasActivasNoRevisadas } from "../../redux/sugerencias/sugerenciasActions";
 
 import { LogoHorizontal } from "../UI";
@@ -79,10 +75,6 @@ export function BarraNavegacion() {
       if (result.isConfirmed) {
         await deleteSesion(token, empleado.empleado_id);
 
-        dispatch(resetAreasInteres());
-        dispatch(resetCurriculos());
-        dispatch(resetIdiomas());
-        dispatch(resetPruebas());
         dispatch(resetEmpleados());
       }
     });
@@ -100,11 +92,13 @@ export function BarraNavegacion() {
 
   useEffect(() => {
     if (pathname.startsWith("/admin/")) {
-      dispatch(getSugerenciasActivasNoRevisadas()).then((data) => {
+      (async function () {
+        const data = await getSugerenciasActivasNoRevisadas();
+
         if (data > 0) {
           setNotificaciones({ ...notificaciones, sugerencias: data });
         }
-      });
+      })();
     }
 
     const resultadoMenu = organizedMenus(empleado.Role.Menus);

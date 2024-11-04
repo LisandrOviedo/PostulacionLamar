@@ -23,8 +23,8 @@ const getMovimientos = async (req, res) => {
   try {
     const response = await todosLosMovimientos(
       filtros,
-      parseInt(paginaActual),
-      parseInt(limitePorPagina)
+      paginaActual,
+      limitePorPagina
     );
 
     return res.json(response);

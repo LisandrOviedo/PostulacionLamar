@@ -4,26 +4,17 @@ import { useState, useEffect } from "react";
 
 //useDispatch es un Hook que te permite llenar un estado de Redux.
 //useSelector es un Hook que te permite extraer datos del store (estado) de Redux.
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
 
 import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
 
-import {
-  getAllDepartamentosActivos,
-  resetDepartamentos,
-} from "../../redux/departamentos/departamentosActions";
+import { getAllDepartamentosActivos } from "../../redux/departamentos/departamentosActions";
 
-import {
-  getAllCargosNivelesActivos,
-  resetCargosNiveles,
-} from "../../redux/cargosNiveles/cargosNivelesActions";
+import { getAllCargosNivelesActivos } from "../../redux/cargosNiveles/cargosNivelesActions";
 
-import {
-  getAllCargosActivos,
-  resetCargos,
-} from "../../redux/cargos/cargosActions";
+import { getAllCargosActivos } from "../../redux/cargos/cargosActions";
 
 import { getAllClasesMovimientosActivas } from "../../redux/clasesMovimientos/clasesMovimientosActions";
 
@@ -55,32 +46,21 @@ import { calcularAntiguedad } from "../../utils/formatearFecha";
 import Swal from "sweetalert2";
 
 export function Movimientos() {
-  //dispatch es esencial para comunicar cambios en el estado de tu aplicación a través de acciones
-  const dispatch = useDispatch();
-
   /*En este caso, está accediendo a state.empleados.token, 
   lo que significa que está extrayendo el valor del token del objeto empleados dentro del estado. */
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const clases_movimientos_activas = useSelector(
-    (state) => state.clases_movimientos.clases_movimientos_activas
-  );
+  const [empresasActivas, setEmpresasActivas] = useState([]);
 
-  const empresas_activas = useSelector(
-    (state) => state.empresas.empresas_activas
-  );
+  const [departamentosActivos, setDepartamentosActivos] = useState([]);
 
-  const departamentos_activos = useSelector(
-    (state) => state.departamentos.departamentos_activos
-  );
+  const [cargosActivos, setCargosActivos] = useState([]);
 
-  const cargos_activos = useSelector((state) => state.cargos.cargos_activos);
+  const [cargosNivelesActivos, setCargosNivelesActivos] = useState([]);
 
-  const cargos_niveles_activos = useSelector(
-    (state) => state.cargos_niveles.cargos_niveles_activos
-  );
+  const [clasesMovimientosActivas, setClasesMovimientosActivas] = useState([]);
 
   //setErrors es la función que usarás para actualizar el estado "errors"
   const [errors, setErrors] = useState({});
@@ -116,8 +96,15 @@ export function Movimientos() {
     window.scroll(0, 0); // Desplaza la ventana a la parte superior izquierda de la página.
     document.title = "Grupo Lamar - Movimientos (Admin)";
 
-    dispatch(getAllEmpresasActivas(token));
-    dispatch(getAllClasesMovimientosActivas(token));
+    (async function () {
+      const dataEmpresasActivas = await getAllEmpresasActivas();
+      const dataClasesMovimientosActivas = await getAllClasesMovimientosActivas(
+        token
+      );
+
+      setEmpresasActivas(dataEmpresasActivas);
+      setClasesMovimientosActivas(dataClasesMovimientosActivas);
+    })();
 
     return () => {
       document.title = "Grupo Lamar";
@@ -125,48 +112,93 @@ export function Movimientos() {
   }, []);
 
   useEffect(() => {
-    if (
-      datosMovimiento.empresa_id &&
-      datosMovimiento.empresa_id !== "Seleccione"
-    ) {
-      dispatch(resetDepartamentos());
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setDatosMovimiento({ ...datosMovimiento, departamento_id: "Seleccione" });
-      dispatch(getAllDepartamentosActivos(token, datosMovimiento.empresa_id));
-    } else {
-      dispatch(resetDepartamentos());
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setDatosMovimiento({ ...datosMovimiento, departamento_id: "Seleccione" });
-    }
+    (async function () {
+      if (
+        datosMovimiento.empresa_id &&
+        datosMovimiento.empresa_id !== "Seleccione"
+      ) {
+        setDepartamentosActivos([]);
+        setCargosActivos([]);
+        setCargosNivelesActivos([]);
+
+        setDatosMovimiento({
+          ...datosMovimiento,
+          departamento_id: "Seleccione",
+        });
+
+        const dataDepartamentosActivos = await getAllDepartamentosActivos(
+          token,
+          datosMovimiento.empresa_id
+        );
+
+        setDepartamentosActivos(dataDepartamentosActivos);
+      } else {
+        setDepartamentosActivos([]);
+        setCargosActivos([]);
+        setCargosNivelesActivos([]);
+
+        setDatosMovimiento({
+          ...datosMovimiento,
+          departamento_id: "Seleccione",
+        });
+      }
+    })();
   }, [datosMovimiento.empresa_id]);
 
   useEffect(() => {
-    if (
-      datosMovimiento.departamento_id &&
-      datosMovimiento.departamento_id !== "Seleccione"
-    ) {
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setDatosMovimiento({ ...datosMovimiento, cargo_id: "Seleccione" });
-      dispatch(getAllCargosActivos(token, datosMovimiento.departamento_id));
-    } else {
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setDatosMovimiento({ ...datosMovimiento, cargo_id: "Seleccione" });
-    }
+    (async function () {
+      if (
+        datosMovimiento.departamento_id &&
+        datosMovimiento.departamento_id !== "Seleccione"
+      ) {
+        setCargosActivos([]);
+        setCargosNivelesActivos([]);
+
+        setDatosMovimiento({ ...datosMovimiento, cargo_id: "Seleccione" });
+
+        const dataCargosActivos = await getAllCargosActivos(
+          token,
+          datosMovimiento.departamento_id
+        );
+
+        setCargosActivos(dataCargosActivos);
+      } else {
+        setCargosActivos([]);
+        setCargosNivelesActivos([]);
+
+        setDatosMovimiento({ ...datosMovimiento, cargo_id: "Seleccione" });
+      }
+    })();
   }, [datosMovimiento.departamento_id]);
 
   useEffect(() => {
-    if (datosMovimiento.cargo_id && datosMovimiento.cargo_id !== "Seleccione") {
-      dispatch(resetCargosNiveles());
-      setDatosMovimiento({ ...datosMovimiento, cargo_nivel_id: "Seleccione" });
-      dispatch(getAllCargosNivelesActivos(token, datosMovimiento.cargo_id));
-    } else {
-      dispatch(resetCargosNiveles());
-      setDatosMovimiento({ ...datosMovimiento, cargo_nivel_id: "Seleccione" });
-    }
+    (async function () {
+      if (
+        datosMovimiento.cargo_id &&
+        datosMovimiento.cargo_id !== "Seleccione"
+      ) {
+        setCargosNivelesActivos([]);
+
+        setDatosMovimiento({
+          ...datosMovimiento,
+          cargo_nivel_id: "Seleccione",
+        });
+
+        const dataCargosNivelesActivos = await getAllCargosNivelesActivos(
+          token,
+          datosMovimiento.cargo_id
+        );
+
+        setCargosNivelesActivos(dataCargosNivelesActivos);
+      } else {
+        setCargosNivelesActivos([]);
+
+        setDatosMovimiento({
+          ...datosMovimiento,
+          cargo_nivel_id: "Seleccione",
+        });
+      }
+    })();
   }, [datosMovimiento.cargo_id]);
 
   //Cada vez que el usuario cambia el valor de un campo, handleValidate se encarga de validar la entrada y actualizar el estado del formulario.
@@ -549,8 +581,8 @@ export function Movimientos() {
             onChange={handleValidate}
           >
             <option>Seleccione</option>
-            {clases_movimientos_activas?.length
-              ? clases_movimientos_activas?.map((clase_movimiento, i) => (
+            {clasesMovimientosActivas?.length
+              ? clasesMovimientosActivas?.map((clase_movimiento, i) => (
                   <option
                     key={i}
                     name={clase_movimiento.descripcion}
@@ -653,8 +685,8 @@ export function Movimientos() {
             disabled={movEntreEmpresas}
           >
             <option>Seleccione</option>
-            {empresas_activas?.length
-              ? empresas_activas?.map(
+            {empresasActivas?.length
+              ? empresasActivas?.map(
                   (empresa, i) =>
                     empresa.activo && (
                       <option
@@ -679,8 +711,8 @@ export function Movimientos() {
             onChange={handleValidate}
           >
             <option>Seleccione</option>
-            {departamentos_activos?.length
-              ? departamentos_activos?.map(
+            {departamentosActivos?.length
+              ? departamentosActivos?.map(
                   (departamento, i) =>
                     departamento.activo && (
                       <option
@@ -704,8 +736,8 @@ export function Movimientos() {
             onChange={handleValidate}
           >
             <option>Seleccione</option>
-            {cargos_activos?.length
-              ? cargos_activos?.map(
+            {cargosActivos?.length
+              ? cargosActivos?.map(
                   (cargo, i) =>
                     cargo.activo && (
                       <option
@@ -729,8 +761,8 @@ export function Movimientos() {
             onChange={handleValidate}
           >
             <option>Seleccione</option>
-            {cargos_niveles_activos?.length
-              ? cargos_niveles_activos?.map(
+            {cargosNivelesActivos?.length
+              ? cargosNivelesActivos?.map(
                   (cargo_nivel, i) =>
                     cargo_nivel.activo && (
                       <option

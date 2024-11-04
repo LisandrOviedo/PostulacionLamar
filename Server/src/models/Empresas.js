@@ -23,11 +23,11 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
-    seguro_social_id: {
-      // Campo relacionado
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
+    // seguro_social_id: {
+    //   // Campo relacionado
+    //   type: DataTypes.INTEGER,
+    //   allowNull: false,
+    // },
     activo: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,

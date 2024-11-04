@@ -25,12 +25,9 @@ export function ActualizarClave() {
       claveNueva: data.claveNueva,
     };
 
-    try {
-      await putPassword(token, body);
-      window.location.reload();
-    } catch (error) {
-      return error;
-    }
+    await putPassword(token, body);
+
+    window.location.reload();
   };
 
   const handleKeyDown = (e) => {
@@ -52,7 +49,9 @@ export function ActualizarClave() {
 
   useEffect(() => {
     window.scroll(0, 0);
+
     document.title = "Grupo Lamar - Actualizar Clave";
+    
     return () => {
       document.title = "Grupo Lamar";
     };

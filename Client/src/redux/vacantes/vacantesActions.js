@@ -2,25 +2,11 @@ import axios from "axios";
 
 import Swal from "sweetalert2";
 
-import {
-  allVacantes,
-  vacanteDetail,
-  paginaActual,
-  limitePorPagina,
-  filtros,
-  resetFilters,
-  paginaActualDetail,
-  limitePorPaginaDetail,
-  filtrosDetail,
-  resetFiltersDetail,
-  resetState,
-} from "./vacantesSlices";
-
 import { alertError } from "../../utils/sweetAlert2";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-export const getAllVacantes = (
+export const getAllVacantes = async (
   token,
   filtros,
   paginaActual,
@@ -44,22 +30,20 @@ export const getAllVacantes = (
     URL_ALL_VACANTES = `${URL_ALL_VACANTES}&activo=${filtros.activo}`;
   }
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios(URL_ALL_VACANTES, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+  try {
+    const { data } = await axios(URL_ALL_VACANTES, {
+      headers: { authorization: `Bearer ${token}` },
+    });
 
-      return dispatch(allVacantes(data));
-    } catch (error) {
-      alertError(error);
+    return data;
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
-export const getVacanteDetail = (
+export const getVacanteDetail = async (
   token,
   vacante_id,
   filtros,
@@ -80,19 +64,17 @@ export const getVacanteDetail = (
     URL_VACANTE_DETAIL = `${URL_VACANTE_DETAIL}&activo=${filtros.activo}`;
   }
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios(URL_VACANTE_DETAIL, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+  try {
+    const { data } = await axios(URL_VACANTE_DETAIL, {
+      headers: { authorization: `Bearer ${token}` },
+    });
 
-      return dispatch(vacanteDetail(data));
-    } catch (error) {
-      alertError(error);
+    return data;
+  } catch (error) {
+    alertError(error);
 
-      throw new Error();
-    }
-  };
+    throw new Error();
+  }
 };
 
 export const postPostulacionVacante = async (
@@ -132,112 +114,4 @@ export const postPostulacionVacante = async (
 
     throw new Error();
   }
-};
-
-export const postPaginaActual = (pagina_actual) => {
-  return async (dispatch) => {
-    try {
-      return dispatch(paginaActual(pagina_actual));
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-export const postLimitePorPagina = (limite_pagina) => {
-  return async (dispatch) => {
-    try {
-      return dispatch(limitePorPagina(limite_pagina));
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-export const postFiltros = (filters) => {
-  return async (dispatch) => {
-    try {
-      return dispatch(filtros(filters));
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-export const deleteFiltros = () => {
-  return async (dispatch) => {
-    try {
-      return dispatch(resetFilters());
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-export const postPaginaActualDetail = (pagina_actual) => {
-  return async (dispatch) => {
-    try {
-      return dispatch(paginaActualDetail(pagina_actual));
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-export const postLimitePorPaginaDetail = (limite_pagina) => {
-  return async (dispatch) => {
-    try {
-      return dispatch(limitePorPaginaDetail(limite_pagina));
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-export const postFiltrosDetail = (filters) => {
-  return async (dispatch) => {
-    try {
-      return dispatch(filtrosDetail(filters));
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-export const deleteFiltrosDetail = () => {
-  return async (dispatch) => {
-    try {
-      return dispatch(resetFiltersDetail());
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-export const resetVacantes = () => {
-  return async (dispatch) => {
-    try {
-      return dispatch(resetState());
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
 };
