@@ -4,20 +4,9 @@ import { alertError } from "../../utils/sweetAlert2";
 
 import Swal from "sweetalert2";
 
-import {
-  token,
-  allRoles,
-  paginaActual,
-  limitePorPagina,
-  filtros,
-  resetFilters,
-  resetState,
-  rolDetail,
-} from "./rolesSlices";
-
 const URL_SERVER = import.meta.env.VITE_URL_SERVER;
 
-export const getAllRolesFiltrados = (
+export const getAllRolesFiltrados = async (
   token,
   filtros,
   paginaActual,
@@ -25,60 +14,54 @@ export const getAllRolesFiltrados = (
 ) => {
   const URL_ALL_ROLES_FILTRADOS = `${URL_SERVER}/roles/allRoles`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios.post(
-        URL_ALL_ROLES_FILTRADOS,
-        {
-          filtros,
-          paginaActual,
-          limitePorPagina,
-        },
-        {
-          headers: { authorization: `Bearer ${token}` },
-        }
-      );
+  try {
+    const { data } = await axios.post(
+      URL_ALL_ROLES_FILTRADOS,
+      {
+        filtros,
+        paginaActual,
+        limitePorPagina,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
 
-      return dispatch(allRoles(data));
-    } catch (error) {
-      alertError(error);
-      throw new Error();
-    }
-  };
+    return data;
+  } catch (error) {
+    alertError(error);
+    throw new Error();
+  }
 };
 
-export const getAllRoles = (token) => {
+export const getAllRoles = async (token) => {
   const URL_ALL_ROLES = `${URL_SERVER}/roles`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios(URL_ALL_ROLES, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+  try {
+    const { data } = await axios(URL_ALL_ROLES, {
+      headers: { authorization: `Bearer ${token}` },
+    });
 
-      return dispatch(allRoles(data));
-    } catch (error) {
-      alertError(error);
-      throw new Error();
-    }
-  };
+    return data;
+  } catch (error) {
+    alertError(error);
+    throw new Error();
+  }
 };
 
-export const getRol = (token, rol_id) => {
+export const getRol = async (token, rol_id) => {
   const URL_DETALLES_ROL = `${URL_SERVER}/roles/detalle/${rol_id}`;
 
-  return async (dispatch) => {
-    try {
-      const { data } = await axios(URL_DETALLES_ROL, {
-        headers: { authorization: `Bearer ${token}` },
-      });
+  try {
+    const { data } = await axios(URL_DETALLES_ROL, {
+      headers: { authorization: `Bearer ${token}` },
+    });
 
-      dispatch(rolDetail(data)); // Dispatch para actualizar el estado
-    } catch (error) {
-      alertError(error);
-      throw new Error();
-    }
-  };
+    return data;
+  } catch (error) {
+    alertError(error);
+    throw new Error();
+  }
 };
 
 export const putRolEmpleado = async (token, rol_id, empleado_id) => {
@@ -127,66 +110,6 @@ export const putModificarRol = async (token, rol_id, nombre, descripcion) => {
     alertError(error);
     throw new Error();
   }
-};
-
-export const postPaginaActual = (pagina_actual) => {
-  return async (dispatch) => {
-    try {
-      return dispatch(paginaActual(pagina_actual));
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-export const postLimitePorPagina = (limite_pagina) => {
-  return async (dispatch) => {
-    try {
-      return dispatch(limitePorPagina(limite_pagina));
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-export const postFiltros = (filters) => {
-  return async (dispatch) => {
-    try {
-      return dispatch(filtros(filters));
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-export const deleteFiltros = () => {
-  return async (dispatch) => {
-    try {
-      return dispatch(resetFilters());
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
-};
-
-export const resetRoles = () => {
-  return async (dispatch) => {
-    try {
-      return dispatch(resetState());
-    } catch (error) {
-      alertError(error);
-
-      throw new Error();
-    }
-  };
 };
 
 export const postCrearRol = async (token, nuevoRol) => {

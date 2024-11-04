@@ -1,15 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { getAllRoles, putRolEmpleado } from "../../redux/roles/rolesActions";
 
 import {
   getAllEmpleados,
   getEmpleadoDetail,
-  postPaginaActual,
-  postLimitePorPagina,
-  postFiltros,
-  deleteFiltros,
 } from "../../redux/empleados/empleadosActions";
 
 import { Button, Input, Label, Select, Span, Title } from "../UI";
@@ -24,31 +20,25 @@ import { DDMMYYYY } from "../../utils/formatearFecha";
 import Swal from "sweetalert2";
 
 export function AsignacionRoles() {
-  const dispatch = useDispatch();
-
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const empleados = useSelector((state) => state.empleados.empleados);
+  const [roles, setRoles] = useState([]);
 
-  const empleadoDetail = useSelector((state) => state.empleados.empleadoDetail);
+  const [empleadoDetail, setEmpleadoDetail] = useState({});
 
-  const paginaActual = useSelector((state) => state.empleados.paginaActual);
+  const [empleados, setEmpleados] = useState([]);
 
-  const limitePorPagina = useSelector(
-    (state) => state.empleados.limitePorPagina
-  );
+  const [paginaActual, setPaginaActual] = useState(1);
 
-  const roles = useSelector((state) => state.roles.roles);
-
-  const filtros = useSelector((state) => state.empleados.filtros);
+  const [limitePorPagina, setLimitePorPagina] = useState(2);
 
   const [filters, setFilters] = useState({
-    numero_identificacion: filtros.numero_identificacion || "",
-    apellidos: filtros.apellidos || "",
-    orden_campo: filtros.orden_campo || "",
-    orden_por: filtros.orden_por || "",
+    numero_identificacion: "",
+    apellidos: "",
+    orden_campo: "",
+    orden_por: "",
     empresa_id: empleado.empresa_id,
   });
 
@@ -58,14 +48,18 @@ export function AsignacionRoles() {
 
   const tableRef = useRef(null);
 
-  const handleChangePagination = (e) => {
+  const handleChangePagination = async (e) => {
     const { value } = e.target;
 
-    dispatch(postLimitePorPagina(value));
+    setLimitePorPagina(value);
 
     if (paginaActual !== 1) {
-      dispatch(postPaginaActual(1));
+      setPaginaActual(1);
     }
+
+    const dataEmpleados = await getAllEmpleados(token, filters, 1, value);
+
+    setEmpleados(dataEmpleados);
   };
 
   const handleChangeFiltersInput = (e) => {
@@ -98,7 +92,7 @@ export function AsignacionRoles() {
     }
   };
 
-  const handleResetFilters = () => {
+  const handleResetFilters = async () => {
     setFilters({
       numero_identificacion: "",
       apellidos: "",
@@ -113,13 +107,35 @@ export function AsignacionRoles() {
     buscarPor.selectedIndex = 0;
     inputSearch.value = "";
 
-    dispatch(deleteFiltros());
+    const dataEmpleados = await getAllEmpleados(
+      token,
+      {
+        numero_identificacion: "",
+        apellidos: "",
+        orden_campo: "",
+        orden_por: "",
+        empresa_id: empleado.empresa_id,
+      },
+      1,
+      limitePorPagina
+    );
+
+    setEmpleados(dataEmpleados);
   };
 
-  const handleFind = () => {
-    dispatch(postPaginaActual(1)).then(() => {
-      dispatch(postFiltros(filters));
-    });
+  const handleFind = async () => {
+    if (paginaActual !== 1) {
+      setPaginaActual(1);
+    }
+
+    const dataEmpleados = await getAllEmpleados(
+      token,
+      filters,
+      1,
+      limitePorPagina
+    );
+
+    setEmpleados(dataEmpleados);
   };
 
   useEffect(() => {
@@ -127,7 +143,11 @@ export function AsignacionRoles() {
 
     handleFind();
 
-    dispatch(getAllRoles(token));
+    (async function () {
+      const dataAllRoles = await getAllRoles(token);
+
+      setRoles(dataAllRoles);
+    })();
 
     document.title = "Grupo Lamar - Asignación Roles (Admin)";
 
@@ -136,11 +156,7 @@ export function AsignacionRoles() {
     };
   }, []);
 
-  useEffect(() => {
-    dispatch(getAllEmpleados(token, filtros, paginaActual, limitePorPagina));
-  }, [filtros, paginaActual, limitePorPagina]);
-
-  const changeOrder = (e) => {
+  const changeOrder = async (e) => {
     const { name } = e.target;
 
     if (!filters.orden_campo) {
@@ -150,13 +166,25 @@ export function AsignacionRoles() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
+
+      setEmpleados(dataEmpleados);
     } else if (filters.orden_campo === name && filters.orden_por === "ASC") {
       setFilters((prevFilters) => ({ ...prevFilters, orden_por: "DESC" }));
 
-      return dispatch(postFiltros({ ...filters, orden_por: "DESC" }));
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        { ...filters, orden_por: "DESC" },
+        1,
+        limitePorPagina
+      );
+
+      setEmpleados(dataEmpleados);
     } else if (filters.orden_campo === name && filters.orden_por === "DESC") {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -164,9 +192,14 @@ export function AsignacionRoles() {
         orden_por: "",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: "", orden_por: "" })
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        { ...filters, orden_campo: "", orden_por: "" },
+        1,
+        limitePorPagina
       );
+
+      setEmpleados(dataEmpleados);
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -174,25 +207,48 @@ export function AsignacionRoles() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
+
+      setEmpleados(dataEmpleados);
     }
   };
 
-  const paginaAnterior = () => {
+  const paginaAnterior = async () => {
     if (paginaActual > 1) {
-      dispatch(postPaginaActual(paginaActual - 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual - 1);
+
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        filters,
+        paginaActual - 1,
+        limitePorPagina
+      );
+
+      setEmpleados(dataEmpleados);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const paginaSiguiente = () => {
+  const paginaSiguiente = async () => {
     if (paginaActual < empleados.cantidadPaginas) {
-      dispatch(postPaginaActual(paginaActual + 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual + 1);
+
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        filters,
+        paginaActual + 1,
+        limitePorPagina
+      );
+
+      setEmpleados(dataEmpleados);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -201,12 +257,14 @@ export function AsignacionRoles() {
     setNuevoRol({});
   };
 
-  const handleVerDetalles = (empleado_id) => {
+  const handleVerDetalles = async (empleado_id) => {
     if (!showModal) {
       setShowModal(true);
     }
 
-    dispatch(getEmpleadoDetail(token, empleado_id));
+    const dataEmpleadoDetail = await getEmpleadoDetail(token, empleado_id);
+
+    setEmpleadoDetail(dataEmpleadoDetail);
   };
 
   const handleGuardarRol = () => {
@@ -220,11 +278,25 @@ export function AsignacionRoles() {
       cancelButtonColor: "#d33",
       confirmButtonText: "Si",
       cancelButtonText: "No",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         if (nuevoRol.rol_id !== "Seleccione") {
-          putRolEmpleado(token, nuevoRol.rol_id, empleadoDetail.empleado_id);
+          await putRolEmpleado(
+            token,
+            nuevoRol.rol_id,
+            empleadoDetail.empleado_id
+          );
+
           setShowModal(false);
+
+          const dataEmpleados = await getAllEmpleados(
+            token,
+            filters,
+            paginaActual,
+            limitePorPagina
+          );
+
+          setEmpleados(dataEmpleados);
         } else {
           Swal.fire({
             title: "Oops...",
@@ -249,6 +321,23 @@ export function AsignacionRoles() {
     setNuevoRol({ descripcion: descripcion_rol, [name]: value });
   };
 
+  const handleChangePage = async (page) => {
+    if (paginaActual !== page) {
+      setPaginaActual(page);
+
+      const dataEmpleados = await getAllEmpleados(
+        token,
+        filters,
+        page,
+        limitePorPagina
+      );
+
+      setEmpleados(dataEmpleados);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <>
       <div
@@ -267,7 +356,7 @@ export function AsignacionRoles() {
               name="buscar_por"
               onChange={handleChangeFiltersSelect}
               defaultValue={
-                filtros.apellidos ? "apellidos" : "numero_identificacion"
+                filters.apellidos ? "apellidos" : "numero_identificacion"
               }
             >
               <option value="numero_identificacion">
@@ -283,10 +372,10 @@ export function AsignacionRoles() {
               placeholder="Escribe aquí tu búsqueda"
               onChange={handleChangeFiltersInput}
               defaultValue={
-                filtros.apellidos
-                  ? `${filtros.apellidos}`
-                  : filtros.numero_identificacion
-                  ? `${filtros.numero_identificacion}`
+                filters.apellidos
+                  ? `${filters.apellidos}`
+                  : filters.numero_identificacion
+                  ? `${filters.numero_identificacion}`
                   : ""
               }
             />
@@ -465,7 +554,7 @@ export function AsignacionRoles() {
               <li>
                 <Span
                   onClick={paginaAnterior}
-                  className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                  className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
                   paginaActual <= 1
                     ? "cursor-default"
@@ -481,12 +570,8 @@ export function AsignacionRoles() {
               ).map((page) => (
                 <li key={page}>
                   <Span
-                    onClick={() =>
-                      dispatch(postPaginaActual(page)).then(() => {
-                        tableRef.current.scrollIntoView({ behavior: "smooth" });
-                      })
-                    }
-                    className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                    onClick={() => handleChangePage(page)}
+                    className={`cursor-pointer select-none text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                       page === paginaActual
                         ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"
                         : ""
@@ -499,7 +584,7 @@ export function AsignacionRoles() {
               <li>
                 <Span
                   onClick={paginaSiguiente}
-                  className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                  className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
                   paginaActual >= empleados.cantidadPaginas
                     ? "cursor-default"

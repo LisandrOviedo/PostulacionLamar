@@ -1,11 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import {
-  postPaginaActual,
-  postLimitePorPagina,
-  postFiltros,
-  deleteFiltros,
   getAllRolesFiltrados,
   postCrearRol,
   getRol,
@@ -27,25 +23,21 @@ import { TfiPencil } from "react-icons/tfi";
 import Swal from "sweetalert2";
 
 export function GestionRoles() {
-  const dispatch = useDispatch();
-
   const token = useSelector((state) => state.empleados.token);
 
-  const paginaActual = useSelector((state) => state.roles.paginaActual);
+  const [roles, setRoles] = useState([]);
 
-  const limitePorPagina = useSelector((state) => state.roles.limitePorPagina);
+  const [rolDetail, setRolDetail] = useState({});
 
-  const roles = useSelector((state) => state.roles.roles);
+  const [paginaActual, setPaginaActual] = useState(1);
 
-  const rolDetail = useSelector((state) => state.roles.rolDetail);
-
-  const filtros = useSelector((state) => state.roles.filtros);
+  const [limitePorPagina, setLimitePorPagina] = useState(2);
 
   const [filters, setFilters] = useState({
-    nombre: filtros.nombre || "",
-    descripcion: filtros.descripcion || "",
-    orden_campo: filtros.orden_campo || "",
-    orden_por: filtros.orden_por || "",
+    nombre: "",
+    descripcion: "",
+    orden_campo: "",
+    orden_por: "",
   });
 
   const [nuevoRol, setNuevoRol] = useState({
@@ -58,11 +50,6 @@ export function GestionRoles() {
 
   const [showModal, setShowModal] = useState(false);
 
-  const [editarRol, setEditarRol] = useState({
-    nombre: "",
-    descripcion: "",
-  });
-
   const [modificar, setModificar] = useState({
     nombre: false,
     descripcion: false,
@@ -73,14 +60,18 @@ export function GestionRoles() {
 
   const tableRef = useRef(null);
 
-  const handleChangePagination = (e) => {
+  const handleChangePagination = async (e) => {
     const { value } = e.target;
 
-    dispatch(postLimitePorPagina(value));
+    setLimitePorPagina(value);
 
     if (paginaActual !== 1) {
-      dispatch(postPaginaActual(1));
+      setPaginaActual(1);
     }
+
+    const dataAllRoles = await getAllRolesFiltrados(token, filters, 1, value);
+
+    setRoles(dataAllRoles);
   };
 
   const handleChangeFiltersInput = (e) => {
@@ -119,7 +110,7 @@ export function GestionRoles() {
     }
   };
 
-  const handleResetFilters = () => {
+  const handleResetFilters = async () => {
     setFilters({
       nombre: "",
       descripcion: "",
@@ -133,18 +124,36 @@ export function GestionRoles() {
     buscarPor.selectedIndex = 0;
     inputSearch.value = "";
 
-    dispatch(deleteFiltros());
+    const dataAllRoles = await getAllRolesFiltrados(
+      token,
+      {
+        nombre: "",
+        descripcion: "",
+        orden_campo: "",
+        orden_por: "",
+      },
+      1,
+      limitePorPagina
+    );
+
+    setRoles(dataAllRoles);
   };
 
-  const handleFind = () => {
-    dispatch(postPaginaActual(1)).then(() => {
-      dispatch(postFiltros(filters)).then(() =>
-        dispatch(
-          getAllRolesFiltrados(token, filtros, paginaActual, limitePorPagina)
-        )
-      );
-    });
+  const handleFind = async () => {
+    if (paginaActual !== 1) {
+      setPaginaActual(1);
+    }
+
+    const dataAllRoles = await getAllRolesFiltrados(
+      token,
+      filters,
+      1,
+      limitePorPagina
+    );
+
+    setRoles(dataAllRoles);
   };
+
   const handleChangeActivo = (rol_id) => {
     Swal.fire({
       text: "¿Seguro que desea activar / desactivar el rol?",
@@ -157,9 +166,15 @@ export function GestionRoles() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await putActivo(token, rol_id);
-        dispatch(
-          getAllRolesFiltrados(token, filtros, paginaActual, limitePorPagina)
+
+        const dataAllRoles = await getAllRolesFiltrados(
+          token,
+          filters,
+          paginaActual,
+          limitePorPagina
         );
+
+        setRoles(dataAllRoles);
       }
     });
   };
@@ -176,36 +191,30 @@ export function GestionRoles() {
     };
   }, []);
 
-  useEffect(() => {
-    setEditarRol({
-      nombre: rolDetail.nombre,
-      descripcion: rolDetail.descripcion,
-    });
-  }, [rolDetail]);
-
-  useEffect(() => {
-    dispatch(
-      getAllRolesFiltrados(token, filtros, paginaActual, limitePorPagina)
-    );
-  }, [filtros, paginaActual, limitePorPagina]);
-
-  const handleGuardarRol = () => {
+  const handleGuardarRol = async () => {
     // Llamar a la función que realiza la solicitud a la API directamente
-    postCrearRol(token, nuevoRol).then(() => {
-      handleCerrarModalCrearRol();
+    await postCrearRol(token, nuevoRol);
 
-      dispatch(
-        getAllRolesFiltrados(token, filtros, paginaActual, limitePorPagina)
-      );
-    });
+    handleCerrarModalCrearRol();
+
+    const dataAllRoles = await getAllRolesFiltrados(
+      token,
+      filters,
+      paginaActual,
+      limitePorPagina
+    );
+
+    setRoles(dataAllRoles);
   };
 
   const handleOpenCrearRolModal = () => {
     setShowCrearRolModal(true);
   };
 
-  const handleOpenDetallesRolModal = (rol_id) => {
-    dispatch(getRol(token, rol_id));
+  const handleOpenDetallesRolModal = async (rol_id) => {
+    const data = await getRol(token, rol_id);
+
+    setRolDetail(data);
 
     setShowDetallesRolModal(true);
   };
@@ -223,24 +232,30 @@ export function GestionRoles() {
       cancelButtonColor: "#d33",
       confirmButtonText: "Si",
       cancelButtonText: "No",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        putModificarRol(
+        await putModificarRol(
           token,
           rolDetail.rol_id,
-          editarRol.nombre,
-          editarRol.descripcion
-        ).then(() => {
-          dispatch(
-            getAllRolesFiltrados(token, filtros, paginaActual, limitePorPagina)
-          );
-          handleCerrarModal();
-        });
+          rolDetail.nombre,
+          rolDetail.descripcion
+        );
+
+        const dataAllRoles = await getAllRolesFiltrados(
+          token,
+          filters,
+          paginaActual,
+          limitePorPagina
+        );
+
+        setRoles(dataAllRoles);
+
+        handleCerrarModal();
       }
     });
   };
 
-  const changeOrder = (e) => {
+  const changeOrder = async (e) => {
     const { name } = e.target;
 
     if (!filters.orden_campo) {
@@ -250,13 +265,25 @@ export function GestionRoles() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataAllRoles = await getAllRolesFiltrados(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
+
+      setRoles(dataAllRoles);
     } else if (filters.orden_campo === name && filters.orden_por === "ASC") {
       setFilters((prevFilters) => ({ ...prevFilters, orden_por: "DESC" }));
 
-      return dispatch(postFiltros({ ...filters, orden_por: "DESC" }));
+      const dataAllRoles = await getAllRolesFiltrados(
+        token,
+        { ...filters, orden_por: "DESC" },
+        1,
+        limitePorPagina
+      );
+
+      setRoles(dataAllRoles);
     } else if (filters.orden_campo === name && filters.orden_por === "DESC") {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -264,9 +291,14 @@ export function GestionRoles() {
         orden_por: "",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: "", orden_por: "" })
+      const dataAllRoles = await getAllRolesFiltrados(
+        token,
+        { ...filters, orden_campo: "", orden_por: "" },
+        1,
+        limitePorPagina
       );
+
+      setRoles(dataAllRoles);
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -274,25 +306,48 @@ export function GestionRoles() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataAllRoles = await getAllRolesFiltrados(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
+
+      setRoles(dataAllRoles);
     }
   };
 
-  const paginaAnterior = () => {
+  const paginaAnterior = async () => {
     if (paginaActual > 1) {
-      dispatch(postPaginaActual(paginaActual - 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual - 1);
+
+      const dataAllRoles = await getAllRolesFiltrados(
+        token,
+        filters,
+        paginaActual - 1,
+        limitePorPagina
+      );
+
+      setRoles(dataAllRoles);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const paginaSiguiente = () => {
+  const paginaSiguiente = async () => {
     if (paginaActual < roles.cantidadPaginas) {
-      dispatch(postPaginaActual(paginaActual + 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual + 1);
+
+      const dataAllRoles = await getAllRolesFiltrados(
+        token,
+        filters,
+        paginaActual + 1,
+        limitePorPagina
+      );
+
+      setRoles(dataAllRoles);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -305,7 +360,7 @@ export function GestionRoles() {
   const handleValidateModificar = (e) => {
     const { name, value } = e.target;
 
-    setEditarRol({ ...editarRol, [name]: value });
+    setRolDetail({ ...rolDetail, [name]: value });
   };
 
   const handleModificar = (campo) => {
@@ -314,7 +369,7 @@ export function GestionRoles() {
 
   const handleCerrarModal = () => {
     setShowDetallesRolModal(false);
-    setEditarRol({ nombre: "", descripcion: "" });
+
     setModificar({ nombre: false, descripcion: false });
   };
 
@@ -322,6 +377,23 @@ export function GestionRoles() {
     setNuevoRol({ nombre: "", descripcion: "", acceso_admin: true });
 
     setShowCrearRolModal(false);
+  };
+
+  const handleChangePage = async (page) => {
+    if (paginaActual !== page) {
+      setPaginaActual(page);
+
+      const dataAllRoles = await getAllRolesFiltrados(
+        token,
+        filters,
+        page,
+        limitePorPagina
+      );
+
+      setRoles(dataAllRoles);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -341,7 +413,7 @@ export function GestionRoles() {
               id="buscar_por"
               name="buscar_por"
               onChange={handleChangeFiltersSelect}
-              defaultValue={filtros.nombre ? "nombre" : "descripcion"}
+              defaultValue={filters.nombre ? "nombre" : "descripcion"}
             >
               <option value="descripcion">Descripción</option>
               <option value="nombre">Nombre</option>
@@ -354,10 +426,10 @@ export function GestionRoles() {
               placeholder="Escribe aquí tu búsqueda"
               onChange={handleChangeFiltersInput}
               defaultValue={
-                filtros.descripcion
-                  ? `${filtros.descripcion}`
-                  : filtros.nombre
-                  ? `${filtros.nombre}`
+                filters.descripcion
+                  ? `${filters.descripcion}`
+                  : filters.nombre
+                  ? `${filters.nombre}`
                   : ""
               }
             />
@@ -542,7 +614,7 @@ export function GestionRoles() {
               <li>
                 <Span
                   onClick={paginaAnterior}
-                  className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                  className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                     paginaActual <= 1
                       ? "cursor-default"
                       : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
@@ -557,12 +629,8 @@ export function GestionRoles() {
               ).map((page) => (
                 <li key={page}>
                   <Span
-                    onClick={() => {
-                      dispatch(postPaginaActual(page)).then(() => {
-                        tableRef.current.scrollIntoView({ behavior: "smooth" });
-                      });
-                    }}
-                    className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                    onClick={() => handleChangePage(page)}
+                    className={`cursor-pointer select-none text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                       page === paginaActual
                         ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"
                         : ""
@@ -575,7 +643,7 @@ export function GestionRoles() {
               <li>
                 <Span
                   onClick={paginaSiguiente}
-                  className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                  className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                     paginaActual >= roles.cantidadPaginas
                       ? "cursor-default"
                       : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
@@ -591,10 +659,10 @@ export function GestionRoles() {
 
       {/* Modal para crear rol */}
       {showCrearRolModal && (
-     <div className="fixed z-50 inset-0 flex items-center justify-center">
-     <div className="bg-gray-400 rounded-lg border-2 border-white p-6 sm:w-[80%] md:w-[60%] lg:w-[50%] mx-auto">
-       <div className="grid grid-cols-1 p-2 gap-4">
-         <div className="border-b p-2 m-0">
+        <div className="fixed z-50 inset-0 flex items-center justify-center">
+          <div className="bg-gray-400 rounded-lg border-2 border-white p-6 sm:w-[80%] md:w-[60%] lg:w-[50%] mx-auto">
+            <div className="grid grid-cols-1 p-2 gap-4">
+              <div className="border-b p-2 m-0">
                 <Title>Creación de Rol</Title>
               </div>
               <div>
@@ -609,7 +677,7 @@ export function GestionRoles() {
                   onChange={handleValidateCrear}
                 />
               </div>
-            <div>
+              <div>
                 <Label htmlFor="descripcionCrear" className="font-bold">
                   Descripción del rol
                 </Label>
@@ -633,19 +701,19 @@ export function GestionRoles() {
                 </Label>
               </div>
               <div className="flex justify-end gap-2">
-  <Button
-    className="m-0 w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
-    onClick={handleGuardarRol}
-  >
-    Crear
-  </Button>
-  <Button
-    className="m-0 w-auto text-xs"
-    onClick={handleCerrarModalCrearRol}
-  >
-    Cancelar
-  </Button>
-</div>
+                <Button
+                  className="m-0 w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
+                  onClick={handleGuardarRol}
+                >
+                  Crear
+                </Button>
+                <Button
+                  className="m-0 w-auto text-xs"
+                  onClick={handleCerrarModalCrearRol}
+                >
+                  Cancelar
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -655,7 +723,7 @@ export function GestionRoles() {
           <div className="bg-gray-400 rounded-lg border-2 border-white p-6 sm:w-[80%] md:w-[60%]">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:col-span-3 p-2 gap-6">
               <div className="sm:col-span-2 lg:col-span-3 border-b p-2 m-0">
-                <Title>Detalles Del Rol</Title>
+                <Title>Detalles del Rol</Title>
               </div>
               <div>
                 {!modificar.nombre ? (
@@ -667,7 +735,7 @@ export function GestionRoles() {
                         onClick={() => handleModificar("nombre")}
                       />
                     </Span>
-                    <Span>{editarRol.nombre}</Span>
+                    <Span>{rolDetail.nombre}</Span>
                   </>
                 ) : (
                   <>
@@ -682,7 +750,7 @@ export function GestionRoles() {
                       type="text"
                       id="nombreEditar"
                       name="nombre"
-                      value={editarRol.nombre}
+                      value={rolDetail.nombre}
                       onChange={handleValidateModificar}
                     />
                   </>
@@ -714,7 +782,7 @@ export function GestionRoles() {
                       type="text"
                       id="descripcionEditar"
                       name="descripcion"
-                      value={editarRol.descripcion}
+                      value={rolDetail.descripcion}
                       onChange={handleValidateModificar}
                     />
                   </>
@@ -731,17 +799,14 @@ export function GestionRoles() {
               </div>
 
               <div className="flex justify-center gap-2 border-t sm:col-span-2 lg:col-span-3 pt-4">
-                {editarRol.nombre &&
-                  editarRol.descripcion &&
-                  (editarRol.nombre !== rolDetail.nombre ||
-                    editarRol.descripcion !== rolDetail.descripcion) && (
-                    <Button
-                      className="m-0 w-auto text-xs"
-                      onClick={handleModificarRol}
-                    >
-                      Actualizar Rol
-                    </Button>
-                  )}
+                {rolDetail.nombre && rolDetail.descripcion && (
+                  <Button
+                    className="m-0 w-auto text-xs"
+                    onClick={handleModificarRol}
+                  >
+                    Actualizar Rol
+                  </Button>
+                )}
                 <Button
                   className="m-0 w-auto text-xs"
                   onClick={handleCerrarModal}
