@@ -17,15 +17,20 @@ import {
   PruebaKostick,
   SubirDocumentos,
   AccesoAdmin,
+  AsignacionRoles,
   DetalleEmpleado,
+  DetalleVacante,
   Empleados,
   FormularioIngreso,
+  GestionRoles,
+  Liquidaciones,
   Movimientos,
   PanelAdmin,
-  Postulaciones,
+  PerfilesProfesionales,
   PruebasEmpleados,
   SolicitudesMovimientos,
   Sugerencias,
+  Vacantes,
 } from "./components/";
 
 import {
@@ -98,10 +103,13 @@ function App() {
               path="/admin/miPerfil/actualizarClave"
               element={<ActualizarClave />}
             />
-            <Route path="/admin/postulaciones" element={<Postulaciones />} />
+            <Route
+              path="/admin/perfilesProfesionales"
+              element={<PerfilesProfesionales />}
+            />
             <Route path="/admin/empleados" element={<Empleados />} />
             <Route
-              path="/admin/empleado/:empleado_id"
+              path="/admin/empleados/:empleado_id"
               element={<DetalleEmpleado />}
             />
             <Route
@@ -117,10 +125,21 @@ function App() {
               path="/admin/solicitudesMovimientos"
               element={<SolicitudesMovimientos />}
             />
+            <Route path="/admin/liquidaciones" element={<Liquidaciones />} />
 
+            <Route path="/admin/gestionRoles" element={<GestionRoles />} />
+
+            <Route
+              path="/admin/asignacionRoles"
+              element={<AsignacionRoles />}
+            />
             <Route path="/admin/sugerencias" element={<Sugerencias />} />
+            <Route path="/admin/vacantes" element={<Vacantes />} />
+            <Route
+              path="/admin/vacantes/:vacante_id"
+              element={<DetalleVacante />}
+            />
           </Route>
-
           <Route path="*" element={<PaginaNoEncontrada />} />
         </Routes>
       </Suspense>

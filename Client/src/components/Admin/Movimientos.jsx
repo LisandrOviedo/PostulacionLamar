@@ -4,26 +4,17 @@ import { useState, useEffect } from "react";
 
 //useDispatch es un Hook que te permite llenar un estado de Redux.
 //useSelector es un Hook que te permite extraer datos del store (estado) de Redux.
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
 
 import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
 
-import {
-  getAllDepartamentosActivos,
-  resetDepartamentos,
-} from "../../redux/departamentos/departamentosActions";
+import { getAllDepartamentosActivos } from "../../redux/departamentos/departamentosActions";
 
-import {
-  getAllCargosNivelesActivos,
-  resetCargosNiveles,
-} from "../../redux/cargosNiveles/cargosNivelesActions";
+import { getAllCargosNivelesActivos } from "../../redux/cargosNiveles/cargosNivelesActions";
 
-import {
-  getAllCargosActivos,
-  resetCargos,
-} from "../../redux/cargos/cargosActions";
+import { getAllCargosActivos } from "../../redux/cargos/cargosActions";
 
 import { getAllClasesMovimientosActivas } from "../../redux/clasesMovimientos/clasesMovimientosActions";
 
@@ -46,6 +37,8 @@ import { FaMagnifyingGlass, FaFloppyDisk } from "react-icons/fa6";
 
 import validations from "../../utils/validacionesMovimientos";
 
+import { BiSolidShow, BiSolidHide } from "react-icons/bi";
+
 import { MdCancel } from "react-icons/md";
 
 import { calcularAntiguedad } from "../../utils/formatearFecha";
@@ -53,32 +46,21 @@ import { calcularAntiguedad } from "../../utils/formatearFecha";
 import Swal from "sweetalert2";
 
 export function Movimientos() {
-  //dispatch es esencial para comunicar cambios en el estado de tu aplicación a través de acciones
-  const dispatch = useDispatch();
-
   /*En este caso, está accediendo a state.empleados.token, 
   lo que significa que está extrayendo el valor del token del objeto empleados dentro del estado. */
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const clases_movimientos_activas = useSelector(
-    (state) => state.clases_movimientos.clases_movimientos_activas
-  );
+  const [empresasActivas, setEmpresasActivas] = useState([]);
 
-  const empresas_activas = useSelector(
-    (state) => state.empresas.empresas_activas
-  );
+  const [departamentosActivos, setDepartamentosActivos] = useState([]);
 
-  const departamentos_activos = useSelector(
-    (state) => state.departamentos.departamentos_activos
-  );
+  const [cargosActivos, setCargosActivos] = useState([]);
 
-  const cargos_activos = useSelector((state) => state.cargos.cargos_activos);
+  const [cargosNivelesActivos, setCargosNivelesActivos] = useState([]);
 
-  const cargos_niveles_activos = useSelector(
-    (state) => state.cargos_niveles.cargos_niveles_activos
-  );
+  const [clasesMovimientosActivas, setClasesMovimientosActivas] = useState([]);
 
   //setErrors es la función que usarás para actualizar el estado "errors"
   const [errors, setErrors] = useState({});
@@ -100,6 +82,9 @@ export function Movimientos() {
     numero_identificacion_tthh: "",
   });
 
+  const [showSalario, setShowSalario] = useState(true);
+  const [showSalarioActual, setShowSalarioActual] = useState(false);
+
   const [datosEmpleado, setDatosEmpleado] = useState({});
   const [datosSupervisor, setDatosSupervisor] = useState({});
   const [datosAprobacionGerencia, setDatosAprobacionGerencia] = useState({});
@@ -111,8 +96,15 @@ export function Movimientos() {
     window.scroll(0, 0); // Desplaza la ventana a la parte superior izquierda de la página.
     document.title = "Grupo Lamar - Movimientos (Admin)";
 
-    dispatch(getAllEmpresasActivas(token));
-    dispatch(getAllClasesMovimientosActivas(token));
+    (async function () {
+      const dataEmpresasActivas = await getAllEmpresasActivas();
+      const dataClasesMovimientosActivas = await getAllClasesMovimientosActivas(
+        token
+      );
+
+      setEmpresasActivas(dataEmpresasActivas);
+      setClasesMovimientosActivas(dataClasesMovimientosActivas);
+    })();
 
     return () => {
       document.title = "Grupo Lamar";
@@ -120,48 +112,93 @@ export function Movimientos() {
   }, []);
 
   useEffect(() => {
-    if (
-      datosMovimiento.empresa_id &&
-      datosMovimiento.empresa_id !== "Seleccione"
-    ) {
-      dispatch(resetDepartamentos());
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setDatosMovimiento({ ...datosMovimiento, departamento_id: "Seleccione" });
-      dispatch(getAllDepartamentosActivos(token, datosMovimiento.empresa_id));
-    } else {
-      dispatch(resetDepartamentos());
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setDatosMovimiento({ ...datosMovimiento, departamento_id: "Seleccione" });
-    }
+    (async function () {
+      if (
+        datosMovimiento.empresa_id &&
+        datosMovimiento.empresa_id !== "Seleccione"
+      ) {
+        setDepartamentosActivos([]);
+        setCargosActivos([]);
+        setCargosNivelesActivos([]);
+
+        setDatosMovimiento({
+          ...datosMovimiento,
+          departamento_id: "Seleccione",
+        });
+
+        const dataDepartamentosActivos = await getAllDepartamentosActivos(
+          token,
+          datosMovimiento.empresa_id
+        );
+
+        setDepartamentosActivos(dataDepartamentosActivos);
+      } else {
+        setDepartamentosActivos([]);
+        setCargosActivos([]);
+        setCargosNivelesActivos([]);
+
+        setDatosMovimiento({
+          ...datosMovimiento,
+          departamento_id: "Seleccione",
+        });
+      }
+    })();
   }, [datosMovimiento.empresa_id]);
 
   useEffect(() => {
-    if (
-      datosMovimiento.departamento_id &&
-      datosMovimiento.departamento_id !== "Seleccione"
-    ) {
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setDatosMovimiento({ ...datosMovimiento, cargo_id: "Seleccione" });
-      dispatch(getAllCargosActivos(token, datosMovimiento.departamento_id));
-    } else {
-      dispatch(resetCargos());
-      dispatch(resetCargosNiveles());
-      setDatosMovimiento({ ...datosMovimiento, cargo_id: "Seleccione" });
-    }
+    (async function () {
+      if (
+        datosMovimiento.departamento_id &&
+        datosMovimiento.departamento_id !== "Seleccione"
+      ) {
+        setCargosActivos([]);
+        setCargosNivelesActivos([]);
+
+        setDatosMovimiento({ ...datosMovimiento, cargo_id: "Seleccione" });
+
+        const dataCargosActivos = await getAllCargosActivos(
+          token,
+          datosMovimiento.departamento_id
+        );
+
+        setCargosActivos(dataCargosActivos);
+      } else {
+        setCargosActivos([]);
+        setCargosNivelesActivos([]);
+
+        setDatosMovimiento({ ...datosMovimiento, cargo_id: "Seleccione" });
+      }
+    })();
   }, [datosMovimiento.departamento_id]);
 
   useEffect(() => {
-    if (datosMovimiento.cargo_id && datosMovimiento.cargo_id !== "Seleccione") {
-      dispatch(resetCargosNiveles());
-      setDatosMovimiento({ ...datosMovimiento, cargo_nivel_id: "Seleccione" });
-      dispatch(getAllCargosNivelesActivos(token, datosMovimiento.cargo_id));
-    } else {
-      dispatch(resetCargosNiveles());
-      setDatosMovimiento({ ...datosMovimiento, cargo_nivel_id: "Seleccione" });
-    }
+    (async function () {
+      if (
+        datosMovimiento.cargo_id &&
+        datosMovimiento.cargo_id !== "Seleccione"
+      ) {
+        setCargosNivelesActivos([]);
+
+        setDatosMovimiento({
+          ...datosMovimiento,
+          cargo_nivel_id: "Seleccione",
+        });
+
+        const dataCargosNivelesActivos = await getAllCargosNivelesActivos(
+          token,
+          datosMovimiento.cargo_id
+        );
+
+        setCargosNivelesActivos(dataCargosNivelesActivos);
+      } else {
+        setCargosNivelesActivos([]);
+
+        setDatosMovimiento({
+          ...datosMovimiento,
+          cargo_nivel_id: "Seleccione",
+        });
+      }
+    })();
   }, [datosMovimiento.cargo_id]);
 
   //Cada vez que el usuario cambia el valor de un campo, handleValidate se encarga de validar la entrada y actualizar el estado del formulario.
@@ -368,14 +405,18 @@ export function Movimientos() {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Title>Movimientos</Title>
       </div>
+      <br />
       <Hr />
-
+      <br />
+      <Span className="text-center m-0 text-red-600">
+        (*) Campos obligatorios
+      </Span>
       <div className="flex flex-col place-content-between my-6">
         <Label
           htmlFor="numero_identificacion"
           errors={errors.numero_identificacion}
         >
-          Número de identificación
+          Número de identificación *
         </Label>
 
         <div className="flex gap-2 items-center">
@@ -393,7 +434,6 @@ export function Movimientos() {
             <Input
               id="numero_identificacion"
               name="numero_identificacion"
-              className="pr-8"
               value={datosMovimiento.numero_identificacion}
               onChange={handleValidate}
               errors={errors.numero_identificacion}
@@ -484,12 +524,27 @@ export function Movimientos() {
             </div>
 
             <div>
-              <Span>Sueldo actual</Span>
               <Span>
-                {datosEmpleado?.Cargos_Empleados[0]?.salario
-                  ? `Bs. ${datosEmpleado?.Cargos_Empleados[0]?.salario}`
-                  : "-"}
+                Sueldo actual{" "}
+                {!showSalarioActual ? (
+                  <BiSolidShow
+                    className="inline text-xl"
+                    onClick={() => setShowSalarioActual(!showSalarioActual)}
+                  />
+                ) : (
+                  <BiSolidHide
+                    className="inline text-xl"
+                    onClick={() => setShowSalarioActual(!showSalarioActual)}
+                  />
+                )}
               </Span>
+              {showSalarioActual && (
+                <Span>
+                  {datosEmpleado?.Cargos_Empleados[0]?.salario
+                    ? `Bs. ${datosEmpleado?.Cargos_Empleados[0]?.salario}`
+                    : "-"}
+                </Span>
+              )}
             </div>
 
             <div>
@@ -519,15 +574,15 @@ export function Movimientos() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         {/* Clase de Movimiento */}
         <div>
-          <Label htmlFor="clase_movimiento_id">Clase de movimiento</Label>
+          <Label htmlFor="clase_movimiento_id">Clase de movimiento *</Label>
           <Select
             id="clase_movimiento_id"
             name="clase_movimiento_id"
             onChange={handleValidate}
           >
             <option>Seleccione</option>
-            {clases_movimientos_activas?.length
-              ? clases_movimientos_activas?.map((clase_movimiento, i) => (
+            {clasesMovimientosActivas?.length
+              ? clasesMovimientosActivas?.map((clase_movimiento, i) => (
                   <option
                     key={i}
                     name={clase_movimiento.descripcion}
@@ -540,7 +595,7 @@ export function Movimientos() {
           </Select>
         </div>
         <div>
-          <Label htmlFor="duracion_movimiento">Duración de movimiento</Label>
+          <Label htmlFor="duracion_movimiento">Duración de movimiento *</Label>
           <Select
             id="duracion_movimiento"
             name="duracion_movimiento"
@@ -555,7 +610,7 @@ export function Movimientos() {
         {datosMovimiento.duracion_movimiento === "Temporal" && (
           <div>
             <Label htmlFor="duracion_movimiento_dias">
-              Duración de movimiento (días)
+              Duración de movimiento (días) *
             </Label>
             <Input
               id="duracion_movimiento_dias"
@@ -580,7 +635,7 @@ export function Movimientos() {
         {datosMovimiento.requiere_periodo_prueba && (
           <div>
             <Label htmlFor="duracion_periodo_prueba">
-              Duración de periodo de prueba (días)
+              Duración de periodo de prueba (días) *
             </Label>
             <Input
               id="duracion_periodo_prueba"
@@ -594,7 +649,10 @@ export function Movimientos() {
           </div>
         )}
         <div className="sm:col-span-2 md:col-span-3">
-          <Label htmlFor="justificacion_movimiento">
+          <Label
+            htmlFor="justificacion_movimiento"
+            errors={errors.justificacion_movimiento}
+          >
             Justificación del movimiento organizativo
           </Label>
           <TextArea
@@ -602,7 +660,11 @@ export function Movimientos() {
             name="justificacion_movimiento"
             onChange={handleValidate}
             rows="5"
+            errors={errors.justificacion_movimiento}
           />
+          {errors.justificacion_movimiento && (
+            <Span className="m-0">{errors.justificacion_movimiento}</Span>
+          )}
         </div>
       </div>
       <br />
@@ -612,7 +674,7 @@ export function Movimientos() {
         {/* Nueva Condición Laboral del Trabajador */}
 
         <div className="flex flex-col justify-start">
-          <Label htmlFor="empresa_id">Empresa</Label>
+          <Label htmlFor="empresa_id">Empresa *</Label>
 
           <Select
             className="w-full"
@@ -623,8 +685,8 @@ export function Movimientos() {
             disabled={movEntreEmpresas}
           >
             <option>Seleccione</option>
-            {empresas_activas?.length
-              ? empresas_activas?.map(
+            {empresasActivas?.length
+              ? empresasActivas?.map(
                   (empresa, i) =>
                     empresa.activo && (
                       <option
@@ -641,7 +703,7 @@ export function Movimientos() {
         </div>
 
         <div className="flex flex-col justify-start">
-          <Label htmlFor="departamento_id">Departamento</Label>
+          <Label htmlFor="departamento_id">Departamento *</Label>
           <Select
             className="w-full"
             id="departamento_id"
@@ -649,8 +711,8 @@ export function Movimientos() {
             onChange={handleValidate}
           >
             <option>Seleccione</option>
-            {departamentos_activos?.length
-              ? departamentos_activos?.map(
+            {departamentosActivos?.length
+              ? departamentosActivos?.map(
                   (departamento, i) =>
                     departamento.activo && (
                       <option
@@ -666,7 +728,7 @@ export function Movimientos() {
           </Select>
         </div>
         <div className="flex flex-col justify-start">
-          <Label htmlFor="cargo_id">Cargo</Label>
+          <Label htmlFor="cargo_id">Cargo *</Label>
           <Select
             className="w-full"
             id="cargo_id"
@@ -674,8 +736,8 @@ export function Movimientos() {
             onChange={handleValidate}
           >
             <option>Seleccione</option>
-            {cargos_activos?.length
-              ? cargos_activos?.map(
+            {cargosActivos?.length
+              ? cargosActivos?.map(
                   (cargo, i) =>
                     cargo.activo && (
                       <option
@@ -691,7 +753,7 @@ export function Movimientos() {
           </Select>
         </div>
         <div className="flex flex-col justify-start">
-          <Label htmlFor="cargo_nivel_id">Nivel del cargo</Label>
+          <Label htmlFor="cargo_nivel_id">Nivel del cargo *</Label>
           <Select
             className="w-full"
             id="cargo_nivel_id"
@@ -699,8 +761,8 @@ export function Movimientos() {
             onChange={handleValidate}
           >
             <option>Seleccione</option>
-            {cargos_niveles_activos?.length
-              ? cargos_niveles_activos?.map(
+            {cargosNivelesActivos?.length
+              ? cargosNivelesActivos?.map(
                   (cargo_nivel, i) =>
                     cargo_nivel.activo && (
                       <option
@@ -720,10 +782,9 @@ export function Movimientos() {
             htmlFor="vigencia_movimiento_desde"
             errors={errors.vigencia_movimiento}
           >
-            Vigencia del movimiento (fecha desde)
+            Vigencia del movimiento (fecha desde) *
           </Label>
           <Date
-            type="date"
             id="vigencia_movimiento_desde"
             name="vigencia_movimiento_desde"
             onChange={handleValidate}
@@ -738,7 +799,6 @@ export function Movimientos() {
             Vigencia del movimiento (fecha hasta)
           </Label>
           <Date
-            type="date"
             id="vigencia_movimiento_hasta"
             name="vigencia_movimiento_hasta"
             onChange={handleValidate}
@@ -751,7 +811,7 @@ export function Movimientos() {
 
         {/* Tipo de Nómina */}
         <div className="flex flex-col justify-start">
-          <Label htmlFor="tipo_nomina">Tipo de nómina</Label>
+          <Label htmlFor="tipo_nomina">Tipo de nómina *</Label>
           <Select id="tipo_nomina" name="tipo_nomina" onChange={handleValidate}>
             <option value="Seleccione">Seleccione</option>
             <option value="Empleados">Empleados</option>
@@ -776,7 +836,7 @@ export function Movimientos() {
 
         {/* Frecuencia de Nómina */}
         <div className="flex flex-col justify-start">
-          <Label htmlFor="frecuencia_nomina">Frecuencia de nómina</Label>
+          <Label htmlFor="frecuencia_nomina">Frecuencia de nómina *</Label>
           <Select
             id="frecuencia_nomina"
             name="frecuencia_nomina"
@@ -808,21 +868,24 @@ export function Movimientos() {
             Nuevo sueldo (Bs.)
           </Label>
 
-          <div className="relative">
+          <div className="relative w-full">
             <Input
               id="sueldo"
               name="sueldo"
               onChange={handleValidate} // Esta línea llama a tu función de validación
               onBlur={handleConvertirADecimales}
               errors={errors.sueldo}
-              className="pr-8" // padding a la derecha para que no tenga conflicto con el icono de validacion
               value={datosMovimiento.sueldo}
               type="number"
               min="1"
+              className={`${!showSalario && "text-transparent"}`}
             />
-            {errors.sueldo && (
-              <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
-            )}
+            <span
+              className="absolute right-6 top-[30%] text-xl"
+              onClick={() => setShowSalario(!showSalario)}
+            >
+              {!showSalario ? <BiSolidShow /> : <BiSolidHide />}
+            </span>
           </div>
           {errors.sueldo && <Span className="m-0">{errors.sueldo}</Span>}
         </div>
@@ -831,7 +894,7 @@ export function Movimientos() {
           <Label htmlFor="codigo_nomina" errors={errors.codigo_nomina}>
             Código de nómina
           </Label>
-          <div className="relative">
+          <div className="relative w-full">
             <Input
               id="codigo_nomina"
               name="codigo_nomina"
@@ -886,7 +949,7 @@ export function Movimientos() {
             htmlFor="numero_identificacion_supervisor"
             errors={errors.numero_identificacion_supervisor}
           >
-            Número de identificación
+            Número de identificación *
           </Label>
           <div className="flex justify-between gap-2">
             <Select
@@ -945,7 +1008,7 @@ export function Movimientos() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div>
           <Label htmlFor="numero_identificacion_gerencia">
-            Número de identificación
+            Número de identificación *
           </Label>
           <div className="flex justify-between gap-2">
             <Select
@@ -1001,7 +1064,7 @@ export function Movimientos() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div>
           <Label htmlFor="numero_identificacion_tthh">
-            Número de identificación
+            Número de identificación *
           </Label>
           <div className="flex justify-between gap-2">
             <Select
@@ -1052,7 +1115,10 @@ export function Movimientos() {
 
       <div className="mx-auto sm:col-span-2 md:col-span-3">
         <Button
-          className="w-auto flex items-center gap-2"
+          className={`w-auto flex items-center gap-2 ${
+            Object.keys(errors).length && "opacity-50"
+          }`}
+          disabled={Object.keys(errors).length}
           onClick={handlePostMovimiento}
         >
           {/*Es un icono de la libreria react icons */}

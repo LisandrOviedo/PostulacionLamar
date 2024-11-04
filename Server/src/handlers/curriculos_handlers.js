@@ -15,9 +15,9 @@ const {
 
 const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
 
-const path = require("path");
+const path = require("node:path");
 const PDFDocument = require("pdfkit-table");
-const fs = require("fs");
+const fs = require("node:fs");
 const JSZip = require("jszip");
 
 const getCurriculos = async (req, res) => {
@@ -26,8 +26,8 @@ const getCurriculos = async (req, res) => {
   try {
     const response = await todosLosCurriculos(
       filtros,
-      parseInt(paginaActual),
-      parseInt(limitePorPagina)
+      paginaActual,
+      limitePorPagina
     );
 
     return res.json(response);

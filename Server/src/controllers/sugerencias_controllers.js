@@ -1,3 +1,5 @@
+const { Op } = require("sequelize");
+
 const {
   conn,
   Sugerencias,
@@ -18,6 +20,16 @@ const todasLasSugerencias = async (filtros, paginaActual, limitePorPagina) => {
         attributes: {
           exclude: ["sede_id", "tipo_sugerencia_id"],
         },
+        where:
+          filtros.estado && filtros.estado === "Pendiente por revisar"
+            ? { revisado_por_id: null }
+            : filtros.estado && filtros.estado === "Revisado"
+            ? {
+                revisado_por_id: {
+                  [Op.not]: null,
+                },
+              }
+            : {},
         include: [
           {
             model: Tipos_Sugerencias,
@@ -50,14 +62,14 @@ const todasLasSugerencias = async (filtros, paginaActual, limitePorPagina) => {
                 filtros.empresa_id && filtros.empresa_id !== "Seleccione"
                   ? { empresa_id: filtros.empresa_id }
                   : {},
-              order: [
-                filtros.orden_campo === "nombre_empresa"
-                  ? ["nombre", filtros.orden_por]
-                  : null,
-              ].filter(Boolean),
             },
           },
         ],
+        order: [
+          filtros.orden_campo === "nombre_empresa"
+            ? [Sedes, Empresas, "nombre", filtros.orden_por]
+            : null,
+        ].filter(Boolean),
         distinct: true,
       });
 

@@ -1,24 +1,35 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+
+import { getEmpleadoDetail } from "../../redux/empleados/empleadosActions";
 
 import { Button, Hr, Title } from "../UI";
 
 import { calcularEdad } from "../../utils/formatearFecha";
 
 export function DetalleEmpleado() {
-  const empleado = useSelector((state) => state.empleados.empleadoDetail);
+  const { empleado_id } = useParams();
+
+  const token = useSelector((state) => state.empleados.token);
+
+  const [empleadoDetail, setEmpleadoDetail] = useState({});
 
   const navigate = useNavigate();
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
-  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.numero_identificacion}${empleado.tipo_identificacion}/${empleado.foto_perfil_nombre}`;
+  const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleadoDetail.numero_identificacion}${empleadoDetail.tipo_identificacion}/${empleadoDetail.foto_perfil_nombre}`;
 
   useEffect(() => {
     window.scroll(0, 0);
 
     document.title = "Grupo Lamar - Detalles Del Empleado";
+
+    (async function () {
+      const data = await getEmpleadoDetail(token, empleado_id);
+
+      setEmpleadoDetail(data);
+    })();
 
     return () => {
       document.title = "Grupo Lamar";
@@ -26,7 +37,7 @@ export function DetalleEmpleado() {
   }, []);
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate("/admin/empleados");
   };
 
   return (
@@ -38,14 +49,14 @@ export function DetalleEmpleado() {
         <div>
           <div className="mt-4 border-t border-gray-100">
             <dl className="divide-y divide-gray-100">
-              {empleado && (
+              {empleadoDetail && (
                 <>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
                       Tipo de usuario
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.Role.descripcion}
+                      {empleadoDetail.Role?.descripcion}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -53,7 +64,7 @@ export function DetalleEmpleado() {
                       Nombre completo
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.nombres} {empleado.apellidos}
+                      {empleadoDetail.nombres} {empleadoDetail.apellidos}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -61,7 +72,7 @@ export function DetalleEmpleado() {
                       Nacionalidad
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.tipo_identificacion === "V"
+                      {empleadoDetail.tipo_identificacion === "V"
                         ? "Venezolano"
                         : "Extranjero"}
                     </dd>
@@ -71,7 +82,7 @@ export function DetalleEmpleado() {
                       Número de identificación
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.numero_identificacion}
+                      {empleadoDetail.numero_identificacion}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -79,9 +90,9 @@ export function DetalleEmpleado() {
                       Fecha nacimiento
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.fecha_nacimiento}
+                      {empleadoDetail.fecha_nacimiento}
                       {" ("}
-                      {calcularEdad(empleado.fecha_nacimiento)}
+                      {calcularEdad(empleadoDetail.fecha_nacimiento)}
                       {" años)"}
                     </dd>
                   </div>
@@ -90,7 +101,7 @@ export function DetalleEmpleado() {
                       Estado civil
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.estado_civil || "Sin registrar"}
+                      {empleadoDetail.estado_civil || "Sin registrar"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -98,7 +109,7 @@ export function DetalleEmpleado() {
                       RIF
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.rif || "Sin registrar"}
+                      {empleadoDetail.rif || "Sin registrar"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -106,7 +117,7 @@ export function DetalleEmpleado() {
                       Número de contacto
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.telefono || "Sin registrar"}
+                      {empleadoDetail.telefono || "Sin registrar"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -114,7 +125,7 @@ export function DetalleEmpleado() {
                       Correo electrónico
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.correo || "Sin registrar"}
+                      {empleadoDetail.correo || "Sin registrar"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -122,7 +133,7 @@ export function DetalleEmpleado() {
                       Etnia
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.Etnia?.nombre || "Sin registrar"}
+                      {empleadoDetail.Etnia?.nombre || "Sin registrar"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -130,7 +141,7 @@ export function DetalleEmpleado() {
                       Mano dominante
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.mano_dominante || "Sin registrar"}
+                      {empleadoDetail.mano_dominante || "Sin registrar"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -138,7 +149,7 @@ export function DetalleEmpleado() {
                       Sexo
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.sexo || "Sin registrar"}
+                      {empleadoDetail.sexo || "Sin registrar"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -146,7 +157,7 @@ export function DetalleEmpleado() {
                       Factor grupo sanguíneo
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.factor_grupo_sanguineo || "Sin registrar"}
+                      {empleadoDetail.factor_grupo_sanguineo || "Sin registrar"}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0 sm:items-center">
@@ -154,19 +165,19 @@ export function DetalleEmpleado() {
                       Cantidad de hijos
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.cantidad_hijos}
+                      {empleadoDetail.cantidad_hijos}
                     </dd>
                   </div>
                 </>
               )}
-              {empleado?.Cargos?.length > 0 && (
+              {empleadoDetail?.Cargos?.length > 0 && (
                 <>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt className="text-sm font-bold leading-6 text-gray-900">
                       Cargo actual
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.Cargos[0].descripcion}
+                      {empleadoDetail.Cargos[0].descripcion}
                     </dd>
                   </div>
                   <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -174,7 +185,7 @@ export function DetalleEmpleado() {
                       Nombre empresa
                     </dt>
                     <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                      {empleado.Cargos[0].Empresa.nombre}
+                      {empleadoDetail.Cargos[0].Empresa.nombre}
                     </dd>
                   </div>
                 </>
@@ -184,7 +195,9 @@ export function DetalleEmpleado() {
         </div>
         <div className="flex flex-col items-center gap-2 mb-2">
           <img
-            src={empleado.foto_perfil_nombre ? FOTO_PERFIL : "./Person.svg"}
+            src={
+              empleadoDetail.foto_perfil_nombre ? FOTO_PERFIL : "./Person.svg"
+            }
             alt="Imgen del perfil"
             className="w-40 h-40 border border-[#002846] bg-gray-400 rounded-full ring-2 ring-[#F0C95C]"
           />

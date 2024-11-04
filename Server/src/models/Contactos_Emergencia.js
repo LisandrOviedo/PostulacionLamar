@@ -21,6 +21,7 @@ module.exports = (sequelize) => {
         "Abuelo(a)",
         "Amigo(a)",
         "Cónyuge",
+        "Cuñado(a)",
         "Hermano(a)",
         "Hijo(a)",
         "Madre",
@@ -28,7 +29,9 @@ module.exports = (sequelize) => {
         "Padre",
         "Primo(a)",
         "Sobrino(a)",
-        "Tío(a)"
+        "Suegro(a)",
+        "Tío(a)",
+        "Vecino(a)"
       ),
       allowNull: false,
     },

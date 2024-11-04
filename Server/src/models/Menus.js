@@ -13,17 +13,24 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
     titulo: {
-      // Campo relacionado
       type: DataTypes.STRING(50),
       allowNull: false,
     },
     ruta: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
     },
     orden: {
       type: DataTypes.INTEGER(2),
       allowNull: false,
+    },
+    ruta_admin: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    icono: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,

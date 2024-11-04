@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import {
   getPruebaKostick,
@@ -19,18 +19,17 @@ import {
 } from "../../utils/pruebaKostick";
 
 export function PruebaKostick() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const prueba_kostick = useSelector(
-    (state) => state.pruebas_empleados.prueba_kostick
-  );
-
   const [prueba, setPrueba] = useState({});
+
+  const [pruebaKostick, setPruebaKostick] = useState([]);
+
+  const [mostrarPrueba, setMostrarPrueba] = useState(false);
 
   const handleAddRespuesta = (event) => {
     const pregunta = event.target.name;
@@ -39,9 +38,7 @@ export function PruebaKostick() {
     setPrueba({ ...prueba, [pregunta]: respuesta });
   };
 
-  const handleSendTest = (event) => {
-    event.preventDefault();
-
+  const handleSendTest = () => {
     if (Object.keys(prueba).length < 90) {
       const faltan = 90 - Object.keys(prueba).length;
 
@@ -74,7 +71,10 @@ export function PruebaKostick() {
           });
           navigate("/inicio");
         } else {
-          dispatch(getPruebaKostick(token));
+          const data = await getPruebaKostick(token);
+
+          setPruebaKostick(data);
+          setMostrarPrueba(true);
         }
       }
     );
@@ -113,36 +113,43 @@ export function PruebaKostick() {
       </p>
       <br />
       <div className="grid gap-10 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
-        {prueba_kostick.map((respuestas, index) => (
-          <div key={index + 1} className="flex flex-col gap-4">
-            <span
-              className={`font-bold text-center md:text-left ${
-                prueba.hasOwnProperty(index + 1) ? "text-green-400" : null
-              }`}
-            >
-              Pregunta número {index + 1}
-            </span>
-            {respuestas.map((respuesta) => (
-              <div key={respuesta.pregunta_kostick_id} className="flex gap-2">
-                <input
-                  type="radio"
-                  id={respuesta.pregunta_kostick_id}
-                  name={respuesta.numero_pregunta}
-                  value={respuesta.pregunta_kostick_id}
-                  onClick={handleAddRespuesta}
-                />
-                <Label htmlFor={respuesta.pregunta_kostick_id}>
-                  {respuesta.respuesta}
-                </Label>
+        {mostrarPrueba && (
+          <>
+            {pruebaKostick.map((respuestas, index) => (
+              <div key={index + 1} className="flex flex-col gap-4">
+                <span
+                  className={`font-bold text-center md:text-left ${
+                    prueba.hasOwnProperty(index + 1) ? "text-green-400" : null
+                  }`}
+                >
+                  Pregunta número {index + 1}
+                </span>
+                {respuestas.map((respuesta) => (
+                  <div
+                    key={respuesta.pregunta_kostick_id}
+                    className="flex gap-2"
+                  >
+                    <input
+                      type="radio"
+                      id={respuesta.pregunta_kostick_id}
+                      name={respuesta.numero_pregunta}
+                      value={respuesta.pregunta_kostick_id}
+                      onClick={handleAddRespuesta}
+                    />
+                    <Label htmlFor={respuesta.pregunta_kostick_id}>
+                      {respuesta.respuesta}
+                    </Label>
+                  </div>
+                ))}
               </div>
             ))}
-          </div>
-        ))}
-        <div className="md:col-span-3 flex justify-center items-center">
-          <Button className="m-0 w-auto" onClick={handleSendTest}>
-            Terminar Test
-          </Button>
-        </div>
+            <div className="md:col-span-3 flex justify-center items-center">
+              <Button className="m-0 w-auto" onClick={handleSendTest}>
+                Terminar Test
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

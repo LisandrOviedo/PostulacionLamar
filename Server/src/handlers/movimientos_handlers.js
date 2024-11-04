@@ -13,7 +13,7 @@ const { reporteMovimiento } = require("../utils/reportes");
 
 const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
 
-const path = require("path");
+const path = require("node:path");
 
 const puppeteer = require("puppeteer");
 
@@ -23,8 +23,8 @@ const getMovimientos = async (req, res) => {
   try {
     const response = await todosLosMovimientos(
       filtros,
-      parseInt(paginaActual),
-      parseInt(limitePorPagina)
+      paginaActual,
+      limitePorPagina
     );
 
     return res.json(response);

@@ -20,9 +20,9 @@ const { authenticateToken } = require("../auth/index");
 const empleados = Router();
 
 const multer = require("multer");
-const path = require("path");
+const path = require("node:path");
 const MIMETYPES = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
-const fs = require("fs");
+const fs = require("node:fs");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -55,9 +55,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 empleados.get("/detalle/:empleado_id", authenticateToken, getEmpleado);
-empleados.get("/login", getLogin);
 empleados.get("/empleadoExistencia", authenticateToken, getEmpleadoExistencia);
 
+empleados.post("/login", getLogin);
 empleados.post("/allEmpleados", authenticateToken, getEmpleados);
 empleados.post("/", authenticateToken, postEmpleado);
 

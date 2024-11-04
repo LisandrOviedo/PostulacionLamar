@@ -11,8 +11,8 @@ const getPruebas = async (req, res) => {
   try {
     const response = await todasLasPruebas(
       filtros,
-      parseInt(paginaActual),
-      parseInt(limitePorPagina)
+      paginaActual,
+      limitePorPagina
     );
 
     return res.json(response);

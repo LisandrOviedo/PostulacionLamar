@@ -7,6 +7,26 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
     throw new Error(`Datos faltantes`);
   }
 
+  const filtros_prueba = {};
+
+  if (filtros.prueba) {
+    filtros_prueba.prueba = filtros.prueba;
+  }
+
+  if (filtros.fecha_desde && filtros.fecha_hasta) {
+    filtros_prueba.createdAt = {
+      [Op.between]: [filtros.fecha_desde, filtros.fecha_hasta],
+    };
+  } else if (filtros.fecha_desde) {
+    filtros_prueba.createdAt = {
+      [Op.gte]: filtros.fecha_desde,
+    };
+  } else if (filtros.fecha_hasta) {
+    filtros_prueba.createdAt = {
+      [Op.lte]: filtros.fecha_hasta,
+    };
+  }
+
   try {
     const { count: totalRegistros, rows: dataPruebasEmpleados } =
       await Pruebas_Empleados.findAndCountAll({
@@ -41,7 +61,7 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
             },
           },
         ],
-        where: filtros.prueba ? { prueba: filtros.prueba } : {},
+        where: filtros_prueba,
         order: [
           filtros.orden_campo === "apellidos"
             ? [Empleados, "apellidos", filtros.orden_por]
@@ -56,10 +76,10 @@ const todasLasPruebas = async (filtros, paginaActual, limitePorPagina) => {
     const indexEnd = paginaActual * limitePorPagina;
     const indexStart = indexEnd - limitePorPagina;
 
-    const pruebas_empleados = dataPruebasEmpleados.slice(indexStart, indexEnd);
+    const pruebasEmpleados = dataPruebasEmpleados.slice(indexStart, indexEnd);
     const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
 
-    return { cantidadPaginas, totalRegistros, pruebas_empleados };
+    return { cantidadPaginas, totalRegistros, pruebasEmpleados };
   } catch (error) {
     throw new Error(`Error al traer todas las pruebas: ${error.message}`);
   }

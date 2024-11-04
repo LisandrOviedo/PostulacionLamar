@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { Button, Hr, Title, InputFile } from "../UI";
 
@@ -17,14 +17,13 @@ import Swal from "sweetalert2";
 import { alertError } from "../../utils/sweetAlert2";
 
 export function SubirDocumentos() {
-  const dispatch = useDispatch();
-
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
-  const anexos = useSelector((state) => state.empleados.documentos);
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
+
+  const [anexos, setAnexos] = useState([]);
 
   const [isLoad, setIsLoad] = useState({
     foto_carnet: false,
@@ -43,7 +42,11 @@ export function SubirDocumentos() {
 
     document.title = "Grupo Lamar - Mis Documentos";
 
-    dispatch(getDocumentos(token, empleado.empleado_id));
+    (async function () {
+      const data = await getDocumentos(token, empleado.empleado_id);
+
+      setAnexos(data);
+    })();
 
     return () => {
       document.title = "Grupo Lamar";
@@ -257,11 +260,7 @@ export function SubirDocumentos() {
         formData.append("cuenta_bancaria", cuenta_bancaria_file);
       }
 
-      try {
-        dispatch(postDocumentos(token, formData));
-      } catch (error) {
-        return error;
-      }
+      await postDocumentos(token, formData);
     }
 
     Swal.fire({
@@ -310,17 +309,17 @@ export function SubirDocumentos() {
             </thead>
             <tbody>
               <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-4 py-4">Perfil Profesional</td>
+                <td className="p-4 font-bold">Perfil Profesional</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "perfil_pdf") ? (
                   <>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {
                         anexos.find((anexo) => anexo.tipo === "perfil_pdf")
                           .nombre
                       }
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
@@ -336,28 +335,28 @@ export function SubirDocumentos() {
                   </>
                 ) : (
                   <>
-                    <td className="px-4 py-4 text-red-800">No cargado</td>
-                    <td className="px-4 py-4"></td>
+                    <td className="p-4 text-red-800">No cargado</td>
+                    <td className="p-4"></td>
                   </>
                 )}
-                <td className="px-4 py-4">
+                <td className="p-4">
                   <Link to="/perfilProfesional/info">
                     <Button className="m-0 w-auto">Cargar / Actualizar</Button>
                   </Link>
                 </td>
               </tr>
               <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-4 py-4">Foto Carnet</td>
+                <td className="p-4 font-bold">Foto Carnet</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "foto_carnet") ? (
                   <>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {
                         anexos.find((anexo) => anexo.tipo === "foto_carnet")
                           .nombre
                       }
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
@@ -373,11 +372,11 @@ export function SubirDocumentos() {
                   </>
                 ) : (
                   <>
-                    <td className="px-4 py-4 text-red-800">No cargado</td>
-                    <td className="px-4 py-4"></td>
+                    <td className="p-4 text-red-800">No cargado</td>
+                    <td className="p-4"></td>
                   </>
                 )}
-                <td className="px-4 py-4">
+                <td className="p-4">
                   <InputFile
                     id="foto_carnet"
                     name="foto_carnet"
@@ -390,17 +389,17 @@ export function SubirDocumentos() {
                 </td>
               </tr>
               <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-4 py-4">Foto Cédula</td>
+                <td className="p-4 font-bold">Foto Cédula</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "foto_cedula") ? (
                   <>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {
                         anexos.find((anexo) => anexo.tipo === "foto_cedula")
                           .nombre
                       }
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
@@ -416,11 +415,11 @@ export function SubirDocumentos() {
                   </>
                 ) : (
                   <>
-                    <td className="px-4 py-4 text-red-800">No cargado</td>
-                    <td className="px-4 py-4"></td>
+                    <td className="p-4 text-red-800">No cargado</td>
+                    <td className="p-4"></td>
                   </>
                 )}
-                <td className="px-4 py-4">
+                <td className="p-4">
                   <InputFile
                     id="foto_cedula"
                     name="foto_cedula"
@@ -433,13 +432,13 @@ export function SubirDocumentos() {
                 </td>
               </tr>
               <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-4 py-4">RIF</td>
+                <td className="p-4 font-bold">RIF</td>
                 {anexos && anexos.find((anexo) => anexo.tipo === "rif") ? (
                   <>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {anexos.find((anexo) => anexo.tipo === "rif").nombre}
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
@@ -454,11 +453,11 @@ export function SubirDocumentos() {
                   </>
                 ) : (
                   <>
-                    <td className="px-4 py-4 text-red-800">No cargado</td>
-                    <td className="px-4 py-4"></td>
+                    <td className="p-4 text-red-800">No cargado</td>
+                    <td className="p-4"></td>
                   </>
                 )}
-                <td className="px-4 py-4">
+                <td className="p-4">
                   <InputFile
                     id="rif"
                     name="rif"
@@ -469,18 +468,18 @@ export function SubirDocumentos() {
                 </td>
               </tr>
               <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-4 py-4">Resumen Curricular</td>
+                <td className="p-4 font-bold">Resumen Curricular</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "resumen_curricular") ? (
                   <>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {
                         anexos.find(
                           (anexo) => anexo.tipo === "resumen_curricular"
                         ).nombre
                       }
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
@@ -497,11 +496,11 @@ export function SubirDocumentos() {
                   </>
                 ) : (
                   <>
-                    <td className="px-4 py-4 text-red-800">No cargado</td>
-                    <td className="px-4 py-4"></td>
+                    <td className="p-4 text-red-800">No cargado</td>
+                    <td className="p-4"></td>
                   </>
                 )}
-                <td className="px-4 py-4">
+                <td className="p-4">
                   <InputFile
                     id="resumen_curricular"
                     name="resumen_curricular"
@@ -514,18 +513,18 @@ export function SubirDocumentos() {
                 </td>
               </tr>
               <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-4 py-4">Título Bachiller</td>
+                <td className="p-4 font-bold">Título Bachiller</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "titulo_bachiller") ? (
                   <>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {
                         anexos.find(
                           (anexo) => anexo.tipo === "titulo_bachiller"
                         ).nombre
                       }
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
@@ -542,11 +541,11 @@ export function SubirDocumentos() {
                   </>
                 ) : (
                   <>
-                    <td className="px-4 py-4 text-red-800">No cargado</td>
-                    <td className="px-4 py-4"></td>
+                    <td className="p-4 text-red-800">No cargado</td>
+                    <td className="p-4"></td>
                   </>
                 )}
-                <td className="px-4 py-4">
+                <td className="p-4">
                   <InputFile
                     id="titulo_bachiller"
                     name="titulo_bachiller"
@@ -559,20 +558,20 @@ export function SubirDocumentos() {
                 </td>
               </tr>
               <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-4 py-4">Títulos Universitarios</td>
+                <td className="p-4 font-bold">Títulos Universitarios</td>
                 {anexos &&
                 anexos.find(
                   (anexo) => anexo.tipo === "titulos_universitarios"
                 ) ? (
                   <>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {
                         anexos.find(
                           (anexo) => anexo.tipo === "titulos_universitarios"
                         ).nombre
                       }
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
@@ -589,11 +588,11 @@ export function SubirDocumentos() {
                   </>
                 ) : (
                   <>
-                    <td className="px-4 py-4 text-red-800">No cargado</td>
-                    <td className="px-4 py-4"></td>
+                    <td className="p-4 text-red-800">No cargado</td>
+                    <td className="p-4"></td>
                   </>
                 )}
-                <td className="px-4 py-4">
+                <td className="p-4">
                   <InputFile
                     id="titulos_universitarios"
                     name="titulos_universitarios"
@@ -606,17 +605,17 @@ export function SubirDocumentos() {
                 </td>
               </tr>
               <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-4 py-4">Otros Estudios</td>
+                <td className="p-4 font-bold">Otros Estudios</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "otros_estudios") ? (
                   <>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {
                         anexos.find((anexo) => anexo.tipo === "otros_estudios")
                           .nombre
                       }
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
@@ -633,11 +632,11 @@ export function SubirDocumentos() {
                   </>
                 ) : (
                   <>
-                    <td className="px-4 py-4 text-red-800">No cargado</td>
-                    <td className="px-4 py-4"></td>
+                    <td className="p-4 text-red-800">No cargado</td>
+                    <td className="p-4"></td>
                   </>
                 )}
-                <td className="px-4 py-4">
+                <td className="p-4">
                   <InputFile
                     id="otros_estudios"
                     name="otros_estudios"
@@ -650,18 +649,18 @@ export function SubirDocumentos() {
                 </td>
               </tr>
               <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-4 py-4">Referencias Personales</td>
+                <td className="p-4 font-bold">Referencias Personales</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "referencia_personal") ? (
                   <>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {
                         anexos.find(
                           (anexo) => anexo.tipo === "referencia_personal"
                         ).nombre
                       }
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
@@ -678,11 +677,11 @@ export function SubirDocumentos() {
                   </>
                 ) : (
                   <>
-                    <td className="px-4 py-4 text-red-800">No cargado</td>
-                    <td className="px-4 py-4"></td>
+                    <td className="p-4 text-red-800">No cargado</td>
+                    <td className="p-4"></td>
                   </>
                 )}
-                <td className="px-4 py-4">
+                <td className="p-4">
                   <InputFile
                     id="referencia_personal"
                     name="referencia_personal"
@@ -695,17 +694,17 @@ export function SubirDocumentos() {
                 </td>
               </tr>
               <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
-                <td className="px-4 py-4">Soporte Cuenta Bancaria</td>
+                <td className="p-4 font-bold">Soporte Cuenta Bancaria</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "cuenta_bancaria") ? (
                   <>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       {
                         anexos.find((anexo) => anexo.tipo === "cuenta_bancaria")
                           .nombre
                       }
                     </td>
-                    <td className="px-4 py-4">
+                    <td className="p-4">
                       <Button
                         className="m-0 w-auto"
                         onClick={() =>
@@ -722,11 +721,11 @@ export function SubirDocumentos() {
                   </>
                 ) : (
                   <>
-                    <td className="px-4 py-4 text-red-800">No cargado</td>
-                    <td className="px-4 py-4"></td>
+                    <td className="p-4 text-red-800">No cargado</td>
+                    <td className="p-4"></td>
                   </>
                 )}
-                <td className="px-4 py-4">
+                <td className="p-4">
                   <InputFile
                     id="cuenta_bancaria"
                     name="cuenta_bancaria"

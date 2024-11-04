@@ -1,14 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import {
   getAllCurriculos,
   getCurriculoPDFAnexos,
-  postPaginaActual,
-  postLimitePorPagina,
-  postFiltros,
   putCambiarEstado,
-  deleteFiltros,
 } from "../../redux/curriculos/curriculosActions";
 
 import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresActions";
@@ -23,10 +19,8 @@ import {
 
 import { DDMMYYYY } from "../../utils/formatearFecha";
 
-export function Postulaciones() {
+export function PerfilesProfesionales() {
   const tableRef = useRef(null);
-
-  const dispatch = useDispatch();
 
   const token = useSelector((state) => state.empleados.token);
 
@@ -34,41 +28,39 @@ export function Postulaciones() {
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const curriculos = useSelector((state) => state.curriculos.curriculos);
+  const [paginaActual, setPaginaActual] = useState(1);
 
-  const paginaActual = useSelector((state) => state.curriculos.paginaActual);
+  const [limitePorPagina, setLimitePorPagina] = useState(2);
 
-  const limitePorPagina = useSelector(
-    (state) => state.curriculos.limitePorPagina
-  );
+  const [curriculos, setCurriculos] = useState([]);
 
-  const filtros = useSelector((state) => state.curriculos.filtros);
+  const [areasInteresActivas, setAreasInteresActivas] = useState([]);
 
-  const areas_interes_activas = useSelector(
-    (state) => state.areas_interes.areas_interes_activas
-  );
-
-  const idiomas_activos = useSelector((state) => state.idiomas.idiomas_activos);
+  const [idiomasActivos, setIdiomasActivos] = useState([]);
 
   const [filters, setFilters] = useState({
-    numero_identificacion: filtros.numero_identificacion || "",
-    apellidos: filtros.apellidos || "",
-    area_interes_id: filtros.area_interes_id || "",
-    estado: filtros.estado || "",
-    idioma_id: filtros.idioma_id || "",
-    orden_campo: filtros.orden_campo || "",
-    orden_por: filtros.orden_por || "",
+    numero_identificacion: "",
+    apellidos: "",
+    area_interes_id: "",
+    estado: "",
+    idioma_id: "",
+    orden_campo: "",
+    orden_por: "",
     empresa_id: empleado.empresa_id,
   });
 
-  const handleChangePagination = (e) => {
+  const handleChangePagination = async (e) => {
     const { value } = e.target;
 
-    dispatch(postLimitePorPagina(value));
+    setLimitePorPagina(value);
 
     if (paginaActual !== 1) {
-      dispatch(postPaginaActual(1));
+      setPaginaActual(1);
     }
+
+    const dataCurriculos = await getAllCurriculos(token, filters, 1, value);
+
+    setCurriculos(dataCurriculos);
   };
 
   const handleChangeFilters = (e) => {
@@ -107,7 +99,7 @@ export function Postulaciones() {
     }
   };
 
-  const handleResetFilters = () => {
+  const handleResetFilters = async () => {
     setFilters({
       numero_identificacion: "",
       apellidos: "",
@@ -125,58 +117,77 @@ export function Postulaciones() {
     buscarPor.selectedIndex = 0;
     inputSearch.value = "";
 
-    dispatch(deleteFiltros());
+    const dataCurriculos = await getAllCurriculos(
+      token,
+      {
+        numero_identificacion: "",
+        apellidos: "",
+        area_interes_id: "",
+        estado: "",
+        idioma_id: "",
+        orden_campo: "",
+        orden_por: "",
+        empresa_id: empleado.empresa_id,
+      },
+      1,
+      limitePorPagina
+    );
+
+    setCurriculos(dataCurriculos);
   };
 
-  const handleFind = () => {
-    dispatch(postPaginaActual(1)).then(() => {
-      dispatch(postFiltros(filters));
-    });
+  const handleFind = async () => {
+    if (paginaActual !== 1) {
+      setPaginaActual(1);
+    }
+
+    const dataCurriculos = await getAllCurriculos(
+      token,
+      filters,
+      1,
+      limitePorPagina
+    );
+
+    setCurriculos(dataCurriculos);
   };
 
   useEffect(() => {
     window.scroll(0, 0);
 
-    dispatch(getAllAreasInteresActivas(token));
-
-    dispatch(getAllIdiomasActivos(token));
-
     handleFind();
 
-    document.title = "Grupo Lamar - Postulaciones (Admin)";
+    (async function () {
+      const dataIdiomasActivos = await getAllIdiomasActivos(token);
+      const dataAreasInteresActivas = await getAllAreasInteresActivas(token);
+
+      setIdiomasActivos(dataIdiomasActivos);
+      setAreasInteresActivas(dataAreasInteresActivas);
+    })();
+
+    document.title = "Grupo Lamar - Perfiles Profesionales (Admin)";
 
     return () => {
       document.title = "Grupo Lamar";
     };
   }, []);
 
-  useEffect(() => {
-    dispatch(getAllCurriculos(token, filtros, paginaActual, limitePorPagina));
-  }, [filtros, paginaActual, limitePorPagina]);
-
   const handleVerDetalles = async (identificacion, nombre, empleado_id) => {
-    await putCambiarEstado(token, empleado_id, empleado.empleado_id).then(
-      () => {
-        const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${nombre}`;
+    await putCambiarEstado(token, empleado_id, empleado.empleado_id);
 
-        window.open(URL_GET_PDF, "_blank");
-      }
-    );
+    const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${nombre}`;
+
+    window.open(URL_GET_PDF, "_blank");
   };
 
-  const handleVerDetallesAnexos = (empleado_id, identificacion) => {
-    dispatch(getCurriculoPDFAnexos(token, empleado_id, identificacion))
-      .then(() => {
-        const URL_GET_PDF_ANEXOS = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/Anexos ${identificacion}.zip`;
+  const handleVerDetallesAnexos = async (empleado_id, identificacion) => {
+    await getCurriculoPDFAnexos(token, empleado_id, identificacion);
 
-        window.open(URL_GET_PDF_ANEXOS, "_blank");
-      })
-      .catch((error) => {
-        return error;
-      });
+    const URL_GET_PDF_ANEXOS = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/Anexos ${identificacion}.zip`;
+
+    window.open(URL_GET_PDF_ANEXOS, "_blank");
   };
 
-  const changeOrder = (e) => {
+  const changeOrder = async (e) => {
     const { name } = e.target;
 
     if (!filters.orden_campo) {
@@ -186,13 +197,25 @@ export function Postulaciones() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
+
+      setCurriculos(dataCurriculos);
     } else if (filters.orden_campo === name && filters.orden_por === "ASC") {
       setFilters((prevFilters) => ({ ...prevFilters, orden_por: "DESC" }));
 
-      return dispatch(postFiltros({ ...filters, orden_por: "DESC" }));
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        { ...filters, orden_por: "DESC" },
+        1,
+        limitePorPagina
+      );
+
+      setCurriculos(dataCurriculos);
     } else if (filters.orden_campo === name && filters.orden_por === "DESC") {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -200,9 +223,14 @@ export function Postulaciones() {
         orden_por: "",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: "", orden_por: "" })
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        { ...filters, orden_campo: "", orden_por: "" },
+        1,
+        limitePorPagina
       );
+
+      setCurriculos(dataCurriculos);
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -210,32 +238,72 @@ export function Postulaciones() {
         orden_por: "ASC",
       }));
 
-      return dispatch(
-        postFiltros({ ...filters, orden_campo: name, orden_por: "ASC" })
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        { ...filters, orden_campo: name, orden_por: "ASC" },
+        1,
+        limitePorPagina
       );
+
+      setCurriculos(dataCurriculos);
     }
   };
 
-  const paginaAnterior = () => {
+  const paginaAnterior = async () => {
     if (paginaActual > 1) {
-      dispatch(postPaginaActual(paginaActual - 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual - 1);
+
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        filters,
+        paginaActual - 1,
+        limitePorPagina
+      );
+
+      setCurriculos(dataCurriculos);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const paginaSiguiente = () => {
+  const paginaSiguiente = async () => {
     if (paginaActual < curriculos.cantidadPaginas) {
-      dispatch(postPaginaActual(paginaActual + 1)).then(() => {
-        tableRef.current.scrollIntoView({ behavior: "smooth" });
-      });
+      setPaginaActual(paginaActual + 1);
+
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        filters,
+        paginaActual + 1,
+        limitePorPagina
+      );
+
+      setCurriculos(dataCurriculos);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleChangePage = async (page) => {
+    if (paginaActual !== page) {
+      setPaginaActual(page);
+
+      const dataCurriculos = await getAllCurriculos(
+        token,
+        filters,
+        page,
+        limitePorPagina
+      );
+
+      setCurriculos(dataCurriculos);
+
+      tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <Title>Postulaciones</Title>
+        <Title>Perfiles Profesionales</Title>
       </div>
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
         <div className="flex flex-col place-content-between">
@@ -245,7 +313,7 @@ export function Postulaciones() {
             name="buscar_por"
             onChange={handleChangeFiltersSelect}
             defaultValue={
-              filtros.apellidos ? "apellidos" : "numero_identificacion"
+              filters.apellidos ? "apellidos" : "numero_identificacion"
             }
           >
             <option value="numero_identificacion">
@@ -261,10 +329,10 @@ export function Postulaciones() {
             placeholder="Escribe aquí tu búsqueda"
             onChange={handleChangeFiltersInput}
             defaultValue={
-              filtros.apellidos
-                ? `${filtros.apellidos}`
-                : filtros.numero_identificacion
-                ? `${filtros.numero_identificacion}`
+              filters.apellidos
+                ? `${filters.apellidos}`
+                : filters.numero_identificacion
+                ? `${filters.numero_identificacion}`
                 : ""
             }
           />
@@ -278,8 +346,8 @@ export function Postulaciones() {
             value={filters.area_interes_id}
           >
             <option value="">Todos</option>
-            {areas_interes_activas?.length
-              ? areas_interes_activas?.map(
+            {areasInteresActivas?.length
+              ? areasInteresActivas?.map(
                   (area, i) =>
                     area.activo && (
                       <option
@@ -303,8 +371,8 @@ export function Postulaciones() {
             value={filters.idioma_id}
           >
             <option value="">Todos</option>
-            {idiomas_activos?.length
-              ? idiomas_activos?.map(
+            {idiomasActivos?.length
+              ? idiomasActivos?.map(
                   (idioma, i) =>
                     idioma.activo && (
                       <option
@@ -444,16 +512,9 @@ export function Postulaciones() {
                 </th>
               </tr>
             </thead>
-            <tbody>
-              {curriculos === "No existen curriculos" ||
-              !curriculos.curriculos?.length ? (
-                <tr>
-                  <td colSpan="9" className="text-center p-2">
-                    <p>¡No existen registros!</p>
-                  </td>
-                </tr>
-              ) : (
-                curriculos.curriculos?.map((curriculo, i) => (
+            {curriculos.curriculos && curriculos.curriculos.length > 0 && (
+              <tbody>
+                {curriculos.curriculos.map((curriculo, i) => (
                   <tr
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
@@ -483,9 +544,7 @@ export function Postulaciones() {
                           }`
                       )}
                     </td>
-                    <td className="p-4">
-                      {DDMMYYYY(curriculo.updatedAt)}
-                    </td>
+                    <td className="p-4">{DDMMYYYY(curriculo.updatedAt)}</td>
                     <td className="p-4">
                       {curriculo.revisado_por_id
                         ? "Revisado"
@@ -498,7 +557,7 @@ export function Postulaciones() {
                     </td>
                     <td className="p-4 flex gap-2 items-center">
                       <Button
-                        className="m-0 w-auto"
+                        className="m-0 w-auto text-xs"
                         onClick={() =>
                           handleVerDetalles(
                             `${curriculo.Empleado.tipo_identificacion}${curriculo.Empleado.numero_identificacion}`,
@@ -507,10 +566,10 @@ export function Postulaciones() {
                           )
                         }
                       >
-                        PDF
+                        Ver Perfil
                       </Button>
                       <Button
-                        className="m-0 w-auto"
+                        className="m-0 w-auto text-xs"
                         onClick={() =>
                           handleVerDetallesAnexos(
                             curriculo.Empleado.empleado_id,
@@ -518,13 +577,13 @@ export function Postulaciones() {
                           )
                         }
                       >
-                        Anexos
+                        Descargar Anexos
                       </Button>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
+                ))}
+              </tbody>
+            )}
           </table>
         </div>
         <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">
@@ -537,7 +596,7 @@ export function Postulaciones() {
             <li>
               <span
                 onClick={paginaAnterior}
-                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                   ${
                     paginaActual <= 1
                       ? "cursor-default"
@@ -553,12 +612,8 @@ export function Postulaciones() {
             ).map((page) => (
               <li key={page}>
                 <span
-                  onClick={() =>
-                    dispatch(postPaginaActual(page)).then(() => {
-                      tableRef.current.scrollIntoView({ behavior: "smooth" });
-                    })
-                  }
-                  className={`cursor-pointer text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
+                  onClick={() => handleChangePage(page)}
+                  className={`cursor-pointer select-none text-black flex items-center justify-center px-3 h-8 border border-gray-300 hover:bg-blue-100 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white ${
                     page === paginaActual
                       ? "font-semibold text-blue-600 hover:text-blue-600 bg-blue-50"
                       : ""
@@ -571,7 +626,7 @@ export function Postulaciones() {
             <li>
               <span
                 onClick={paginaSiguiente}
-                className={`flex text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
+                className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
                   paginaActual >= curriculos.cantidadPaginas
                     ? "cursor-default"

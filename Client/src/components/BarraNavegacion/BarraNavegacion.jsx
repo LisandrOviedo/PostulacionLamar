@@ -4,38 +4,50 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { deleteSesion } from "../../redux/sesiones/sesionesActions";
 
-import { resetAreasInteres } from "../../redux/areasInteres/areasInteresActions";
-import { resetCurriculos } from "../../redux/curriculos/curriculosActions";
 import { resetEmpleados } from "../../redux/empleados/empleadosActions";
-import { resetIdiomas } from "../../redux/idiomas/idiomasActions";
-import { resetPruebas } from "../../redux/pruebasEmpleados/pruebasEmpleadosActions";
 import { getSugerenciasActivasNoRevisadas } from "../../redux/sugerencias/sugerenciasActions";
 
-import { Logo } from "../UI";
 import { LogoHorizontal } from "../UI";
+
+import { IoMdArrowDropup, IoMdArrowDropdown } from "react-icons/io";
 
 import Swal from "sweetalert2";
 
 export function BarraNavegacion() {
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState({});
+
   const [isOpenBurger, setIsOpenBurger] = useState(false);
   const [isOpenNotif, setIsOpenNotif] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+
+  const [showSubMenu, setShowSubMenu] = useState({});
 
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const toggleMenu = (index) => {
-    if (isOpen.hasOwnProperty(index)) {
-      setIsOpen({});
-      return;
+  const toggleMenu = (menu_id) => {
+    if (showSubMenu.hasOwnProperty(menu_id)) {
+      if (showSubMenu[menu_id]) {
+        setShowSubMenu((prev) => {
+          let obj = { ...prev };
+          delete obj[menu_id];
+          return obj;
+        });
+      } else {
+        setShowSubMenu((prev) => {
+          let obj = { ...prev };
+          obj[menu_id] = true;
+          return obj;
+        });
+      }
+    } else {
+      setShowSubMenu((prev) => {
+        let obj = { ...prev };
+        obj[menu_id] = true;
+        return obj;
+      });
     }
-
-    setIsOpen({
-      [index]: [index],
-    });
   };
 
   const toggleMenuBurger = () => {
@@ -63,10 +75,6 @@ export function BarraNavegacion() {
       if (result.isConfirmed) {
         await deleteSesion(token, empleado.empleado_id);
 
-        dispatch(resetAreasInteres());
-        dispatch(resetCurriculos());
-        dispatch(resetIdiomas());
-        dispatch(resetPruebas());
         dispatch(resetEmpleados());
       }
     });
@@ -80,15 +88,22 @@ export function BarraNavegacion() {
   const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${empleado.foto_perfil_nombre}`;
 
   const [notificaciones, setNotificaciones] = useState({});
+  const [menu, setMenu] = useState([]);
 
   useEffect(() => {
     if (pathname.startsWith("/admin/")) {
-      dispatch(getSugerenciasActivasNoRevisadas()).then((data) => {
+      (async function () {
+        const data = await getSugerenciasActivasNoRevisadas();
+
         if (data > 0) {
           setNotificaciones({ ...notificaciones, sugerencias: data });
         }
-      });
+      })();
     }
+
+    const resultadoMenu = organizedMenus(empleado.Role.Menus);
+
+    setMenu(resultadoMenu);
   }, [pathname]);
 
   useEffect(() => {
@@ -113,20 +128,105 @@ export function BarraNavegacion() {
     };
   }, [empleado]);
 
+  const organizedMenus = (menu) => {
+    const filteredMenu = pathname.startsWith("/admin/")
+      ? menu.filter((item) => item.ruta_admin === true)
+      : menu.filter((item) => item.ruta_admin === false);
+
+    const buildMenuTree = (menuItems) => {
+      const menuMap = new Map();
+
+      // Crear un mapa de menús
+      menuItems.forEach((item) => {
+        menuMap.set(item.menu_id, { ...item, subMenus: [] });
+      });
+
+      const result = [];
+
+      // Construir la jerarquía
+      menuItems.forEach((item) => {
+        if (item.padre_id === null) {
+          result.push(menuMap.get(item.menu_id));
+        } else {
+          const parent = menuMap.get(item.padre_id);
+          if (parent) {
+            parent.subMenus.push(menuMap.get(item.menu_id));
+          }
+        }
+      });
+
+      return result;
+    };
+
+    // Crear el árbol de menús
+    const menusResultado = buildMenuTree(filteredMenu);
+
+    // Ordenar los menús por el atributo 'orden'
+    const sortedMenus = menusResultado.sort((a, b) => a.orden - b.orden);
+
+    // Ordenar los submenús y sub-submenús de forma recursiva
+    const sortSubMenus = (menus) => {
+      menus.forEach((menu) => {
+        menu.subMenus.sort((a, b) => a.orden - b.orden);
+        sortSubMenus(menu.subMenus); // Llamada recursiva
+      });
+    };
+
+    sortSubMenus(sortedMenus);
+
+    return sortedMenus;
+  };
+
+  const renderMenu = (menu) => {
+    return menu.map((menuItem) => (
+      <li key={menuItem.menu_id}>
+        {menuItem.subMenus.length > 0 ? (
+          <>
+            <span
+              onClick={() => toggleMenu(menuItem.menu_id)}
+              className="hover:text-[#F0C95C] block cursor-pointer"
+            >
+              {menuItem.titulo}
+              {showSubMenu[menuItem.menu_id] ? (
+                <IoMdArrowDropup className="inline" />
+              ) : (
+                <IoMdArrowDropdown className="inline" />
+              )}
+            </span>
+            <ul
+              className={
+                showSubMenu[menuItem.menu_id]
+                  ? "flex flex-col gap-1 my-3 p-1 border rounded-3xl text-sm"
+                  : "hidden"
+              }
+            >
+              {renderMenu(menuItem.subMenus)} {/* Llamada recursiva */}
+            </ul>
+          </>
+        ) : (
+          <Link
+            to={menuItem.ruta}
+            className="text-white hover:text-[#F0C95C] block"
+            onClick={() => {
+              toggleMenuBurger();
+            }}
+          >
+            {menuItem.titulo}
+          </Link>
+        )}
+      </li>
+    ));
+  };
+
   return (
     <div className="w-full fixed top-0 select-none z-[999]">
       <nav className="bg-[#002846] p-1 flex items-center justify-between">
-        <div className="text-white flex items-center sm:hover:opacity-80 cursor-pointer gap-1">
-          <LogoHorizontal
-            onClick={toggleMenuBurger}
-            className="w-20 sm:w-24 ml-2"
-          />
-          <img
-            onClick={toggleMenuBurger}
-            src="./Menu.svg"
-            alt="Menu"
-            className="w-6"
-          />
+        <div
+          onClick={toggleMenuBurger}
+          className="text-white flex items-center sm:hover:opacity-85 cursor-pointer gap-1"
+        >
+          <LogoHorizontal className="w-20 sm:w-24 ml-2" />
+          <img src="./Menu.svg" alt="Menu" className="w-6" />
         </div>
 
         <div className="flex items-center space-x-4 mr-6">
@@ -195,7 +295,7 @@ export function BarraNavegacion() {
       >
         <div className="h-full overflow-y-auto scroll-smooth pb-[20vh]">
           <nav>
-            <ul className="space-y-2 cursor-pointer flex flex-col gap-2 text-center">
+            <ul className="space-y-2 flex flex-col gap-2 text-center">
               <li>
                 <div
                   onClick={toggleMenuBurger}
@@ -210,205 +310,10 @@ export function BarraNavegacion() {
                   />
                 </div>
               </li>
-
+              {renderMenu(menu)}
               <li>
                 <Link
-                  to={
-                    !pathname.startsWith("/admin/") ? "/inicio" : "/admin/panel"
-                  }
-                  className="text-white hover:text-[#F0C95C]"
-                  onClick={() => {
-                    toggleMenuBurger();
-                    toggleMenu({});
-                  }}
-                >
-                  Inicio
-                </Link>
-              </li>
-              <li>
-                <div
-                  onClick={() => toggleMenu(0)}
-                  data-index={0}
-                  className="hover:text-[#F0C95C]"
-                >
-                  <span>Mi Perfil</span>
-                </div>
-                <ul
-                  className={
-                    isOpen[0]
-                      ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
-                      : "hidden"
-                  }
-                >
-                  <li>
-                    <Link
-                      to={
-                        !pathname.startsWith("/admin/")
-                          ? "/miPerfil/datosPersonales"
-                          : "/admin/miPerfil/datosPersonales"
-                      }
-                      className="text-white hover:text-[#F0C95C] text-sm"
-                      onClick={toggleMenuBurger}
-                    >
-                      Datos personales
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to={
-                        !pathname.startsWith("/admin/")
-                          ? "/miPerfil/actualizarClave"
-                          : "/admin/miPerfil/actualizarClave"
-                      }
-                      className="text-white hover:text-[#F0C95C] text-sm"
-                      onClick={toggleMenuBurger}
-                    >
-                      Actualizar contraseña
-                    </Link>
-                  </li>
-                </ul>
-              </li>
-              {!pathname.startsWith("/admin/") ? (
-                // EMPLEADOS
-                <>
-                  <li>
-                    <div
-                      onClick={() => toggleMenu(1)}
-                      data-index={1}
-                      className="hover:text-[#F0C95C]"
-                    >
-                      <span>Perfil Profesional</span>
-                    </div>
-                    <ul
-                      className={
-                        isOpen[1]
-                          ? "flex flex-col gap-1 my-3 p-1 border bg-sky-950"
-                          : "hidden"
-                      }
-                    >
-                      <li>
-                        <Link
-                          to="/perfilProfesional/info"
-                          className="text-white hover:text-[#F0C95C] text-sm"
-                          onClick={toggleMenuBurger}
-                        >
-                          Actualizar Perfil
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/perfilProfesional/misDocumentos"
-                          className="text-white hover:text-[#F0C95C] text-sm"
-                          onClick={toggleMenuBurger}
-                        >
-                          Anexar documentos
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/perfilProfesional/pruebaKostick"
-                          className="text-white hover:text-[#F0C95C] text-sm"
-                          onClick={toggleMenuBurger}
-                        >
-                          Aplicar Test de Valoración Actitudinal
-                        </Link>
-                      </li>
-                    </ul>
-                  </li>
-                </>
-              ) : (
-                // ADMINISTRADORES
-                <>
-                  <li>
-                    <Link
-                      to="/admin/empleados"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Empleados
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admin/postulaciones"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Postulaciones
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admin/pruebasEmpleados"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Pruebas de Empleados
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admin/formularioIngreso"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Ingreso
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admin/movimientos"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Movimientos
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admin/solicitudesMovimientos"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Solicitudes Movimientos
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admin/sugerencias"
-                      className="text-white hover:text-[#F0C95C]"
-                      onClick={() => {
-                        toggleMenuBurger();
-                        toggleMenu({});
-                      }}
-                    >
-                      Sugerencias
-                    </Link>
-                  </li>
-                </>
-              )}
-
-              <li>
-                <Link
-                  className="text-white hover:text-[#F0C95C]"
+                  className="text-white hover:text-[#F0C95C] block"
                   onClick={logout}
                 >
                   Cerrar Sesión

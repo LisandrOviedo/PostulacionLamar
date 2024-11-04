@@ -1,4 +1,5 @@
 const regexSoloNumeros = /^\d+$/;
+const regexNumerosLetrasGuionesApostrofes = /^[A-Za-zÀ-ÿ0-9' -]+$/;
 
 export default function validations(inputs) {
   const errors = {};
@@ -6,6 +7,7 @@ export default function validations(inputs) {
   const {
     tipo_identificacion,
     numero_identificacion,
+    justificacion_movimiento,
     sueldo,
     codigo_nomina,
     tipo_identificacion_supervisor,
@@ -29,6 +31,13 @@ export default function validations(inputs) {
     } else if (numero_identificacion.length > 20) {
       errors.numero_identificacion =
         "El número de identificación debe contener máximo 20 números";
+    }
+  }
+
+  if (justificacion_movimiento) {
+    if (!regexNumerosLetrasGuionesApostrofes.test(justificacion_movimiento)) {
+      errors.justificacion_movimiento =
+        "La justificación del movimiento solo puede contener letras, números, espacios, guiones o apóstofres";
     }
   }
 

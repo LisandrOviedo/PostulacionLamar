@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const { DB, USERDB, PASSWORD, HOST, DIALECT, PORT_DB } = process.env;
 
@@ -60,6 +60,7 @@ const {
   Fichas_Ingresos,
   Idiomas_Curriculos,
   Idiomas,
+  Liquidaciones,
   Menus,
   Movimientos,
   Municipios,
@@ -69,14 +70,18 @@ const {
   Pruebas_Empleados,
   Referencias_Personales,
   Respuestas_Kostick,
+  Roles_Menus,
   Roles,
   Salud,
   Sedes,
+  Seguro_Social,
   Sesiones,
   Sugerencias_Pred,
   Sugerencias,
   Tipos_Sugerencias,
   Titulos_Obtenidos,
+  Vacantes_Empleados,
+  Vacantes,
 } = sequelize.models;
 
 // RELACIONES DE MODELOS (TABLAS)
@@ -628,6 +633,75 @@ Empleados.belongsTo(Empresas, {
   },
 });
 
+// Roles M:M Menus
+Roles.belongsToMany(Menus, {
+  through: "Roles_Menus",
+  foreignKey: {
+    name: "rol_id",
+  },
+});
+Menus.belongsToMany(Roles, {
+  through: "Roles_Menus",
+  foreignKey: {
+    name: "menu_id",
+  },
+});
+
+Menus.belongsTo(Menus, { foreignKey: "padre_id", as: "Padre" });
+Menus.hasMany(Menus, { foreignKey: "padre_id", as: "Sub_Menus" });
+
+// Areas_Interes 1:M Vacantes
+Areas_Interes.hasMany(Vacantes, {
+  foreignKey: {
+    name: "area_interes_id",
+  },
+});
+Vacantes.belongsTo(Areas_Interes, {
+  foreignKey: {
+    name: "area_interes_id",
+  },
+});
+
+// Vacantes M:M Empleados
+Vacantes.belongsToMany(Empleados, {
+  through: "Vacantes_Empleados",
+  foreignKey: {
+    name: "vacante_id",
+  },
+});
+Empleados.belongsToMany(Vacantes, {
+  through: "Vacantes_Empleados",
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Empleados 1:M Vacantes
+Empleados.hasMany(Vacantes, {
+  foreignKey: {
+    name: "creado_por_id",
+  },
+  as: "CreadoPor",
+});
+Vacantes.belongsTo(Empleados, {
+  foreignKey: {
+    name: "creado_por_id",
+  },
+  as: "CreadoPor",
+});
+
+// Seguro_Social 1:M Empresas
+// Seguro_Social.hasMany(Empresas, {
+//   foreignKey: {
+//     name: "seguro_social_id",
+//   },
+// });
+// Empresas.belongsTo(Seguro_Social, {
+//   foreignKey: {
+//     name: "seguro_social_id",
+//   },
+// });
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');
@@ -652,6 +726,7 @@ module.exports = {
   Fichas_Ingresos,
   Idiomas_Curriculos,
   Idiomas,
+  Liquidaciones,
   Menus,
   Movimientos,
   Municipios,
@@ -661,12 +736,16 @@ module.exports = {
   Pruebas_Empleados,
   Referencias_Personales,
   Respuestas_Kostick,
+  Roles_Menus,
   Roles,
   Salud,
   Sedes,
+  Seguro_Social,
   Sesiones,
   Sugerencias_Pred,
   Sugerencias,
   Tipos_Sugerencias,
   Titulos_Obtenidos,
+  Vacantes_Empleados,
+  Vacantes,
 };

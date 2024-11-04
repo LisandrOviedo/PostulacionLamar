@@ -15,6 +15,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    acceso_admin: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     activo: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,

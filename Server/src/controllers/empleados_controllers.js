@@ -2,7 +2,7 @@ const { Op } = require("sequelize");
 
 const axios = require("axios");
 
-const fs = require("fs");
+const fs = require("node:fs");
 
 const {
   conn,
@@ -26,6 +26,7 @@ const {
   Datos_Bancarios,
   Movimientos,
   Clases_Movimientos,
+  Menus,
 } = require("../db");
 
 const { API_EMPLEADOS } = process.env;
@@ -34,7 +35,11 @@ const { YYYYMMDD, fechaHoraActual } = require("../utils/formatearFecha");
 
 const { sanarTextoAPI } = require("../utils/formatearTexto");
 
-const { crearSesion, traerSesion } = require("./sesiones_controllers");
+const {
+  crearSesion,
+  traerSesion,
+  cerrarSesion,
+} = require("./sesiones_controllers");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -51,14 +56,54 @@ const todosLosEmpleados = async (filtros, paginaActual, limitePorPagina) => {
         attributes: {
           exclude: ["rol_id", "clave"],
         },
-        include: {
-          model: Fichas_Ingresos,
-          attributes: ["ficha_ingreso_id"],
-          where: {
-            activo: true,
+        include: [
+          {
+            model: Fichas_Ingresos,
+            attributes: ["ficha_ingreso_id"],
+            where: {
+              activo: true,
+            },
+            required: false,
           },
-          required: false,
-        },
+          {
+            model: Roles,
+            attributes: ["nombre", "descripcion"],
+          },
+          {
+            model: Cargos_Empleados,
+            attributes: ["cargo_empleado_id", "fecha_ingreso", "fecha_egreso"],
+            where: { activo: true },
+            required: false,
+            include: [
+              {
+                model: Cargos_Niveles,
+                attributes: ["cargo_nivel_id", "nivel"],
+                include: [
+                  {
+                    model: Cargos,
+                    attributes: [
+                      "cargo_id",
+                      "descripcion",
+                      "descripcion_cargo_antiguo",
+                    ],
+                    include: [
+                      {
+                        model: Departamentos,
+                        attributes: ["departamento_id", "nombre"],
+                        include: [
+                          {
+                            model: Empresas,
+                            attributes: ["empresa_id", "nombre"],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
         where: {
           empresa_id: filtros.empresa_id,
           [Op.and]: [
@@ -113,7 +158,27 @@ const traerEmpleado = async (empleado_id) => {
       include: [
         {
           model: Roles,
-          attributes: ["nombre", "descripcion"],
+          attributes: ["nombre", "descripcion", "acceso_admin", "activo"],
+          include: [
+            {
+              model: Menus,
+              attributes: {
+                exclude: ["createdAt", "updatedAt"],
+              },
+              through: { attributes: ["rol_menu_id"], where: { activo: true } },
+              include: [
+                {
+                  model: Menus,
+                  as: "Padre",
+                  attributes: {
+                    exclude: ["createdAt", "updatedAt"],
+                  },
+                  where: { activo: true },
+                  required: false,
+                },
+              ],
+            },
+          ],
         },
         {
           model: Empresas,
@@ -350,6 +415,10 @@ const traerEmpleadoExistencia = async (
       order: [[Movimientos, "createdAt", "DESC"]],
     });
 
+    if (empleado && !empleado.activo) {
+      throw new Error(`Ese empleado se encuentra inactivo`);
+    }
+
     if (empleado) {
       return empleado;
     }
@@ -394,7 +463,7 @@ const login = async (tipo_identificacion, numero_identificacion, clave) => {
       include: [
         {
           model: Roles,
-          attributes: ["rol_id", "nombre"],
+          attributes: ["rol_id", "nombre", "acceso_admin"],
         },
       ],
     });
@@ -438,6 +507,12 @@ const login = async (tipo_identificacion, numero_identificacion, clave) => {
       }
     }
 
+    const infoEmpleado = await traerEmpleado(empleado.empleado_id);
+
+    if (!infoEmpleado.Role.Menus.length || !infoEmpleado.Role.activo) {
+      throw new Error(`El rol de su usuario no posee menús asociados`);
+    }
+
     const token = jwt.sign(
       {
         empleado_id: empleado.empleado_id,
@@ -446,8 +521,6 @@ const login = async (tipo_identificacion, numero_identificacion, clave) => {
       SECRET_KEY,
       { expiresIn: "4h" }
     );
-
-    const infoEmpleado = await traerEmpleado(empleado.empleado_id);
 
     await crearSesion(empleado.empleado_id, token);
 
@@ -1045,6 +1118,8 @@ const reiniciarClaveEmpleado = async (empleado_id) => {
 
     await t.commit();
 
+    await cerrarSesion(empleado_id);
+
     return await traerEmpleado(empleado_id);
   } catch (error) {
     if (t && !t.finished) {
@@ -1076,6 +1151,8 @@ const inactivarEmpleado = async (empleado_id) => {
     );
 
     await t.commit();
+
+    await cerrarSesion(empleado_id);
 
     return await traerEmpleado(empleado_id);
   } catch (error) {
