@@ -10,16 +10,19 @@ import {
   postCrearRol,
   getRol,
   putModificarRol,
+  putActivo,
 } from "../../redux/roles/rolesActions";
 
-import { Button, Input, Label, Select, Span, Title } from "../UI";
+import { Button, Input, Label, Select, Span, Title, CheckBox } from "../UI";
 
 import {
   calcularPaginasARenderizar,
   infoPaginador,
 } from "../../utils/paginacion";
 
-import { DDMMYYYY } from "../../utils/formatearFecha";
+import { DDMMYYYYHHMM2 } from "../../utils/formatearFecha";
+
+import { TfiPencil } from "react-icons/tfi";
 
 import Swal from "sweetalert2";
 
@@ -27,8 +30,6 @@ export function GestionRoles() {
   const dispatch = useDispatch();
 
   const token = useSelector((state) => state.empleados.token);
-
-  const empleado = useSelector((state) => state.empleados.empleado);
 
   const paginaActual = useSelector((state) => state.roles.paginaActual);
 
@@ -50,6 +51,7 @@ export function GestionRoles() {
   const [nuevoRol, setNuevoRol] = useState({
     nombre: "",
     descripcion: "",
+    acceso_admin: true,
   });
 
   const [errors, setErrors] = useState({});
@@ -59,6 +61,11 @@ export function GestionRoles() {
   const [editarRol, setEditarRol] = useState({
     nombre: "",
     descripcion: "",
+  });
+
+  const [modificar, setModificar] = useState({
+    nombre: false,
+    descripcion: false,
   });
 
   const [showDetallesRolModal, setShowDetallesRolModal] = useState(false);
@@ -83,6 +90,12 @@ export function GestionRoles() {
     const valueBuscarPor = buscarPor.value;
 
     setFilters({ ...filters, [valueBuscarPor]: value });
+  };
+
+  const handleCheckedChange = (event) => {
+    const { name, checked } = event.target;
+
+    setNuevoRol({ ...nuevoRol, [name]: checked });
   };
 
   const handleChangeFiltersSelect = (e) => {
@@ -125,7 +138,29 @@ export function GestionRoles() {
 
   const handleFind = () => {
     dispatch(postPaginaActual(1)).then(() => {
-      dispatch(postFiltros(filters));
+      dispatch(postFiltros(filters)).then(() =>
+        dispatch(
+          getAllRolesFiltrados(token, filtros, paginaActual, limitePorPagina)
+        )
+      );
+    });
+  };
+  const handleChangeActivo = (rol_id) => {
+    Swal.fire({
+      text: "¿Seguro que desea activar / desactivar el rol?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "No",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await putActivo(token, rol_id);
+        dispatch(
+          getAllRolesFiltrados(token, filtros, paginaActual, limitePorPagina)
+        );
+      }
     });
   };
 
@@ -134,16 +169,19 @@ export function GestionRoles() {
 
     handleFind();
 
-    dispatch(
-      getAllRolesFiltrados(token, filtros, paginaActual, limitePorPagina)
-    );
-
     document.title = "Grupo Lamar - Gestión de Roles (Admin)";
 
     return () => {
       document.title = "Grupo Lamar";
     };
   }, []);
+
+  useEffect(() => {
+    setEditarRol({
+      nombre: rolDetail.nombre,
+      descripcion: rolDetail.descripcion,
+    });
+  }, [rolDetail]);
 
   useEffect(() => {
     dispatch(
@@ -154,28 +192,27 @@ export function GestionRoles() {
   const handleGuardarRol = () => {
     // Llamar a la función que realiza la solicitud a la API directamente
     postCrearRol(token, nuevoRol).then(() => {
-      setShowCrearRolModal(false);
-    });
+      handleCerrarModalCrearRol();
 
-    handleFind(); // Actualiza la tabla después de guardar
+      dispatch(
+        getAllRolesFiltrados(token, filtros, paginaActual, limitePorPagina)
+      );
+    });
   };
 
   const handleOpenCrearRolModal = () => {
-    setNuevoRol({ nombre: "", descripcion: "" });
     setShowCrearRolModal(true);
   };
 
   const handleOpenDetallesRolModal = (rol_id) => {
     dispatch(getRol(token, rol_id));
 
-    setEditarRol({ nombre: "", descripcion: "" });
-
     setShowDetallesRolModal(true);
   };
 
   //editar
 
-  const handleModificarRol = async () => {
+  const handleModificarRol = () => {
     // Llamada a la función modificarRol
 
     Swal.fire({
@@ -186,18 +223,19 @@ export function GestionRoles() {
       cancelButtonColor: "#d33",
       confirmButtonText: "Si",
       cancelButtonText: "No",
-    }).then(async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
         putModificarRol(
           token,
           rolDetail.rol_id,
           editarRol.nombre,
           editarRol.descripcion
-        );
-
-        handleFind();
-
-        setShowDetallesRolModal(false);
+        ).then(() => {
+          dispatch(
+            getAllRolesFiltrados(token, filtros, paginaActual, limitePorPagina)
+          );
+          handleCerrarModal();
+        });
       }
     });
   };
@@ -268,6 +306,22 @@ export function GestionRoles() {
     const { name, value } = e.target;
 
     setEditarRol({ ...editarRol, [name]: value });
+  };
+
+  const handleModificar = (campo) => {
+    setModificar({ ...modificar, [campo]: !modificar[campo] });
+  };
+
+  const handleCerrarModal = () => {
+    setShowDetallesRolModal(false);
+    setEditarRol({ nombre: "", descripcion: "" });
+    setModificar({ nombre: false, descripcion: false });
+  };
+
+  const handleCerrarModalCrearRol = () => {
+    setNuevoRol({ nombre: "", descripcion: "", acceso_admin: true });
+
+    setShowCrearRolModal(false);
   };
 
   return (
@@ -381,6 +435,32 @@ export function GestionRoles() {
                   <th scope="col" className="px-4 py-3">
                     <div className="flex items-center">
                       <Span
+                        id="createdAt"
+                        name="createdAt"
+                        onClick={changeOrder}
+                        className="text-black hover:text-black flex items-center"
+                      >
+                        Creado
+                        <img
+                          name="createdAt"
+                          src={
+                            filters.orden_campo === "createdAt" &&
+                            filters.orden_por === "ASC"
+                              ? "./SortAZ.svg"
+                              : filters.orden_campo === "createdAt" &&
+                                filters.orden_por === "DESC"
+                              ? "./SortZA.svg"
+                              : "./SortDefault.svg"
+                          }
+                          alt="Icon Sort"
+                          className="w-5 h-5 ms-1.5 cursor-pointer"
+                        />
+                      </Span>
+                    </div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">
+                      <Span
                         id="updatedAt"
                         name="updatedAt"
                         onClick={changeOrder}
@@ -405,42 +485,54 @@ export function GestionRoles() {
                     </div>
                   </th>
                   <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">Estado</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
                     <div className="flex items-center">Acción</div>
                   </th>
                 </tr>
               </thead>
-              <tbody>
-                {!roles.roles?.length ? (
-                  <tr>
-                    <td colSpan="2" className="text-center p-2">
-                      <p>¡No existen registros!</p>
-                    </td>
-                  </tr>
-                ) : (
-                  roles.roles?.map((rol, i) => (
+
+              {roles.roles && roles.roles.length > 0 && (
+                <tbody>
+                  {roles.roles.map((rol, i) => (
                     <tr
                       key={i}
                       className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                     >
                       <td className="p-4">{rol.nombre}</td>
                       <td className="p-4">{rol.descripcion}</td>
-                      <td className="p-4">{DDMMYYYY(rol.updatedAt)}</td>
+                      <td className="p-4">{DDMMYYYYHHMM2(rol.createdAt)}</td>
+                      <td className="p-4">{DDMMYYYYHHMM2(rol.updatedAt)}</td>
+                      <td className="p-4">
+                        {rol.activo ? "Activo" : "Inactivo"}
+                      </td>
                       <td className="p-4 flex gap-2">
                         <Button
                           className="m-0 w-auto text-xs"
                           onClick={() => handleOpenDetallesRolModal(rol.rol_id)}
                         >
-                          Editar
+                          Editar Rol
                         </Button>
 
                         <Button className="m-0 w-auto text-xs">
-                          Asignar Menús
+                          Editar Accesos
+                        </Button>
+                        <Button
+                          className={`m-0 w-auto text-xs ${
+                            rol.activo
+                              ? "bg-red-500 hover:bg-red-600 "
+                              : "bg-green-500 hover:bg-green-600"
+                          }`}
+                          onClick={() => handleChangeActivo(rol.rol_id)}
+                        >
+                          {rol.activo ? "Inactivar" : "Activar"}
                         </Button>
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
+                  ))}
+                </tbody>
+              )}
             </table>
           </div>
 
@@ -499,98 +591,164 @@ export function GestionRoles() {
 
       {/* Modal para crear rol */}
       {showCrearRolModal && (
-        <div className="fixed z-50 inset-0 flex items-center justify-center mx-[6%]">
-          <div className="bg-gray-400 rounded-lg border-2 border-white p-6">
-            <div className="flex flex-col">
-              <Label htmlFor="nombreCrear" className="font-bold">
-                Nombre del rol:
-              </Label>
-              <Input
-                type="text"
-                id="nombreCrear"
-                name="nombre"
-                value={nuevoRol.nombre}
-                onChange={handleValidateCrear}
-              />
-            </div>
-            <div className="flex flex-col">
-              <Label htmlFor="descripcionCrear" className="font-bold">
-                Descripción del rol:
-              </Label>
-              <Input
-                type="text"
-                id="descripcionCrear"
-                name="descripcion"
-                value={nuevoRol.descripcion}
-                onChange={handleValidateCrear}
-              />
-            </div>
-            <div className="flex justify-end space-x-4 mt-4">
-              <Button
-                className="m-0 w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
-                onClick={handleGuardarRol}
-              >
-                Guardar
-              </Button>
-              <Button
-                className="m-0 w-auto text-xs"
-                onClick={() => setShowCrearRolModal(false)}
-              >
-                Cerrar
-              </Button>
+     <div className="fixed z-50 inset-0 flex items-center justify-center">
+     <div className="bg-gray-400 rounded-lg border-2 border-white p-6 sm:w-[80%] md:w-[60%] lg:w-[50%] mx-auto">
+       <div className="grid grid-cols-1 p-2 gap-4">
+         <div className="border-b p-2 m-0">
+                <Title>Creación de Rol</Title>
+              </div>
+              <div>
+                <Label htmlFor="nombreCrear" className="font-bold">
+                  Nombre del rol
+                </Label>
+                <Input
+                  type="text"
+                  id="nombreCrear"
+                  name="nombre"
+                  value={nuevoRol.nombre}
+                  onChange={handleValidateCrear}
+                />
+              </div>
+            <div>
+                <Label htmlFor="descripcionCrear" className="font-bold">
+                  Descripción del rol
+                </Label>
+                <Input
+                  type="text"
+                  id="descripcionCrear"
+                  name="descripcion"
+                  value={nuevoRol.descripcion}
+                  onChange={handleValidateCrear}
+                />
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                <CheckBox
+                  id="acceso_admin"
+                  name="acceso_admin"
+                  onChange={handleCheckedChange}
+                  checked={nuevoRol.acceso_admin}
+                />
+                <Label className="select-none" htmlFor="acceso_admin">
+                  Acceso admin
+                </Label>
+              </div>
+              <div className="flex justify-end gap-2">
+  <Button
+    className="m-0 w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
+    onClick={handleGuardarRol}
+  >
+    Crear
+  </Button>
+  <Button
+    className="m-0 w-auto text-xs"
+    onClick={handleCerrarModalCrearRol}
+  >
+    Cancelar
+  </Button>
+</div>
             </div>
           </div>
         </div>
       )}
-
       {showDetallesRolModal && (
-        <div className="fixed z-50 inset-0 flex items-center justify-center mx-[6%]">
-          <div className="bg-gray-400 rounded-lg border-2 border-white p-6">
-            <div>
-              <Span>Nombre: {rolDetail.nombre}</Span>
-            </div>
-            <div>
-              <Span>Descripcion: {rolDetail.descripcion}</Span>
-            </div>
-            <div>
-              <Label htmlFor="nombreEditar" className="font-bold">
-                Nuevo nombre del rol:
-              </Label>
-              <Input
-                type="text"
-                id="nombreEditar"
-                name="nombre"
-                value={editarRol.nombre}
-                onChange={handleValidateModificar}
-              />
-            </div>
+        <div className="fixed z-50 inset-0 flex items-center justify-center">
+          <div className="bg-gray-400 rounded-lg border-2 border-white p-6 sm:w-[80%] md:w-[60%]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:col-span-3 p-2 gap-6">
+              <div className="sm:col-span-2 lg:col-span-3 border-b p-2 m-0">
+                <Title>Detalles Del Rol</Title>
+              </div>
+              <div>
+                {!modificar.nombre ? (
+                  <>
+                    <Span className="font-bold">
+                      Nombre del rol{" "}
+                      <TfiPencil
+                        className="inline cursor-pointer"
+                        onClick={() => handleModificar("nombre")}
+                      />
+                    </Span>
+                    <Span>{editarRol.nombre}</Span>
+                  </>
+                ) : (
+                  <>
+                    <Label htmlFor="nombreEditar" className="font-bold">
+                      Nombre del rol{" "}
+                      <TfiPencil
+                        className="inline cursor-pointer"
+                        onClick={() => handleModificar("nombre")}
+                      />
+                    </Label>
+                    <Input
+                      type="text"
+                      id="nombreEditar"
+                      name="nombre"
+                      value={editarRol.nombre}
+                      onChange={handleValidateModificar}
+                    />
+                  </>
+                )}
+              </div>
 
-            <div className="flex flex-col mt-4">
-              <Label htmlFor="descripcionEditar" className="font-bold">
-                Nueva descripción del rol:
-              </Label>
-              <Input
-                type="text"
-                id="descripcionEditar"
-                name="descripcion"
-                value={editarRol.descripcion}
-                onChange={handleValidateModificar}
-              />
-            </div>
+              <div>
+                {!modificar.descripcion ? (
+                  <>
+                    <Span className="font-bold">
+                      Descripción del rol{" "}
+                      <TfiPencil
+                        className="inline cursor-pointer"
+                        onClick={() => handleModificar("descripcion")}
+                      />
+                    </Span>
+                    <Span>{rolDetail.descripcion}</Span>
+                  </>
+                ) : (
+                  <>
+                    <Label htmlFor="descripcionEditar" className="font-bold">
+                      Descripción del rol{" "}
+                      <TfiPencil
+                        className="inline cursor-pointer"
+                        onClick={() => handleModificar("descripcion")}
+                      />
+                    </Label>
+                    <Input
+                      type="text"
+                      id="descripcionEditar"
+                      name="descripcion"
+                      value={editarRol.descripcion}
+                      onChange={handleValidateModificar}
+                    />
+                  </>
+                )}
+              </div>
 
-            <div className="flex justify-end space-x-4 mt-4">
-              <Button
-                className="m-0 w-auto text-xs"
-                onClick={handleModificarRol}
-              >
-                Guardar Cambios
-              </Button>
-              <Button
-                className="m-0 w-auto text-xs"
-                onClick={() => setShowDetallesRolModal(false)}
-              >
-                Cerrar
-              </Button>
+              <div>
+                <Span className="font-bold">Fecha de creación</Span>
+                <Span>{DDMMYYYYHHMM2(rolDetail.createdAt)}</Span>
+              </div>
+              <div>
+                <Span className="font-bold">Fecha de última modificación</Span>
+                <Span>{DDMMYYYYHHMM2(rolDetail.updatedAt)}</Span>
+              </div>
+
+              <div className="flex justify-center gap-2 border-t sm:col-span-2 lg:col-span-3 pt-4">
+                {editarRol.nombre &&
+                  editarRol.descripcion &&
+                  (editarRol.nombre !== rolDetail.nombre ||
+                    editarRol.descripcion !== rolDetail.descripcion) && (
+                    <Button
+                      className="m-0 w-auto text-xs"
+                      onClick={handleModificarRol}
+                    >
+                      Actualizar Rol
+                    </Button>
+                  )}
+                <Button
+                  className="m-0 w-auto text-xs"
+                  onClick={handleCerrarModal}
+                >
+                  Cerrar
+                </Button>
+              </div>
             </div>
           </div>
         </div>
