@@ -5,6 +5,7 @@ import { alertError } from "../../utils/sweetAlert2";
 import Swal from "sweetalert2";
 
 import {
+  token,
   allRoles,
   paginaActual,
   limitePorPagina,
@@ -191,12 +192,12 @@ export const resetRoles = () => {
 export const postCrearRol = async (token, nuevoRol) => {
   const URL_CREAR_ROL = `${URL_SERVER}/roles`;
 
-  const { nombre, descripcion } = nuevoRol;
+  const { nombre, descripcion, acceso_admin } = nuevoRol;
 
   try {
     await axios.post(
       URL_CREAR_ROL,
-      { nombre, descripcion }, // Enviar nombre y descripción en el cuerpo
+      { nombre, descripcion, acceso_admin }, // Enviar nombre y descripción en el cuerpo
       {
         headers: { authorization: `Bearer ${token}` }, // Encabezados en el lugar correcto
       }
@@ -211,6 +212,32 @@ export const postCrearRol = async (token, nuevoRol) => {
     });
   } catch (error) {
     alertError(error);
+    throw new Error();
+  }
+};
+
+export const putActivo = async (token, rol_id) => {
+  const URL_PUT_ACTIVO = `${URL_SERVER}/roles/inactivar`;
+
+  try {
+    await axios.put(
+      URL_PUT_ACTIVO,
+      { rol_id },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+
+    return Swal.fire({
+      text: "¡Rol actualizado exitosamente!",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 1000,
+      width: "20em",
+    });
+  } catch (error) {
+    alertError(error);
+
     throw new Error();
   }
 };

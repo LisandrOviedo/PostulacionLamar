@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  token: "",
   roles: [],
   rolDetail: {},
   paginaActual: 1,
@@ -15,6 +16,9 @@ const rolesSlice = createSlice({
   name: "roles",
   initialState,
   reducers: {
+    token: (state, action) => {
+      state.token = action.payload;
+    },
     allRoles: (state, action) => {
       state.roles = action.payload; // Actualiza el estado con todos los roles
     },
@@ -44,6 +48,7 @@ const rolesSlice = createSlice({
 
 // Exporta las acciones
 export const {
+  token,
   allRoles,
   rolDetail,
   paginaActual,
