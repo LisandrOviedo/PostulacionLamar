@@ -271,18 +271,22 @@ export function DetalleVacante() {
         </Button>
       </div>
       <div className="p-4 border rounded-lg shadow-md w-full mt-2">
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
           <div>
-            <Span className="font-bold">Descripción de la vacante: </Span>
-            <Span>{vacanteDetail?.vacante?.descripcion}</Span>
+            <Span className="font-bold">Nombre de la vacante: </Span>
+            <Span>{vacanteDetail?.vacante?.nombre}</Span>
           </div>
           <div>
             <Span className="font-bold">Área de interés: </Span>
             <Span>{vacanteDetail?.vacante?.Areas_Intere?.nombre}</Span>
           </div>
           <div>
-            <Span className="font-bold">Fecha de creación: </Span>
-            <Span>{DDMMYYYYHHMM2(vacanteDetail?.vacante?.createdAt)}</Span>
+            <Span className="font-bold">Ubicación: </Span>
+            <Span>{vacanteDetail?.vacante?.ubicacion}</Span>
+          </div>
+          <div className="break-words sm:col-span-2 md:col-span-3">
+            <Span className="font-bold">Descripción de la vacante: </Span>
+            <Span>{vacanteDetail?.vacante?.descripcion}</Span>
           </div>
           <div>
             <Span className="font-bold">Creado por: </Span>
@@ -292,6 +296,10 @@ export function DetalleVacante() {
               {vacanteDetail?.vacante?.CreadoPor?.tipo_identificacion}-
               {vacanteDetail?.vacante?.CreadoPor?.numero_identificacion})
             </Span>
+          </div>
+          <div>
+            <Span className="font-bold">Fecha de creación: </Span>
+            <Span>{DDMMYYYYHHMM2(vacanteDetail?.vacante?.createdAt)}</Span>
           </div>
           <div>
             <Span className="font-bold">Fecha de última modificación: </Span>
@@ -305,7 +313,7 @@ export function DetalleVacante() {
           </div>
           <div>
             <Span className="font-bold">Cantidad Postulados: </Span>
-            <Span>{vacanteDetail?.totalRegistros}</Span>
+            <Span>{vacanteDetail?.vacante?.Vacantes_Empleados.length}</Span>
           </div>
         </div>
       </div>
@@ -474,58 +482,60 @@ export function DetalleVacante() {
                 </th>
               </tr>
             </thead>
-            <tbody>
-              {!vacanteDetail.empleados?.length ? (
-                <tr>
-                  <td colSpan="9" className="text-center p-2">
-                    <p>¡No existen registros!</p>
-                  </td>
-                </tr>
-              ) : (
-                vacanteDetail.empleados?.map((empleado, i) => (
-                  <tr
-                    key={i}
-                    className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
-                  >
-                    <td className="p-4">
-                      {empleado.apellidos} {empleado.nombres}
-                    </td>
-                    <td className="p-4">
-                      {empleado.tipo_identificacion}
-                      {empleado.numero_identificacion}
-                    </td>
-                    <td className="p-4">
-                      {empleado.telefono || "Sin registrar / No posee"}
-                    </td>
-                    <td className="p-4">
-                      {empleado.correo || "Sin registrar / No posee"}
-                    </td>
-                    <td className="p-4">
-                      {empleado.activo ? "Activo" : "Inactivo"}
-                    </td>
-                    <td className="p-4">{DDMMYYYYHHMM2(empleado.updatedAt)}</td>
-                    <td className="p-4 flex gap-2">
-                      {empleado.Documentos_Empleados[0]?.nombre ? (
-                        <Button
-                          className="m-0 w-auto text-xs"
-                          onClick={() =>
-                            handleVerDetalles(
-                              `${empleado.tipo_identificacion}${empleado.numero_identificacion}`,
-                              empleado.Documentos_Empleados[0].nombre,
-                              empleado.empleado_id
-                            )
-                          }
-                        >
-                          Ver Perfil
-                        </Button>
-                      ) : (
-                        "Perfil no registrado"
-                      )}
-                    </td>
-                  </tr>
-                ))
+            {vacanteDetail.postulaciones &&
+              vacanteDetail.postulaciones.length > 0 && (
+                <tbody>
+                  {vacanteDetail.postulaciones.map((postulacion, i) => (
+                    <tr
+                      key={i}
+                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <td className="p-4">
+                        {postulacion.Empleado.apellidos}{" "}
+                        {postulacion.Empleado.nombres}
+                      </td>
+                      <td className="p-4">
+                        {postulacion.Empleado.tipo_identificacion}
+                        {postulacion.Empleado.numero_identificacion}
+                      </td>
+                      <td className="p-4">
+                        {postulacion.Empleado.telefono ||
+                          "Sin registrar / No posee"}
+                      </td>
+                      <td className="p-4">
+                        {postulacion.Empleado.correo ||
+                          "Sin registrar / No posee"}
+                      </td>
+                      <td className="p-4">
+                        {postulacion.Empleado.activo ? "Activo" : "Inactivo"}
+                      </td>
+                      <td className="p-4">
+                        {DDMMYYYYHHMM2(postulacion.Empleado.updatedAt)}
+                      </td>
+                      <td className="p-4 flex gap-2">
+                        {postulacion.Empleado.Documentos_Empleados[0]
+                          ?.nombre ? (
+                          <Button
+                            className="m-0 w-auto text-xs"
+                            onClick={() =>
+                              handleVerDetalles(
+                                `${postulacion.Empleado.tipo_identificacion}${postulacion.Empleado.numero_identificacion}`,
+                                postulacion.Empleado.Documentos_Empleados[0]
+                                  .nombre,
+                                postulacion.Empleado.empleado_id
+                              )
+                            }
+                          >
+                            Ver Perfil
+                          </Button>
+                        ) : (
+                          "Perfil no registrado"
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               )}
-            </tbody>
           </table>
         </div>
         <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">

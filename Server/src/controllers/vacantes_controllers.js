@@ -56,8 +56,7 @@ const todasLasVacantes = async (
             ],
           },
           {
-            model: Empleados,
-            attributes: ["empleado_id"],
+            model: Vacantes_Empleados,
           },
         ],
         distinct: true,
@@ -114,34 +113,34 @@ const traerVacante = async (
             "numero_identificacion",
           ],
         },
+        { model: Vacantes_Empleados },
       ],
     });
 
-    const { count: totalRegistros, rows: dataEmpleados } =
-      await Empleados.findAndCountAll({
-        attributes: [
-          "empleado_id",
-          "nombres",
-          "apellidos",
-          "tipo_identificacion",
-          "numero_identificacion",
-          "telefono",
-          "correo",
-          "activo",
-          "updatedAt",
-        ],
-        where: condicionesEmpleados,
+    const { count: totalRegistros, rows: dataPostulanciones } =
+      await Vacantes_Empleados.findAndCountAll({
+        where: { vacante_id: vacante_id },
         include: [
           {
-            model: Vacantes,
-            attributes: ["vacante_id"],
-            where: { vacante_id: vacante_id },
-          },
-          {
-            model: Documentos_Empleados,
-            attributes: ["tipo", "nombre"],
-            where: { tipo: "perfil_pdf" },
-            required: false,
+            model: Empleados,
+            where: condicionesEmpleados,
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+              "telefono",
+              "correo",
+              "activo",
+              "updatedAt",
+            ],
+            include: {
+              model: Documentos_Empleados,
+              attributes: ["tipo", "nombre"],
+              where: { tipo: "perfil_pdf" },
+              required: false,
+            },
           },
         ],
         distinct: true,
@@ -151,69 +150,87 @@ const traerVacante = async (
     const indexEnd = paginaActual * limitePorPagina;
     const indexStart = indexEnd - limitePorPagina;
 
-    const empleados = dataEmpleados.slice(indexStart, indexEnd);
+    const postulaciones = dataPostulanciones.slice(indexStart, indexEnd);
     const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
 
-    return { cantidadPaginas, totalRegistros, empleados, vacante };
+    return { cantidadPaginas, totalRegistros, vacante, postulaciones };
   } catch (error) {
     throw new Error(`Error al traer la vacante: ${error.message}`);
   }
 };
 
-const traerVacanteEmpleados = async (
-  filtros,
+const traerPostulacionesEmpleado = async (
+  empleado_id,
   paginaActual,
-  limitePorPagina
+  limitePorPagina,
+  buscar_por,
+  buscar,
+  area_interes_id,
+  orden_campo,
+  orden_por
 ) => {
-  if (!paginaActual || !limitePorPagina) {
+  if (!empleado_id || !paginaActual || !limitePorPagina) {
     throw new Error(`Datos faltantes`);
   }
 
+  let condicionesVacantes = {};
+
+  if (buscar_por && buscar) {
+    condicionesVacantes[buscar_por] = { [Op.like]: `%${buscar}%` };
+  }
+
+  if (area_interes_id) {
+    condicionesVacantes.area_interes_id = {
+      [Op.like]: `%${area_interes_id}%`,
+    };
+  }
+
   try {
-    const { count: totalRegistros, rows: dataVacantesEmpleados } =
-      await Vacantes_Empleados.findAll({
-        include: {
-          model: Empleados,
-          attributes: ["nombres"],
-          where: filtros.numero_identificacion
-            ? {
-                numero_identificacion: {
-                  [Op.like]: `%${filtros.numero_identificacion}%`,
-                },
-              }
-            : filtros.apellidos
-            ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
-            : {},
-          order: [
-            filtros.orden_campo === "apellidos"
-              ? ["apellidos", filtros.orden_por]
-              : filtros.orden_campo === "activo"
-              ? ["activo", filtros.orden_por]
-              : filtros.orden_campo === "updatedAt"
-              ? ["updatedAt", filtros.orden_por]
-              : null,
-          ].filter(Boolean),
-        },
-        where: {
-          vacante_id: filtros.vacante_id,
-        },
+    const { count: totalRegistros, rows: dataPostulacionesEmpleado } =
+      await Vacantes_Empleados.findAndCountAll({
+        where: { empleado_id: empleado_id },
+        include: [
+          {
+            model: Vacantes,
+            include: [
+              { model: Empleados, as: "CreadoPor" },
+              { model: Areas_Interes },
+            ],
+          },
+          {
+            model: Empleados,
+          },
+          { model: Empleados, as: "RevisadoPor" },
+        ],
         distinct: true,
+        order: [
+          orden_campo === "area_interes_id"
+            ? [Areas_Interes, orden_campo, orden_por]
+            : orden_campo
+            ? [orden_campo, orden_por]
+            : null,
+        ].filter(Boolean),
       });
 
     const indexEnd = paginaActual * limitePorPagina;
     const indexStart = indexEnd - limitePorPagina;
-
-    const empleados = dataVacantesEmpleados.slice(indexStart, indexEnd);
+    const postulaciones = dataPostulacionesEmpleado.slice(indexStart, indexEnd);
     const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
-
-    return { cantidadPaginas, totalRegistros, empleados };
+    return { cantidadPaginas, totalRegistros, postulaciones };
   } catch (error) {
-    throw new Error(`Error al traer la vacante: ${error.message}`);
+    throw new Error(
+      `Error al traer las postulaciones del empleado: ${error.message}`
+    );
   }
 };
 
-const crearVacante = async (area_interes_id, descripcion) => {
-  if (!area_interes_id || !descripcion) {
+const crearVacante = async (
+  area_interes_id,
+  nombre,
+  descripcion,
+  ubicacion
+) => {
+  if (!area_interes_id || !nombre || !descripcion || !ubicacion) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -222,24 +239,17 @@ const crearVacante = async (area_interes_id, descripcion) => {
   try {
     t = await conn.transaction();
 
-    const [vacante, created] = await Vacantes.findOrCreate({
-      where: { area_interes_id: area_interes_id, descripcion: descripcion },
-      defaults: {
+    await Vacantes.create(
+      {
         area_interes_id: area_interes_id,
+        nombre: nombre,
         descripcion: descripcion,
+        ubicacion: ubicacion,
       },
-      transaction: t,
-    });
+      { transaction: t }
+    );
 
     await t.commit();
-
-    if (created) {
-      return vacante;
-    }
-
-    throw new Error(
-      `Ya existe una vacante con esa descripción y ese área de interés`
-    );
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -249,8 +259,20 @@ const crearVacante = async (area_interes_id, descripcion) => {
   }
 };
 
-const modificarVacante = async (vacante_id, area_interes_id, descripcion) => {
-  if (!vacante_id || !area_interes_id || !descripcion) {
+const modificarVacante = async (
+  vacante_id,
+  area_interes_id,
+  nombre,
+  descripcion,
+  ubicacion
+) => {
+  if (
+    !vacante_id ||
+    !area_interes_id ||
+    !nombre ||
+    !descripcion ||
+    !ubicacion
+  ) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -264,7 +286,9 @@ const modificarVacante = async (vacante_id, area_interes_id, descripcion) => {
     await Vacantes.update(
       {
         area_interes_id: area_interes_id,
+        nombre: nombre,
         descripcion: descripcion,
+        ubicacion: ubicacion,
       },
       {
         where: {
@@ -356,7 +380,7 @@ const postularVacanteEmpleado = async (vacante_id, empleado_id) => {
 module.exports = {
   todasLasVacantes,
   traerVacante,
-  traerVacanteEmpleados,
+  traerPostulacionesEmpleado,
   crearVacante,
   modificarVacante,
   inactivarVacante,

@@ -31,7 +31,7 @@ export function Vacantes() {
   const [areasInteresActivas, setAreasInteresActivas] = useState([]);
 
   const [filters, setFilters] = useState({
-    buscar_por: "descripcion",
+    buscar_por: "nombre",
     buscar: "",
     area_interes_id: "",
     activo: "",
@@ -67,7 +67,7 @@ export function Vacantes() {
 
   const handleResetFilters = async () => {
     setFilters({
-      buscar_por: "descripcion",
+      buscar_por: "nombre",
       buscar: "",
       area_interes_id: "",
       activo: "",
@@ -84,7 +84,7 @@ export function Vacantes() {
     const dataVacantes = await getAllVacantes(
       token,
       {
-        buscar_por: "descripcion",
+        buscar_por: "nombre",
         buscar: "",
         area_interes_id: "",
         activo: "",
@@ -262,7 +262,8 @@ export function Vacantes() {
             onChange={handleChangeFiltersSelect}
             value={filters.buscar_por}
           >
-            <option value="descripcion">Descripción de la vacante</option>
+            <option value="nombre">Nombre de la vacante</option>
+            <option value="ubicacion">Ubicación</option>
           </Select>
         </div>
         <div className="flex w-full items-end">
@@ -351,19 +352,19 @@ export function Vacantes() {
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
                     <span
-                      id="descripcion"
-                      name="descripcion"
+                      id="nombre"
+                      name="nombre"
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Descripción De La Vacante
+                      Nombre De La Vacante
                       <img
-                        name="descripcion"
+                        name="nombre"
                         src={
-                          filters.orden_campo === "descripcion" &&
+                          filters.orden_campo === "nombre" &&
                           filters.orden_por === "ASC"
                             ? "./SortAZ.svg"
-                            : filters.orden_campo === "descripcion" &&
+                            : filters.orden_campo === "nombre" &&
                               filters.orden_por === "DESC"
                             ? "./SortZA.svg"
                             : "./SortDefault.svg"
@@ -373,6 +374,9 @@ export function Vacantes() {
                       />
                     </span>
                   </div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Ubicación</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Área De Interés</div>
@@ -450,7 +454,8 @@ export function Vacantes() {
                     key={i}
                     className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                   >
-                    <td className="p-4">{vacante.descripcion}</td>
+                    <td className="p-4">{vacante.nombre}</td>
+                    <td className="p-4">{vacante.ubicacion}</td>
                     <td className="p-4">{vacante.Areas_Intere.nombre}</td>
                     <td className="p-4">
                       {vacante.activo ? "Activo" : "Inactivo"}
@@ -462,7 +467,7 @@ export function Vacantes() {
                       {vacante.CreadoPor.numero_identificacion})
                     </td>
                     <td className="p-4">{DDMMYYYYHHMM2(vacante.updatedAt)}</td>
-                    <td className="p-4">{vacante.Empleados.length}</td>
+                    <td className="p-4">{vacante.Vacantes_Empleados.length}</td>
                     <td className="p-4">
                       <Button
                         className="m-0 w-auto text-xs"
