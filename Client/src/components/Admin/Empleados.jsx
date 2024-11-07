@@ -421,7 +421,7 @@ export function Empleados() {
         </div>
       </div>
       <div className="mt-8 sm:mx-auto w-full">
-        <div className=" overflow-x-auto shadow-md rounded-lg">
+        <div className="overflow-x-auto shadow-md rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400">
             <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
               <tr>

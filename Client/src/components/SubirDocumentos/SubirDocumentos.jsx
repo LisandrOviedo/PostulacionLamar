@@ -289,10 +289,10 @@ export function SubirDocumentos() {
       <br />
       <Hr />
       <div className="flex flex-col mt-5 mb-5 gap-3">
-        <div className="overflow-x-auto sm:mx-auto">
-          <table className="w-auto text-sm text-left rtl:text-right dark:text-gray-400">
-            <thead className="text-sm uppercase bg-blue-600 dark:bg-gray-700 dark:text-gray-400">
-              <tr className="text-white">
+        <div className="overflow-x-auto shadow-md rounded-lg">
+          <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400">
+            <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Tipo Documento</div>
                 </th>
@@ -308,7 +308,7 @@ export function SubirDocumentos() {
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300">
                 <td className="p-4 font-bold">Perfil Profesional</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "perfil_pdf") ? (
@@ -345,7 +345,7 @@ export function SubirDocumentos() {
                   </Link>
                 </td>
               </tr>
-              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300">
                 <td className="p-4 font-bold">Foto Carnet</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "foto_carnet") ? (
@@ -382,13 +382,11 @@ export function SubirDocumentos() {
                     name="foto_carnet"
                     accept=".jpg, .jpeg, .png"
                     onChange={handleValidateImage}
-                    className={`${
-                      isLoad.foto_carnet ? "border-green-500" : ""
-                    }`}
+                    className={`${isLoad.foto_carnet && "border-green-500"}`}
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300">
                 <td className="p-4 font-bold">Foto Cédula</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "foto_cedula") ? (
@@ -425,13 +423,11 @@ export function SubirDocumentos() {
                     name="foto_cedula"
                     accept=".jpg, .jpeg, .png, application/pdf"
                     onChange={handleValidateImagePDF}
-                    className={`${
-                      isLoad.foto_cedula ? "border-green-500" : ""
-                    }`}
+                    className={`${isLoad.foto_cedula && "border-green-500"}`}
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300">
                 <td className="p-4 font-bold">RIF</td>
                 {anexos && anexos.find((anexo) => anexo.tipo === "rif") ? (
                   <>
@@ -463,11 +459,11 @@ export function SubirDocumentos() {
                     name="rif"
                     accept="application/pdf"
                     onChange={handleValidatePDF}
-                    className={`${isLoad.rif ? "border-green-500" : ""}`}
+                    className={`${isLoad.rif && "border-green-500"}`}
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300">
                 <td className="p-4 font-bold">Resumen Curricular</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "resumen_curricular") ? (
@@ -507,12 +503,12 @@ export function SubirDocumentos() {
                     accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                     onChange={handleValidatePDFDOC}
                     className={`${
-                      isLoad.resumen_curricular ? "border-green-500" : ""
+                      isLoad.resumen_curricular && "border-green-500"
                     }`}
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300">
                 <td className="p-4 font-bold">Título Bachiller</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "titulo_bachiller") ? (
@@ -552,12 +548,12 @@ export function SubirDocumentos() {
                     accept=".jpg, .jpeg, .png, application/pdf"
                     onChange={handleValidateImagePDF}
                     className={`${
-                      isLoad.titulo_bachiller ? "border-green-500" : ""
+                      isLoad.titulo_bachiller && "border-green-500"
                     }`}
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300">
                 <td className="p-4 font-bold">Títulos Universitarios</td>
                 {anexos &&
                 anexos.find(
@@ -599,12 +595,12 @@ export function SubirDocumentos() {
                     accept="application/pdf"
                     onChange={handleValidatePDF}
                     className={`${
-                      isLoad.titulos_universitarios ? "border-green-500" : ""
+                      isLoad.titulos_universitarios && "border-green-500"
                     }`}
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300">
                 <td className="p-4 font-bold">Otros Estudios</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "otros_estudios") ? (
@@ -642,13 +638,11 @@ export function SubirDocumentos() {
                     name="otros_estudios"
                     accept="application/pdf"
                     onChange={handleValidatePDF}
-                    className={`${
-                      isLoad.otros_estudios ? "border-green-500" : ""
-                    }`}
+                    className={`${isLoad.otros_estudios && "border-green-500"}`}
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300">
                 <td className="p-4 font-bold">Referencias Personales</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "referencia_personal") ? (
@@ -688,12 +682,12 @@ export function SubirDocumentos() {
                     accept="application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                     onChange={handleValidatePDFDOC}
                     className={`${
-                      isLoad.referencia_personal ? "border-green-500" : ""
+                      isLoad.referencia_personal && "border-green-500"
                     }`}
                   />
                 </td>
               </tr>
-              <tr className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300">
                 <td className="p-4 font-bold">Soporte Cuenta Bancaria</td>
                 {anexos &&
                 anexos.find((anexo) => anexo.tipo === "cuenta_bancaria") ? (
@@ -732,7 +726,7 @@ export function SubirDocumentos() {
                     accept=".jpg, .jpeg, .png, application/pdf"
                     onChange={handleValidateImagePDF}
                     className={`${
-                      isLoad.cuenta_bancaria ? "border-green-500" : ""
+                      isLoad.cuenta_bancaria && "border-green-500"
                     }`}
                   />
                 </td>

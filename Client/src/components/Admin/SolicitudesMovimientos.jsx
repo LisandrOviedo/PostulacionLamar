@@ -785,13 +785,13 @@ export function SolicitudesMovimientos() {
               {/* <!-- Modal header --> */}
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t flex-col sm:flex-row">
                 <div className="flex flex-col items-center sm:items-start">
-                  <Span className="font-bold">
+                  <Span className="font-bold m-0">
                     {`${movimiento?.movimiento?.Empleado?.Empresa?.nombre} (${movimiento?.movimiento?.Empleado?.Empresa?.Sedes[0]?.nombre})`}
                   </Span>
-                  <Span>
+                  <Span className="m-0">
                     {`${movimiento?.movimiento?.Empleado?.nombres} ${movimiento?.movimiento?.Empleado?.apellidos}`}
                   </Span>
-                  <Span>
+                  <Span className="m-0">
                     {`${movimiento?.movimiento?.Empleado?.tipo_identificacion}-${movimiento?.movimiento?.Empleado?.numero_identificacion}`}
                   </Span>
                 </div>
