@@ -595,7 +595,8 @@ export function HistorialPostulaciones() {
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t flex-col sm:flex-row">
                 <div>
                   <Span className="m-0">
-                    <b>Vacante:</b> {postulacionDetail?.Vacante?.nombre}
+                    <b>Nombre de la vacante:</b>{" "}
+                    {postulacionDetail?.Vacante?.nombre}
                   </Span>
                 </div>
 
@@ -629,10 +630,10 @@ export function HistorialPostulaciones() {
                     {postulacionDetail?.Vacante?.Areas_Intere?.nombre}
                   </Span>
                   <Span className="m-0">
-                    <b>Estado de la vacante: </b>
+                    <b>Estado: </b>
                     {postulacionDetail?.Vacante?.activo ? "Activa" : "Inactiva"}
                   </Span>
-                  <Span className="m-0">
+                  <Span className="m-0 break-words">
                     <b>Descripción: </b>
                     {postulacionDetail?.Vacante?.descripcion}
                   </Span>
