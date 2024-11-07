@@ -144,7 +144,13 @@ const traerVacante = async (
           },
         ],
         distinct: true,
-        order: [orden_campo ? [orden_campo, orden_por] : null].filter(Boolean),
+        order: [
+          orden_campo === "apellidos"
+            ? [Empleados, orden_campo, orden_por]
+            : orden_campo
+            ? [orden_campo, orden_por]
+            : null,
+        ].filter(Boolean),
       });
 
     const indexEnd = paginaActual * limitePorPagina;
