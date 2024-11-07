@@ -14,20 +14,29 @@ export const getAllVacantes = async (
 ) => {
   let URL_ALL_VACANTES = `${URL_SERVER}/vacantes?paginaActual=${paginaActual}&limitePorPagina=${limitePorPagina}`;
 
-  if (filtros.buscar_por && filtros.buscar) {
-    URL_ALL_VACANTES = `${URL_ALL_VACANTES}&buscar_por=${filtros.buscar_por}&buscar=${filtros.buscar}`;
+  const {
+    buscar_por,
+    buscar,
+    orden_campo,
+    orden_por,
+    area_interes_id,
+    activo,
+  } = filtros;
+
+  if (buscar_por && buscar) {
+    URL_ALL_VACANTES = `${URL_ALL_VACANTES}&buscar_por=${buscar_por}&buscar=${buscar}`;
   }
 
-  if (filtros.orden_campo && filtros.orden_por) {
-    URL_ALL_VACANTES = `${URL_ALL_VACANTES}&orden_campo=${filtros.orden_campo}&orden_por=${filtros.orden_por}`;
+  if (orden_campo && orden_por) {
+    URL_ALL_VACANTES = `${URL_ALL_VACANTES}&orden_campo=${orden_campo}&orden_por=${orden_por}`;
   }
 
-  if (filtros.area_interes_id) {
-    URL_ALL_VACANTES = `${URL_ALL_VACANTES}&area_interes_id=${filtros.area_interes_id}`;
+  if (area_interes_id) {
+    URL_ALL_VACANTES = `${URL_ALL_VACANTES}&area_interes_id=${area_interes_id}`;
   }
 
-  if (filtros.activo) {
-    URL_ALL_VACANTES = `${URL_ALL_VACANTES}&activo=${filtros.activo}`;
+  if (activo) {
+    URL_ALL_VACANTES = `${URL_ALL_VACANTES}&activo=${activo}`;
   }
 
   try {
@@ -52,16 +61,18 @@ export const getVacanteDetail = async (
 ) => {
   let URL_VACANTE_DETAIL = `${URL_SERVER}/vacantes/detalle/${vacante_id}?paginaActual=${paginaActual}&limitePorPagina=${limitePorPagina}`;
 
-  if (filtros.buscar_por && filtros.buscar) {
-    URL_VACANTE_DETAIL = `${URL_VACANTE_DETAIL}&buscar_por=${filtros.buscar_por}&buscar=${filtros.buscar}`;
+  const { buscar_por, buscar, orden_campo, orden_por, activo } = filtros;
+
+  if (buscar_por && buscar) {
+    URL_VACANTE_DETAIL = `${URL_VACANTE_DETAIL}&buscar_por=${buscar_por}&buscar=${buscar}`;
   }
 
-  if (filtros.orden_campo && filtros.orden_por) {
-    URL_VACANTE_DETAIL = `${URL_VACANTE_DETAIL}&orden_campo=${filtros.orden_campo}&orden_por=${filtros.orden_por}`;
+  if (orden_campo && orden_por) {
+    URL_VACANTE_DETAIL = `${URL_VACANTE_DETAIL}&orden_campo=${orden_campo}&orden_por=${orden_por}`;
   }
 
-  if (filtros.activo) {
-    URL_VACANTE_DETAIL = `${URL_VACANTE_DETAIL}&activo=${filtros.activo}`;
+  if (activo) {
+    URL_VACANTE_DETAIL = `${URL_VACANTE_DETAIL}&activo=${activo}`;
   }
 
   try {
@@ -125,20 +136,49 @@ export const getPostulacionesEmpleado = async (
 ) => {
   let URL_ALL_POSTULACIONES_EMPLEADO = `${URL_SERVER}/vacantes/postulacionesEmpleado/${empleado_id}?paginaActual=${paginaActual}&limitePorPagina=${limitePorPagina}`;
 
-  if (filtros.buscar_por && filtros.buscar) {
-    URL_ALL_POSTULACIONES_EMPLEADO = `${URL_ALL_POSTULACIONES_EMPLEADO}&buscar_por=${filtros.buscar_por}&buscar=${filtros.buscar}`;
+  const {
+    buscar_por,
+    buscar,
+    orden_campo,
+    orden_por,
+    area_interes_id,
+    estado_solicitud,
+  } = filtros;
+
+  if (buscar_por && buscar) {
+    URL_ALL_POSTULACIONES_EMPLEADO = `${URL_ALL_POSTULACIONES_EMPLEADO}&buscar_por=${buscar_por}&buscar=${buscar}`;
   }
 
-  if (filtros.orden_campo && filtros.orden_por) {
-    URL_ALL_POSTULACIONES_EMPLEADO = `${URL_ALL_POSTULACIONES_EMPLEADO}&orden_campo=${filtros.orden_campo}&orden_por=${filtros.orden_por}`;
+  if (orden_campo && orden_por) {
+    URL_ALL_POSTULACIONES_EMPLEADO = `${URL_ALL_POSTULACIONES_EMPLEADO}&orden_campo=${orden_campo}&orden_por=${orden_por}`;
   }
 
-  if (filtros.area_interes_id) {
-    URL_ALL_POSTULACIONES_EMPLEADO = `${URL_ALL_POSTULACIONES_EMPLEADO}&area_interes_id=${filtros.area_interes_id}`;
+  if (area_interes_id) {
+    URL_ALL_POSTULACIONES_EMPLEADO = `${URL_ALL_POSTULACIONES_EMPLEADO}&area_interes_id=${area_interes_id}`;
+  }
+
+  if (estado_solicitud) {
+    URL_ALL_POSTULACIONES_EMPLEADO = `${URL_ALL_POSTULACIONES_EMPLEADO}&estado_solicitud=${estado_solicitud}`;
   }
 
   try {
     const { data } = await axios(URL_ALL_POSTULACIONES_EMPLEADO, {
+      headers: { authorization: `Bearer ${token}` },
+    });
+
+    return data;
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
+
+export const getPostulacionEmpleado = async (token, vacante_empleado_id) => {
+  const URL_GET_POSTULACION_EMPLEADO = `${URL_SERVER}/vacantes/postulacionEmpleado/${vacante_empleado_id}`;
+
+  try {
+    const { data } = await axios(URL_GET_POSTULACION_EMPLEADO, {
       headers: { authorization: `Bearer ${token}` },
     });
 
