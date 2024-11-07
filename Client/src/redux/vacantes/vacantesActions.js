@@ -115,3 +115,37 @@ export const postPostulacionVacante = async (
     throw new Error();
   }
 };
+
+export const getPostulacionesEmpleado = async (
+  token,
+  empleado_id,
+  filtros,
+  paginaActual,
+  limitePorPagina
+) => {
+  let URL_ALL_POSTULACIONES_EMPLEADO = `${URL_SERVER}/vacantes/postulacionesEmpleado/${empleado_id}?paginaActual=${paginaActual}&limitePorPagina=${limitePorPagina}`;
+
+  if (filtros.buscar_por && filtros.buscar) {
+    URL_ALL_POSTULACIONES_EMPLEADO = `${URL_ALL_POSTULACIONES_EMPLEADO}&buscar_por=${filtros.buscar_por}&buscar=${filtros.buscar}`;
+  }
+
+  if (filtros.orden_campo && filtros.orden_por) {
+    URL_ALL_POSTULACIONES_EMPLEADO = `${URL_ALL_POSTULACIONES_EMPLEADO}&orden_campo=${filtros.orden_campo}&orden_por=${filtros.orden_por}`;
+  }
+
+  if (filtros.area_interes_id) {
+    URL_ALL_POSTULACIONES_EMPLEADO = `${URL_ALL_POSTULACIONES_EMPLEADO}&area_interes_id=${filtros.area_interes_id}`;
+  }
+
+  try {
+    const { data } = await axios(URL_ALL_POSTULACIONES_EMPLEADO, {
+      headers: { authorization: `Bearer ${token}` },
+    });
+
+    return data;
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};

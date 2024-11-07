@@ -598,7 +598,7 @@ const crearFichaIngreso = async (
   try {
     t = await conn.transaction();
 
-    const [crearDireccion, created] = await Fichas_Ingresos.findOrCreate({
+    const [crearFichaIngreso, created] = await Fichas_Ingresos.findOrCreate({
       where: {
         empleado_id: empleado_id,
         cargo_nivel_id: cargo_nivel_id,

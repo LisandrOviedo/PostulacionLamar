@@ -662,15 +662,25 @@ Vacantes.belongsTo(Areas_Interes, {
   },
 });
 
-// Vacantes M:M Empleados
-Vacantes.belongsToMany(Empleados, {
-  through: "Vacantes_Empleados",
+// Vacantes 1:M Vacantes_Empleados
+Vacantes.hasMany(Vacantes_Empleados, {
   foreignKey: {
     name: "vacante_id",
   },
 });
-Empleados.belongsToMany(Vacantes, {
-  through: "Vacantes_Empleados",
+Vacantes_Empleados.belongsTo(Vacantes, {
+  foreignKey: {
+    name: "vacante_id",
+  },
+});
+
+// Empleados 1:M Vacantes_Empleados
+Empleados.hasMany(Vacantes_Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Vacantes_Empleados.belongsTo(Empleados, {
   foreignKey: {
     name: "empleado_id",
   },
@@ -688,6 +698,20 @@ Vacantes.belongsTo(Empleados, {
     name: "creado_por_id",
   },
   as: "CreadoPor",
+});
+
+// Empleados 1:M Vacantes_Empleados
+Empleados.hasMany(Vacantes_Empleados, {
+  foreignKey: {
+    name: "revisado_por_id",
+  },
+  as: "RevisadoPor",
+});
+Vacantes_Empleados.belongsTo(Empleados, {
+  foreignKey: {
+    name: "revisado_por_id",
+  },
+  as: "RevisadoPor",
 });
 
 // Empleados 1:M Liquidaciones

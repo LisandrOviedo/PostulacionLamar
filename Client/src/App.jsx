@@ -12,6 +12,7 @@ import {
   CrearCurriculo,
   DatosPersonales,
   EnviarSugerencia,
+  HistorialPostulaciones,
   InfoCurriculo,
   Inicio,
   PaginaNoEncontrada,
@@ -90,6 +91,10 @@ function App() {
             <Route
               path="/perfilProfesional/pruebaKostick"
               element={<PruebaKostick />}
+            />
+            <Route
+              path="/perfilProfesional/misPostulaciones"
+              element={<HistorialPostulaciones />}
             />
           </Route>
 
