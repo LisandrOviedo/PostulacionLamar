@@ -2,6 +2,7 @@ const {
   todasLasVacantes,
   traerVacante,
   traerPostulacionesEmpleado,
+  traerPostulacionEmpleado,
   crearVacante,
   modificarVacante,
   inactivarVacante,
@@ -78,6 +79,7 @@ const getPostulacionesEmpleado = async (req, res) => {
     buscar_por,
     buscar,
     area_interes_id,
+    estado_solicitud,
     orden_campo,
     orden_por,
   } = req.query;
@@ -90,9 +92,22 @@ const getPostulacionesEmpleado = async (req, res) => {
       buscar_por,
       buscar,
       area_interes_id,
+      estado_solicitud,
       orden_campo,
       orden_por
     );
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const getPostulacionEmpleado = async (req, res) => {
+  const { vacante_empleado_id } = req.params;
+
+  try {
+    const response = await traerPostulacionEmpleado(vacante_empleado_id);
 
     return res.json(response);
   } catch (error) {
@@ -164,6 +179,7 @@ module.exports = {
   getVacantes,
   getVacante,
   getPostulacionesEmpleado,
+  getPostulacionEmpleado,
   postVacante,
   postVacanteEmpleado,
   putVacante,

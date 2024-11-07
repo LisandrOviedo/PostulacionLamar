@@ -3,6 +3,7 @@ const {
   getVacantes,
   getVacante,
   getPostulacionesEmpleado,
+  getPostulacionEmpleado,
   postVacante,
   postVacanteEmpleado,
   putVacante,
@@ -19,6 +20,11 @@ vacantes.get(
   "/postulacionesEmpleado/:empleado_id",
   authenticateToken,
   getPostulacionesEmpleado
+);
+vacantes.get(
+  "/postulacionEmpleado/:vacante_empleado_id",
+  authenticateToken,
+  getPostulacionEmpleado
 );
 
 vacantes.post("/", authenticateToken, postVacante);

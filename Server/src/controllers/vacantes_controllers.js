@@ -166,6 +166,7 @@ const traerPostulacionesEmpleado = async (
   buscar_por,
   buscar,
   area_interes_id,
+  estado_solicitud,
   orden_campo,
   orden_por
 ) => {
@@ -175,39 +176,82 @@ const traerPostulacionesEmpleado = async (
 
   let condicionesVacantes = {};
 
+  let condicionesVacantesEmpleado = {
+    empleado_id: empleado_id,
+  };
+
   if (buscar_por && buscar) {
     condicionesVacantes[buscar_por] = { [Op.like]: `%${buscar}%` };
   }
 
   if (area_interes_id) {
-    condicionesVacantes.area_interes_id = {
-      [Op.like]: `%${area_interes_id}%`,
-    };
+    condicionesVacantes.area_interes_id = area_interes_id;
+  }
+
+  if (estado_solicitud) {
+    condicionesVacantesEmpleado.estado_solicitud = estado_solicitud;
   }
 
   try {
     const { count: totalRegistros, rows: dataPostulacionesEmpleado } =
       await Vacantes_Empleados.findAndCountAll({
-        where: { empleado_id: empleado_id },
+        where: condicionesVacantesEmpleado,
         include: [
           {
             model: Vacantes,
+            where: condicionesVacantes,
             include: [
-              { model: Empleados, as: "CreadoPor" },
+              {
+                model: Empleados,
+                as: "CreadoPor",
+                attributes: [
+                  "empleado_id",
+                  "nombres",
+                  "apellidos",
+                  "tipo_identificacion",
+                  "numero_identificacion",
+                  "telefono",
+                  "correo",
+                  "activo",
+                ],
+              },
               { model: Areas_Interes },
             ],
           },
           {
             model: Empleados,
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+              "telefono",
+              "correo",
+              "activo",
+            ],
           },
-          { model: Empleados, as: "RevisadoPor" },
+          {
+            model: Empleados,
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+              "telefono",
+              "correo",
+              "activo",
+            ],
+            as: "RevisadoPor",
+          },
         ],
         distinct: true,
         order: [
-          orden_campo === "area_interes_id"
-            ? [Areas_Interes, orden_campo, orden_por]
-            : orden_campo
+          orden_campo === "createdAt" && orden_por
             ? [orden_campo, orden_por]
+            : orden_campo
+            ? [Vacantes, orden_campo, orden_por]
             : null,
         ].filter(Boolean),
       });
@@ -220,6 +264,79 @@ const traerPostulacionesEmpleado = async (
   } catch (error) {
     throw new Error(
       `Error al traer las postulaciones del empleado: ${error.message}`
+    );
+  }
+};
+
+const traerPostulacionEmpleado = async (vacante_empleado_id) => {
+  if (!vacante_empleado_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  try {
+    const vacante_empleado = await Vacantes_Empleados.findByPk(
+      vacante_empleado_id,
+      {
+        include: [
+          {
+            model: Vacantes,
+            include: [
+              {
+                model: Empleados,
+                as: "CreadoPor",
+                attributes: [
+                  "empleado_id",
+                  "nombres",
+                  "apellidos",
+                  "tipo_identificacion",
+                  "numero_identificacion",
+                  "telefono",
+                  "correo",
+                  "activo",
+                ],
+              },
+              { model: Areas_Interes },
+            ],
+          },
+          {
+            model: Empleados,
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+              "telefono",
+              "correo",
+              "activo",
+            ],
+          },
+          {
+            model: Empleados,
+            as: "RevisadoPor",
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+              "telefono",
+              "correo",
+              "activo",
+            ],
+          },
+        ],
+      }
+    );
+
+    if (!vacante_empleado) {
+      throw new Error(`No existe esa postulación`);
+    }
+
+    return vacante_empleado;
+  } catch (error) {
+    throw new Error(
+      `Error al traer la postulación del empleado: ${error.message}`
     );
   }
 };
@@ -381,6 +498,7 @@ module.exports = {
   todasLasVacantes,
   traerVacante,
   traerPostulacionesEmpleado,
+  traerPostulacionEmpleado,
   crearVacante,
   modificarVacante,
   inactivarVacante,
