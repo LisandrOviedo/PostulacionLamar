@@ -522,7 +522,7 @@ export function Empleados() {
                 {empleados.empleados.map((empleado, i) => (
                   <tr
                     key={i}
-                    className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
                   >
                     <td className="p-4">
                       {empleado.apellidos} {empleado.nombres}
