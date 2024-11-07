@@ -1,11 +1,13 @@
 const {
   todasLasVacantes,
   traerVacante,
-  traerVacanteEmpleados,
+  traerPostulacionesEmpleado,
+  traerPostulacionEmpleado,
   crearVacante,
-  modificarVacante,
-  inactivarVacante,
   postularVacanteEmpleado,
+  modificarVacante,
+  cambiarEstadoRevisado,
+  inactivarVacante,
 } = require("../controllers/vacantes_controllers");
 
 const getVacantes = async (req, res) => {
@@ -69,14 +71,31 @@ const getVacante = async (req, res) => {
   }
 };
 
-const getVacanteEmpleados = async (req, res) => {
-  const { filtros, paginaActual, limitePorPagina } = req.params;
+const getPostulacionesEmpleado = async (req, res) => {
+  const { empleado_id } = req.params;
+
+  const {
+    paginaActual,
+    limitePorPagina,
+    buscar_por,
+    buscar,
+    area_interes_id,
+    estado_solicitud,
+    orden_campo,
+    orden_por,
+  } = req.query;
 
   try {
-    const response = await traerVacanteEmpleados(
-      filtros,
+    const response = await traerPostulacionesEmpleado(
+      empleado_id,
       paginaActual,
-      limitePorPagina
+      limitePorPagina,
+      buscar_por,
+      buscar,
+      area_interes_id,
+      estado_solicitud,
+      orden_campo,
+      orden_por
     );
 
     return res.json(response);
@@ -85,11 +104,28 @@ const getVacanteEmpleados = async (req, res) => {
   }
 };
 
-const postVacante = async (req, res) => {
-  const { area_interes_id, descripcion } = req.body;
+const getPostulacionEmpleado = async (req, res) => {
+  const { vacante_empleado_id } = req.params;
 
   try {
-    const response = await crearVacante(area_interes_id, descripcion);
+    const response = await traerPostulacionEmpleado(vacante_empleado_id);
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const postVacante = async (req, res) => {
+  const { area_interes_id, nombre, descripcion, ubicacion } = req.body;
+
+  try {
+    const response = await crearVacante(
+      area_interes_id,
+      nombre,
+      descripcion,
+      ubicacion
+    );
 
     return res.status(201).json(response);
   } catch (error) {
@@ -110,13 +146,31 @@ const postVacanteEmpleado = async (req, res) => {
 };
 
 const putVacante = async (req, res) => {
-  const { vacante_id, area_interes_id, descripcion } = req.body;
+  const { vacante_id, area_interes_id, nombre, descripcion, ubicacion } =
+    req.body;
 
   try {
     const response = await modificarVacante(
       vacante_id,
       area_interes_id,
-      descripcion
+      nombre,
+      descripcion,
+      ubicacion
+    );
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+const putPostulacionEstado = async (req, res) => {
+  const { vacante_empleado_id, revisado_por_id } = req.body;
+
+  try {
+    const response = await cambiarEstadoRevisado(
+      vacante_empleado_id,
+      revisado_por_id
     );
 
     return res.json(response);
@@ -140,9 +194,11 @@ const deleteVacante = async (req, res) => {
 module.exports = {
   getVacantes,
   getVacante,
-  getVacanteEmpleados,
+  getPostulacionesEmpleado,
+  getPostulacionEmpleado,
   postVacante,
   postVacanteEmpleado,
   putVacante,
+  putPostulacionEstado,
   deleteVacante,
 };

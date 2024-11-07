@@ -2,17 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 import {
-  getAllSugerencias,
-  getSugerencia,
-} from "../../redux/sugerencias/sugerenciasActions";
+  getPostulacionesEmpleado,
+  getPostulacionEmpleado,
+} from "../../redux/vacantes/vacantesActions";
 
-import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
+import { getAllAreasInteresActivas } from "../../redux/areasInteres/areasInteresActions";
 
-import { getAllSedesActivas } from "../../redux/sedes/sedesActions";
-
-import { getAllTiposSugerenciasActivas } from "../../redux/tiposSugerencias/tiposSugerenciasActions";
-
-import { Button, Label, Select, Title } from "../UI";
+import { Button, Input, Label, Select, Span, Title } from "../UI";
 
 import {
   calcularPaginasARenderizar,
@@ -23,37 +19,35 @@ import { DDMMYYYYHHMM2 } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
-export function Sugerencias() {
+export function HistorialPostulaciones() {
   const tableRef = useRef(null);
+
+  const modalContentRef = useRef(null);
 
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const [sugerencias, setSugerencias] = useState([]);
-
-  const [sugerencia, setSugerencia] = useState({});
-
   const [paginaActual, setPaginaActual] = useState(1);
 
   const [limitePorPagina, setLimitePorPagina] = useState(2);
 
+  const [areasInteresActivas, setAreasInteresActivas] = useState([]);
+
+  const [postulaciones, setPostulaciones] = useState([]);
+
+  const [postulacionDetail, setPostulacionDetail] = useState({});
+
+  const [showModal, setShowModal] = useState(false);
+
   const [filters, setFilters] = useState({
-    empresa_id: "",
-    sede_id: "",
-    tipo_sugerencia_id: "",
-    estado: "",
+    buscar_por: "nombre",
+    buscar: "",
+    area_interes_id: "",
+    estado_solicitud: "",
     orden_campo: "",
     orden_por: "",
   });
-
-  const [empresasActivas, setEmpresasActivas] = useState([]);
-
-  const [tiposSugerenciasActivas, setTiposSugerenciasActivas] = useState([]);
-
-  const [sedesActivas, setSedesActivas] = useState([]);
-
-  const [showModal, setShowModal] = useState(false);
 
   const handleChangePagination = async (e) => {
     const { value } = e.target;
@@ -64,9 +58,15 @@ export function Sugerencias() {
       setPaginaActual(1);
     }
 
-    const dataSugerencias = await getAllSugerencias(token, filters, 1, value);
+    const dataPostulaciones = await getPostulacionesEmpleado(
+      token,
+      empleado.empleado_id,
+      filters,
+      1,
+      value
+    );
 
-    setSugerencias(dataSugerencias);
+    setPostulaciones(dataPostulaciones);
   };
 
   const handleChangeFilters = (e) => {
@@ -75,31 +75,36 @@ export function Sugerencias() {
     setFilters({ ...filters, [name]: value });
   };
 
+  const handleChangeFiltersSelect = (e) => {
+    const { value } = e.target;
+
+    setFilters({ ...filters, ["buscar_por"]: value });
+  };
+
   const handleResetFilters = async () => {
     setFilters({
-      empresa_id: "",
-      sede_id: "",
-      tipo_sugerencia_id: "",
-      estado: "",
+      buscar_por: "nombre",
+      buscar: "",
+      area_interes_id: "",
+      estado_solicitud: "",
       orden_campo: "",
       orden_por: "",
     });
 
-    const empresa_id = document.getElementById("empresa_id");
-    const sede_id = document.getElementById("sede_id");
-    const tipo_sugerencia_id = document.getElementById("tipo_sugerencia_id");
+    const buscar_por = document.getElementById("buscar_por");
+    const buscar = document.getElementById("buscar");
 
-    empresa_id.selectedIndex = 0;
-    sede_id.selectedIndex = 0;
-    tipo_sugerencia_id.selectedIndex = 0;
+    buscar_por.selectedIndex = 0;
+    buscar.value = "";
 
-    const dataSugerencias = await getAllSugerencias(
+    const dataPostulaciones = await getPostulacionesEmpleado(
       token,
+      empleado.empleado_id,
       {
-        empresa_id: "",
-        sede_id: "",
-        tipo_sugerencia_id: "",
-        estado: "",
+        buscar_por: "nombre",
+        buscar: "",
+        area_interes_id: "",
+        estado_solicitud: "",
         orden_campo: "",
         orden_por: "",
       },
@@ -107,7 +112,7 @@ export function Sugerencias() {
       limitePorPagina
     );
 
-    setSugerencias(dataSugerencias);
+    setPostulaciones(dataPostulaciones);
   };
 
   const handleFind = async () => {
@@ -115,14 +120,15 @@ export function Sugerencias() {
       setPaginaActual(1);
     }
 
-    const dataSugerencias = await getAllSugerencias(
+    const dataPostulaciones = await getPostulacionesEmpleado(
       token,
+      empleado.empleado_id,
       filters,
       1,
       limitePorPagina
     );
 
-    setSugerencias(dataSugerencias);
+    setPostulaciones(dataPostulaciones);
   };
 
   useEffect(() => {
@@ -131,14 +137,12 @@ export function Sugerencias() {
     handleFind();
 
     (async function () {
-      const dataEmpresasActivas = await getAllEmpresasActivas();
-      const dataTiposSugerenciasActivas = await getAllTiposSugerenciasActivas();
+      const dataAreasInteresActivas = await getAllAreasInteresActivas(token);
 
-      setEmpresasActivas(dataEmpresasActivas);
-      setTiposSugerenciasActivas(dataTiposSugerenciasActivas);
+      setAreasInteresActivas(dataAreasInteresActivas);
     })();
 
-    document.title = "Grupo Lamar - Sugerencias (Admin)";
+    document.title = "Grupo Lamar - Mis Postulaciones";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -146,28 +150,19 @@ export function Sugerencias() {
   }, []);
 
   useEffect(() => {
-    (async function () {
-      if (filters.empresa_id && filters.empresa_id !== "Seleccione") {
-        setFilters({ ...filters, sede_id: "Seleccione" });
+    if (showModal) {
+      // Reinicia el scroll al inicio cada vez que el modal se abre
+      modalContentRef.current.scrollTop = 0;
+    }
+  }, [showModal]);
 
-        const data = await getAllSedesActivas(filters.empresa_id);
-
-        setSedesActivas(data);
-      } else {
-        setSedesActivas([]);
-        setFilters({ ...filters, sede_id: "Seleccione" });
-      }
-    })();
-  }, [filters.empresa_id]);
-
-  const handleVerDetalles = async (sugerencia_id) => {
-    const dataSugerencia = await getSugerencia(
+  const handleVerDetalles = async (vacante_empleado_id) => {
+    const dataPostulacionDetail = await getPostulacionEmpleado(
       token,
-      sugerencia_id,
-      empleado.empleado_id
+      vacante_empleado_id
     );
 
-    setSugerencia(dataSugerencia);
+    setPostulacionDetail(dataPostulacionDetail);
 
     if (!showModal) {
       setShowModal(true);
@@ -184,25 +179,27 @@ export function Sugerencias() {
         orden_por: "ASC",
       }));
 
-      const dataSugerencias = await getAllSugerencias(
+      const dataPostulaciones = await getPostulacionesEmpleado(
         token,
+        empleado.empleado_id,
         { ...filters, orden_campo: name, orden_por: "ASC" },
         1,
         limitePorPagina
       );
 
-      setSugerencias(dataSugerencias);
+      setPostulaciones(dataPostulaciones);
     } else if (filters.orden_campo === name && filters.orden_por === "ASC") {
       setFilters((prevFilters) => ({ ...prevFilters, orden_por: "DESC" }));
 
-      const dataSugerencias = await getAllSugerencias(
+      const dataPostulaciones = await getPostulacionesEmpleado(
         token,
+        empleado.empleado_id,
         { ...filters, orden_por: "DESC" },
         1,
         limitePorPagina
       );
 
-      setSugerencias(dataSugerencias);
+      setPostulaciones(dataPostulaciones);
     } else if (filters.orden_campo === name && filters.orden_por === "DESC") {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -210,14 +207,15 @@ export function Sugerencias() {
         orden_por: "",
       }));
 
-      const dataSugerencias = await getAllSugerencias(
+      const dataPostulaciones = await getPostulacionesEmpleado(
         token,
+        empleado.empleado_id,
         { ...filters, orden_campo: "", orden_por: "" },
         1,
         limitePorPagina
       );
 
-      setSugerencias(dataSugerencias);
+      setPostulaciones(dataPostulaciones);
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -225,14 +223,15 @@ export function Sugerencias() {
         orden_por: "ASC",
       }));
 
-      const dataSugerencias = await getAllSugerencias(
+      const dataPostulaciones = await getPostulacionesEmpleado(
         token,
+        empleado.empleado_id,
         { ...filters, orden_campo: name, orden_por: "ASC" },
         1,
         limitePorPagina
       );
 
-      setSugerencias(dataSugerencias);
+      setPostulaciones(dataPostulaciones);
     }
   };
 
@@ -240,48 +239,78 @@ export function Sugerencias() {
     if (paginaActual > 1) {
       setPaginaActual(paginaActual - 1);
 
-      const dataSugerencias = await getAllSugerencias(
+      const dataPostulaciones = await getPostulacionesEmpleado(
         token,
+        empleado.empleado_id,
         filters,
         paginaActual - 1,
         limitePorPagina
       );
 
-      setSugerencias(dataSugerencias);
+      setPostulaciones(dataPostulaciones);
 
       tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   const paginaSiguiente = async () => {
-    if (paginaActual < sugerencias.cantidadPaginas) {
+    if (paginaActual < postulaciones.cantidadPaginas) {
       setPaginaActual(paginaActual + 1);
 
-      const dataSugerencias = await getAllSugerencias(
+      const dataPostulaciones = await getPostulacionesEmpleado(
         token,
+        empleado.empleado_id,
         filters,
         paginaActual + 1,
         limitePorPagina
       );
 
-      setSugerencias(dataSugerencias);
+      setPostulaciones(dataPostulaciones);
 
       tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
+  const handleCerrarModal = () => {
+    setShowModal(false);
+
+    setPostulacionDetail({});
+  };
+
+  // const handleChangeFiltersSelect = (e) => {
+  //   const { value } = e.target;
+
+  //   const buscarPor = document.getElementById("input_search");
+  //   const valueBuscarPor = buscarPor.value;
+
+  //   if (valueBuscarPor) {
+  //     setFilters((prevFilters) => {
+  //       let updatedFilters = { ...prevFilters };
+
+  //       if (value === "numero_identificacion") {
+  //         updatedFilters.apellidos = "";
+  //       } else if (value === "apellidos") {
+  //         updatedFilters.numero_identificacion = "";
+  //       }
+
+  //       return { ...updatedFilters, [value]: valueBuscarPor };
+  //     });
+  //   }
+  // };
+
   const handleChangePage = async (page) => {
     if (paginaActual !== page) {
       setPaginaActual(page);
 
-      const dataSugerencias = await getAllSugerencias(
+      const dataPostulaciones = await getPostulacionesEmpleado(
         token,
+        empleado.empleado_id,
         filters,
         page,
         limitePorPagina
       );
 
-      setSugerencias(dataSugerencias);
+      setPostulaciones(dataPostulaciones);
 
       tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -295,81 +324,63 @@ export function Sugerencias() {
         }`}
       >
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <Title>Sugerencias</Title>
+          <Title>Mis Postulaciones</Title>
         </div>
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
           <div className="flex flex-col place-content-between">
-            <Label htmlFor="empresa_id">Empresa</Label>
-
+            <Label htmlFor="buscar_por">Buscar por</Label>
             <Select
-              id="empresa_id"
-              name="empresa_id"
-              defaultValue="Seleccione"
-              onChange={handleChangeFilters}
+              id="buscar_por"
+              name="buscar_por"
+              onChange={handleChangeFiltersSelect}
+              value={filters.buscar_por}
             >
-              <option>Seleccione</option>
-              {empresasActivas?.length
-                ? empresasActivas?.map((empresa, i) => (
-                    <option
-                      key={i}
-                      name={empresa.nombre}
-                      value={empresa.empresa_id}
-                    >
-                      {empresa.nombre}
-                    </option>
-                  ))
+              <option value="nombre">Nombre de la vacante</option>
+              <option value="ubicacion">Ubicación de la vacante</option>
+            </Select>
+          </div>
+          <div className="flex w-full items-end">
+            <Input
+              id="buscar"
+              type="text"
+              placeholder="Escribe aquí tu búsqueda"
+              name="buscar"
+              onChange={handleChangeFilters}
+              value={filters.buscar}
+            />
+          </div>
+          <div className="flex flex-col place-content-between">
+            <Label htmlFor="area_interes_id">Filtrar por área de interés</Label>
+            <Select
+              id="area_interes_id"
+              name="area_interes_id"
+              onChange={handleChangeFilters}
+              value={filters.area_interes_id}
+            >
+              <option value="">Todos</option>
+              {areasInteresActivas?.length
+                ? areasInteresActivas?.map(
+                    (area, i) =>
+                      area.activo && (
+                        <option
+                          key={i}
+                          name={area.nombre}
+                          value={area.area_interes_id}
+                        >
+                          {area.nombre}
+                        </option>
+                      )
+                  )
                 : null}
             </Select>
           </div>
           <div className="flex flex-col place-content-between">
-            <Label htmlFor="sede_id">Sede</Label>
-
+            <Label htmlFor="estado_solicitud">Filtrar por estado</Label>
             <Select
-              id="sede_id"
-              name="sede_id"
-              value={filters.sede_id}
+              id="estado_solicitud"
+              name="estado_solicitud"
               onChange={handleChangeFilters}
-            >
-              <option>Seleccione</option>
-              {sedesActivas?.length
-                ? sedesActivas?.map((sede, i) => (
-                    <option key={i} name={sede.nombre} value={sede.sede_id}>
-                      {sede.nombre}
-                    </option>
-                  ))
-                : null}
-            </Select>
-          </div>
-          <div className="flex flex-col place-content-between">
-            <Label htmlFor="tipo_sugerencia_id">Tipo de sugerencia</Label>
-
-            <Select
-              id="tipo_sugerencia_id"
-              name="tipo_sugerencia_id"
-              defaultValue="Seleccione"
-              onChange={handleChangeFilters}
-            >
-              <option>Seleccione</option>
-              {tiposSugerenciasActivas?.length
-                ? tiposSugerenciasActivas?.map((tipo_sugerencia, i) => (
-                    <option
-                      key={i}
-                      name={tipo_sugerencia.descripcion}
-                      value={tipo_sugerencia.tipo_sugerencia_id}
-                    >
-                      {tipo_sugerencia.descripcion}
-                    </option>
-                  ))
-                : null}
-            </Select>
-          </div>
-          <div className="flex flex-col place-content-between">
-            <Label htmlFor="estado">Filtrar por estado</Label>
-            <Select
-              id="estado"
-              name="estado"
-              onChange={handleChangeFilters}
-              value={filters.estado}
+              value={filters.estado_solicitud}
             >
               <option value="">Todos</option>
               <option value="Pendiente por revisar">
@@ -392,6 +403,7 @@ export function Sugerencias() {
               <option value="30">30</option>
             </Select>
           </div>
+
           <div
             id="tabla"
             ref={tableRef}
@@ -405,27 +417,28 @@ export function Sugerencias() {
             </Button>
           </div>
         </div>
+
         <div className="mt-8 sm:mx-auto w-full">
-          <div className=" overflow-x-auto shadow-md rounded-lg">
+          <div className="overflow-x-auto shadow-md rounded-lg">
             <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400">
               <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   <th scope="col" className="px-4 py-3">
                     <div className="flex items-center">
                       <span
-                        id="nombre_empresa"
-                        name="nombre_empresa"
+                        id="nombre"
+                        name="nombre"
                         onClick={changeOrder}
                         className="text-black hover:text-black flex items-center"
                       >
-                        Empresa
+                        Nombre de la vacante
                         <img
-                          name="nombre_empresa"
+                          name="nombre"
                           src={
-                            filters.orden_campo === "nombre_empresa" &&
+                            filters.orden_campo === "nombre" &&
                             filters.orden_por === "ASC"
                               ? "./SortAZ.svg"
-                              : filters.orden_campo === "nombre_empresa" &&
+                              : filters.orden_campo === "nombre" &&
                                 filters.orden_por === "DESC"
                               ? "./SortZA.svg"
                               : "./SortDefault.svg"
@@ -437,60 +450,78 @@ export function Sugerencias() {
                     </div>
                   </th>
                   <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Sede</div>
+                    <div className="flex items-center">Área de interés</div>
                   </th>
                   <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Tipo De Sugerencia</div>
+                    <div className="flex items-center">Ubicación</div>
                   </th>
                   <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Revisado Por</div>
+                    <div className="flex items-center">
+                      <span
+                        id="createdAt"
+                        name="createdAt"
+                        onClick={changeOrder}
+                        className="text-black hover:text-black flex items-center"
+                      >
+                        Postulado
+                        <img
+                          name="createdAt"
+                          src={
+                            filters.orden_campo === "createdAt" &&
+                            filters.orden_por === "ASC"
+                              ? "./SortAZ.svg"
+                              : filters.orden_campo === "createdAt" &&
+                                filters.orden_por === "DESC"
+                              ? "./SortZA.svg"
+                              : "./SortDefault.svg"
+                          }
+                          alt="Icon Sort"
+                          className="w-5 h-5 ms-1.5 cursor-pointer"
+                        />
+                      </span>
+                    </div>
                   </th>
                   <th scope="col" className="px-4 py-3">
-                    <div className="flex items-center">Fecha Revisado</div>
+                    <div className="flex items-center">Estado Postulación</div>
+                  </th>
+                  <th scope="col" className="px-4 py-3">
+                    <div className="flex items-center">
+                      Última actualización
+                    </div>
                   </th>
                   <th scope="col" className="px-4 py-3">
                     <div className="flex items-center">Acción</div>
                   </th>
                 </tr>
               </thead>
-              {sugerencias.sugerencias &&
-                sugerencias.sugerencias.length > 0 && (
+              {postulaciones.postulaciones &&
+                postulaciones.postulaciones.length > 0 && (
                   <tbody>
-                    {sugerencias.sugerencias.map((sugerencia, i) => (
+                    {postulaciones.postulaciones.map((postulacion, i) => (
                       <tr
                         key={i}
-                        className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
+                        className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                       >
+                        <td className="p-4">{postulacion.Vacante.nombre}</td>
                         <td className="p-4">
-                          {sugerencia.Sede.Empresa.nombre}
+                          {postulacion.Vacante.Areas_Intere.nombre}
                         </td>
-                        <td className="p-4">{sugerencia.Sede.nombre}</td>
+                        <td className="p-4">{postulacion.Vacante.ubicacion}</td>
                         <td className="p-4">
-                          {sugerencia.Tipos_Sugerencia.descripcion}
+                          {DDMMYYYYHHMM2(postulacion.createdAt)}
                         </td>
+                        <td className="p-4">{postulacion.estado_solicitud}</td>
                         <td className="p-4">
-                          {sugerencia.Empleado?.nombres ? (
-                            <>
-                              {sugerencia.Empleado?.nombres}{" "}
-                              {sugerencia.Empleado?.apellidos}
-                            </>
-                          ) : (
-                            "No revisado"
-                          )}
-                        </td>
-                        <td className="p-4">
-                          {sugerencia.fecha_revision
-                            ? DDMMYYYYHHMM2(sugerencia.fecha_revision)
-                            : "No revisado"}
+                          {DDMMYYYYHHMM2(postulacion.updatedAt)}
                         </td>
                         <td className="p-4 flex gap-2">
                           <Button
                             className="m-0 w-auto text-xs"
                             onClick={() =>
-                              handleVerDetalles(sugerencia.sugerencia_id)
+                              handleVerDetalles(postulacion.vacante_empleado_id)
                             }
                           >
-                            Ver Detalles
+                            Detalles
                           </Button>
                         </td>
                       </tr>
@@ -499,11 +530,12 @@ export function Sugerencias() {
                 )}
             </table>
           </div>
+
           <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">
             {infoPaginador(
               paginaActual,
               limitePorPagina,
-              sugerencias.totalRegistros
+              postulaciones.totalRegistros
             )}
             <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
               <li>
@@ -521,7 +553,7 @@ export function Sugerencias() {
               </li>
               {calcularPaginasARenderizar(
                 paginaActual,
-                sugerencias.cantidadPaginas
+                postulaciones.cantidadPaginas
               ).map((page) => (
                 <li key={page}>
                   <span
@@ -541,7 +573,7 @@ export function Sugerencias() {
                   onClick={paginaSiguiente}
                   className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
                 ${
-                  paginaActual >= sugerencias.cantidadPaginas
+                  paginaActual >= postulaciones.cantidadPaginas
                     ? "cursor-default"
                     : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
                 }`}
@@ -555,56 +587,67 @@ export function Sugerencias() {
       </div>
       {/* Main modal */}
       {showModal && (
-        <div className="fixed z-50 inset-0 flex items-center justify-center">
-          <div className="p-4 max-w-2xl max-h-full sm:min-w-[600px]">
+        <div className="fixed z-[1000] inset-0 flex items-center justify-center">
+          <div className="p-4 max-h-full sm:min-w-[600px]">
             {/* <!-- Modal content --> */}
             <div className="bg-gray-400 rounded-lg border-2 border-white">
               {/* <!-- Modal header --> */}
-              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-                <h3 className="sm:text-lg font-semibold text-gray-900">
-                  {sugerencia.Sede?.Empresa?.nombre} - Sede{" "}
-                  {sugerencia.Sede?.nombre}
-                </h3>
-              </div>
-              {/* <!-- Modal body --> */}
-              <div className="p-4 md:p-5 space-y-4">
-                <span>
-                  <b>Tipo De Sugerencia:</b>{" "}
-                  {sugerencia.Tipos_Sugerencia?.descripcion}
-                </span>
+              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t flex-col sm:flex-row">
+                <div>
+                  <Span className="m-0">
+                    <b>Nombre de la vacante:</b>{" "}
+                    {postulacionDetail?.Vacante?.nombre}
+                  </Span>
+                </div>
 
-                <p className="text-base leading-relaxed break-words">
-                  <span>
+                <div className="flex gap-2 items-center">
+                  <Span className="m-0">
+                    <b>Estado vacante: </b>
+                    {postulacionDetail?.estado_solicitud}
+                  </Span>
+
+                  <Button
+                    className="m-0 w-auto text-xs"
+                    onClick={handleCerrarModal}
+                  >
+                    Cerrar
+                  </Button>
+                </div>
+              </div>
+
+              {/* <!-- Modal body --> */}
+              <div
+                className="overflow-y-auto max-h-[60vh]"
+                ref={modalContentRef}
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-b p-4">
+                  <Span className="m-0">
+                    <b>Ubicación: </b>
+                    {postulacionDetail?.Vacante?.ubicacion}
+                  </Span>
+                  <Span className="m-0">
+                    <b>Área de interés: </b>
+                    {postulacionDetail?.Vacante?.Areas_Intere?.nombre}
+                  </Span>
+                  <Span className="m-0">
+                    <b>Estado: </b>
+                    {postulacionDetail?.Vacante?.activo ? "Activa" : "Inactiva"}
+                  </Span>
+                  <Span className="m-0 break-words">
                     <b>Descripción: </b>
-                  </span>
-                  {sugerencia.descripcion}
-                </p>
-                <br />
-                <span>
-                  <b>Revisado por: </b>
-                  {sugerencia.Empleado?.nombres ? (
-                    <>
-                      {sugerencia.Empleado?.nombres}{" "}
-                      {sugerencia.Empleado?.apellidos} (
-                      {sugerencia.Empleado?.tipo_identificacion}-
-                      {sugerencia.Empleado?.numero_identificacion})
-                    </>
-                  ) : (
-                    ""
-                  )}
-                </span>
+                    {postulacionDetail?.Vacante?.descripcion}
+                  </Span>
+                  <Span className="m-0">
+                    <b>Fecha creación de vacante: </b>
+                    {DDMMYYYYHHMM2(postulacionDetail?.Vacante?.createdAt)}
+                  </Span>
+                  <Span className="m-0">
+                    <b>Fecha última modificación de la vacante: </b>
+                    {DDMMYYYYHHMM2(postulacionDetail?.Vacante?.updatedAt)}
+                  </Span>
+                </div>
               </div>
               {/* <!-- Modal footer --> */}
-              <div className="flex items-center justify-center border-t border-gray-200 rounded-b">
-                <Button
-                  className="w-auto"
-                  onClick={() => {
-                    setShowModal(0);
-                  }}
-                >
-                  Cerrar
-                </Button>
-              </div>
             </div>
           </div>
         </div>

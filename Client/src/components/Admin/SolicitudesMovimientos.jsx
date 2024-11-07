@@ -192,10 +192,6 @@ export function SolicitudesMovimientos() {
   }, [filters.empresa_id]);
 
   const handleVerDetalles = async (movimiento_id) => {
-    if (!showModal) {
-      setShowModal(true);
-    }
-
     const data = await getMovimientoDetail(
       token,
       movimiento_id,
@@ -203,6 +199,10 @@ export function SolicitudesMovimientos() {
     );
 
     setMovimiento(data);
+
+    if (!showModal) {
+      setShowModal(true);
+    }
   };
 
   const changeOrder = async (e) => {
@@ -674,7 +674,7 @@ export function SolicitudesMovimientos() {
                     {movimientos.movimientos.map((movimiento, i) => (
                       <tr
                         key={i}
-                        className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                        className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
                       >
                         <td className="p-4">
                           {movimiento.Empleado.apellidos}{" "}
@@ -701,7 +701,7 @@ export function SolicitudesMovimientos() {
                               handleVerDetalles(movimiento.movimiento_id)
                             }
                           >
-                            Detalles
+                            Ver Detalles
                           </Button>
                           <Button
                             className="m-0 w-auto text-xs bg-red-600 hover:bg-red-600/[.5] text-white"
@@ -785,13 +785,13 @@ export function SolicitudesMovimientos() {
               {/* <!-- Modal header --> */}
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t flex-col sm:flex-row">
                 <div className="flex flex-col items-center sm:items-start">
-                  <Span className="font-bold">
+                  <Span className="font-bold m-0">
                     {`${movimiento?.movimiento?.Empleado?.Empresa?.nombre} (${movimiento?.movimiento?.Empleado?.Empresa?.Sedes[0]?.nombre})`}
                   </Span>
-                  <Span>
+                  <Span className="m-0">
                     {`${movimiento?.movimiento?.Empleado?.nombres} ${movimiento?.movimiento?.Empleado?.apellidos}`}
                   </Span>
-                  <Span>
+                  <Span className="m-0">
                     {`${movimiento?.movimiento?.Empleado?.tipo_identificacion}-${movimiento?.movimiento?.Empleado?.numero_identificacion}`}
                   </Span>
                 </div>

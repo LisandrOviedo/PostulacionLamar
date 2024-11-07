@@ -56,8 +56,7 @@ const todasLasVacantes = async (
             ],
           },
           {
-            model: Empleados,
-            attributes: ["empleado_id"],
+            model: Vacantes_Empleados,
           },
         ],
         distinct: true,
@@ -114,106 +113,258 @@ const traerVacante = async (
             "numero_identificacion",
           ],
         },
+        { model: Vacantes_Empleados },
       ],
     });
 
-    const { count: totalRegistros, rows: dataEmpleados } =
-      await Empleados.findAndCountAll({
-        attributes: [
-          "empleado_id",
-          "nombres",
-          "apellidos",
-          "tipo_identificacion",
-          "numero_identificacion",
-          "telefono",
-          "correo",
-          "activo",
-          "updatedAt",
-        ],
-        where: condicionesEmpleados,
+    const { count: totalRegistros, rows: dataPostulanciones } =
+      await Vacantes_Empleados.findAndCountAll({
+        where: { vacante_id: vacante_id },
         include: [
           {
-            model: Vacantes,
-            attributes: ["vacante_id"],
-            where: { vacante_id: vacante_id },
+            model: Empleados,
+            where: condicionesEmpleados,
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+              "telefono",
+              "correo",
+              "activo",
+              "updatedAt",
+            ],
+            include: {
+              model: Documentos_Empleados,
+              attributes: ["tipo", "nombre"],
+              where: { tipo: "perfil_pdf" },
+              required: false,
+            },
           },
           {
-            model: Documentos_Empleados,
-            attributes: ["tipo", "nombre"],
-            where: { tipo: "perfil_pdf" },
-            required: false,
+            model: Empleados,
+            as: "RevisadoPor",
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
           },
         ],
         distinct: true,
-        order: [orden_campo ? [orden_campo, orden_por] : null].filter(Boolean),
+        order: [
+          orden_campo === "apellidos"
+            ? [Empleados, orden_campo, orden_por]
+            : orden_campo
+            ? [orden_campo, orden_por]
+            : null,
+        ].filter(Boolean),
       });
 
     const indexEnd = paginaActual * limitePorPagina;
     const indexStart = indexEnd - limitePorPagina;
 
-    const empleados = dataEmpleados.slice(indexStart, indexEnd);
+    const postulaciones = dataPostulanciones.slice(indexStart, indexEnd);
     const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
 
-    return { cantidadPaginas, totalRegistros, empleados, vacante };
+    return { cantidadPaginas, totalRegistros, vacante, postulaciones };
   } catch (error) {
     throw new Error(`Error al traer la vacante: ${error.message}`);
   }
 };
 
-const traerVacanteEmpleados = async (
-  filtros,
+const traerPostulacionesEmpleado = async (
+  empleado_id,
   paginaActual,
-  limitePorPagina
+  limitePorPagina,
+  buscar_por,
+  buscar,
+  area_interes_id,
+  estado_solicitud,
+  orden_campo,
+  orden_por
 ) => {
-  if (!paginaActual || !limitePorPagina) {
+  if (!empleado_id || !paginaActual || !limitePorPagina) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  let condicionesVacantes = {};
+
+  let condicionesVacantesEmpleado = {
+    empleado_id: empleado_id,
+  };
+
+  if (buscar_por && buscar) {
+    condicionesVacantes[buscar_por] = { [Op.like]: `%${buscar}%` };
+  }
+
+  if (area_interes_id) {
+    condicionesVacantes.area_interes_id = area_interes_id;
+  }
+
+  if (estado_solicitud) {
+    condicionesVacantesEmpleado.estado_solicitud = estado_solicitud;
+  }
+
+  try {
+    const { count: totalRegistros, rows: dataPostulacionesEmpleado } =
+      await Vacantes_Empleados.findAndCountAll({
+        where: condicionesVacantesEmpleado,
+        include: [
+          {
+            model: Vacantes,
+            where: condicionesVacantes,
+            include: [
+              {
+                model: Empleados,
+                as: "CreadoPor",
+                attributes: [
+                  "empleado_id",
+                  "nombres",
+                  "apellidos",
+                  "tipo_identificacion",
+                  "numero_identificacion",
+                  "telefono",
+                  "correo",
+                  "activo",
+                ],
+              },
+              { model: Areas_Interes },
+            ],
+          },
+          {
+            model: Empleados,
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+              "telefono",
+              "correo",
+              "activo",
+            ],
+          },
+          {
+            model: Empleados,
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+              "telefono",
+              "correo",
+              "activo",
+            ],
+            as: "RevisadoPor",
+          },
+        ],
+        distinct: true,
+        order: [
+          orden_campo === "createdAt" && orden_por
+            ? [orden_campo, orden_por]
+            : orden_campo
+            ? [Vacantes, orden_campo, orden_por]
+            : null,
+        ].filter(Boolean),
+      });
+
+    const indexEnd = paginaActual * limitePorPagina;
+    const indexStart = indexEnd - limitePorPagina;
+    const postulaciones = dataPostulacionesEmpleado.slice(indexStart, indexEnd);
+    const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
+    return { cantidadPaginas, totalRegistros, postulaciones };
+  } catch (error) {
+    throw new Error(
+      `Error al traer las postulaciones del empleado: ${error.message}`
+    );
+  }
+};
+
+const traerPostulacionEmpleado = async (vacante_empleado_id) => {
+  if (!vacante_empleado_id) {
     throw new Error(`Datos faltantes`);
   }
 
   try {
-    const { count: totalRegistros, rows: dataVacantesEmpleados } =
-      await Vacantes_Empleados.findAll({
-        include: {
-          model: Empleados,
-          attributes: ["nombres"],
-          where: filtros.numero_identificacion
-            ? {
-                numero_identificacion: {
-                  [Op.like]: `%${filtros.numero_identificacion}%`,
-                },
-              }
-            : filtros.apellidos
-            ? { apellidos: { [Op.like]: `%${filtros.apellidos}%` } }
-            : {},
-          order: [
-            filtros.orden_campo === "apellidos"
-              ? ["apellidos", filtros.orden_por]
-              : filtros.orden_campo === "activo"
-              ? ["activo", filtros.orden_por]
-              : filtros.orden_campo === "updatedAt"
-              ? ["updatedAt", filtros.orden_por]
-              : null,
-          ].filter(Boolean),
-        },
-        where: {
-          vacante_id: filtros.vacante_id,
-        },
-        distinct: true,
-      });
+    const vacante_empleado = await Vacantes_Empleados.findByPk(
+      vacante_empleado_id,
+      {
+        include: [
+          {
+            model: Vacantes,
+            include: [
+              {
+                model: Empleados,
+                as: "CreadoPor",
+                attributes: [
+                  "empleado_id",
+                  "nombres",
+                  "apellidos",
+                  "tipo_identificacion",
+                  "numero_identificacion",
+                  "telefono",
+                  "correo",
+                  "activo",
+                ],
+              },
+              { model: Areas_Interes },
+            ],
+          },
+          {
+            model: Empleados,
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+              "telefono",
+              "correo",
+              "activo",
+            ],
+          },
+          {
+            model: Empleados,
+            as: "RevisadoPor",
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+              "telefono",
+              "correo",
+              "activo",
+            ],
+          },
+        ],
+      }
+    );
 
-    const indexEnd = paginaActual * limitePorPagina;
-    const indexStart = indexEnd - limitePorPagina;
+    if (!vacante_empleado) {
+      throw new Error(`No existe esa postulación`);
+    }
 
-    const empleados = dataVacantesEmpleados.slice(indexStart, indexEnd);
-    const cantidadPaginas = Math.ceil(totalRegistros / limitePorPagina);
-
-    return { cantidadPaginas, totalRegistros, empleados };
+    return vacante_empleado;
   } catch (error) {
-    throw new Error(`Error al traer la vacante: ${error.message}`);
+    throw new Error(
+      `Error al traer la postulación del empleado: ${error.message}`
+    );
   }
 };
 
-const crearVacante = async (area_interes_id, descripcion) => {
-  if (!area_interes_id || !descripcion) {
+const crearVacante = async (
+  area_interes_id,
+  nombre,
+  descripcion,
+  ubicacion
+) => {
+  if (!area_interes_id || !nombre || !descripcion || !ubicacion) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -222,24 +373,17 @@ const crearVacante = async (area_interes_id, descripcion) => {
   try {
     t = await conn.transaction();
 
-    const [vacante, created] = await Vacantes.findOrCreate({
-      where: { area_interes_id: area_interes_id, descripcion: descripcion },
-      defaults: {
+    await Vacantes.create(
+      {
         area_interes_id: area_interes_id,
+        nombre: nombre,
         descripcion: descripcion,
+        ubicacion: ubicacion,
       },
-      transaction: t,
-    });
+      { transaction: t }
+    );
 
     await t.commit();
-
-    if (created) {
-      return vacante;
-    }
-
-    throw new Error(
-      `Ya existe una vacante con esa descripción y ese área de interés`
-    );
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -249,8 +393,20 @@ const crearVacante = async (area_interes_id, descripcion) => {
   }
 };
 
-const modificarVacante = async (vacante_id, area_interes_id, descripcion) => {
-  if (!vacante_id || !area_interes_id || !descripcion) {
+const modificarVacante = async (
+  vacante_id,
+  area_interes_id,
+  nombre,
+  descripcion,
+  ubicacion
+) => {
+  if (
+    !vacante_id ||
+    !area_interes_id ||
+    !nombre ||
+    !descripcion ||
+    !ubicacion
+  ) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -264,7 +420,9 @@ const modificarVacante = async (vacante_id, area_interes_id, descripcion) => {
     await Vacantes.update(
       {
         area_interes_id: area_interes_id,
+        nombre: nombre,
         descripcion: descripcion,
+        ubicacion: ubicacion,
       },
       {
         where: {
@@ -283,6 +441,47 @@ const modificarVacante = async (vacante_id, area_interes_id, descripcion) => {
     }
 
     throw new Error(`Error al modificar la vacante: ${error.message}`);
+  }
+};
+
+const cambiarEstadoRevisado = async (vacante_empleado_id, revisado_por_id) => {
+  if (!vacante_empleado_id || !revisado_por_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  let t;
+
+  try {
+    await traerPostulacionEmpleado(vacante_empleado_id);
+
+    const postulacion = await Vacantes_Empleados.findByPk(vacante_empleado_id);
+
+    if (postulacion && !postulacion.revisado_por_id) {
+      t = await conn.transaction();
+
+      await Vacantes_Empleados.update(
+        {
+          revisado_por_id: revisado_por_id,
+          estado_solicitud: "Revisado",
+        },
+        {
+          where: {
+            vacante_empleado_id: vacante_empleado_id,
+          },
+          transaction: t,
+        }
+      );
+
+      await t.commit();
+    }
+  } catch (error) {
+    if (t && !t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error(
+      `Error al modificar el estado de la postulación: ${error.message}`
+    );
   }
 };
 
@@ -356,9 +555,11 @@ const postularVacanteEmpleado = async (vacante_id, empleado_id) => {
 module.exports = {
   todasLasVacantes,
   traerVacante,
-  traerVacanteEmpleados,
+  traerPostulacionesEmpleado,
+  traerPostulacionEmpleado,
   crearVacante,
-  modificarVacante,
-  inactivarVacante,
   postularVacanteEmpleado,
+  modificarVacante,
+  cambiarEstadoRevisado,
+  inactivarVacante,
 };

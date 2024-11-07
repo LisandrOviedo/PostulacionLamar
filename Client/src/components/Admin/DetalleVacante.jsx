@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import { getVacanteDetail } from "../../redux/vacantes/vacantesActions";
+import {
+  getVacanteDetail,
+  putCambiarEstadoPostulacion,
+} from "../../redux/vacantes/vacantesActions";
 
 import { putCambiarEstado } from "../../redux/curriculos/curriculosActions";
 
@@ -85,9 +88,11 @@ export function DetalleVacante() {
 
     const buscar_por = document.getElementById("buscar_por");
     const buscar = document.getElementById("buscar");
+    const activo = document.getElementById("activo");
 
     buscar_por.selectedIndex = 0;
     buscar.value = "";
+    activo.selectedIndex = 0;
 
     const dataVacanteDetail = await getVacanteDetail(
       token,
@@ -236,8 +241,19 @@ export function DetalleVacante() {
     }
   };
 
-  const handleVerDetalles = async (identificacion, nombre, empleado_id) => {
+  const handleVerDetalles = async (
+    identificacion,
+    nombre,
+    empleado_id,
+    vacante_empleado_id
+  ) => {
     await putCambiarEstado(token, empleado_id, empleado.empleado_id);
+
+    await putCambiarEstadoPostulacion(
+      token,
+      vacante_empleado_id,
+      empleado.empleado_id
+    );
 
     const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${nombre}`;
 
@@ -271,18 +287,22 @@ export function DetalleVacante() {
         </Button>
       </div>
       <div className="p-4 border rounded-lg shadow-md w-full mt-2">
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
           <div>
-            <Span className="font-bold">Descripción de la vacante: </Span>
-            <Span>{vacanteDetail?.vacante?.descripcion}</Span>
+            <Span className="font-bold">Nombre de la vacante: </Span>
+            <Span>{vacanteDetail?.vacante?.nombre}</Span>
           </div>
           <div>
             <Span className="font-bold">Área de interés: </Span>
             <Span>{vacanteDetail?.vacante?.Areas_Intere?.nombre}</Span>
           </div>
           <div>
-            <Span className="font-bold">Fecha de creación: </Span>
-            <Span>{DDMMYYYYHHMM2(vacanteDetail?.vacante?.createdAt)}</Span>
+            <Span className="font-bold">Ubicación: </Span>
+            <Span>{vacanteDetail?.vacante?.ubicacion}</Span>
+          </div>
+          <div className="break-words">
+            <Span className="font-bold">Descripción de la vacante: </Span>
+            <Span>{vacanteDetail?.vacante?.descripcion}</Span>
           </div>
           <div>
             <Span className="font-bold">Creado por: </Span>
@@ -292,6 +312,10 @@ export function DetalleVacante() {
               {vacanteDetail?.vacante?.CreadoPor?.tipo_identificacion}-
               {vacanteDetail?.vacante?.CreadoPor?.numero_identificacion})
             </Span>
+          </div>
+          <div>
+            <Span className="font-bold">Fecha de creación: </Span>
+            <Span>{DDMMYYYYHHMM2(vacanteDetail?.vacante?.createdAt)}</Span>
           </div>
           <div>
             <Span className="font-bold">Fecha de última modificación: </Span>
@@ -305,7 +329,7 @@ export function DetalleVacante() {
           </div>
           <div>
             <Span className="font-bold">Cantidad Postulados: </Span>
-            <Span>{vacanteDetail?.totalRegistros}</Span>
+            <Span>{vacanteDetail?.vacante?.Vacantes_Empleados.length}</Span>
           </div>
         </div>
       </div>
@@ -415,23 +439,24 @@ export function DetalleVacante() {
                   <div className="flex items-center">Teléfono</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Correo</div>
+                  <div className="flex items-center">Estado Empleado</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
                     <span
-                      name="activo"
+                      id="createdAt"
+                      name="createdAt"
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Estado
+                      Fecha postulación
                       <img
-                        name="activo"
+                        name="createdAt"
                         src={
-                          filters.orden_campo === "activo" &&
+                          filters.orden_campo === "createdAt" &&
                           filters.orden_por === "ASC"
                             ? "./SortAZ.svg"
-                            : filters.orden_campo === "activo" &&
+                            : filters.orden_campo === "createdAt" &&
                               filters.orden_por === "DESC"
                             ? "./SortZA.svg"
                             : "./SortDefault.svg"
@@ -443,89 +468,78 @@ export function DetalleVacante() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    <span
-                      id="updatedAt"
-                      name="updatedAt"
-                      onClick={changeOrder}
-                      className="text-black hover:text-black flex items-center"
-                    >
-                      Últ. Modif.
-                      <img
-                        name="updatedAt"
-                        src={
-                          filters.orden_campo === "updatedAt" &&
-                          filters.orden_por === "ASC"
-                            ? "./SortAZ.svg"
-                            : filters.orden_campo === "updatedAt" &&
-                              filters.orden_por === "DESC"
-                            ? "./SortZA.svg"
-                            : "./SortDefault.svg"
-                        }
-                        alt="Icon Sort"
-                        className="w-5 h-5 ms-1.5 cursor-pointer"
-                      />
-                    </span>
-                  </div>
+                  <div className="flex items-center">Estado Postulación</div>
                 </th>
-
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Revisado por</div>
+                </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
                 </th>
               </tr>
             </thead>
-            <tbody>
-              {!vacanteDetail.empleados?.length ? (
-                <tr>
-                  <td colSpan="9" className="text-center p-2">
-                    <p>¡No existen registros!</p>
-                  </td>
-                </tr>
-              ) : (
-                vacanteDetail.empleados?.map((empleado, i) => (
-                  <tr
-                    key={i}
-                    className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
-                  >
-                    <td className="p-4">
-                      {empleado.apellidos} {empleado.nombres}
-                    </td>
-                    <td className="p-4">
-                      {empleado.tipo_identificacion}
-                      {empleado.numero_identificacion}
-                    </td>
-                    <td className="p-4">
-                      {empleado.telefono || "Sin registrar / No posee"}
-                    </td>
-                    <td className="p-4">
-                      {empleado.correo || "Sin registrar / No posee"}
-                    </td>
-                    <td className="p-4">
-                      {empleado.activo ? "Activo" : "Inactivo"}
-                    </td>
-                    <td className="p-4">{DDMMYYYYHHMM2(empleado.updatedAt)}</td>
-                    <td className="p-4 flex gap-2">
-                      {empleado.Documentos_Empleados[0]?.nombre ? (
-                        <Button
-                          className="m-0 w-auto text-xs"
-                          onClick={() =>
-                            handleVerDetalles(
-                              `${empleado.tipo_identificacion}${empleado.numero_identificacion}`,
-                              empleado.Documentos_Empleados[0].nombre,
-                              empleado.empleado_id
-                            )
-                          }
-                        >
-                          Ver Perfil
-                        </Button>
-                      ) : (
-                        "Perfil no registrado"
-                      )}
-                    </td>
-                  </tr>
-                ))
+            {vacanteDetail.postulaciones &&
+              vacanteDetail.postulaciones.length > 0 && (
+                <tbody>
+                  {vacanteDetail.postulaciones.map((postulacion, i) => (
+                    <tr
+                      key={i}
+                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
+                    >
+                      <td className="p-4">
+                        {postulacion.Empleado.apellidos}{" "}
+                        {postulacion.Empleado.nombres}
+                      </td>
+                      <td className="p-4">
+                        {postulacion.Empleado.tipo_identificacion}
+                        {postulacion.Empleado.numero_identificacion}
+                      </td>
+                      <td className="p-4">
+                        {postulacion.Empleado.telefono ||
+                          "Sin registrar / No posee"}
+                      </td>
+                      <td className="p-4">
+                        {postulacion.Empleado.activo ? "Activo" : "Inactivo"}
+                      </td>
+                      <td className="p-4">
+                        {DDMMYYYYHHMM2(postulacion.createdAt)}
+                      </td>
+                      <td className="p-4">{postulacion.estado_solicitud}</td>
+                      <td className="p-4">
+                        {postulacion.RevisadoPor && (
+                          <>
+                            {postulacion.RevisadoPor?.nombres}{" "}
+                            {postulacion.RevisadoPor?.apellidos} (
+                            {postulacion.RevisadoPor?.tipo_identificacion}-
+                            {postulacion.RevisadoPor?.numero_identificacion})
+                          </>
+                        )}
+                      </td>
+                      <td className="p-4 flex gap-2">
+                        {postulacion.Empleado.Documentos_Empleados[0]
+                          ?.nombre ? (
+                          <Button
+                            className="m-0 w-auto text-xs"
+                            onClick={() =>
+                              handleVerDetalles(
+                                `${postulacion.Empleado.tipo_identificacion}${postulacion.Empleado.numero_identificacion}`,
+                                postulacion.Empleado.Documentos_Empleados[0]
+                                  .nombre,
+                                postulacion.Empleado.empleado_id,
+                                postulacion.vacante_empleado_id
+                              )
+                            }
+                          >
+                            Ver Perfil
+                          </Button>
+                        ) : (
+                          "Perfil no registrado"
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               )}
-            </tbody>
           </table>
         </div>
         <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">

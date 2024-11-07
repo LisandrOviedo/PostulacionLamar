@@ -31,7 +31,7 @@ export function Vacantes() {
   const [areasInteresActivas, setAreasInteresActivas] = useState([]);
 
   const [filters, setFilters] = useState({
-    buscar_por: "descripcion",
+    buscar_por: "nombre",
     buscar: "",
     area_interes_id: "",
     activo: "",
@@ -67,7 +67,7 @@ export function Vacantes() {
 
   const handleResetFilters = async () => {
     setFilters({
-      buscar_por: "descripcion",
+      buscar_por: "nombre",
       buscar: "",
       area_interes_id: "",
       activo: "",
@@ -77,14 +77,16 @@ export function Vacantes() {
 
     const buscar_por = document.getElementById("buscar_por");
     const buscar = document.getElementById("buscar");
+    const activo = document.getElementById("activo");
 
     buscar_por.selectedIndex = 0;
     buscar.value = "";
+    activo.selectedIndex = 0;
 
     const dataVacantes = await getAllVacantes(
       token,
       {
-        buscar_por: "descripcion",
+        buscar_por: "nombre",
         buscar: "",
         area_interes_id: "",
         activo: "",
@@ -262,7 +264,8 @@ export function Vacantes() {
             onChange={handleChangeFiltersSelect}
             value={filters.buscar_por}
           >
-            <option value="descripcion">Descripción de la vacante</option>
+            <option value="nombre">Nombre de la vacante</option>
+            <option value="ubicacion">Ubicación</option>
           </Select>
         </div>
         <div className="flex w-full items-end">
@@ -351,19 +354,19 @@ export function Vacantes() {
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
                     <span
-                      id="descripcion"
-                      name="descripcion"
+                      id="nombre"
+                      name="nombre"
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Descripción De La Vacante
+                      Nombre
                       <img
-                        name="descripcion"
+                        name="nombre"
                         src={
-                          filters.orden_campo === "descripcion" &&
+                          filters.orden_campo === "nombre" &&
                           filters.orden_por === "ASC"
                             ? "./SortAZ.svg"
-                            : filters.orden_campo === "descripcion" &&
+                            : filters.orden_campo === "nombre" &&
                               filters.orden_por === "DESC"
                             ? "./SortZA.svg"
                             : "./SortDefault.svg"
@@ -375,10 +378,13 @@ export function Vacantes() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Ubicación</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Área De Interés</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Estado</div>
+                  <div className="flex items-center">Estado Vacante</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
@@ -388,7 +394,7 @@ export function Vacantes() {
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Creado
+                      Creada El
                       <img
                         name="createdAt"
                         src={
@@ -407,7 +413,7 @@ export function Vacantes() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Creado Por</div>
+                  <div className="flex items-center">Creada Por</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
@@ -417,7 +423,7 @@ export function Vacantes() {
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Últ. Modif.
+                      Últ. Modificación
                       <img
                         name="updatedAt"
                         src={
@@ -436,7 +442,7 @@ export function Vacantes() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Postulados</div>
+                  <div className="flex items-center">Cant. Postulados</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
@@ -448,12 +454,13 @@ export function Vacantes() {
                 {vacantes.vacantes.map((vacante, i) => (
                   <tr
                     key={i}
-                    className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
                   >
-                    <td className="p-4">{vacante.descripcion}</td>
+                    <td className="p-4">{vacante.nombre}</td>
+                    <td className="p-4">{vacante.ubicacion}</td>
                     <td className="p-4">{vacante.Areas_Intere.nombre}</td>
                     <td className="p-4">
-                      {vacante.activo ? "Activo" : "Inactivo"}
+                      {vacante.activo ? "Activa" : "Inactiva"}
                     </td>
                     <td className="p-4">{DDMMYYYYHHMM2(vacante.createdAt)}</td>
                     <td className="p-4">
@@ -462,7 +469,7 @@ export function Vacantes() {
                       {vacante.CreadoPor.numero_identificacion})
                     </td>
                     <td className="p-4">{DDMMYYYYHHMM2(vacante.updatedAt)}</td>
-                    <td className="p-4">{vacante.Empleados.length}</td>
+                    <td className="p-4">{vacante.Vacantes_Empleados.length}</td>
                     <td className="p-4">
                       <Button
                         className="m-0 w-auto text-xs"
