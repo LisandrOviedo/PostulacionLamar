@@ -192,10 +192,6 @@ export function SolicitudesMovimientos() {
   }, [filters.empresa_id]);
 
   const handleVerDetalles = async (movimiento_id) => {
-    if (!showModal) {
-      setShowModal(true);
-    }
-
     const data = await getMovimientoDetail(
       token,
       movimiento_id,
@@ -203,6 +199,10 @@ export function SolicitudesMovimientos() {
     );
 
     setMovimiento(data);
+
+    if (!showModal) {
+      setShowModal(true);
+    }
   };
 
   const changeOrder = async (e) => {
@@ -701,7 +701,7 @@ export function SolicitudesMovimientos() {
                               handleVerDetalles(movimiento.movimiento_id)
                             }
                           >
-                            Detalles
+                            Ver Detalles
                           </Button>
                           <Button
                             className="m-0 w-auto text-xs bg-red-600 hover:bg-red-600/[.5] text-white"
