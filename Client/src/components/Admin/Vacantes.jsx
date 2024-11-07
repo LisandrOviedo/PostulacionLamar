@@ -77,9 +77,11 @@ export function Vacantes() {
 
     const buscar_por = document.getElementById("buscar_por");
     const buscar = document.getElementById("buscar");
+    const activo = document.getElementById("activo");
 
     buscar_por.selectedIndex = 0;
     buscar.value = "";
+    activo.selectedIndex = 0;
 
     const dataVacantes = await getAllVacantes(
       token,
