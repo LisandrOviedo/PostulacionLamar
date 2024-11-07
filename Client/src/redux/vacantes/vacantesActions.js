@@ -189,3 +189,28 @@ export const getPostulacionEmpleado = async (token, vacante_empleado_id) => {
     throw new Error();
   }
 };
+
+export const putCambiarEstadoPostulacion = async (
+  token,
+  vacante_empleado_id,
+  revisado_por_id
+) => {
+  const URL_PUT_ESTADO = `${URL_SERVER}/vacantes/modificarEstado`;
+
+  try {
+    await axios.put(
+      `${URL_PUT_ESTADO}`,
+      {
+        vacante_empleado_id,
+        revisado_por_id,
+      },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
