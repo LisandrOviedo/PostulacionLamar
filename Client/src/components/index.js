@@ -24,6 +24,7 @@ import { PerfilesProfesionales } from "./Admin/PerfilesProfesionales";
 import { PruebasEmpleados } from "./Admin/PruebasEmpleados";
 import { GestionRoles } from "./Admin/GestionRoles";
 import { SolicitudesMovimientos } from "./Admin/SolicitudesMovimientos";
+import { ConsultarLiquidaciones } from "./Admin/ConsultarLiquidaciones";
 import { Sugerencias } from "./Admin/Sugerencias";
 import { Vacantes } from "./Admin/Vacantes";
 
@@ -55,4 +56,5 @@ export {
   SolicitudesMovimientos,
   Sugerencias,
   Vacantes,
+  ConsultarLiquidaciones
 };
