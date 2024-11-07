@@ -714,6 +714,44 @@ Vacantes_Empleados.belongsTo(Empleados, {
   as: "RevisadoPor",
 });
 
+// Empleados 1:M Liquidaciones
+Empleados.hasMany(Liquidaciones, {
+  foreignKey: {
+    name: "creado_por_id",
+  },
+  as: "RealizadoPor",
+});
+Liquidaciones.belongsTo(Empleados, {
+  foreignKey: {
+    name: "creado_por_id",
+  },
+  as: "RealizadoPor",
+});
+
+// Empleados 1:M Liquidaciones
+Empleados.hasMany(Liquidaciones, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Liquidaciones.belongsTo(Empleados, {
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+
+// Cargos_Empleados 1:M Liquidaciones
+Cargos_Empleados.hasMany(Liquidaciones, {
+  foreignKey: {
+    name: "cargo_empleado_id",
+  },
+});
+Liquidaciones.belongsTo(Cargos_Empleados, {
+  foreignKey: {
+    name: "cargo_empleado_id",
+  },
+});
+
 // Seguro_Social 1:M Empresas
 // Seguro_Social.hasMany(Empresas, {
 //   foreignKey: {
