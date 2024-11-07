@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import { getVacanteDetail } from "../../redux/vacantes/vacantesActions";
+import {
+  getVacanteDetail,
+  putCambiarEstadoPostulacion,
+} from "../../redux/vacantes/vacantesActions";
 
 import { putCambiarEstado } from "../../redux/curriculos/curriculosActions";
 
@@ -238,8 +241,19 @@ export function DetalleVacante() {
     }
   };
 
-  const handleVerDetalles = async (identificacion, nombre, empleado_id) => {
+  const handleVerDetalles = async (
+    identificacion,
+    nombre,
+    empleado_id,
+    vacante_empleado_id
+  ) => {
     await putCambiarEstado(token, empleado_id, empleado.empleado_id);
+
+    await putCambiarEstadoPostulacion(
+      token,
+      vacante_empleado_id,
+      empleado.empleado_id
+    );
 
     const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${nombre}`;
 
@@ -435,7 +449,7 @@ export function DetalleVacante() {
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Postulado el
+                      Fecha postulación
                       <img
                         name="createdAt"
                         src={
@@ -452,6 +466,12 @@ export function DetalleVacante() {
                       />
                     </span>
                   </div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Estado Postulación</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Revisado por</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
@@ -484,6 +504,17 @@ export function DetalleVacante() {
                       <td className="p-4">
                         {DDMMYYYYHHMM2(postulacion.createdAt)}
                       </td>
+                      <td className="p-4">{postulacion.estado_solicitud}</td>
+                      <td className="p-4">
+                        {postulacion.RevisadoPor && (
+                          <>
+                            {postulacion.RevisadoPor?.nombres}{" "}
+                            {postulacion.RevisadoPor?.apellidos} (
+                            {postulacion.RevisadoPor?.tipo_identificacion}-
+                            {postulacion.RevisadoPor?.numero_identificacion})
+                          </>
+                        )}
+                      </td>
                       <td className="p-4 flex gap-2">
                         {postulacion.Empleado.Documentos_Empleados[0]
                           ?.nombre ? (
@@ -494,7 +525,8 @@ export function DetalleVacante() {
                                 `${postulacion.Empleado.tipo_identificacion}${postulacion.Empleado.numero_identificacion}`,
                                 postulacion.Empleado.Documentos_Empleados[0]
                                   .nombre,
-                                postulacion.Empleado.empleado_id
+                                postulacion.Empleado.empleado_id,
+                                postulacion.vacante_empleado_id
                               )
                             }
                           >
