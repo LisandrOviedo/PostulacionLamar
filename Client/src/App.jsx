@@ -8,6 +8,7 @@ import {
   ActualizarClave,
   ActualizarClaveTemporal,
   BarraNavegacion,
+  ConsultarLiquidaciones,
   CrearCurriculo,
   DatosPersonales,
   EnviarSugerencia,
@@ -135,11 +136,19 @@ function App() {
             />
             <Route path="/admin/sugerencias" element={<Sugerencias />} />
             <Route path="/admin/vacantes" element={<Vacantes />} />
+
+            <Route path="/admin/vacantes" element={<Vacantes />} />
             <Route
               path="/admin/vacantes/:vacante_id"
               element={<DetalleVacante />}
             />
           </Route>
+
+          <Route
+            path="/admin/consultarLiquidaciones"
+            element={<ConsultarLiquidaciones />}
+          />
+
           <Route path="*" element={<PaginaNoEncontrada />} />
         </Routes>
       </Suspense>
