@@ -142,6 +142,17 @@ const traerVacante = async (
               required: false,
             },
           },
+          {
+            model: Empleados,
+            as: "RevisadoPor",
+            attributes: [
+              "empleado_id",
+              "nombres",
+              "apellidos",
+              "tipo_identificacion",
+              "numero_identificacion",
+            ],
+          },
         ],
         distinct: true,
         order: [
@@ -433,6 +444,47 @@ const modificarVacante = async (
   }
 };
 
+const cambiarEstadoRevisado = async (vacante_empleado_id, revisado_por_id) => {
+  if (!vacante_empleado_id || !revisado_por_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  let t;
+
+  try {
+    await traerPostulacionEmpleado(vacante_empleado_id);
+
+    const postulacion = await Vacantes_Empleados.findByPk(vacante_empleado_id);
+
+    if (postulacion && !postulacion.revisado_por_id) {
+      t = await conn.transaction();
+
+      await Vacantes_Empleados.update(
+        {
+          revisado_por_id: revisado_por_id,
+          estado_solicitud: "Revisado",
+        },
+        {
+          where: {
+            vacante_empleado_id: vacante_empleado_id,
+          },
+          transaction: t,
+        }
+      );
+
+      await t.commit();
+    }
+  } catch (error) {
+    if (t && !t.finished) {
+      await t.rollback();
+    }
+
+    throw new Error(
+      `Error al modificar el estado de la postulación: ${error.message}`
+    );
+  }
+};
+
 const inactivarVacante = async (vacante_id) => {
   if (!vacante_id) {
     throw new Error(`Datos faltantes`);
@@ -506,7 +558,8 @@ module.exports = {
   traerPostulacionesEmpleado,
   traerPostulacionEmpleado,
   crearVacante,
-  modificarVacante,
-  inactivarVacante,
   postularVacanteEmpleado,
+  modificarVacante,
+  cambiarEstadoRevisado,
+  inactivarVacante,
 };

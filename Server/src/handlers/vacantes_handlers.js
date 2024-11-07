@@ -4,9 +4,10 @@ const {
   traerPostulacionesEmpleado,
   traerPostulacionEmpleado,
   crearVacante,
-  modificarVacante,
-  inactivarVacante,
   postularVacanteEmpleado,
+  modificarVacante,
+  cambiarEstadoRevisado,
+  inactivarVacante,
 } = require("../controllers/vacantes_controllers");
 
 const getVacantes = async (req, res) => {
@@ -163,6 +164,21 @@ const putVacante = async (req, res) => {
   }
 };
 
+const putPostulacionEstado = async (req, res) => {
+  const { vacante_empleado_id, revisado_por_id } = req.body;
+
+  try {
+    const response = await cambiarEstadoRevisado(
+      vacante_empleado_id,
+      revisado_por_id
+    );
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 const deleteVacante = async (req, res) => {
   const { vacante_id } = req.body;
 
@@ -183,5 +199,6 @@ module.exports = {
   postVacante,
   postVacanteEmpleado,
   putVacante,
+  putPostulacionEstado,
   deleteVacante,
 };

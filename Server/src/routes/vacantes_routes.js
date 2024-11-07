@@ -7,6 +7,7 @@ const {
   postVacante,
   postVacanteEmpleado,
   putVacante,
+  putPostulacionEstado,
   deleteVacante,
 } = require("../handlers/vacantes_handlers");
 
@@ -31,6 +32,7 @@ vacantes.post("/", authenticateToken, postVacante);
 vacantes.post("/postulacion", authenticateToken, postVacanteEmpleado);
 
 vacantes.put("/modificar", authenticateToken, putVacante);
+vacantes.put("/modificarEstado", authenticateToken, putPostulacionEstado);
 vacantes.put("/inactivar", authenticateToken, deleteVacante);
 
 module.exports = vacantes;
