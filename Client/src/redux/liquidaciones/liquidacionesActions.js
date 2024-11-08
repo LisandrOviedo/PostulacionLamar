@@ -14,16 +14,18 @@ export const getLiquidaciones = async (
 ) => {
   let URL_ALL_LIQUIDACIONES = `${URL_SERVER}/liquidaciones?paginaActual=${paginaActual}&limitePorPagina=${limitePorPagina}`;
 
-  if (filtros.buscar_por && filtros.buscar) {
-    URL_ALL_LIQUIDACIONES = `${URL_ALL_LIQUIDACIONES}&buscar_por=${filtros.buscar_por}&buscar=${filtros.buscar}`;
+  const { buscar_por, buscar, orden_campo, orden_por, activo } = filtros;
+
+  if (buscar_por && buscar) {
+    URL_ALL_LIQUIDACIONES = `${URL_ALL_LIQUIDACIONES}&buscar_por=${buscar_por}&buscar=${buscar}`;
   }
 
-  if (filtros.orden_campo && filtros.orden_por) {
-    URL_ALL_LIQUIDACIONES = `${URL_ALL_LIQUIDACIONES}&orden_campo=${filtros.orden_campo}&orden_por=${filtros.orden_por}`;
+  if (orden_campo && orden_por) {
+    URL_ALL_LIQUIDACIONES = `${URL_ALL_LIQUIDACIONES}&orden_campo=${orden_campo}&orden_por=${orden_por}`;
   }
 
-  if (filtros.activo) {
-    URL_ALL_LIQUIDACIONES = `${URL_ALL_LIQUIDACIONES}&activo=${filtros.activo}`;
+  if (activo) {
+    URL_ALL_LIQUIDACIONES = `${URL_ALL_LIQUIDACIONES}&activo=${activo}`;
   }
 
   try {
@@ -48,16 +50,18 @@ export const getLiquidacion = async (
 ) => {
   let URL_LIQUIDACION = `${URL_SERVER}/liquidaciones/detalle/${liquidacion_id}?paginaActual=${paginaActual}&limitePorPagina=${limitePorPagina}`;
 
-  if (filtros.buscar_por && filtros.buscar) {
-    URL_LIQUIDACION = `${URL_LIQUIDACION}&buscar_por=${filtros.buscar_por}&buscar=${filtros.buscar}`;
+  const { buscar_por, buscar, orden_campo, orden_por, activo } = filtros;
+
+  if (buscar_por && buscar) {
+    URL_LIQUIDACION = `${URL_LIQUIDACION}&buscar_por=${buscar_por}&buscar=${buscar}`;
   }
 
-  if (filtros.orden_campo && filtros.orden_por) {
-    URL_LIQUIDACION = `${URL_LIQUIDACION}&orden_campo=${filtros.orden_campo}&orden_por=${filtros.orden_por}`;
+  if (orden_campo && orden_por) {
+    URL_LIQUIDACION = `${URL_LIQUIDACION}&orden_campo=${orden_campo}&orden_por=${orden_por}`;
   }
 
-  if (filtros.activo) {
-    URL_LIQUIDACION = `${URL_LIQUIDACION}&activo=${filtros.activo}`;
+  if (activo) {
+    URL_LIQUIDACION = `${URL_LIQUIDACION}&activo=${activo}`;
   }
 
   try {
