@@ -258,13 +258,13 @@ export function AsignacionRoles() {
   };
 
   const handleVerDetalles = async (empleado_id) => {
-    if (!showModal) {
-      setShowModal(true);
-    }
-
     const dataEmpleadoDetail = await getEmpleadoDetail(token, empleado_id);
 
     setEmpleadoDetail(dataEmpleadoDetail);
+
+    if (!showModal) {
+      setShowModal(true);
+    }
   };
 
   const handleGuardarRol = () => {
@@ -497,7 +497,7 @@ export function AsignacionRoles() {
                   {empleados.empleados.map((empleado, i) => (
                     <tr
                       key={i}
-                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
                     >
                       <td className="p-4">
                         {empleado.apellidos} {empleado.nombres}
