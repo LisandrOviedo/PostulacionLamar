@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import { getLiquidaciones } from "../../redux/liquidaciones/liquidacionesActions";
+import {
+  getLiquidacion,
+  getLiquidaciones,
+} from "../../redux/liquidaciones/liquidacionesActions";
 
 import { Button, Input, Label, Select, Title } from "../UI";
 
@@ -11,13 +14,13 @@ import {
   infoPaginador,
 } from "../../utils/paginacion";
 
-import { DDMMYYYY } from "../../utils/formatearFecha";
+import { DDMMYYYYHHMM2 } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
 export function ConsultarLiquidaciones() {
   const tableRef = useRef(null);
-
+  const modalContentRef = useRef(null);
   const navigate = useNavigate();
 
   const token = useSelector((state) => state.empleados.token);
@@ -28,7 +31,12 @@ export function ConsultarLiquidaciones() {
 
   const [paginaActual, setPaginaActual] = useState(1);
 
+  const [liquidacion_id, setLiquidacionId] = useState(null);
+
   const [limitePorPagina, setLimitePorPagina] = useState(2);
+  const [showModal, setShowModal] = useState(false);
+
+  const [liquidacion, setliquidacion] = useState({});
 
   const [filters, setFilters] = useState({
     numero_identificacion: "",
@@ -153,8 +161,27 @@ export function ConsultarLiquidaciones() {
     };
   }, []);
 
-  const handleVerDetalles = async (empleado_id) => {
-    navigate(`/admin/empleados/${empleado_id}`);
+  const handleVerDetalles = async (movimiento_id) => {
+    // Asegúrate de que showModal esté definido
+    if (!showModal) {
+      setShowModal(true);
+    }
+  
+    // Verifica que liquidacion_id y numero_identificacion estén definidos
+    if (liquidacion_id && empleado && empleado.empleado_id && numero_identificacion) {
+      const data = await getLiquidacion(
+        token,
+        empleado.empleado_id,
+        numero_identificacion,
+      );
+  
+      setliquidacion(data);
+    }
+  };
+    const handleCerrarModal = () => {
+    setShowModal(false);
+
+    setliquidacion({});
   };
 
   const changeOrder = async (e) => {
@@ -351,10 +378,16 @@ export function ConsultarLiquidaciones() {
         </div>
       </div>
       <div className="mt-8 sm:mx-auto w-full">
-        <div className=" overflow-x-auto shadow-md rounded-lg">
+        <div className="overflow-x-auto shadow-md rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400">
             <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
               <tr>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Código</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Número identificación</div>
+                </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
                     <span
@@ -382,40 +415,6 @@ export function ConsultarLiquidaciones() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Número identificación</div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Teléfono</div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Correo</div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    <span
-                      name="activo"
-                      onClick={changeOrder}
-                      className="text-black hover:text-black flex items-center"
-                    >
-                      Estado
-                      <img
-                        name="activo"
-                        src={
-                          filters.orden_campo === "activo" &&
-                          filters.orden_por === "ASC"
-                            ? "./SortAZ.svg"
-                            : filters.orden_campo === "activo" &&
-                              filters.orden_por === "DESC"
-                            ? "./SortZA.svg"
-                            : "./SortDefault.svg"
-                        }
-                        alt="Icon Sort"
-                        className="w-5 h-5 ms-1.5 cursor-pointer"
-                      />
-                    </span>
-                  </div>
-                </th>
-                <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
                     <span
                       id="updatedAt"
@@ -423,7 +422,7 @@ export function ConsultarLiquidaciones() {
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Últ. Modif.
+                      Fecha de liquidación
                       <img
                         name="updatedAt"
                         src={
@@ -442,6 +441,13 @@ export function ConsultarLiquidaciones() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Realizado por</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Motivo del retiro</div>
+                </th>
+
+                <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
                 </th>
               </tr>
@@ -455,44 +461,41 @@ export function ConsultarLiquidaciones() {
                       key={i}
                       className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                     >
+                      <td className="p-4">{liquidacion.codigo}</td>
                       <td className="p-4">
-                        {liquidacion.apellidos} {liquidacion.nombres}
+                        {empleado.tipo_identificacion}
+                        {"-"}
+                        {empleado.numero_identificacion}
                       </td>
                       <td className="p-4">
-                        {liquidacion.tipo_identificacion}
-                        {liquidacion.numero_identificacion}
+                        {empleado.apellidos} {empleado.nombres}
                       </td>
                       <td className="p-4">
-                        {liquidacion.telefono || "Sin registrar / No posee"}
+                        {DDMMYYYYHHMM2(liquidacion.createdAt)}
                       </td>
-                      <td className="p-4">
-                        {liquidacion.correo || "Sin registrar / No posee"}
+                      <td className="p-4 text-center">
+                        {liquidacion?.RealizadoPor && (
+                          <>
+                            <div>
+                              {liquidacion.RealizadoPor.nombres}{" "}
+                              {liquidacion.RealizadoPor.apellidos} (
+                              {liquidacion.RealizadoPor.tipo_identificacion}-
+                              {liquidacion.RealizadoPor.numero_identificacion})
+                            </div>
+                          </>
+                        )}
                       </td>
-                      <td className="p-4">
-                        {liquidacion.activo ? "Activo" : "Inactivo"}
+                      <td className="p-4 text-center">
+                        {liquidacion.motivo_retiro}
                       </td>
-                      <td className="p-4">{DDMMYYYY(liquidacion.updatedAt)}</td>
                       <td className="p-4 flex gap-2">
                         <Button
                           className="m-0 w-auto text-xs"
                           onClick={() =>
-                            handleVerDetalles(liquidacion.empleado_id)
+                            handleVerDetalles(liquidaciones.liquidacion_id)
                           }
                         >
                           Detalles
-                        </Button>
-
-                        <Button
-                          className={`m-0 w-auto text-xs ${
-                            liquidacion.activo
-                              ? "bg-red-500 hover:bg-red-600 "
-                              : "bg-green-500 hover:bg-green-600"
-                          }`}
-                          onClick={() =>
-                            handleChangeActivo(liquidacion.empleado_id)
-                          }
-                        >
-                          {liquidacion.activo ? "Inactivar" : "Activar"}
                         </Button>
                       </td>
                     </tr>
@@ -501,6 +504,7 @@ export function ConsultarLiquidaciones() {
               )}
           </table>
         </div>
+
         <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">
           {infoPaginador(
             paginaActual,
@@ -554,6 +558,75 @@ export function ConsultarLiquidaciones() {
           </ul>
         </nav>
       </div>
+      {showModal && (
+  <div className="fixed z-[1000] inset-0 flex items-center justify-center">
+  <div className="p-4 max-h-full sm:min-w-[600px]">
+    {/* <!-- Modal content --> */}
+    <div className="bg-gray-400 rounded-lg border-2 border-white">
+      {/* <!-- Modal header --> */}
+      <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t flex-col sm:flex-row">
+        <div className="flex flex-col items-center sm:items-start">
+          <span className="font-bold">
+              {liquidacion?.RealizadoPor?.numero_identificacion || 'No disponible'}
+            </span>
+            <span>
+              {liquidacion?.RealizadoPor?.nombres || 'No disponible'} {liquidacion?.RealizadoPor?.apellidos || 'No disponible'}
+            </span>
+            <span>
+              {liquidacion?.RealizadoPor?.tipo_identificacion || 'No disponible'} - {liquidacion?.RealizadoPor?.numero_identificacion || 'No disponible'}
+            </span>
+          </div>
+          <div className="flex gap-2 items-center">
+  <Button
+    className="m-0 w-auto text-xs bg-blue-600 hover:bg-blue-600/[.5]"
+    onClick={handleCerrarModal}
+  >
+    Cerrar
+  </Button>
+</div>
+        </div>
+        {/* Cuerpo del modal */}
+        <div className="overflow-y-auto max-h-[60vh]" ref={modalContentRef}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
+            <span>
+              <b>Código de nómina: </b>
+              {liquidacion?.codigo_nomina || 'No disponible'}
+            </span>
+            <span>
+              <b>Cargo actual: </b>
+              {liquidacion?.Cargo_Actual?.descripcion || 'No disponible'}
+            </span>
+            <span>
+              <b>Unidad organizativa de adscripción: </b>
+              {liquidacion?.Cargo_Actual?.Departamento?.nombre || 'No disponible'}
+            </span>
+            <span>
+              <b>Fecha de ingreso: </b>
+              {liquidacion?.Cargo_Actual?.fecha_ingreso || 'No disponible'}
+            </span>
+            <span>
+              <b>Antigüedad: </b>
+              {liquidacion?.Cargo_Actual?.fecha_ingreso ? `${calcularAntiguedad(liquidacion?.Cargo_Actual?.fecha_ingreso)} días` : 'No disponible'}
+            </span>
+            <span>
+              <b>Sueldo actual: </b>
+              {liquidacion?.Cargo_Actual?.salario ? `Bs. ${liquidacion?.Cargo_Actual?.salario}` : 'No disponible'}
+            </span>
+            <span>
+              <b>Tipo de nómina: </b>
+              {liquidacion?.tipo_nomina || 'No disponible'}
+            </span>
+            {liquidacion?.tipo_nomina === "Otro" && (
+              <span>
+                <b>Otro tipo de nómina: </b>
+                {liquidacion?.otro_tipo_nomina || 'No disponible'}
+              </span>
+            )}
+          </div>
+          {/* Aquí puedes agregar más contenido basado en tu estructura original */}
+        </div>
+      </div>
     </div>
-  );
-}
+  </div>
+)}
+</div>)}
