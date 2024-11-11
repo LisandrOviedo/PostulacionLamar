@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 // import Webcam from "react-webcam";
 
 import { getAllEtniasActivas } from "../../redux/etnias/etniasActions";
@@ -1618,7 +1618,7 @@ export function FormularioIngreso() {
                 {datosIngreso.titulos_obtenidos.map((edu, index) => (
                   <tr
                     key={index}
-                    className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
                   >
                     <td className="p-4">{edu.grado_instruccion}</td>
                     <td className="p-4">{edu.nombre_instituto}</td>
@@ -1757,7 +1757,7 @@ export function FormularioIngreso() {
                 {datosIngreso.experiencias.map((experiencia, i) => (
                   <tr
                     key={i}
-                    className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
                   >
                     <td className="p-4">
                       {experiencia.empresa_centro_educativo}
@@ -1988,7 +1988,7 @@ export function FormularioIngreso() {
                 {datosIngreso.referencias_personales.map((referencia, i) => (
                   <tr
                     key={i}
-                    className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
                   >
                     <td className="p-4">{referencia.nombre_apellido}</td>
                     <td className="p-4">{referencia.direccion}</td>
@@ -2243,7 +2243,7 @@ export function FormularioIngreso() {
                 {datosIngreso.contactos_emergencia.map((contacto, i) => (
                   <tr
                     key={i}
-                    className="bg-gray-300 border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
                   >
                     <td className="p-4">{contacto.nombre_apellido}</td>
                     <td className="p-4">{contacto.parentesco}</td>

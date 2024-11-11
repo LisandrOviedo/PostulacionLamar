@@ -77,9 +77,11 @@ export function Vacantes() {
 
     const buscar_por = document.getElementById("buscar_por");
     const buscar = document.getElementById("buscar");
+    const activo = document.getElementById("activo");
 
     buscar_por.selectedIndex = 0;
     buscar.value = "";
+    activo.selectedIndex = 0;
 
     const dataVacantes = await getAllVacantes(
       token,
@@ -357,7 +359,7 @@ export function Vacantes() {
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Nombre De La Vacante
+                      Nombre
                       <img
                         name="nombre"
                         src={
@@ -382,7 +384,7 @@ export function Vacantes() {
                   <div className="flex items-center">Área De Interés</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Estado</div>
+                  <div className="flex items-center">Estado Vacante</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
@@ -392,7 +394,7 @@ export function Vacantes() {
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Creado
+                      Creada El
                       <img
                         name="createdAt"
                         src={
@@ -411,7 +413,7 @@ export function Vacantes() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Creado Por</div>
+                  <div className="flex items-center">Creada Por</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
@@ -421,7 +423,7 @@ export function Vacantes() {
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Últ. Modif.
+                      Últ. Modificación
                       <img
                         name="updatedAt"
                         src={
@@ -440,7 +442,7 @@ export function Vacantes() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Postulados</div>
+                  <div className="flex items-center">Cant. Postulados</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
@@ -452,13 +454,13 @@ export function Vacantes() {
                 {vacantes.vacantes.map((vacante, i) => (
                   <tr
                     key={i}
-                    className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                    className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
                   >
                     <td className="p-4">{vacante.nombre}</td>
                     <td className="p-4">{vacante.ubicacion}</td>
                     <td className="p-4">{vacante.Areas_Intere.nombre}</td>
                     <td className="p-4">
-                      {vacante.activo ? "Activo" : "Inactivo"}
+                      {vacante.activo ? "Activa" : "Inactiva"}
                     </td>
                     <td className="p-4">{DDMMYYYYHHMM2(vacante.createdAt)}</td>
                     <td className="p-4">

@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import { getVacanteDetail } from "../../redux/vacantes/vacantesActions";
+import {
+  getVacanteDetail,
+  putCambiarEstadoPostulacion,
+} from "../../redux/vacantes/vacantesActions";
 
 import { putCambiarEstado } from "../../redux/curriculos/curriculosActions";
 
@@ -85,9 +88,11 @@ export function DetalleVacante() {
 
     const buscar_por = document.getElementById("buscar_por");
     const buscar = document.getElementById("buscar");
+    const activo = document.getElementById("activo");
 
     buscar_por.selectedIndex = 0;
     buscar.value = "";
+    activo.selectedIndex = 0;
 
     const dataVacanteDetail = await getVacanteDetail(
       token,
@@ -236,8 +241,19 @@ export function DetalleVacante() {
     }
   };
 
-  const handleVerDetalles = async (identificacion, nombre, empleado_id) => {
+  const handleVerDetalles = async (
+    identificacion,
+    nombre,
+    empleado_id,
+    vacante_empleado_id
+  ) => {
     await putCambiarEstado(token, empleado_id, empleado.empleado_id);
+
+    await putCambiarEstadoPostulacion(
+      token,
+      vacante_empleado_id,
+      empleado.empleado_id
+    );
 
     const URL_GET_PDF = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${nombre}`;
 
@@ -284,7 +300,7 @@ export function DetalleVacante() {
             <Span className="font-bold">Ubicación: </Span>
             <Span>{vacanteDetail?.vacante?.ubicacion}</Span>
           </div>
-          <div className="break-words sm:col-span-2 md:col-span-3">
+          <div className="break-words">
             <Span className="font-bold">Descripción de la vacante: </Span>
             <Span>{vacanteDetail?.vacante?.descripcion}</Span>
           </div>
@@ -423,23 +439,24 @@ export function DetalleVacante() {
                   <div className="flex items-center">Teléfono</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Correo</div>
+                  <div className="flex items-center">Estado Empleado</div>
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
                     <span
-                      name="activo"
+                      id="createdAt"
+                      name="createdAt"
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Estado
+                      Fecha postulación
                       <img
-                        name="activo"
+                        name="createdAt"
                         src={
-                          filters.orden_campo === "activo" &&
+                          filters.orden_campo === "createdAt" &&
                           filters.orden_por === "ASC"
                             ? "./SortAZ.svg"
-                            : filters.orden_campo === "activo" &&
+                            : filters.orden_campo === "createdAt" &&
                               filters.orden_por === "DESC"
                             ? "./SortZA.svg"
                             : "./SortDefault.svg"
@@ -451,32 +468,11 @@ export function DetalleVacante() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    <span
-                      id="updatedAt"
-                      name="updatedAt"
-                      onClick={changeOrder}
-                      className="text-black hover:text-black flex items-center"
-                    >
-                      Últ. Modif.
-                      <img
-                        name="updatedAt"
-                        src={
-                          filters.orden_campo === "updatedAt" &&
-                          filters.orden_por === "ASC"
-                            ? "./SortAZ.svg"
-                            : filters.orden_campo === "updatedAt" &&
-                              filters.orden_por === "DESC"
-                            ? "./SortZA.svg"
-                            : "./SortDefault.svg"
-                        }
-                        alt="Icon Sort"
-                        className="w-5 h-5 ms-1.5 cursor-pointer"
-                      />
-                    </span>
-                  </div>
+                  <div className="flex items-center">Estado Postulación</div>
                 </th>
-
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Revisado por</div>
+                </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
                 </th>
@@ -488,7 +484,7 @@ export function DetalleVacante() {
                   {vacanteDetail.postulaciones.map((postulacion, i) => (
                     <tr
                       key={i}
-                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
                     >
                       <td className="p-4">
                         {postulacion.Empleado.apellidos}{" "}
@@ -503,14 +499,21 @@ export function DetalleVacante() {
                           "Sin registrar / No posee"}
                       </td>
                       <td className="p-4">
-                        {postulacion.Empleado.correo ||
-                          "Sin registrar / No posee"}
-                      </td>
-                      <td className="p-4">
                         {postulacion.Empleado.activo ? "Activo" : "Inactivo"}
                       </td>
                       <td className="p-4">
-                        {DDMMYYYYHHMM2(postulacion.Empleado.updatedAt)}
+                        {DDMMYYYYHHMM2(postulacion.createdAt)}
+                      </td>
+                      <td className="p-4">{postulacion.estado_solicitud}</td>
+                      <td className="p-4">
+                        {postulacion.RevisadoPor && (
+                          <>
+                            {postulacion.RevisadoPor?.nombres}{" "}
+                            {postulacion.RevisadoPor?.apellidos} (
+                            {postulacion.RevisadoPor?.tipo_identificacion}-
+                            {postulacion.RevisadoPor?.numero_identificacion})
+                          </>
+                        )}
                       </td>
                       <td className="p-4 flex gap-2">
                         {postulacion.Empleado.Documentos_Empleados[0]
@@ -522,7 +525,8 @@ export function DetalleVacante() {
                                 `${postulacion.Empleado.tipo_identificacion}${postulacion.Empleado.numero_identificacion}`,
                                 postulacion.Empleado.Documentos_Empleados[0]
                                   .nombre,
-                                postulacion.Empleado.empleado_id
+                                postulacion.Empleado.empleado_id,
+                                postulacion.vacante_empleado_id
                               )
                             }
                           >

@@ -161,8 +161,6 @@ export function Sugerencias() {
   }, [filters.empresa_id]);
 
   const handleVerDetalles = async (sugerencia_id) => {
-    setShowModal(true);
-
     const dataSugerencia = await getSugerencia(
       token,
       sugerencia_id,
@@ -170,6 +168,10 @@ export function Sugerencias() {
     );
 
     setSugerencia(dataSugerencia);
+
+    if (!showModal) {
+      setShowModal(true);
+    }
   };
 
   const changeOrder = async (e) => {
@@ -457,7 +459,7 @@ export function Sugerencias() {
                     {sugerencias.sugerencias.map((sugerencia, i) => (
                       <tr
                         key={i}
-                        className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                        className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
                       >
                         <td className="p-4">
                           {sugerencia.Sede.Empresa.nombre}
@@ -488,7 +490,7 @@ export function Sugerencias() {
                               handleVerDetalles(sugerencia.sugerencia_id)
                             }
                           >
-                            Ver Sugerencia
+                            Ver Detalles
                           </Button>
                         </td>
                       </tr>
