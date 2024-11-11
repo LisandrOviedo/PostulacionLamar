@@ -214,3 +214,50 @@ export const putCambiarEstadoPostulacion = async (
     throw new Error();
   }
 };
+
+export const postVacante = async (token, crearVacante) => {
+  const URL_POST_VACANTE = `${URL_SERVER}/vacantes`;
+
+  try {
+    await axios.post(URL_POST_VACANTE, crearVacante, {
+      headers: { authorization: `Bearer ${token}` },
+    });
+
+    Swal.fire({
+      text: "¡Vacante creada exitosamente!",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 3000,
+    });
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
+
+export const putActivo = async (token, vacante_id) => {
+  const URL_PUT_ACTIVO = `${URL_SERVER}/vacantes/inactivar`;
+
+  try {
+    await axios.put(
+      URL_PUT_ACTIVO,
+      { vacante_id },
+      {
+        headers: { authorization: `Bearer ${token}` },
+      }
+    );
+
+    return Swal.fire({
+      text: "¡Vacante actualizada exitosamente!",
+      icon: "success",
+      showConfirmButton: false,
+      timer: 3000,
+      width: "20em",
+    });
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
