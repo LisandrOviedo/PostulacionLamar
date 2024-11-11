@@ -117,14 +117,16 @@ const getPostulacionEmpleado = async (req, res) => {
 };
 
 const postVacante = async (req, res) => {
-  const { area_interes_id, nombre, descripcion, ubicacion } = req.body;
+  const { area_interes_id, nombre, descripcion, ubicacion, creado_por_id } =
+    req.body;
 
   try {
     const response = await crearVacante(
       area_interes_id,
       nombre,
       descripcion,
-      ubicacion
+      ubicacion,
+      creado_por_id
     );
 
     return res.status(201).json(response);

@@ -362,9 +362,16 @@ const crearVacante = async (
   area_interes_id,
   nombre,
   descripcion,
-  ubicacion
+  ubicacion,
+  creado_por_id
 ) => {
-  if (!area_interes_id || !nombre || !descripcion || !ubicacion) {
+  if (
+    !area_interes_id ||
+    !nombre ||
+    !descripcion ||
+    !ubicacion ||
+    !creado_por_id
+  ) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -379,6 +386,7 @@ const crearVacante = async (
         nombre: nombre,
         descripcion: descripcion,
         ubicacion: ubicacion,
+        creado_por_id: creado_por_id,
       },
       { transaction: t }
     );
@@ -413,7 +421,7 @@ const modificarVacante = async (
   let t;
 
   try {
-    await traerVacante(vacante_id);
+    await traerVacante(vacante_id, 1, 1);
 
     t = await conn.transaction();
 
@@ -433,8 +441,6 @@ const modificarVacante = async (
     );
 
     await t.commit();
-
-    return await traerVacante(vacante_id);
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -486,14 +492,10 @@ const cambiarEstadoRevisado = async (vacante_empleado_id, revisado_por_id) => {
 };
 
 const inactivarVacante = async (vacante_id) => {
-  if (!vacante_id) {
-    throw new Error(`Datos faltantes`);
-  }
-
   let t;
 
   try {
-    const vacante = await traerVacante(vacante_id);
+    const { vacante } = await traerVacante(vacante_id, 1, 1);
 
     t = await conn.transaction();
 
@@ -506,8 +508,6 @@ const inactivarVacante = async (vacante_id) => {
     );
 
     await t.commit();
-
-    return await traerVacante(vacante_id);
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
