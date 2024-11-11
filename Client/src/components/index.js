@@ -14,6 +14,7 @@ import { SubirDocumentos } from "./SubirDocumentos/SubirDocumentos";
 
 import { AccesoAdmin } from "./Admin/AccesoAdmin";
 import { AsignacionRoles } from "./Admin/AsignacionRoles";
+import { ConsultarLiquidaciones } from "./Admin/ConsultarLiquidaciones";
 import { DetalleEmpleado } from "./Admin/DetalleEmpleado";
 import { DetalleVacante } from "./Admin/DetalleVacante";
 import { Empleados } from "./Admin/Empleados";
@@ -44,6 +45,7 @@ export {
   SubirDocumentos,
   AccesoAdmin,
   AsignacionRoles,
+  ConsultarLiquidaciones,
   DetalleEmpleado,
   DetalleVacante,
   Empleados,
