@@ -48,8 +48,6 @@ export function GestionRoles() {
 
   const [errors, setErrors] = useState({});
 
-  const [showModal, setShowModal] = useState(false);
-
   const [modificar, setModificar] = useState({
     nombre: false,
     descripcion: false,
@@ -216,7 +214,9 @@ export function GestionRoles() {
 
     setRolDetail(data);
 
-    setShowDetallesRolModal(true);
+    if (!showDetallesRolModal) {
+      setShowDetallesRolModal(true);
+    }
   };
 
   //editar
@@ -400,7 +400,8 @@ export function GestionRoles() {
     <>
       <div
         className={`mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8 ${
-          showModal && "opacity-50 pointer-events-none"
+          (showDetallesRolModal || showCrearRolModal) &&
+          "opacity-50 pointer-events-none"
         }`}
       >
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -570,7 +571,7 @@ export function GestionRoles() {
                   {roles.roles.map((rol, i) => (
                     <tr
                       key={i}
-                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
                     >
                       <td className="p-4">{rol.nombre}</td>
                       <td className="p-4">{rol.descripcion}</td>

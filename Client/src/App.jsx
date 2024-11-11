@@ -8,6 +8,7 @@ import {
   ActualizarClave,
   ActualizarClaveTemporal,
   BarraNavegacion,
+  ConsultarLiquidaciones,
   CrearCurriculo,
   DatosPersonales,
   EnviarSugerencia,
@@ -131,9 +132,7 @@ function App() {
               element={<SolicitudesMovimientos />}
             />
             <Route path="/admin/liquidaciones" element={<Liquidaciones />} />
-
             <Route path="/admin/gestionRoles" element={<GestionRoles />} />
-
             <Route
               path="/admin/asignacionRoles"
               element={<AsignacionRoles />}
@@ -145,6 +144,10 @@ function App() {
               element={<DetalleVacante />}
             />
           </Route>
+          <Route
+            path="/admin/consultarLiquidaciones"
+            element={<ConsultarLiquidaciones />}
+          />
           <Route path="*" element={<PaginaNoEncontrada />} />
         </Routes>
       </Suspense>
