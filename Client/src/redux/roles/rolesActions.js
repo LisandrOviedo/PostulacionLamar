@@ -80,7 +80,7 @@ export const putRolEmpleado = async (token, rol_id, empleado_id) => {
       text: "¡Rol cambiado exitosamente!",
       icon: "success",
       showConfirmButton: false,
-      timer: 2000,
+      timer: 3000,
     });
   } catch (error) {
     alertError(error);
@@ -155,7 +155,7 @@ export const putActivo = async (token, rol_id) => {
       text: "¡Rol actualizado exitosamente!",
       icon: "success",
       showConfirmButton: false,
-      timer: 1000,
+      timer: 3000,
       width: "20em",
     });
   } catch (error) {
