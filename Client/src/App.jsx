@@ -132,28 +132,22 @@ function App() {
               element={<SolicitudesMovimientos />}
             />
             <Route path="/admin/liquidaciones" element={<Liquidaciones />} />
-
             <Route path="/admin/gestionRoles" element={<GestionRoles />} />
-
             <Route
               path="/admin/asignacionRoles"
               element={<AsignacionRoles />}
             />
             <Route path="/admin/sugerencias" element={<Sugerencias />} />
             <Route path="/admin/vacantes" element={<Vacantes />} />
-
-            <Route path="/admin/vacantes" element={<Vacantes />} />
             <Route
               path="/admin/vacantes/:vacante_id"
               element={<DetalleVacante />}
             />
           </Route>
-
           <Route
             path="/admin/consultarLiquidaciones"
             element={<ConsultarLiquidaciones />}
           />
-
           <Route path="*" element={<PaginaNoEncontrada />} />
         </Routes>
       </Suspense>
