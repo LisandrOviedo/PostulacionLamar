@@ -14,6 +14,7 @@ import { SubirDocumentos } from "./SubirDocumentos/SubirDocumentos";
 
 import { AccesoAdmin } from "./Admin/AccesoAdmin";
 import { AsignacionRoles } from "./Admin/AsignacionRoles";
+import { ConsultarLiquidaciones } from "./Admin/ConsultarLiquidaciones";
 import { DetalleEmpleado } from "./Admin/DetalleEmpleado";
 import { DetalleVacante } from "./Admin/DetalleVacante";
 import { Empleados } from "./Admin/Empleados";
@@ -25,7 +26,6 @@ import { PerfilesProfesionales } from "./Admin/PerfilesProfesionales";
 import { PruebasEmpleados } from "./Admin/PruebasEmpleados";
 import { GestionRoles } from "./Admin/GestionRoles";
 import { SolicitudesMovimientos } from "./Admin/SolicitudesMovimientos";
-import { ConsultarLiquidaciones } from "./Admin/ConsultarLiquidaciones";
 import { Sugerencias } from "./Admin/Sugerencias";
 import { Vacantes } from "./Admin/Vacantes";
 
@@ -45,6 +45,7 @@ export {
   SubirDocumentos,
   AccesoAdmin,
   AsignacionRoles,
+  ConsultarLiquidaciones,
   DetalleEmpleado,
   DetalleVacante,
   Empleados,
@@ -58,5 +59,4 @@ export {
   SolicitudesMovimientos,
   Sugerencias,
   Vacantes,
-  ConsultarLiquidaciones
 };
