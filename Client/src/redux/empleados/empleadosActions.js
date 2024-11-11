@@ -85,7 +85,7 @@ export const putPassword = async (token, body) => {
       text: "Su contraseña ha sido actualizada exitosamente",
       icon: "success",
       showConfirmButton: false,
-      timer: 1500,
+      timer: 3000,
     });
   } catch (error) {
     alertError(error);
@@ -129,7 +129,7 @@ export const resetPassword = async (token, empleado_id) => {
       text: `Su contraseña ha sido reiniciada exitosamente a "1234"`,
       icon: "success",
       showConfirmButton: false,
-      timer: 1000,
+      timer: 3000,
       width: "20em",
     });
   } catch (error) {
@@ -233,7 +233,7 @@ export const putActivo = async (token, empleado_id) => {
       text: "¡Empleado actualizado exitosamente!",
       icon: "success",
       showConfirmButton: false,
-      timer: 1000,
+      timer: 3000,
       width: "20em",
     });
   } catch (error) {
