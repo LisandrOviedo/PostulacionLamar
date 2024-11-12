@@ -176,7 +176,7 @@ export function EnviarSugerencia() {
             Enviar Sugerencia
           </Button>
           <Button
-            className="m-0 w-auto bg-red-500 hover:bg-red-600"
+            className="m-0 w-auto bg-red-600 hover:bg-red-600/[.5]"
             onClick={() => {
               window.location.href = URL_INTRANET;
             }}
