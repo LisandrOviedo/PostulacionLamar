@@ -1,6 +1,6 @@
 const {
-  todosLosAreaInteres,
-  todosLosAreaInteresActivas,
+  todasLasAreaInteres,
+  todasLasAreaInteresActivas,
   traerAreaInteres,
   crearAreaInteres,
   modificarAreaInteres,
@@ -10,7 +10,7 @@ const {
 
 const getAreasInteres = async (req, res) => {
   try {
-    const response = await todosLosAreaInteres();
+    const response = await todasLasAreaInteres();
 
     return res.json(response);
   } catch (error) {
@@ -20,7 +20,7 @@ const getAreasInteres = async (req, res) => {
 
 const getAreasInteresActivas = async (req, res) => {
   try {
-    const response = await todosLosAreaInteresActivas();
+    const response = await todasLasAreaInteresActivas();
 
     return res.json(response);
   } catch (error) {
