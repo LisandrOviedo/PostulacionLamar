@@ -73,6 +73,7 @@ const {
   Roles_Menus,
   Roles,
   Salud,
+  Sectores,
   Sedes,
   Seguro_Social,
   Sesiones,
@@ -752,17 +753,41 @@ Liquidaciones.belongsTo(Cargos_Empleados, {
   },
 });
 
+// Sectores 1:M Empresas
+Sectores.hasMany(Empresas, {
+  foreignKey: {
+    name: "sector_id",
+  },
+});
+Empresas.belongsTo(Sectores, {
+  foreignKey: {
+    name: "sector_id",
+  },
+});
+
+// Divisiones 1:M Empresas
+Divisiones.hasMany(Empresas, {
+  foreignKey: {
+    name: "division_id",
+  },
+});
+Empresas.belongsTo(Divisiones, {
+  foreignKey: {
+    name: "division_id",
+  },
+});
+
 // Seguro_Social 1:M Empresas
-// Seguro_Social.hasMany(Empresas, {
-//   foreignKey: {
-//     name: "seguro_social_id",
-//   },
-// });
-// Empresas.belongsTo(Seguro_Social, {
-//   foreignKey: {
-//     name: "seguro_social_id",
-//   },
-// });
+Seguro_Social.hasMany(Empresas, {
+  foreignKey: {
+    name: "seguro_social_id",
+  },
+});
+Empresas.belongsTo(Seguro_Social, {
+  foreignKey: {
+    name: "seguro_social_id",
+  },
+});
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
@@ -801,6 +826,7 @@ module.exports = {
   Roles_Menus,
   Roles,
   Salud,
+  Sectores,
   Sedes,
   Seguro_Social,
   Sesiones,
