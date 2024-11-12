@@ -44,6 +44,10 @@ const {
   cargarClasesMovimientos,
 } = require("./src/controllers/clases_movimientos_controllers.js");
 
+const {
+  cargarSeguroSocial,
+} = require("./src/controllers/seguro_social_controllers.js");
+
 conn
   .sync()
   .then(() => {
@@ -82,6 +86,9 @@ conn
 
       // Registrar clases de movimientos principales en la BD
       // await cargarClasesMovimientos();
+
+      // Registrar seguros sociales principales en la BD
+      // await cargarSeguroSocial();
 
       // Registrar empresas principales en la BD
       // await cargarEmpresas();
