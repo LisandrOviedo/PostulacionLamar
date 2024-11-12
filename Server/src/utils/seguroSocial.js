@@ -139,6 +139,10 @@ const seguroSocial = [
     descripcion: "Transporte de Alimentos, C.A",
     rif: "J-30097404-9",
   },
+  {
+    descripcion: "Procesadora Las Camelias",
+    rif: "J-50468525-9",
+  },
 ];
 
 module.exports = {
