@@ -8,12 +8,12 @@ module.exports = (sequelize) => {
       primaryKey: true,
     },
     nombre: {
-      type: DataTypes.STRING(80),
+      type: DataTypes.STRING(100),
       allowNull: false,
     },
     descripcion: {
-      type: DataTypes.STRING(80),
-      allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     activo: {
       type: DataTypes.BOOLEAN,
