@@ -45,8 +45,14 @@ const {
 } = require("./src/controllers/clases_movimientos_controllers.js");
 
 const {
-  cargarSeguroSocial,
+  cargarSegurosSociales,
 } = require("./src/controllers/seguro_social_controllers.js");
+
+const {
+  cargarDivisiones,
+} = require("./src/controllers/divisiones_controllers.js");
+
+const { cargarSectores } = require("./src/controllers/sectores_controllers.js");
 
 conn
   .sync()
@@ -88,7 +94,13 @@ conn
       // await cargarClasesMovimientos();
 
       // Registrar seguros sociales principales en la BD
-      // await cargarSeguroSocial();
+      // await cargarSegurosSociales();
+
+      // Registrar divisiones principales en la BD
+      // await cargarDivisiones();
+
+      // Registrar sectores principales en la BD
+      // await cargarSectores();
 
       // Registrar empresas principales en la BD
       // await cargarEmpresas();

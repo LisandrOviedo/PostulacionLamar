@@ -57,7 +57,7 @@ const traerSeguroSocial = async (seguro_social_id) => {
   }
 };
 
-const cargarSeguroSocial = async () => {
+const cargarSegurosSociales = async () => {
   let t;
 
   try {
@@ -199,7 +199,7 @@ module.exports = {
   todosLosSegurosSocial,
   todosLosSegurosSocialActivos,
   traerSeguroSocial,
-  cargarSeguroSocial,
+  cargarSegurosSociales,
   crearSeguroSocial,
   modificarSeguroSocial,
   inactivarSeguroSocial,
