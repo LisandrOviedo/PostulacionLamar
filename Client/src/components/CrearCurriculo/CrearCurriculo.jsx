@@ -499,7 +499,7 @@ export function CrearCurriculo() {
         const vacante_id = searchParams.get("vacante");
 
         const result = await Swal.fire({
-          text: `¿Deseas postularte a la vacante ${vacanteDetail.vacante.descripcion} (${vacanteDetail.vacante.Areas_Intere.nombre})?`,
+          html: `¿Deseas postularte a la vacante <b>${vacanteDetail.vacante.nombre} (${vacanteDetail.vacante.ubicacion})</b>?`,
           icon: "info",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
