@@ -46,6 +46,7 @@ export function Vacantes() {
 
   const [crearVacante, setCrearVacante] = useState({
     creado_por_id: empleado.empleado_id,
+    anos_experiencia: 1,
   });
 
   const [errors, setErrors] = useState({});
@@ -279,7 +280,10 @@ export function Vacantes() {
   const handleCloseModal = () => {
     setShowModalCrearVacante(false);
 
-    setCrearVacante({ creado_por_id: empleado.empleado_id });
+    setCrearVacante({
+      creado_por_id: empleado.empleado_id,
+      anos_experiencia: 1,
+    });
     setErrors({});
   };
 
@@ -644,9 +648,100 @@ export function Vacantes() {
         <div className="fixed z-[1000] inset-0 flex items-center justify-center">
           <div className="p-4 max-h-full sm:min-w-[600px]">
             {/* <!-- Modal content --> */}
-            <div className="bg-gray-400 rounded-lg border-2 border-white">
+            <div className="bg-gray-400 rounded-lg border-2 border-white overflow-y-auto max-h-[90vh]">
               {/* <!-- Modal header --> */}
-              <div className="grid p-4 md:p-5 border-b rounded-t gap-6">
+              <div className="grid sm:grid-cols-2 p-4 md:p-5 border-b rounded-t gap-6">
+                <div>
+                  <Label htmlFor="nombreVacante" errors={errors.nombre}>
+                    Nombre de la vacante
+                  </Label>
+                  <div className="relative w-full">
+                    <Input
+                      id="nombreVacante"
+                      name="nombre"
+                      onChange={handleValidate}
+                      errors={errors.nombre}
+                    />
+                    {errors.nombre && (
+                      <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                    )}
+                  </div>
+                  {errors.nombre && (
+                    <Span className="m-0">{errors.nombre}</Span>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="ubicacion" errors={errors.ubicacion}>
+                    Ubicación de la vacante
+                  </Label>
+                  <div className="relative w-full">
+                    <Input
+                      id="ubicacion"
+                      name="ubicacion"
+                      onChange={handleValidate}
+                      errors={errors.ubicacion}
+                    />
+                    {errors.ubicacion && (
+                      <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                    )}
+                  </div>
+                  {errors.ubicacion && (
+                    <Span className="m-0">{errors.ubicacion}</Span>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="departamento" errors={errors.departamento}>
+                    Departamento
+                  </Label>
+                  <div className="relative w-full">
+                    <Input
+                      id="departamento"
+                      name="departamento"
+                      onChange={handleValidate}
+                      errors={errors.departamento}
+                    />
+                    {errors.departamento && (
+                      <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                    )}
+                  </div>
+                  {errors.departamento && (
+                    <Span className="m-0">{errors.departamento}</Span>
+                  )}
+                </div>
+                <div>
+                  <Label
+                    htmlFor="nivel_educativo"
+                    errors={errors.nivel_educativo}
+                  >
+                    Nivel educativo
+                  </Label>
+                  <div className="relative w-full">
+                    <Input
+                      id="nivel_educativo"
+                      name="nivel_educativo"
+                      onChange={handleValidate}
+                      errors={errors.nivel_educativo}
+                    />
+                    {errors.nivel_educativo && (
+                      <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
+                    )}
+                  </div>
+                  {errors.nivel_educativo && (
+                    <Span className="m-0">{errors.nivel_educativo}</Span>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="anos_experiencia">Años de experiencia</Label>
+                  <Input
+                    type="number"
+                    id="anos_experiencia"
+                    name="anos_experiencia"
+                    value={crearVacante.anos_experiencia}
+                    onChange={handleValidate}
+                    min="0"
+                    max="20"
+                  />
+                </div>
                 <div className="flex flex-col">
                   <Label htmlFor="area_interes_id2">Área de interés</Label>
                   <Select
@@ -672,61 +767,18 @@ export function Vacantes() {
                       : null}
                   </Select>
                 </div>
-                <div>
-                  <Label htmlFor="nombreVacante" errors={errors.nombres}>
-                    Nombre de la vacante
-                  </Label>
-                  <div className="relative w-full">
-                    <Input
-                      id="nombreVacante"
-                      name="nombre"
-                      onChange={handleValidate}
-                      errors={errors.nombres}
-                    />
-                    {errors.nombres && (
-                      <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
-                    )}
-                  </div>
-                  {errors.nombres && (
-                    <Span className="m-0">{errors.nombres}</Span>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="descripcion" errors={errors.descripcion}>
-                    Descripción
-                  </Label>
+                <div className="sm:col-span-2">
+                  <Label htmlFor="descripcion">Descripción</Label>
                   <TextArea
                     id="descripcion"
                     name="descripcion"
                     type="textarea"
                     rows="4"
                     onChange={handleValidate}
-                    errors={errors.descripcion}
+                    placeholder="Ejemplo: Proactivo. Manejo de Excel. Atención al cliente."
                   />
-                  {errors.descripcion && (
-                    <Span className="m-0">{errors.descripcion}</Span>
-                  )}
                 </div>
-                <div>
-                  <Label htmlFor="ubicacion" errors={errors.ubicacion}>
-                    Ubicación de la vacante
-                  </Label>
-                  <div className="relative w-full">
-                    <Input
-                      id="ubicacion"
-                      name="ubicacion"
-                      onChange={handleValidate}
-                      errors={errors.ubicacion}
-                    />
-                    {errors.ubicacion && (
-                      <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
-                    )}
-                  </div>
-                  {errors.ubicacion && (
-                    <Span className="m-0">{errors.ubicacion}</Span>
-                  )}
-                </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between sm:col-span-2">
                   <Button
                     className="m-0 w-auto text-xs"
                     onClick={handleCloseModal}
@@ -734,7 +786,7 @@ export function Vacantes() {
                     Cancelar
                   </Button>
                   <Button
-                    className="m-0 w-auto bg-green-600 hover:bg-green-600/[.5]"
+                    className="m-0 w-auto bg-green-600 hover:bg-green-600/[.5] text-xs"
                     onClick={handleCrearVacante}
                   >
                     Crear Vacante
