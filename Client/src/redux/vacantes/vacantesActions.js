@@ -88,6 +88,20 @@ export const getVacanteDetail = async (
   }
 };
 
+export const getVacanteDetailEmpleado = async (vacante_id) => {
+  let URL_VACANTE_DETAIL_EMPLEADO = `${URL_SERVER}/vacantes/detalleEmpleado/${vacante_id}`;
+
+  try {
+    const { data } = await axios(URL_VACANTE_DETAIL_EMPLEADO);
+
+    return data;
+  } catch (error) {
+    alertError(error);
+
+    throw new Error();
+  }
+};
+
 export const postPostulacionVacante = async (
   token,
   vacante_id,

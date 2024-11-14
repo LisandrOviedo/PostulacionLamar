@@ -14,6 +14,7 @@ import {
   EnviarSugerencia,
   HistorialPostulaciones,
   InfoCurriculo,
+  InfoPostulacion,
   Inicio,
   PaginaNoEncontrada,
   PruebaKostick,
@@ -55,11 +56,16 @@ function App() {
           pathname.toLocaleLowerCase() !==
             "/miperfil/actualizarclavetemporal" &&
           pathname.toLocaleLowerCase() !== "/sugerencias" &&
+          !pathname.toLocaleLowerCase().startsWith("/infopostulacion/") &&
           userState.empleado_id && <BarraNavegacion />}
         <Routes>
           <Route path="/" element={<AccesoEmpleado />} />
           <Route path="/admin/acceso" element={<AccesoAdmin />} />
           <Route path="/sugerencias" element={<EnviarSugerencia />} />
+          <Route
+            path="/infoPostulacion/:vacante_id"
+            element={<InfoPostulacion />}
+          />
 
           <Route element={<ProteccionActualizarClave />}>
             <Route

@@ -7,6 +7,7 @@ import { DatosPersonales } from "./DatosPersonales/DatosPersonales";
 import { EnviarSugerencia } from "./EnviarSugerencia/EnviarSugerencia";
 import { HistorialPostulaciones } from "./HistorialPostulaciones/HistorialPostulaciones";
 import { InfoCurriculo } from "./InfoCurriculo/InfoCurriculo";
+import { InfoPostulacion } from "./InfoPostulacion/InfoPostulacion";
 import { Inicio } from "./Inicio/Inicio";
 import { PaginaNoEncontrada } from "./PaginaNoEncontrada/PaginaNoEncontrada";
 import { PruebaKostick } from "./PruebaKostick/PruebaKostick";
@@ -39,6 +40,7 @@ export {
   EnviarSugerencia,
   HistorialPostulaciones,
   InfoCurriculo,
+  InfoPostulacion,
   Inicio,
   PaginaNoEncontrada,
   PruebaKostick,
