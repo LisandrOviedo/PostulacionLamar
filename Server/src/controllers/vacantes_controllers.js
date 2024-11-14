@@ -187,12 +187,6 @@ const traerVacanteEmpleado = async (vacante_id) => {
       include: [{ model: Areas_Interes, attributes: ["nombre"] }],
     });
 
-    if (!vacante) {
-      throw new Error(
-        "La vacante no se encuentra disponible y/o ha finalizado su proceso de selección"
-      );
-    }
-
     return vacante;
   } catch (error) {
     throw new Error(`Error al traer la vacante: ${error.message}`);
