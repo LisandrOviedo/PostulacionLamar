@@ -9,7 +9,7 @@ const divisiones = [
   "Avícola",
   "Entretenimiento",
   "Automotriz",
-  "Reciclajes",
+  "Reciclaje",
 ];
 
 module.exports = {
