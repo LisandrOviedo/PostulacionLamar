@@ -176,6 +176,29 @@ const traerVacante = async (
   }
 };
 
+const traerVacanteEmpleado = async (vacante_id) => {
+  if (!vacante_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  try {
+    const vacante = await Vacantes.findOne({
+      where: { vacante_id: vacante_id, activo: true },
+      include: [{ model: Areas_Interes, attributes: ["nombre"] }],
+    });
+
+    if (!vacante) {
+      throw new Error(
+        "La vacante no se encuentra disponible y/o ha finalizado su proceso de selección"
+      );
+    }
+
+    return vacante;
+  } catch (error) {
+    throw new Error(`Error al traer la vacante: ${error.message}`);
+  }
+};
+
 const traerPostulacionesEmpleado = async (
   empleado_id,
   paginaActual,
@@ -571,6 +594,7 @@ const postularVacanteEmpleado = async (vacante_id, empleado_id) => {
 module.exports = {
   todasLasVacantes,
   traerVacante,
+  traerVacanteEmpleado,
   traerPostulacionesEmpleado,
   traerPostulacionEmpleado,
   crearVacante,
