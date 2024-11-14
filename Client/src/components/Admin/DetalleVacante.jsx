@@ -302,7 +302,9 @@ export function DetalleVacante() {
           </div>
           <div>
             <Span className="font-bold">Nivel educativo: </Span>
-            <Span>{vacanteDetail?.vacante?.nivel_educativo}</Span>
+            <Span className="text-justify">
+              {vacanteDetail?.vacante?.nivel_educativo}
+            </Span>
           </div>
           <div>
             <Span className="font-bold">Años de experiencia: </Span>
@@ -314,7 +316,9 @@ export function DetalleVacante() {
           </div>
           <div className="break-words">
             <Span className="font-bold">Descripción de la vacante: </Span>
-            <Span>{vacanteDetail?.vacante?.descripcion}</Span>
+            <Span className="text-justify">
+              {vacanteDetail?.vacante?.descripcion}
+            </Span>
           </div>
           <div>
             <Span className="font-bold">Creado por: </Span>
