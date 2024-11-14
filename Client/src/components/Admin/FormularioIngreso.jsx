@@ -839,7 +839,7 @@ export function FormularioIngreso() {
       <br />
       <div className="w-full">
         {/* Información Personal */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 items-start">
           <div>
             <Label
               htmlFor="numero_identificacion"
@@ -1485,7 +1485,7 @@ export function FormularioIngreso() {
         {/* Educación */}
         <div className="mt-6">
           <Title>Educación</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
             <div>
               <Label htmlFor="grado_instruccion">Grado de instrucción</Label>
               <Select
@@ -1644,7 +1644,7 @@ export function FormularioIngreso() {
         <div className="mt-8 ">
           <Title>Trabajos Anteriores</Title>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
             <div>
               <Label
                 htmlFor="empresa_centro_educativo"
@@ -1781,7 +1781,7 @@ export function FormularioIngreso() {
         </div>
 
         <div className="mt-8">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 items-end mt-2">
             <div>
               <Label
                 htmlFor="trabajo_anteriormente_especifique"
@@ -1858,7 +1858,7 @@ export function FormularioIngreso() {
         {/* Referencias Personales */}
         <div className="mt-6">
           <Title>Referencias Personales *</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
             <div>
               <Label
                 htmlFor="nombre_apellido_referencia"
@@ -2012,7 +2012,7 @@ export function FormularioIngreso() {
         {/* Salud */}
         <div className="mt-6">
           <Title>Salud</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
             <div className="flex gap-2 justify-center items-center h-full">
               <CheckBox
                 name="alergia_alimentos"
@@ -2107,7 +2107,7 @@ export function FormularioIngreso() {
         {/* Contacto de Emergencia */}
         <div className="mt-6">
           <Title>Contactos de Emergencia *</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
             <div>
               <Label
                 htmlFor="nombre_apellido_contacto_emergencia"
@@ -2267,7 +2267,7 @@ export function FormularioIngreso() {
         {/* Datos Bancarios */}
         <div className="mt-6">
           <Title>Datos Bancarios</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
             <div>
               <Label htmlFor="titular_cuenta">Titular de la cuenta</Label>
               <Select
@@ -2452,7 +2452,7 @@ export function FormularioIngreso() {
 
         <div className="mt-6">
           <Title>Espacio para el departamento de talento humano</Title>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 items-start mt-2">
             <div>
               <Label htmlFor="empresa_id">Empresa *</Label>
 

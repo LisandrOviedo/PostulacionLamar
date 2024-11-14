@@ -166,19 +166,24 @@ export function ConsultarLiquidaciones() {
     if (!showModal) {
       setShowModal(true);
     }
-  
+
     // Verifica que liquidacion_id y numero_identificacion estén definidos
-    if (liquidacion_id && empleado && empleado.empleado_id && numero_identificacion) {
+    if (
+      liquidacion_id &&
+      empleado &&
+      empleado.empleado_id &&
+      numero_identificacion
+    ) {
       const data = await getLiquidacion(
         token,
         empleado.empleado_id,
-        numero_identificacion,
+        numero_identificacion
       );
-  
+
       setliquidacion(data);
     }
   };
-    const handleCerrarModal = () => {
+  const handleCerrarModal = () => {
     setShowModal(false);
 
     setliquidacion({});
@@ -305,7 +310,7 @@ export function ConsultarLiquidaciones() {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Title>Consultar Liquidaciones</Title>
       </div>
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
         <div className="flex flex-col place-content-between">
           <Label htmlFor="buscar_por">Buscar por</Label>
           <Select
@@ -559,74 +564,93 @@ export function ConsultarLiquidaciones() {
         </nav>
       </div>
       {showModal && (
-  <div className="fixed z-[1000] inset-0 flex items-center justify-center">
-  <div className="p-4 max-h-full sm:min-w-[600px]">
-    {/* <!-- Modal content --> */}
-    <div className="bg-gray-400 rounded-lg border-2 border-white">
-      {/* <!-- Modal header --> */}
-      <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t flex-col sm:flex-row">
-        <div className="flex flex-col items-center sm:items-start">
-          <span className="font-bold">
-              {liquidacion?.RealizadoPor?.numero_identificacion || 'No disponible'}
-            </span>
-            <span>
-              {liquidacion?.RealizadoPor?.nombres || 'No disponible'} {liquidacion?.RealizadoPor?.apellidos || 'No disponible'}
-            </span>
-            <span>
-              {liquidacion?.RealizadoPor?.tipo_identificacion || 'No disponible'} - {liquidacion?.RealizadoPor?.numero_identificacion || 'No disponible'}
-            </span>
+        <div className="fixed z-[1000] inset-0 flex items-center justify-center">
+          <div className="p-4 max-h-full sm:min-w-[600px]">
+            {/* <!-- Modal content --> */}
+            <div className="bg-gray-400 rounded-lg border-2 border-white">
+              {/* <!-- Modal header --> */}
+              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t flex-col sm:flex-row">
+                <div className="flex flex-col items-center sm:items-start">
+                  <span className="font-bold">
+                    {liquidacion?.RealizadoPor?.numero_identificacion ||
+                      "No disponible"}
+                  </span>
+                  <span>
+                    {liquidacion?.RealizadoPor?.nombres || "No disponible"}{" "}
+                    {liquidacion?.RealizadoPor?.apellidos || "No disponible"}
+                  </span>
+                  <span>
+                    {liquidacion?.RealizadoPor?.tipo_identificacion ||
+                      "No disponible"}{" "}
+                    -{" "}
+                    {liquidacion?.RealizadoPor?.numero_identificacion ||
+                      "No disponible"}
+                  </span>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <Button
+                    className="m-0 w-auto text-xs bg-blue-600 hover:bg-blue-600/[.5]"
+                    onClick={handleCerrarModal}
+                  >
+                    Cerrar
+                  </Button>
+                </div>
+              </div>
+              {/* Cuerpo del modal */}
+              <div
+                className="overflow-y-auto max-h-[60vh]"
+                ref={modalContentRef}
+              >
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
+                  <span>
+                    <b>Código de nómina: </b>
+                    {liquidacion?.codigo_nomina || "No disponible"}
+                  </span>
+                  <span>
+                    <b>Cargo actual: </b>
+                    {liquidacion?.Cargo_Actual?.descripcion || "No disponible"}
+                  </span>
+                  <span>
+                    <b>Unidad organizativa de adscripción: </b>
+                    {liquidacion?.Cargo_Actual?.Departamento?.nombre ||
+                      "No disponible"}
+                  </span>
+                  <span>
+                    <b>Fecha de ingreso: </b>
+                    {liquidacion?.Cargo_Actual?.fecha_ingreso ||
+                      "No disponible"}
+                  </span>
+                  <span>
+                    <b>Antigüedad: </b>
+                    {liquidacion?.Cargo_Actual?.fecha_ingreso
+                      ? `${calcularAntiguedad(
+                          liquidacion?.Cargo_Actual?.fecha_ingreso
+                        )} días`
+                      : "No disponible"}
+                  </span>
+                  <span>
+                    <b>Sueldo actual: </b>
+                    {liquidacion?.Cargo_Actual?.salario
+                      ? `Bs. ${liquidacion?.Cargo_Actual?.salario}`
+                      : "No disponible"}
+                  </span>
+                  <span>
+                    <b>Tipo de nómina: </b>
+                    {liquidacion?.tipo_nomina || "No disponible"}
+                  </span>
+                  {liquidacion?.tipo_nomina === "Otro" && (
+                    <span>
+                      <b>Otro tipo de nómina: </b>
+                      {liquidacion?.otro_tipo_nomina || "No disponible"}
+                    </span>
+                  )}
+                </div>
+                {/* Aquí puedes agregar más contenido basado en tu estructura original */}
+              </div>
+            </div>
           </div>
-          <div className="flex gap-2 items-center">
-  <Button
-    className="m-0 w-auto text-xs bg-blue-600 hover:bg-blue-600/[.5]"
-    onClick={handleCerrarModal}
-  >
-    Cerrar
-  </Button>
-</div>
         </div>
-        {/* Cuerpo del modal */}
-        <div className="overflow-y-auto max-h-[60vh]" ref={modalContentRef}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
-            <span>
-              <b>Código de nómina: </b>
-              {liquidacion?.codigo_nomina || 'No disponible'}
-            </span>
-            <span>
-              <b>Cargo actual: </b>
-              {liquidacion?.Cargo_Actual?.descripcion || 'No disponible'}
-            </span>
-            <span>
-              <b>Unidad organizativa de adscripción: </b>
-              {liquidacion?.Cargo_Actual?.Departamento?.nombre || 'No disponible'}
-            </span>
-            <span>
-              <b>Fecha de ingreso: </b>
-              {liquidacion?.Cargo_Actual?.fecha_ingreso || 'No disponible'}
-            </span>
-            <span>
-              <b>Antigüedad: </b>
-              {liquidacion?.Cargo_Actual?.fecha_ingreso ? `${calcularAntiguedad(liquidacion?.Cargo_Actual?.fecha_ingreso)} días` : 'No disponible'}
-            </span>
-            <span>
-              <b>Sueldo actual: </b>
-              {liquidacion?.Cargo_Actual?.salario ? `Bs. ${liquidacion?.Cargo_Actual?.salario}` : 'No disponible'}
-            </span>
-            <span>
-              <b>Tipo de nómina: </b>
-              {liquidacion?.tipo_nomina || 'No disponible'}
-            </span>
-            {liquidacion?.tipo_nomina === "Otro" && (
-              <span>
-                <b>Otro tipo de nómina: </b>
-                {liquidacion?.otro_tipo_nomina || 'No disponible'}
-              </span>
-            )}
-          </div>
-          {/* Aquí puedes agregar más contenido basado en tu estructura original */}
-        </div>
-      </div>
+      )}
     </div>
-  </div>
-)}
-</div>)}
+  );
+}

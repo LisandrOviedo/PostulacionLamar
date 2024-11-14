@@ -112,7 +112,7 @@ export function PruebaKostick() {
         contestar, sea expontáneo y sincero en sus respuestas.
       </p>
       <br />
-      <div className="grid gap-10 grid-cols-1 md:grid-cols-3 mt-5 mb-5">
+      <div className="grid gap-10 md:grid-cols-3 mt-5 mb-5">
         {mostrarPrueba && (
           <>
             {pruebaKostick.map((respuestas, index) => (

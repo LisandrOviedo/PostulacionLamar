@@ -326,7 +326,7 @@ export function HistorialPostulaciones() {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <Title>Mis Postulaciones</Title>
         </div>
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
           <div className="flex flex-col place-content-between">
             <Label htmlFor="buscar_por">Buscar por</Label>
             <Select
@@ -620,7 +620,7 @@ export function HistorialPostulaciones() {
                 className="overflow-y-auto max-h-[60vh]"
                 ref={modalContentRef}
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-b p-4">
+                <div className="grid sm:grid-cols-2 gap-6 border-b p-4">
                   <Span className="m-0">
                     <b>Ubicación: </b>
                     {postulacionDetail?.Vacante?.ubicacion}

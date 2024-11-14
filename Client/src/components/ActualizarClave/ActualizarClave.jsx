@@ -62,7 +62,7 @@ export function ActualizarClave() {
       <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
         <Title>Actualización de contraseña</Title>
         <br />
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 mx-[10%] sm:mx-[0%]">
+        <div className="grid gap-3 sm:grid-cols-3 mx-[10%] sm:mx-[0%]">
           <div className="flex flex-col">
             <Label htmlFor="claveAnterior" errors={errors.claveAnterior}>
               Clave anterior

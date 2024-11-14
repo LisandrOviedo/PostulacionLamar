@@ -407,7 +407,7 @@ export function GestionRoles() {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <Title>Gestión De Roles</Title>
         </div>
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
           <div className="flex flex-col place-content-between">
             <Label htmlFor="buscar_por">Buscar por</Label>
             <Select
@@ -662,7 +662,7 @@ export function GestionRoles() {
       {showCrearRolModal && (
         <div className="fixed z-50 inset-0 flex items-center justify-center">
           <div className="bg-gray-400 rounded-lg border-2 border-white p-6 sm:w-[80%] md:w-[60%] lg:w-[50%] mx-auto">
-            <div className="grid grid-cols-1 p-2 gap-4">
+            <div className="grid p-2 gap-4">
               <div className="border-b p-2 m-0">
                 <Title>Creación de Rol</Title>
               </div>
@@ -722,7 +722,7 @@ export function GestionRoles() {
       {showDetallesRolModal && (
         <div className="fixed z-50 inset-0 flex items-center justify-center">
           <div className="bg-gray-400 rounded-lg border-2 border-white p-6 sm:w-[80%] md:w-[60%]">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:col-span-3 p-2 gap-6">
+            <div className="grid sm:grid-cols-2 lg:col-span-3 p-2 gap-6">
               <div className="sm:col-span-2 lg:col-span-3 border-b p-2 m-0">
                 <Title>Detalles del Rol</Title>
               </div>

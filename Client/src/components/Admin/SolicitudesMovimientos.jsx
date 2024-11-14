@@ -429,7 +429,7 @@ export function SolicitudesMovimientos() {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <Title>Solicitudes Movimientos</Title>
         </div>
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
           <div className="flex flex-col place-content-between">
             <Label htmlFor="buscar_por">Buscar por</Label>
             <Select
@@ -844,7 +844,7 @@ export function SolicitudesMovimientos() {
                 className="overflow-y-auto max-h-[60vh]"
                 ref={modalContentRef}
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
                   <Span>
                     <b>Código de nómina: </b>
                     {movimiento?.movimientoAnterior?.codigo_nomina}
@@ -901,7 +901,7 @@ export function SolicitudesMovimientos() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
                   <Span className="mx-auto text-md sm:col-span-2 md:col-span-3">
                     <b>Detalle del Movimiento Organizativo</b>
                   </Span>
@@ -940,7 +940,7 @@ export function SolicitudesMovimientos() {
                   </Span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
                   <Span className="mx-auto text-md sm:col-span-2 md:col-span-3">
                     <b>Nueva Condición Laboral Del Trabajador</b>
                   </Span>
@@ -1004,7 +1004,7 @@ export function SolicitudesMovimientos() {
                     {movimiento?.movimiento?.codigo_nomina}
                   </Span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b p-4 sm:2">
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 border-b p-4 sm:2">
                   <div className="flex flex-col justify-start items-center text-center">
                     <Span>
                       <b>Datos Del Solicitante</b>

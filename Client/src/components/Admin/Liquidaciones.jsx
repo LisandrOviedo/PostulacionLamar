@@ -184,7 +184,7 @@ export function Liquidaciones() {
 
       {datosEmpleado?.empleado_id && (
         <div className="p-4 border rounded-lg shadow-md w-full">
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
             <div>
               <Span>Nombres</Span>
               <Span>{datosEmpleado?.nombres || "-"}</Span>
@@ -258,7 +258,7 @@ export function Liquidaciones() {
       <Title>Detalles de la Liquidación</Title>
       <Hr className="w-full my-5" />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div className="relative w-full">
           <Label htmlFor="codigo" errors={errors.codigo}>
             Código
