@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 
 import { getEmpleadoExistencia } from "../../redux/empleados/empleadosActions";
 
+import { postLiquidacion } from "../../redux/liquidaciones/liquidacionesActions";
+
 import {
   Button,
   Date,
@@ -48,10 +50,12 @@ export function Liquidaciones() {
     sueldo: "",
     codigo: "",
     fecha: "",
+    creado_por_id: empleado.empleado_id,
   });
 
   useEffect(() => {
     window.scroll(0, 0); // Desplaza la ventana a la parte superior izquierda de la página.
+
     document.title = "Grupo Lamar - Liquidaciones (Admin)";
 
     return () => {
@@ -119,7 +123,9 @@ export function Liquidaciones() {
     }
   };
 
-  const handlePostLiquidaciones = async () => {};
+  const handlePostLiquidaciones = async () => {
+    await postLiquidacion(token, datosLiquidaciones);
+  };
 
   //Este es el código que renderiza un formulario para las liquidaciones.
   /*En este caso, el return está devolviendo un conjunto de elementos JSX que forman la estructura del formulario para liquidaciones */
@@ -178,7 +184,7 @@ export function Liquidaciones() {
 
       {datosEmpleado?.empleado_id && (
         <div className="p-4 border rounded-lg shadow-md w-full">
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
             <div>
               <Span>Nombres</Span>
               <Span>{datosEmpleado?.nombres || "-"}</Span>
@@ -252,7 +258,7 @@ export function Liquidaciones() {
       <Title>Detalles de la Liquidación</Title>
       <Hr className="w-full my-5" />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div className="relative w-full">
           <Label htmlFor="codigo" errors={errors.codigo}>
             Código
@@ -264,6 +270,7 @@ export function Liquidaciones() {
               name="codigo"
               onChange={handleValidate}
               errors={errors.codigo}
+              value={datosLiquidaciones.codigo}
             />
             {errors.codigo && (
               <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
@@ -296,6 +303,7 @@ export function Liquidaciones() {
             id="motivo_retiro"
             name="motivo_retiro"
             onChange={handleValidate}
+            value={datosLiquidaciones.motivo_retiro}
           >
             <option>Seleccione</option>
             <option>Abandono</option>
@@ -303,19 +311,25 @@ export function Liquidaciones() {
             <option>Renuncia</option>
           </Select>
         </div>
-        <div className="sm:col-span-2 md:col-span-3"></div>
+
         <div>
           <Label htmlFor="causa">Causa</Label>
-          <TextArea
+          <Input
             id="causa"
             name="causa"
+            value={datosLiquidaciones.causa}
             onChange={handleValidate}
-            rows="5"
           />
         </div>
         <div>
           <Label htmlFor="ssst">SSST</Label>
-          <TextArea id="ssst" name="ssst" onChange={handleValidate} rows="5" />
+          <TextArea
+            id="ssst"
+            name="ssst"
+            value={datosLiquidaciones.ssst}
+            onChange={handleValidate}
+            rows="2"
+          />
         </div>
 
         <div className="flex flex-col justify-start">
@@ -346,36 +360,39 @@ export function Liquidaciones() {
           {errors.anticipos_prestamos && (
             <Span className="m-0">{errors.anticipos_prestamos}</Span>
           )}
-          <div>
-            <div className="flex flex-col justify-start">
-              <Label
-                htmlFor="vacaciones_vencidas"
-                errors={errors.vacaciones_vencidas}
-              >
-                Vacaciones vencidas
-              </Label>
+        </div>
 
-              <div className="relative">
-                <Input
-                  id="vacaciones_vencidas"
-                  name="vacaciones_vencidas"
-                  onChange={handleValidate} // Esta línea llama a tu función de validación
-                  onBlur={handleConvertirADecimales}
-                  errors={errors.sueldo}
-                  className="pr-8" // padding a la derecha para que no tenga conflicto con el icono de validacion
-                  type="number"
-                  min="1"
-                />
-                {errors.sueldo && (
-                  <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
-                )}
-              </div>
-              {errors.vacaciones_vencidas && (
-                <Span className="m-0">{errors.vacaciones_vencidas}</Span>
+        <div>
+          <div className="flex flex-col justify-start">
+            <Label
+              htmlFor="vacaciones_vencidas"
+              errors={errors.vacaciones_vencidas}
+            >
+              Vacaciones vencidas
+            </Label>
+
+            <div className="relative">
+              <Input
+                id="vacaciones_vencidas"
+                name="vacaciones_vencidas"
+                onChange={handleValidate} // Esta línea llama a tu función de validación
+                onBlur={handleConvertirADecimales}
+                value={datosLiquidaciones.vacaciones_vencidas}
+                errors={errors.sueldo}
+                className="pr-8" // padding a la derecha para que no tenga conflicto con el icono de validacion
+                type="number"
+                min="1"
+              />
+              {errors.sueldo && (
+                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
               )}
             </div>
+            {errors.vacaciones_vencidas && (
+              <Span className="m-0">{errors.vacaciones_vencidas}</Span>
+            )}
           </div>
         </div>
+
         <div>
           <div className="flex flex-col justify-start">
             <Label
@@ -392,17 +409,12 @@ export function Liquidaciones() {
                 onChange={handleValidate} // Esta línea llama a tu función de validación
                 onBlur={handleConvertirADecimales}
                 errors={errors.sueldo}
-                className="pr-8" // padding a la derecha para que no tenga conflicto con el icono de validacion
+                value={datosLiquidaciones.dias_cesta_ticket}
                 type="number"
                 min="1"
+                max="99"
               />
-              {errors.dias_cesta_ticket && (
-                <MdCancel className="text-red-600 absolute right-2 top-[30%] text-xl" />
-              )}
             </div>
-            {errors.dias_cesta_ticket && (
-              <Span className="m-0">{errors.dias_cesta_ticket}</Span>
-            )}
           </div>
         </div>
         <div className="flex flex-col justify-start">
@@ -443,6 +455,7 @@ export function Liquidaciones() {
                 onChange={handleValidate} // Esta línea llama a tu función de validación
                 onBlur={handleConvertirADecimales}
                 errors={errors.bonificacion}
+                value={datosLiquidaciones.bonificacion}
                 className="pr-8" // padding a la derecha para que no tenga conflicto con el icono de validacion
                 type="number"
                 min="1"
@@ -456,17 +469,16 @@ export function Liquidaciones() {
             )}
           </div>
         </div>
-      </div>
-      <br />
-      <div className="mx-auto sm:col-span-2 md:col-span-3">
-        <Button
-          className="w-auto flex items-center gap-2"
-          onClick={handlePostLiquidaciones}
-        >
-          {/*Es un icono de la libreria react icons */}
-          <FaFloppyDisk />
-          <>Guardar</>
-        </Button>
+        <div className="mx-auto sm:col-span-2 md:col-span-3">
+          <Button
+            className="m-0 w-auto flex items-center gap-2"
+            onClick={handlePostLiquidaciones}
+          >
+            {/*Es un icono de la libreria react icons */}
+            <FaFloppyDisk />
+            <>Guardar</>
+          </Button>
+        </div>
       </div>
     </div>
   );

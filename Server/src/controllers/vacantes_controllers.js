@@ -176,6 +176,23 @@ const traerVacante = async (
   }
 };
 
+const traerVacanteEmpleado = async (vacante_id) => {
+  if (!vacante_id) {
+    throw new Error(`Datos faltantes`);
+  }
+
+  try {
+    const vacante = await Vacantes.findOne({
+      where: { vacante_id: vacante_id, activo: true },
+      include: [{ model: Areas_Interes, attributes: ["nombre"] }],
+    });
+
+    return vacante;
+  } catch (error) {
+    throw new Error(`Error al traer la vacante: ${error.message}`);
+  }
+};
+
 const traerPostulacionesEmpleado = async (
   empleado_id,
   paginaActual,
@@ -359,12 +376,24 @@ const traerPostulacionEmpleado = async (vacante_empleado_id) => {
 };
 
 const crearVacante = async (
-  area_interes_id,
   nombre,
+  ubicacion,
+  departamento,
+  nivel_educativo,
+  anos_experiencia,
   descripcion,
-  ubicacion
+  area_interes_id,
+  creado_por_id
 ) => {
-  if (!area_interes_id || !nombre || !descripcion || !ubicacion) {
+  if (
+    !nombre ||
+    !ubicacion ||
+    !nivel_educativo ||
+    !anos_experiencia ||
+    !descripcion ||
+    !area_interes_id ||
+    !creado_por_id
+  ) {
     throw new Error(`Datos faltantes`);
   }
 
@@ -375,10 +404,14 @@ const crearVacante = async (
 
     await Vacantes.create(
       {
-        area_interes_id: area_interes_id,
         nombre: nombre,
-        descripcion: descripcion,
         ubicacion: ubicacion,
+        departamento: departamento || null,
+        nivel_educativo: nivel_educativo,
+        anos_experiencia: anos_experiencia,
+        descripcion: descripcion,
+        area_interes_id: area_interes_id,
+        creado_por_id: creado_por_id,
       },
       { transaction: t }
     );
@@ -395,17 +428,22 @@ const crearVacante = async (
 
 const modificarVacante = async (
   vacante_id,
-  area_interes_id,
   nombre,
+  ubicacion,
+  departamento,
+  nivel_educativo,
+  anos_experiencia,
   descripcion,
-  ubicacion
+  area_interes_id
 ) => {
   if (
     !vacante_id ||
-    !area_interes_id ||
     !nombre ||
+    !ubicacion ||
+    !nivel_educativo ||
+    !anos_experiencia ||
     !descripcion ||
-    !ubicacion
+    !area_interes_id
   ) {
     throw new Error(`Datos faltantes`);
   }
@@ -413,16 +451,19 @@ const modificarVacante = async (
   let t;
 
   try {
-    await traerVacante(vacante_id);
+    await traerVacante(vacante_id, 1, 1);
 
     t = await conn.transaction();
 
     await Vacantes.update(
       {
-        area_interes_id: area_interes_id,
         nombre: nombre,
-        descripcion: descripcion,
         ubicacion: ubicacion,
+        departamento: departamento || null,
+        nivel_educativo: nivel_educativo,
+        anos_experiencia: anos_experiencia,
+        descripcion: descripcion,
+        area_interes_id: area_interes_id,
       },
       {
         where: {
@@ -433,8 +474,6 @@ const modificarVacante = async (
     );
 
     await t.commit();
-
-    return await traerVacante(vacante_id);
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -486,14 +525,10 @@ const cambiarEstadoRevisado = async (vacante_empleado_id, revisado_por_id) => {
 };
 
 const inactivarVacante = async (vacante_id) => {
-  if (!vacante_id) {
-    throw new Error(`Datos faltantes`);
-  }
-
   let t;
 
   try {
-    const vacante = await traerVacante(vacante_id);
+    const { vacante } = await traerVacante(vacante_id, 1, 1);
 
     t = await conn.transaction();
 
@@ -506,8 +541,6 @@ const inactivarVacante = async (vacante_id) => {
     );
 
     await t.commit();
-
-    return await traerVacante(vacante_id);
   } catch (error) {
     if (t && !t.finished) {
       await t.rollback();
@@ -555,6 +588,7 @@ const postularVacanteEmpleado = async (vacante_id, empleado_id) => {
 module.exports = {
   todasLasVacantes,
   traerVacante,
+  traerVacanteEmpleado,
   traerPostulacionesEmpleado,
   traerPostulacionEmpleado,
   crearVacante,

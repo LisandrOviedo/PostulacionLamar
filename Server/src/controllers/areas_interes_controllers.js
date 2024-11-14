@@ -4,7 +4,7 @@ const { traerCurriculo } = require("./curriculos_controllers");
 
 const { areasInteres } = require("../utils/areasInteres");
 
-const todosLosAreaInteres = async () => {
+const todasLasAreaInteres = async () => {
   try {
     const areas_interes = await Areas_Interes.findAll({
       order: [["nombre", "ASC"]],
@@ -22,7 +22,7 @@ const todosLosAreaInteres = async () => {
   }
 };
 
-const todosLosAreaInteresActivas = async () => {
+const todasLasAreaInteresActivas = async () => {
   try {
     const areas_interes = await Areas_Interes.findAll({
       where: { activo: true },
@@ -265,8 +265,8 @@ const eliminarAreasInteresCurriculo = async (curriculo_id) => {
 };
 
 module.exports = {
-  todosLosAreaInteres,
-  todosLosAreaInteresActivas,
+  todasLasAreaInteres,
+  todasLasAreaInteresActivas,
   traerAreaInteres,
   cargarAreaInteres,
   crearAreaInteres,

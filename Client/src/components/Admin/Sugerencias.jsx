@@ -297,7 +297,7 @@ export function Sugerencias() {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <Title>Sugerencias</Title>
         </div>
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
           <div className="flex flex-col place-content-between">
             <Label htmlFor="empresa_id">Empresa</Label>
 

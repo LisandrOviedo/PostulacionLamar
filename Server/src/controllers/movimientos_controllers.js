@@ -364,7 +364,8 @@ const traerMovimiento = async (movimiento_id, empleado_id) => {
   let t;
 
   try {
-    const movimiento = await Movimientos.findByPk(movimiento_id, {
+    const movimiento = await Movimientos.findOne({
+      where: { movimiento_id: movimiento_id },
       attributes: {
         exclude: [
           "empleado_id",

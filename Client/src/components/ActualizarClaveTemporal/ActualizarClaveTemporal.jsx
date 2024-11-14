@@ -74,7 +74,7 @@ export function ActualizarClaveTemporal() {
         Ingrese su nueva contraseña (¡No la olvides!):
       </Label>
       <br />
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 items-start mx-[10%]">
+      <div className="grid gap-3 md:grid-cols-2 items-start mx-[10%]">
         <div className="flex flex-col">
           <Label htmlFor="clave" errors={errors.clave}>
             Nueva clave

@@ -1,6 +1,7 @@
 const {
   todasLasVacantes,
   traerVacante,
+  traerVacanteEmpleado,
   traerPostulacionesEmpleado,
   traerPostulacionEmpleado,
   crearVacante,
@@ -71,6 +72,18 @@ const getVacante = async (req, res) => {
   }
 };
 
+const getVacanteEmpleado = async (req, res) => {
+  const { vacante_id } = req.params;
+
+  try {
+    const response = await traerVacanteEmpleado(vacante_id);
+
+    return res.json(response);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 const getPostulacionesEmpleado = async (req, res) => {
   const { empleado_id } = req.params;
 
@@ -117,14 +130,27 @@ const getPostulacionEmpleado = async (req, res) => {
 };
 
 const postVacante = async (req, res) => {
-  const { area_interes_id, nombre, descripcion, ubicacion } = req.body;
+  const {
+    nombre,
+    ubicacion,
+    departamento,
+    nivel_educativo,
+    anos_experiencia,
+    descripcion,
+    area_interes_id,
+    creado_por_id,
+  } = req.body;
 
   try {
     const response = await crearVacante(
-      area_interes_id,
       nombre,
+      ubicacion,
+      departamento,
+      nivel_educativo,
+      anos_experiencia,
       descripcion,
-      ubicacion
+      area_interes_id,
+      creado_por_id
     );
 
     return res.status(201).json(response);
@@ -146,16 +172,27 @@ const postVacanteEmpleado = async (req, res) => {
 };
 
 const putVacante = async (req, res) => {
-  const { vacante_id, area_interes_id, nombre, descripcion, ubicacion } =
-    req.body;
+  const {
+    vacante_id,
+    nombre,
+    ubicacion,
+    departamento,
+    nivel_educativo,
+    anos_experiencia,
+    descripcion,
+    area_interes_id,
+  } = req.body;
 
   try {
     const response = await modificarVacante(
       vacante_id,
-      area_interes_id,
       nombre,
+      ubicacion,
+      departamento,
+      nivel_educativo,
+      anos_experiencia,
       descripcion,
-      ubicacion
+      area_interes_id
     );
 
     return res.json(response);
@@ -194,6 +231,7 @@ const deleteVacante = async (req, res) => {
 module.exports = {
   getVacantes,
   getVacante,
+  getVacanteEmpleado,
   getPostulacionesEmpleado,
   getPostulacionEmpleado,
   postVacante,

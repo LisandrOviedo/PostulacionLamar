@@ -1,45 +1,50 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import { getAllPruebasEmpleados } from "../../redux/pruebasEmpleados/pruebasEmpleadosActions";
+import {
+  getLiquidacion,
+  getLiquidaciones,
+} from "../../redux/liquidaciones/liquidacionesActions";
 
-import { Button, Date, Input, Label, Select, Span, Title } from "../UI";
+import { Button, Input, Label, Select, Title } from "../UI";
 
 import {
   calcularPaginasARenderizar,
   infoPaginador,
 } from "../../utils/paginacion";
 
-import validations from "../../utils/validacionesPruebasEmpleados";
+import { DDMMYYYYHHMM2 } from "../../utils/formatearFecha";
 
-import { DDMMYYYY } from "../../utils/formatearFecha";
+import Swal from "sweetalert2";
 
-export function PruebasEmpleados() {
+export function ConsultarLiquidaciones() {
   const tableRef = useRef(null);
-
-  const URL_SERVER = import.meta.env.VITE_URL_SERVER;
+  const modalContentRef = useRef(null);
+  const navigate = useNavigate();
 
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const [pruebasEmpleados, setPruebasEmpleados] = useState([]);
+  const [liquidaciones, setLiquidaciones] = useState([]);
 
   const [paginaActual, setPaginaActual] = useState(1);
 
-  const [limitePorPagina, setLimitePorPagina] = useState(2);
+  const [liquidacion_id, setLiquidacionId] = useState(null);
 
-  const [errors, setErrors] = useState({});
+  const [limitePorPagina, setLimitePorPagina] = useState(2);
+  const [showModal, setShowModal] = useState(false);
+
+  const [liquidacion, setliquidacion] = useState({});
 
   const [filters, setFilters] = useState({
     numero_identificacion: "",
     apellidos: "",
-    prueba: "",
+    activo: "",
     orden_campo: "",
     orden_por: "",
     empresa_id: empleado.empresa_id,
-    fecha_desde: "",
-    fecha_hasta: "",
   });
 
   const handleChangePagination = async (e) => {
@@ -51,22 +56,15 @@ export function PruebasEmpleados() {
       setPaginaActual(1);
     }
 
-    const dataPruebasEmpleados = await getAllPruebasEmpleados(
-      token,
-      filters,
-      1,
-      value
-    );
+    const dataLiquidaciones = await getLiquidaciones(token, filters, 1, value);
 
-    setPruebasEmpleados(dataPruebasEmpleados);
+    setLiquidaciones(dataLiquidaciones);
   };
 
   const handleChangeFilters = (e) => {
     const { name, value } = e.target;
 
     setFilters({ ...filters, [name]: value });
-
-    setErrors(validations({ ...filters, [name]: value }));
   };
 
   const handleChangeFiltersInput = (e) => {
@@ -103,38 +101,21 @@ export function PruebasEmpleados() {
     setFilters({
       numero_identificacion: "",
       apellidos: "",
-      prueba: "",
+      activo: "",
       orden_campo: "",
       orden_por: "",
       empresa_id: empleado.empresa_id,
-      fecha_desde: "",
-      fecha_hasta: "",
     });
-
-    setErrors(
-      validations({
-        numero_identificacion: "",
-        apellidos: "",
-        prueba: "",
-        orden_campo: "",
-        orden_por: "",
-        empresa_id: empleado.empresa_id,
-        fecha_desde: "",
-        fecha_hasta: "",
-      })
-    );
 
     const buscarPor = document.getElementById("buscar_por");
     const inputSearch = document.getElementById("input_search");
-    const fecha_desde = document.getElementById("fecha_desde");
-    const fecha_hasta = document.getElementById("fecha_hasta");
+    const activo = document.getElementById("activo");
 
     buscarPor.selectedIndex = 0;
-    inputSearch.value = null;
-    fecha_desde.value = null;
-    fecha_hasta.value = null;
+    inputSearch.value = "";
+    activo.selectedIndex = 0;
 
-    const dataPruebasEmpleados = await getAllPruebasEmpleados(
+    const dataLiquidaciones = await getLiquidaciones(
       token,
       {
         numero_identificacion: "",
@@ -148,7 +129,7 @@ export function PruebasEmpleados() {
       limitePorPagina
     );
 
-    setPruebasEmpleados(dataPruebasEmpleados);
+    setLiquidaciones(dataLiquidaciones);
   };
 
   const handleFind = async () => {
@@ -156,14 +137,14 @@ export function PruebasEmpleados() {
       setPaginaActual(1);
     }
 
-    const dataPruebasEmpleados = await getAllPruebasEmpleados(
+    const dataLiquidaciones = await getLiquidaciones(
       token,
       filters,
       1,
       limitePorPagina
     );
 
-    setPruebasEmpleados(dataPruebasEmpleados);
+    setLiquidaciones(dataLiquidaciones);
   };
 
   useEffect(() => {
@@ -171,12 +152,42 @@ export function PruebasEmpleados() {
 
     handleFind();
 
-    document.title = "Grupo Lamar - Pruebas Empleados (Admin)";
+    console.log(liquidaciones);
+
+    document.title = "Grupo Lamar - Consultar Liquidaciones (Admin)";
 
     return () => {
       document.title = "Grupo Lamar";
     };
   }, []);
+
+  const handleVerDetalles = async (movimiento_id) => {
+    // Asegúrate de que showModal esté definido
+    if (!showModal) {
+      setShowModal(true);
+    }
+
+    // Verifica que liquidacion_id y numero_identificacion estén definidos
+    if (
+      liquidacion_id &&
+      empleado &&
+      empleado.empleado_id &&
+      numero_identificacion
+    ) {
+      const data = await getLiquidacion(
+        token,
+        empleado.empleado_id,
+        numero_identificacion
+      );
+
+      setliquidacion(data);
+    }
+  };
+  const handleCerrarModal = () => {
+    setShowModal(false);
+
+    setliquidacion({});
+  };
 
   const changeOrder = async (e) => {
     const { name } = e.target;
@@ -188,32 +199,28 @@ export function PruebasEmpleados() {
         orden_por: "ASC",
       }));
 
-      const dataPruebasEmpleados = await getAllPruebasEmpleados(
+      const dataLiquidaciones = await getLiquidaciones(
         token,
-        {
-          ...filters,
-          orden_campo: name,
-          orden_por: "ASC",
-        },
+        { ...filters, orden_campo: name, orden_por: "ASC" },
         1,
         limitePorPagina
       );
 
-      setPruebasEmpleados(dataPruebasEmpleados);
+      setLiquidaciones(dataLiquidaciones);
     } else if (filters.orden_campo === name && filters.orden_por === "ASC") {
-      setFilters((prevFilters) => ({ ...prevFilters, orden_por: "DESC" }));
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        orden_por: "DESC",
+      }));
 
-      const dataPruebasEmpleados = await getAllPruebasEmpleados(
+      const dataLiquidaciones = await getLiquidaciones(
         token,
-        {
-          ...filters,
-          orden_por: "DESC",
-        },
+        { ...filters, orden_por: "DESC" },
         1,
         limitePorPagina
       );
 
-      setPruebasEmpleados(dataPruebasEmpleados);
+      setLiquidaciones(dataLiquidaciones);
     } else if (filters.orden_campo === name && filters.orden_por === "DESC") {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -221,18 +228,14 @@ export function PruebasEmpleados() {
         orden_por: "",
       }));
 
-      const dataPruebasEmpleados = await getAllPruebasEmpleados(
+      const dataLiquidaciones = await getLiquidaciones(
         token,
-        {
-          ...filters,
-          orden_campo: "",
-          orden_por: "",
-        },
+        { ...filters, orden_campo: "", orden_por: "" },
         1,
         limitePorPagina
       );
 
-      setPruebasEmpleados(dataPruebasEmpleados);
+      setLiquidaciones(dataLiquidaciones);
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -240,18 +243,14 @@ export function PruebasEmpleados() {
         orden_por: "ASC",
       }));
 
-      const dataPruebasEmpleados = await getAllPruebasEmpleados(
+      const dataLiquidaciones = await getLiquidaciones(
         token,
-        {
-          ...filters,
-          orden_campo: name,
-          orden_por: "ASC",
-        },
+        { ...filters, orden_campo: name, orden_por: "ASC" },
         1,
         limitePorPagina
       );
 
-      setPruebasEmpleados(dataPruebasEmpleados);
+      setLiquidaciones(dataLiquidaciones);
     }
   };
 
@@ -259,54 +258,48 @@ export function PruebasEmpleados() {
     if (paginaActual > 1) {
       setPaginaActual(paginaActual - 1);
 
-      const dataPruebasEmpleados = await getAllPruebasEmpleados(
+      const dataLiquidaciones = await getLiquidaciones(
         token,
         filters,
         paginaActual - 1,
         limitePorPagina
       );
 
-      setPruebasEmpleados(dataPruebasEmpleados);
+      setLiquidaciones(dataLiquidaciones);
 
       tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   const paginaSiguiente = async () => {
-    if (paginaActual < pruebasEmpleados.cantidadPaginas) {
+    if (paginaActual < empleados.cantidadPaginas) {
       setPaginaActual(paginaActual + 1);
 
-      const dataPruebasEmpleados = await getAllPruebasEmpleados(
+      const dataLiquidaciones = await getLiquidaciones(
         token,
         filters,
         paginaActual + 1,
         limitePorPagina
       );
 
-      setPruebasEmpleados(dataPruebasEmpleados);
+      setLiquidaciones(dataLiquidaciones);
 
       tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  };
-
-  const handleVerResultados = (identificacion, prueba_nombre) => {
-    const URL_GET_RESULTADOS = `${URL_SERVER}/documentos_empleados/documento/${identificacion}/${prueba_nombre}`;
-
-    window.open(URL_GET_RESULTADOS, "_blank");
   };
 
   const handleChangePage = async (page) => {
     if (paginaActual !== page) {
       setPaginaActual(page);
 
-      const dataPruebasEmpleados = await getAllPruebasEmpleados(
+      const dataLiquidaciones = await getLiquidaciones(
         token,
         filters,
         page,
         limitePorPagina
       );
 
-      setPruebasEmpleados(dataPruebasEmpleados);
+      setLiquidaciones(dataLiquidaciones);
 
       tableRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -315,10 +308,10 @@ export function PruebasEmpleados() {
   return (
     <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8 mb-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <Title>Pruebas de Empleados</Title>
+        <Title>Consultar Liquidaciones</Title>
       </div>
-      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
-        <div>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
+        <div className="flex flex-col place-content-between">
           <Label htmlFor="buscar_por">Buscar por</Label>
           <Select
             id="buscar_por"
@@ -334,7 +327,7 @@ export function PruebasEmpleados() {
             <option value="apellidos">Apellidos</option>
           </Select>
         </div>
-        <div className="flex items-end">
+        <div className="flex w-full items-end">
           <Input
             type="text"
             id="input_search"
@@ -349,44 +342,20 @@ export function PruebasEmpleados() {
             }
           />
         </div>
-        <div>
-          <Label htmlFor="prueba">Filtrar por prueba</Label>
+        <div className="flex flex-col place-content-between">
+          <Label htmlFor="activo">Filtrar por activo / inactivo</Label>
           <Select
-            id="prueba"
-            name="prueba"
+            id="activo"
+            name="activo"
             onChange={handleChangeFilters}
-            value={filters.prueba}
+            defaultValue={filters.activo}
           >
             <option value="">Todos</option>
-            <option value="Kostick">Kostick</option>
+            <option value="1">Activos</option>
+            <option value="0">Inactivos</option>
           </Select>
         </div>
-        <div>
-          <Label htmlFor="fecha_desde" errors={errors.fechas}>
-            Fecha desde
-          </Label>
-          <Date
-            id="fecha_desde"
-            type="datetime-local"
-            name="fecha_desde"
-            onChange={handleChangeFilters}
-            errors={errors.fechas}
-          />
-        </div>
-        <div>
-          <Label htmlFor="fecha_hasta" errors={errors.fechas}>
-            Fecha hasta
-          </Label>
-          <Date
-            id="fecha_hasta"
-            type="datetime-local"
-            name="fecha_hasta"
-            onChange={handleChangeFilters}
-            errors={errors.fechas}
-          />
-          {errors.fechas && <Span className="m-0">{errors.fechas}</Span>}
-        </div>
-        <div>
+        <div className="flex flex-col place-content-between">
           <Label htmlFor="limitePorPagina">Límite por página</Label>
           <Select
             id="limitePorPagina"
@@ -403,30 +372,27 @@ export function PruebasEmpleados() {
         <div
           id="tabla"
           ref={tableRef}
-          className="flex justify-center sm:col-span-2 md:col-span-3 gap-2"
+          className="flex items-end justify-center sm:col-span-2 lg:col-span-1 lg:justify-start gap-2"
         >
-          <div
-            className={`${Object.keys(errors).length && "opacity-50"}`}
-            disabled={Object.keys(errors).length}
-          >
-            <Button className="m-0 w-auto" onClick={handleFind}>
-              Buscar
-            </Button>
-          </div>
-
+          <Button className="m-0 w-auto" onClick={handleFind}>
+            Buscar
+          </Button>
           <Button className="m-0 w-auto" onClick={handleResetFilters}>
             Restablecer Filtros
           </Button>
         </div>
       </div>
-      <div className="mt-6 sm:mx-auto w-full">
-        <div className=" overflow-x-auto shadow-md rounded-lg">
-          <table
-            id="tabla"
-            className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400"
-          >
+      <div className="mt-8 sm:mx-auto w-full">
+        <div className="overflow-x-auto shadow-md rounded-lg">
+          <table className="w-full text-sm text-left rtl:text-right text-black dark:text-gray-400">
             <thead className="text-xs uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400">
               <tr>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Código</div>
+                </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Número identificación</div>
+                </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
                     <span
@@ -435,7 +401,7 @@ export function PruebasEmpleados() {
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Nombre Completos
+                      Nombre Completo
                       <img
                         name="apellidos"
                         src={
@@ -455,31 +421,20 @@ export function PruebasEmpleados() {
                 </th>
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">
-                    Número de identificación
-                  </div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Teléfono</div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">Correo</div>
-                </th>
-                <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
                     <span
-                      id="prueba"
-                      name="prueba"
+                      id="updatedAt"
+                      name="updatedAt"
                       onClick={changeOrder}
                       className="text-black hover:text-black flex items-center"
                     >
-                      Prueba
+                      Fecha de liquidación
                       <img
-                        name="prueba"
+                        name="updatedAt"
                         src={
-                          filters.orden_campo === "prueba" &&
+                          filters.orden_campo === "updatedAt" &&
                           filters.orden_por === "ASC"
                             ? "./SortAZ.svg"
-                            : filters.orden_campo === "prueba" &&
+                            : filters.orden_campo === "updatedAt" &&
                               filters.orden_por === "DESC"
                             ? "./SortZA.svg"
                             : "./SortDefault.svg"
@@ -491,70 +446,61 @@ export function PruebasEmpleados() {
                   </div>
                 </th>
                 <th scope="col" className="px-4 py-3">
-                  <div className="flex items-center">
-                    <span
-                      id="createdAt"
-                      name="createdAt"
-                      onClick={changeOrder}
-                      className="text-black hover:text-black flex items-center"
-                    >
-                      Fecha Aplicación
-                      <img
-                        name="createdAt"
-                        src={
-                          filters.orden_campo === "createdAt" &&
-                          filters.orden_por === "ASC"
-                            ? "./SortAZ.svg"
-                            : filters.orden_campo === "createdAt" &&
-                              filters.orden_por === "DESC"
-                            ? "./SortZA.svg"
-                            : "./SortDefault.svg"
-                        }
-                        alt="Icon Sort"
-                        className="w-5 h-5 ms-1.5 cursor-pointer"
-                      />
-                    </span>
-                  </div>
+                  <div className="flex items-center">Realizado por</div>
                 </th>
+                <th scope="col" className="px-4 py-3">
+                  <div className="flex items-center">Motivo del retiro</div>
+                </th>
+
                 <th scope="col" className="px-4 py-3">
                   <div className="flex items-center">Acción</div>
                 </th>
               </tr>
             </thead>
-            {pruebasEmpleados.pruebasEmpleados &&
-              pruebasEmpleados.pruebasEmpleados.length > 0 && (
+
+            {liquidaciones.liquidaciones &&
+              liquidaciones.liquidaciones.length > 0 && (
                 <tbody>
-                  {pruebasEmpleados.pruebasEmpleados.map((prueba, i) => (
+                  {liquidaciones.liquidaciones.map((liquidacion, i) => (
                     <tr
                       key={i}
-                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
+                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
                     >
+                      <td className="p-4">{liquidacion.codigo}</td>
                       <td className="p-4">
-                        {prueba.Empleado.apellidos} {prueba.Empleado.nombres}
+                        {empleado.tipo_identificacion}
+                        {"-"}
+                        {empleado.numero_identificacion}
                       </td>
                       <td className="p-4">
-                        {prueba.Empleado.tipo_identificacion}
-                        {prueba.Empleado.numero_identificacion}
+                        {empleado.apellidos} {empleado.nombres}
                       </td>
                       <td className="p-4">
-                        {prueba.Empleado.telefono || "Sin registrar"}
+                        {DDMMYYYYHHMM2(liquidacion.createdAt)}
                       </td>
-                      <td className="p-4">
-                        {prueba.Empleado.correo || "Sin registrar"}
+                      <td className="p-4 text-center">
+                        {liquidacion?.RealizadoPor && (
+                          <>
+                            <div>
+                              {liquidacion.RealizadoPor.nombres}{" "}
+                              {liquidacion.RealizadoPor.apellidos} (
+                              {liquidacion.RealizadoPor.tipo_identificacion}-
+                              {liquidacion.RealizadoPor.numero_identificacion})
+                            </div>
+                          </>
+                        )}
                       </td>
-                      <td className="p-4">{prueba.prueba}</td>
-                      <td className="p-4">{DDMMYYYY(prueba.createdAt)}</td>
-                      <td className="p-4 flex gap-2 items-center">
+                      <td className="p-4 text-center">
+                        {liquidacion.motivo_retiro}
+                      </td>
+                      <td className="p-4 flex gap-2">
                         <Button
-                          className="m-0 w-auto"
+                          className="m-0 w-auto text-xs"
                           onClick={() =>
-                            handleVerResultados(
-                              `${prueba.Empleado.tipo_identificacion}${prueba.Empleado.numero_identificacion}`,
-                              prueba.nombre
-                            )
+                            handleVerDetalles(liquidaciones.liquidacion_id)
                           }
                         >
-                          Ver resultados
+                          Detalles
                         </Button>
                       </td>
                     </tr>
@@ -563,29 +509,30 @@ export function PruebasEmpleados() {
               )}
           </table>
         </div>
+
         <nav className="flex items-center justify-center md:justify-between flex-column flex-wrap md:flex-row pt-4">
           {infoPaginador(
             paginaActual,
             limitePorPagina,
-            pruebasEmpleados.totalRegistros
+            liquidaciones.totalRegistros
           )}
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
               <span
                 onClick={paginaAnterior}
                 className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
-                  ${
-                    paginaActual <= 1
-                      ? "cursor-default"
-                      : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
-                  }`}
+                ${
+                  paginaActual <= 1
+                    ? "cursor-default"
+                    : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                }`}
               >
                 Pág. Anterior
               </span>
             </li>
             {calcularPaginasARenderizar(
               paginaActual,
-              pruebasEmpleados.cantidadPaginas
+              liquidaciones.cantidadPaginas
             ).map((page) => (
               <li key={page}>
                 <span
@@ -604,11 +551,11 @@ export function PruebasEmpleados() {
               <span
                 onClick={paginaSiguiente}
                 className={`flex select-none text-black items-center justify-center px-3 h-8 border border-gray-300 hover:text-black dark:border-gray-700 dark:bg-gray-700 dark:text-white 
-                  ${
-                    paginaActual >= pruebasEmpleados.cantidadPaginas
-                      ? "cursor-default"
-                      : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
-                  }`}
+                ${
+                  paginaActual >= liquidaciones.cantidadPaginas
+                    ? "cursor-default"
+                    : "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:hover:text-white"
+                }`}
               >
                 Pág. Siguiente
               </span>
@@ -616,6 +563,94 @@ export function PruebasEmpleados() {
           </ul>
         </nav>
       </div>
+      {showModal && (
+        <div className="fixed z-[1000] inset-0 flex items-center justify-center">
+          <div className="p-4 max-h-full sm:min-w-[600px]">
+            {/* <!-- Modal content --> */}
+            <div className="bg-gray-400 rounded-lg border-2 border-white">
+              {/* <!-- Modal header --> */}
+              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t flex-col sm:flex-row">
+                <div className="flex flex-col items-center sm:items-start">
+                  <span className="font-bold">
+                    {liquidacion?.RealizadoPor?.numero_identificacion ||
+                      "No disponible"}
+                  </span>
+                  <span>
+                    {liquidacion?.RealizadoPor?.nombres || "No disponible"}{" "}
+                    {liquidacion?.RealizadoPor?.apellidos || "No disponible"}
+                  </span>
+                  <span>
+                    {liquidacion?.RealizadoPor?.tipo_identificacion ||
+                      "No disponible"}{" "}
+                    -{" "}
+                    {liquidacion?.RealizadoPor?.numero_identificacion ||
+                      "No disponible"}
+                  </span>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <Button
+                    className="m-0 w-auto text-xs bg-blue-600 hover:bg-blue-600/[.5]"
+                    onClick={handleCerrarModal}
+                  >
+                    Cerrar
+                  </Button>
+                </div>
+              </div>
+              {/* Cuerpo del modal */}
+              <div
+                className="overflow-y-auto max-h-[60vh]"
+                ref={modalContentRef}
+              >
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 border-b p-4">
+                  <span>
+                    <b>Código de nómina: </b>
+                    {liquidacion?.codigo_nomina || "No disponible"}
+                  </span>
+                  <span>
+                    <b>Cargo actual: </b>
+                    {liquidacion?.Cargo_Actual?.descripcion || "No disponible"}
+                  </span>
+                  <span>
+                    <b>Unidad organizativa de adscripción: </b>
+                    {liquidacion?.Cargo_Actual?.Departamento?.nombre ||
+                      "No disponible"}
+                  </span>
+                  <span>
+                    <b>Fecha de ingreso: </b>
+                    {liquidacion?.Cargo_Actual?.fecha_ingreso ||
+                      "No disponible"}
+                  </span>
+                  <span>
+                    <b>Antigüedad: </b>
+                    {liquidacion?.Cargo_Actual?.fecha_ingreso
+                      ? `${calcularAntiguedad(
+                          liquidacion?.Cargo_Actual?.fecha_ingreso
+                        )} días`
+                      : "No disponible"}
+                  </span>
+                  <span>
+                    <b>Sueldo actual: </b>
+                    {liquidacion?.Cargo_Actual?.salario
+                      ? `Bs. ${liquidacion?.Cargo_Actual?.salario}`
+                      : "No disponible"}
+                  </span>
+                  <span>
+                    <b>Tipo de nómina: </b>
+                    {liquidacion?.tipo_nomina || "No disponible"}
+                  </span>
+                  {liquidacion?.tipo_nomina === "Otro" && (
+                    <span>
+                      <b>Otro tipo de nómina: </b>
+                      {liquidacion?.otro_tipo_nomina || "No disponible"}
+                    </span>
+                  )}
+                </div>
+                {/* Aquí puedes agregar más contenido basado en tu estructura original */}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

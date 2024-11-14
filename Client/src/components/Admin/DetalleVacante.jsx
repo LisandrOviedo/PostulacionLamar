@@ -293,16 +293,32 @@ export function DetalleVacante() {
             <Span>{vacanteDetail?.vacante?.nombre}</Span>
           </div>
           <div>
-            <Span className="font-bold">Área de interés: </Span>
-            <Span>{vacanteDetail?.vacante?.Areas_Intere?.nombre}</Span>
-          </div>
-          <div>
             <Span className="font-bold">Ubicación: </Span>
             <Span>{vacanteDetail?.vacante?.ubicacion}</Span>
           </div>
+          <div>
+            <Span className="font-bold">Departamento: </Span>
+            <Span>{vacanteDetail?.vacante?.departamento}</Span>
+          </div>
+          <div>
+            <Span className="font-bold">Nivel educativo: </Span>
+            <Span className="text-justify">
+              {vacanteDetail?.vacante?.nivel_educativo}
+            </Span>
+          </div>
+          <div>
+            <Span className="font-bold">Años de experiencia: </Span>
+            <Span>{vacanteDetail?.vacante?.anos_experiencia}</Span>
+          </div>
+          <div>
+            <Span className="font-bold">Área de interés: </Span>
+            <Span>{vacanteDetail?.vacante?.Areas_Intere?.nombre}</Span>
+          </div>
           <div className="break-words">
             <Span className="font-bold">Descripción de la vacante: </Span>
-            <Span>{vacanteDetail?.vacante?.descripcion}</Span>
+            <Span className="text-justify">
+              {vacanteDetail?.vacante?.descripcion}
+            </Span>
           </div>
           <div>
             <Span className="font-bold">Creado por: </Span>
@@ -328,7 +344,7 @@ export function DetalleVacante() {
             </Span>
           </div>
           <div>
-            <Span className="font-bold">Cantidad Postulados: </Span>
+            <Span className="font-bold">Cantidad postulados: </Span>
             <Span>{vacanteDetail?.vacante?.Vacantes_Empleados.length}</Span>
           </div>
         </div>

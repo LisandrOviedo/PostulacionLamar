@@ -2,6 +2,7 @@ const { Router } = require("express");
 const {
   getVacantes,
   getVacante,
+  getVacanteEmpleado,
   getPostulacionesEmpleado,
   getPostulacionEmpleado,
   postVacante,
@@ -17,6 +18,7 @@ const vacantes = Router();
 
 vacantes.get("/", authenticateToken, getVacantes);
 vacantes.get("/detalle/:vacante_id", authenticateToken, getVacante);
+vacantes.get("/detalleEmpleado/:vacante_id", getVacanteEmpleado);
 vacantes.get(
   "/postulacionesEmpleado/:empleado_id",
   authenticateToken,

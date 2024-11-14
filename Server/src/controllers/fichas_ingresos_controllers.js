@@ -50,7 +50,8 @@ const traerFichaIngresoEmpleado = async (empleado_id) => {
   }
 
   try {
-    const ficha_ingreso = await Empleados.findByPk(empleado_id, {
+    const ficha_ingreso = await Empleados.findOne({
+      where: { empleado_id: empleado_id },
       attributes: {
         exclude: ["rol_id", "clave", "activo", "createdAt", "updatedAt"],
       },

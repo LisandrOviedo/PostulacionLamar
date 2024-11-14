@@ -258,13 +258,13 @@ export function AsignacionRoles() {
   };
 
   const handleVerDetalles = async (empleado_id) => {
-    if (!showModal) {
-      setShowModal(true);
-    }
-
     const dataEmpleadoDetail = await getEmpleadoDetail(token, empleado_id);
 
     setEmpleadoDetail(dataEmpleadoDetail);
+
+    if (!showModal) {
+      setShowModal(true);
+    }
   };
 
   const handleGuardarRol = () => {
@@ -348,7 +348,7 @@ export function AsignacionRoles() {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <Title>Asignación Roles</Title>
         </div>
-        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
           <div className="flex flex-col place-content-between">
             <Label htmlFor="buscar_por">Buscar por</Label>
             <Select
@@ -497,7 +497,7 @@ export function AsignacionRoles() {
                   {empleados.empleados.map((empleado, i) => (
                     <tr
                       key={i}
-                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700"
+                      className="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300"
                     >
                       <td className="p-4">
                         {empleado.apellidos} {empleado.nombres}
@@ -605,7 +605,7 @@ export function AsignacionRoles() {
           <div className="bg-gray-400 rounded-lg border-2 border-white">
             {/* Modal header */}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-6">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 p-6">
               <Span className="mr-2">
                 <b>Nombre completo: </b>
                 {empleadoDetail.nombres} {empleadoDetail.apellidos}
@@ -652,7 +652,7 @@ export function AsignacionRoles() {
             </div>
 
             {/* Cuerpo del modal */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 p-4 rounded-t border-t gap-4">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 p-4 rounded-t border-t gap-4">
               <div className="md:col-span-2">
                 <Label htmlFor="rol_id" className="font-bold">
                   Asignar nuevo rol:

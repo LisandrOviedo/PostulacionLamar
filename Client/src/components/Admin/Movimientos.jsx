@@ -459,7 +459,7 @@ export function Movimientos() {
 
       {datosEmpleado?.empleado_id && (
         <div className="p-4 border rounded-lg shadow-md w-full">
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 mt-5 w-full">
             <div>
               <Span>Nombres</Span>
               <Span>{datosEmpleado?.nombres || "-"}</Span>
@@ -571,7 +571,7 @@ export function Movimientos() {
       <br />
       <Title>Detalle del Movimiento Organizativo</Title>
       <Hr className="w-full my-5" />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         {/* Clase de Movimiento */}
         <div>
           <Label htmlFor="clase_movimiento_id">Clase de movimiento *</Label>
@@ -670,7 +670,7 @@ export function Movimientos() {
       <br />
       <Title>Nueva Condición Laboral Del Trabajador</Title>
       <Hr className="w-full my-5" />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         {/* Nueva Condición Laboral del Trabajador */}
 
         <div className="flex flex-col justify-start">
@@ -914,7 +914,7 @@ export function Movimientos() {
 
       <Title>Datos Del Solicitante</Title>
       <Hr className="w-full my-5" />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div>
           <Span>Número de identificación</Span>
           <Span>
@@ -943,7 +943,7 @@ export function Movimientos() {
 
       <Title>Supervisor Inmediato</Title>
       <Hr className="w-full my-5" />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div>
           <Label
             htmlFor="numero_identificacion_supervisor"
@@ -1005,7 +1005,7 @@ export function Movimientos() {
       <br />
       <Title>Aprobación Gerencia De Área</Title>
       <Hr className="w-full my-5" />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div>
           <Label htmlFor="numero_identificacion_gerencia">
             Número de identificación *
@@ -1061,7 +1061,7 @@ export function Movimientos() {
 
       <Title>Talento Humano</Title>
       <Hr className="w-full my-5" />
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 w-full">
         <div>
           <Label htmlFor="numero_identificacion_tthh">
             Número de identificación *
