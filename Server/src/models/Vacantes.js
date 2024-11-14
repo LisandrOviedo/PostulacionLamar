@@ -7,21 +7,33 @@ module.exports = (sequelize) => {
       autoIncrement: true,
       primaryKey: true,
     },
-    area_interes_id: {
-      // Campo relacionado
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     nombre: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    ubicacion: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    departamento: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    nivel_educativo: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    anos_experiencia: {
+      type: DataTypes.INTEGER(2),
       allowNull: false,
     },
     descripcion: {
       type: DataTypes.TEXT("long"),
       allowNull: false,
     },
-    ubicacion: {
-      type: DataTypes.STRING,
+    area_interes_id: {
+      // Campo relacionado
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     creado_por_id: {

@@ -359,17 +359,22 @@ const traerPostulacionEmpleado = async (vacante_empleado_id) => {
 };
 
 const crearVacante = async (
-  area_interes_id,
   nombre,
-  descripcion,
   ubicacion,
+  departamento,
+  nivel_educativo,
+  anos_experiencia,
+  descripcion,
+  area_interes_id,
   creado_por_id
 ) => {
   if (
-    !area_interes_id ||
     !nombre ||
-    !descripcion ||
     !ubicacion ||
+    !nivel_educativo ||
+    !anos_experiencia ||
+    !descripcion ||
+    !area_interes_id ||
     !creado_por_id
   ) {
     throw new Error(`Datos faltantes`);
@@ -382,10 +387,13 @@ const crearVacante = async (
 
     await Vacantes.create(
       {
-        area_interes_id: area_interes_id,
         nombre: nombre,
-        descripcion: descripcion,
         ubicacion: ubicacion,
+        departamento: departamento || null,
+        nivel_educativo: nivel_educativo,
+        anos_experiencia: anos_experiencia,
+        descripcion: descripcion,
+        area_interes_id: area_interes_id,
         creado_por_id: creado_por_id,
       },
       { transaction: t }
@@ -403,17 +411,22 @@ const crearVacante = async (
 
 const modificarVacante = async (
   vacante_id,
-  area_interes_id,
   nombre,
+  ubicacion,
+  departamento,
+  nivel_educativo,
+  anos_experiencia,
   descripcion,
-  ubicacion
+  area_interes_id
 ) => {
   if (
     !vacante_id ||
-    !area_interes_id ||
     !nombre ||
+    !ubicacion ||
+    !nivel_educativo ||
+    !anos_experiencia ||
     !descripcion ||
-    !ubicacion
+    !area_interes_id
   ) {
     throw new Error(`Datos faltantes`);
   }
@@ -427,10 +440,13 @@ const modificarVacante = async (
 
     await Vacantes.update(
       {
-        area_interes_id: area_interes_id,
         nombre: nombre,
-        descripcion: descripcion,
         ubicacion: ubicacion,
+        departamento: departamento || null,
+        nivel_educativo: nivel_educativo,
+        anos_experiencia: anos_experiencia,
+        descripcion: descripcion,
+        area_interes_id: area_interes_id,
       },
       {
         where: {

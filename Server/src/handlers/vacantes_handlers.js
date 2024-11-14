@@ -117,15 +117,26 @@ const getPostulacionEmpleado = async (req, res) => {
 };
 
 const postVacante = async (req, res) => {
-  const { area_interes_id, nombre, descripcion, ubicacion, creado_por_id } =
-    req.body;
+  const {
+    nombre,
+    ubicacion,
+    departamento,
+    nivel_educativo,
+    anos_experiencia,
+    descripcion,
+    area_interes_id,
+    creado_por_id,
+  } = req.body;
 
   try {
     const response = await crearVacante(
-      area_interes_id,
       nombre,
-      descripcion,
       ubicacion,
+      departamento,
+      nivel_educativo,
+      anos_experiencia,
+      descripcion,
+      area_interes_id,
       creado_por_id
     );
 
@@ -148,16 +159,27 @@ const postVacanteEmpleado = async (req, res) => {
 };
 
 const putVacante = async (req, res) => {
-  const { vacante_id, area_interes_id, nombre, descripcion, ubicacion } =
-    req.body;
+  const {
+    vacante_id,
+    nombre,
+    ubicacion,
+    departamento,
+    nivel_educativo,
+    anos_experiencia,
+    descripcion,
+    area_interes_id,
+  } = req.body;
 
   try {
     const response = await modificarVacante(
       vacante_id,
-      area_interes_id,
       nombre,
+      ubicacion,
+      departamento,
+      nivel_educativo,
+      anos_experiencia,
       descripcion,
-      ubicacion
+      area_interes_id
     );
 
     return res.json(response);
