@@ -512,19 +512,17 @@ export function DatosPersonales() {
                   {empleado?.Cargos_Empleados[0]?.Cargos_Nivele.nivel}
                 </Span>
               </div>
-              <div className="mb-6 sm:col-span-2 md:col-span-3 mx-auto">
-                <Button
-                  disabled={Object.keys(errors).length}
-                  className={`m-0 ${
-                    Object.keys(errors).length && "opacity-600"
-                  }}`}
-                  onClick={handleSaveChanges}
-                >
-                  Guardar Cambios
-                </Button>
-              </div>
             </>
           )}
+          <div className="mb-6 sm:col-span-2 md:col-span-3 mx-auto">
+            <Button
+              disabled={Object.keys(errors).length}
+              className="m-0"
+              onClick={handleSaveChanges}
+            >
+              Guardar Cambios
+            </Button>
+          </div>
         </div>
       )}
     </div>
