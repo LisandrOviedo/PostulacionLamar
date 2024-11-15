@@ -79,9 +79,13 @@ export function BarraNavegacion() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         if (pathname.startsWith("/admin/")) {
-          navigate("/admin/panel");
+          if (pathname !== "/admin/panel") {
+            navigate("/admin/panel");
+          }
         } else {
-          navigate("/");
+          if (pathname !== "/") {
+            navigate("/");
+          }
         }
 
         await deleteSesion(token, empleado.empleado_id);
