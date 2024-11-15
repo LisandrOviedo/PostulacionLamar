@@ -604,10 +604,6 @@ const cargarEmpleados = async () => {
                 { transaction: t }
               );
 
-              await t.commit();
-
-              t = await conn.transaction();
-
               await Direcciones.create(
                 {
                   empleado_id: empleado.empleado_id,
@@ -646,10 +642,6 @@ const cargarEmpleados = async () => {
                 },
                 { transaction: t }
               );
-
-              await t.commit();
-
-              t = await conn.transaction();
 
               await Direcciones.create(
                 {
