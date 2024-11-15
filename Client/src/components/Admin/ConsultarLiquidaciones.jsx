@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import {
@@ -21,7 +20,6 @@ import Swal from "sweetalert2";
 export function ConsultarLiquidaciones() {
   const tableRef = useRef(null);
   const modalContentRef = useRef(null);
-  const navigate = useNavigate();
 
   const token = useSelector((state) => state.empleados.token);
 
@@ -33,7 +31,8 @@ export function ConsultarLiquidaciones() {
 
   const [liquidacion_id, setLiquidacionId] = useState(null);
 
-  const [limitePorPagina, setLimitePorPagina] = useState(2);
+  const [limitePorPagina, setLimitePorPagina] = useState(15);
+
   const [showModal, setShowModal] = useState(false);
 
   const [liquidacion, setliquidacion] = useState({});
@@ -363,8 +362,7 @@ export function ConsultarLiquidaciones() {
             defaultValue={limitePorPagina}
             onChange={handleChangePagination}
           >
-            <option value="2">2</option>
-            <option value="10">10</option>
+            <option value="15">15</option>
             <option value="20">20</option>
             <option value="30">30</option>
           </Select>

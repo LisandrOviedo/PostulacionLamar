@@ -32,7 +32,7 @@ export function AsignacionRoles() {
 
   const [paginaActual, setPaginaActual] = useState(1);
 
-  const [limitePorPagina, setLimitePorPagina] = useState(2);
+  const [limitePorPagina, setLimitePorPagina] = useState(15);
 
   const [filters, setFilters] = useState({
     numero_identificacion: "",
@@ -389,8 +389,7 @@ export function AsignacionRoles() {
               defaultValue={limitePorPagina}
               onChange={handleChangePagination}
             >
-              <option value="2">2</option>
-              <option value="10">10</option>
+              <option value="15">15</option>
               <option value="20">20</option>
               <option value="30">30</option>
             </Select>
