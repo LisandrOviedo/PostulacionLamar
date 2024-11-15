@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import { deleteSesion } from "../../redux/sesiones/sesionesActions";
 
@@ -15,6 +16,10 @@ import Swal from "sweetalert2";
 
 export function BarraNavegacion() {
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  const { pathname } = useLocation();
 
   const [isOpenBurger, setIsOpenBurger] = useState(false);
   const [isOpenNotif, setIsOpenNotif] = useState(false);
@@ -73,14 +78,18 @@ export function BarraNavegacion() {
       cancelButtonText: "No",
     }).then(async (result) => {
       if (result.isConfirmed) {
+        if (pathname.startsWith("/admin/")) {
+          navigate("/admin/panel");
+        } else {
+          navigate("/");
+        }
+
         await deleteSesion(token, empleado.empleado_id);
 
         dispatch(resetEmpleados());
       }
     });
   };
-
-  const { pathname } = useLocation();
 
   const asideRef = useRef(null);
 
