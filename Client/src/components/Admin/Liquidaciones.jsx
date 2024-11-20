@@ -118,6 +118,14 @@ export function Liquidaciones() {
               ? data.Cargos_Empleados[0].cargo_empleado_id
               : "",
           });
+        } else {
+          Swal.fire({
+            title: "Oops...",
+            text: "Empleado no encontrado o no forma parte de tu empresa",
+            icon: "error",
+            showConfirmButton: false,
+            timer: 3000,
+          });
         }
       });
     }
