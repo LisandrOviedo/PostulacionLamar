@@ -14,6 +14,7 @@ import { PruebaKostick } from "./PruebaKostick/PruebaKostick";
 import { SubirDocumentos } from "./SubirDocumentos/SubirDocumentos";
 
 import { AccesoAdmin } from "./Admin/AccesoAdmin";
+import { AsignacionAccesoEmpresas } from "./Admin/AsignacionAccesoEmpresas";
 import { AsignacionRoles } from "./Admin/AsignacionRoles";
 import { ConsultarLiquidaciones } from "./Admin/ConsultarLiquidaciones";
 import { DetalleEmpleado } from "./Admin/DetalleEmpleado";
@@ -46,6 +47,7 @@ export {
   PruebaKostick,
   SubirDocumentos,
   AccesoAdmin,
+  AsignacionAccesoEmpresas,
   AsignacionRoles,
   ConsultarLiquidaciones,
   DetalleEmpleado,

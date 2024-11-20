@@ -20,6 +20,7 @@ import {
   PruebaKostick,
   SubirDocumentos,
   AccesoAdmin,
+  AsignacionAccesoEmpresas,
   AsignacionRoles,
   DetalleEmpleado,
   DetalleVacante,
@@ -149,11 +150,16 @@ function App() {
               path="/admin/vacantes/:vacante_id"
               element={<DetalleVacante />}
             />
+            <Route
+              path="/admin/asignacionAccesosEmpresas"
+              element={<AsignacionAccesoEmpresas />}
+            />
+            <Route
+              path="/admin/consultarLiquidaciones"
+              element={<ConsultarLiquidaciones />}
+            />
           </Route>
-          <Route
-            path="/admin/consultarLiquidaciones"
-            element={<ConsultarLiquidaciones />}
-          />
+          
           <Route path="*" element={<PaginaNoEncontrada />} />
         </Routes>
       </Suspense>
