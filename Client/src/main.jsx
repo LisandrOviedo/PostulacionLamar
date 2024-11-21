@@ -16,7 +16,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <HashRouter basename="">
+        <HashRouter
+          basename=""
+          future={{
+            v7_startTransition: true,
+            v7_relativeSplatPath: true,
+          }}
+        >
           <App />
         </HashRouter>
       </PersistGate>
