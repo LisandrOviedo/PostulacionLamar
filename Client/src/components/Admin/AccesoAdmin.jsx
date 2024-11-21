@@ -160,7 +160,7 @@ export function AccesoAdmin() {
           <div className="flex items-center justify-between mb-1 gap-4 sm:gap-0">
             <Label htmlFor="clave">Contraseña</Label>
             <button
-              className="cursor-pointer font-semibold text-[#002846] hover:text-[#002846]/[.5] text-xs sm:text-sm bg-transparent border-none focus:outline-none"
+              className="font-semibold text-[#002846] hover:text-[#002846]/[.5] text-xs sm:text-sm bg-transparent border-none focus:outline-none"
               onClick={handleHelp}
             >
               ¿Olvidó su contraseña?
@@ -197,7 +197,7 @@ export function AccesoAdmin() {
           </Button>
           <Link
             to="/"
-            className="cursor-pointer font-semibold text-[#002846] hover:text-[#002846]/[.5] text-xs sm:text-sm"
+            className="font-semibold text-[#002846] hover:text-[#002846]/[.5] text-xs sm:text-sm"
           >
             Ir a la vista de empleado
           </Link>
