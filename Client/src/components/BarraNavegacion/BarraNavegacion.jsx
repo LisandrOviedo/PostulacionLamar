@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -217,15 +217,19 @@ export function BarraNavegacion() {
             </ul>
           </>
         ) : (
-          <Link
+          <NavLink
             to={menuItem.ruta}
-            className="text-white hover:text-[#F0C95C] block"
+            className={({ isActive }) => {
+              return isActive
+                ? "text-[#F0C95C] hover:text-[#F0C95C] block pointer-events-none"
+                : "text-white hover:text-[#F0C95C] block";
+            }}
             onClick={() => {
               toggleMenuBurger();
             }}
           >
             {menuItem.titulo}
-          </Link>
+          </NavLink>
         )}
       </li>
     ));
