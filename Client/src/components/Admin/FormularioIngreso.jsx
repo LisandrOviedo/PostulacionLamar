@@ -57,7 +57,7 @@ import validations from "../../utils/validacionesFormularioIngreso";
 
 import Swal from "sweetalert2";
 
-export function FormularioIngreso() {
+export default function FormularioIngreso() {
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);

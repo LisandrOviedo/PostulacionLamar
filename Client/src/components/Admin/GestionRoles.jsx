@@ -22,7 +22,7 @@ import { TfiPencil } from "react-icons/tfi";
 
 import Swal from "sweetalert2";
 
-export function GestionRoles() {
+export default function GestionRoles() {
   const token = useSelector((state) => state.empleados.token);
 
   const [roles, setRoles] = useState([]);

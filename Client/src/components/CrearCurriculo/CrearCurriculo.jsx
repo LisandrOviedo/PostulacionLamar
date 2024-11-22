@@ -38,7 +38,7 @@ import { MdCancel } from "react-icons/md";
 
 import Swal from "sweetalert2";
 
-export function CrearCurriculo() {
+export default function CrearCurriculo() {
   const navigate = useNavigate();
 
   const [searchParams, setSearchParams] = useSearchParams();

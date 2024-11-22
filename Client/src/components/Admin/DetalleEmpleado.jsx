@@ -8,7 +8,7 @@ import { Button, Hr, Title } from "../UI";
 
 import { calcularEdad } from "../../utils/formatearFecha";
 
-export function DetalleEmpleado() {
+export default function DetalleEmpleado() {
   const { empleado_id } = useParams();
 
   const token = useSelector((state) => state.empleados.token);

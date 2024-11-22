@@ -19,7 +19,7 @@ import { DDMMYYYYHHMM2 } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
-export function HistorialPostulaciones() {
+export default function HistorialPostulaciones() {
   const tableRef = useRef(null);
 
   const modalContentRef = useRef(null);

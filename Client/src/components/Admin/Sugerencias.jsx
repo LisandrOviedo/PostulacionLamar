@@ -23,7 +23,7 @@ import { DDMMYYYYHHMM2 } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
-export function Sugerencias() {
+export default function Sugerencias() {
   const tableRef = useRef(null);
 
   const token = useSelector((state) => state.empleados.token);

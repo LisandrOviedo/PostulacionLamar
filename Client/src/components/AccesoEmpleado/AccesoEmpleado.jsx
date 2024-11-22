@@ -12,7 +12,7 @@ import { getLogin } from "../../redux/empleados/empleadosActions";
 
 import Swal from "sweetalert2";
 
-export function AccesoEmpleado() {
+export default function AccesoEmpleado() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();

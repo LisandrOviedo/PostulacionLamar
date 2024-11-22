@@ -18,7 +18,7 @@ import {
 
 import { DDMMYYYYHHMM2 } from "../../utils/formatearFecha";
 
-export function DetalleVacante() {
+export default function DetalleVacante() {
   const navigate = useNavigate();
 
   const { vacante_id } = useParams();

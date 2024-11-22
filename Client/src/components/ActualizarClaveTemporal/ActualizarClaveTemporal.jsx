@@ -7,7 +7,7 @@ import { Button, Hr, Input, Label, Title, Span } from "../UI";
 import { MdCancel } from "react-icons/md";
 import { putPasswordTemporal } from "../../redux/empleados/empleadosActions";
 
-export function ActualizarClaveTemporal() {
+export default function ActualizarClaveTemporal() {
   const navigate = useNavigate();
   const empleado = useSelector((state) => state.empleados.empleado);
 

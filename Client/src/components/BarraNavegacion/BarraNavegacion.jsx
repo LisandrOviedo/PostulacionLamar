@@ -14,7 +14,7 @@ import { IoMdArrowDropup, IoMdArrowDropdown } from "react-icons/io";
 
 import Swal from "sweetalert2";
 
-export function BarraNavegacion() {
+export default function BarraNavegacion() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();

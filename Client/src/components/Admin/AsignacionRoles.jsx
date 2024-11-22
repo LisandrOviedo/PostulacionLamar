@@ -19,7 +19,7 @@ import { DDMMYYYY } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
-export function AsignacionRoles() {
+export default function AsignacionRoles() {
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);

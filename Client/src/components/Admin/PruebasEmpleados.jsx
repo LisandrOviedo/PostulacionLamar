@@ -14,7 +14,7 @@ import validations from "../../utils/validacionesPruebasEmpleados";
 
 import { DDMMYYYY } from "../../utils/formatearFecha";
 
-export function PruebasEmpleados() {
+export default function PruebasEmpleados() {
   const tableRef = useRef(null);
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
