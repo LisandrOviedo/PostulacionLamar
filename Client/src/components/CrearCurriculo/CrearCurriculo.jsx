@@ -1071,7 +1071,7 @@ export default function CrearCurriculo() {
         </div>
 
         <div
-          className={`md:col-span-3 flex justify-center items-center ${
+          className={`sm:col-span-2 md:col-span-3 flex justify-center items-center ${
             Object.keys(errors).length && "opacity-50"
           }`}
           disabled={Object.keys(errors).length}
