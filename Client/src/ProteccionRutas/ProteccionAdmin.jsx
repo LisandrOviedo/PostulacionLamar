@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-export const ProteccionAdmin = () => {
+export default function ProteccionAdmin() {
   const userState = useSelector((state) => state.empleados.empleado);
 
   const location = useLocation();
@@ -23,6 +23,4 @@ export const ProteccionAdmin = () => {
   ) : (
     <Navigate replace to="/admin/acceso" state={{ from: location }} />
   );
-};
-
-export default ProteccionAdmin;
+}

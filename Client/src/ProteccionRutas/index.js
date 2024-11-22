@@ -1,5 +1,7 @@
-import { ProteccionActualizarClave } from "./ProteccionActualizarClave";
-import { ProteccionAdmin } from "./ProteccionAdmin";
-import { ProteccionEmpleado } from "./ProteccionEmpleado";
+import { lazy } from "react";
 
-export { ProteccionActualizarClave, ProteccionAdmin, ProteccionEmpleado };
+export const ProteccionAdmin = lazy(() => import("./ProteccionAdmin"));
+export const ProteccionEmpleado = lazy(() => import("./ProteccionEmpleado"));
+export const ProteccionActualizarClave = lazy(() =>
+  import("./ProteccionActualizarClave")
+);
