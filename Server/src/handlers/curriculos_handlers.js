@@ -16,8 +16,11 @@ const {
 const { crearCarpetaSiNoExiste } = require("../utils/pruebaKostick");
 
 const path = require("node:path");
-const PDFDocument = require("pdfkit-table");
 const fs = require("node:fs");
+
+const puppeteer = require("puppeteer");
+const { reporteCurriculoPDF } = require("../utils/reportes.js");
+
 const JSZip = require("jszip");
 
 const getCurriculos = async (req, res) => {
@@ -53,11 +56,6 @@ const getCurriculoPDF = async (req, res) => {
   const filename = "Perfil Profesional.pdf";
 
   try {
-    const doc = new PDFDocument({
-      bufferPages: true,
-      font: "Helvetica",
-    });
-
     // Genera el contenido del PDF
     const content = await traerCurriculoPDF(empleado_id);
 
@@ -73,165 +71,30 @@ const getCurriculoPDF = async (req, res) => {
       `../../public/documentosEmpleados/${identificacion}/${filename}`
     );
 
-    doc.pipe(fs.createWriteStream(pdf_path));
+    const browser = await puppeteer.launch();
 
-    const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
-    doc.image(logoPath, 55, 35, { width: 80 });
+    const page = await browser.newPage();
 
-    doc.moveDown(2);
-    doc
-      .fontSize(14)
-      .font("Helvetica-Bold")
-      .text("Perfil Profesional", { align: "center" });
-    doc.moveDown();
-
-    doc.on("pageAdded", () => {
-      doc.fillColor("black");
-      doc.image(logoPath, 55, 35, { width: 80 });
-      doc.moveDown(2);
-      doc.moveDown();
+    await page.setContent(reporteCurriculoPDF(content), {
+      waitUntil: "domcontentloaded",
     });
 
-    for (const seccion of content) {
-      doc
-        .fontSize(12)
-        .font("Helvetica-Bold")
-        .text(seccion.titulo, { underline: true });
-      doc.moveDown();
+    await page.pdf({
+      format: "A4",
+      path: pdf_path,
+      printBackground: true,
+      margin: {
+        top: "30px",
+        right: "50px",
+        bottom: "30px",
+        left: "50px",
+      },
+      displayHeaderFooter: true,
+      footerTemplate:
+        '<div style="text-align: right; width: 297mm; font-size: 10px;"><span style="margin-right: 1cm;"><span class="pageNumber"></span> de <span class="totalPages"></span></span></div>',
+    });
 
-      for (const campo of seccion.contenido) {
-        if (campo.titulo_campo === "Experiencias") {
-          if (!campo.descripcion_campo.length) {
-            doc
-              .fontSize(11)
-              .font("Helvetica")
-              .text("No tiene experencia previa", { indent: 20 });
-          } else {
-            (async function createTable() {
-              const table = {
-                headers: [
-                  "Tipo",
-                  "Cargo / Título",
-                  "Desde",
-                  "Hasta",
-                  "Empresa / Centro Educativo",
-                ],
-                rows: [],
-              };
-              for (const experiencia of campo.descripcion_campo) {
-                const row = [
-                  experiencia.tipo,
-                  experiencia.cargo_titulo,
-                  experiencia.fecha_desde,
-                  experiencia.fecha_hasta,
-                  experiencia.empresa_centro_educativo,
-                ];
-                table.rows.push(row);
-              }
-              await doc.table(table, {
-                columnsSize: [50, 130, 70, 70, 160],
-                prepareHeader: () => doc.fontSize(11).font("Helvetica-Bold"),
-                prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
-                  doc.fontSize(10).font("Helvetica");
-                },
-              });
-            })();
-          }
-        } else if (campo.titulo_campo === "Títulos Obtenidos") {
-          if (!campo.descripcion_campo.length) {
-            doc
-              .fontSize(11)
-              .font("Helvetica")
-              .text("No tiene títulos", { indent: 20 });
-          } else {
-            (async function createTable2() {
-              const table = {
-                headers: [
-                  "Grado Instrucción",
-                  "Desde",
-                  "Hasta",
-                  "Nombre Instituto",
-                  "Título Obtenido",
-                ],
-                rows: [],
-              };
-              for (const titulo of campo.descripcion_campo) {
-                const row = [
-                  titulo.grado_instruccion,
-                  titulo.fecha_desde,
-                  titulo.fecha_hasta,
-                  titulo.nombre_instituto,
-                  titulo.titulo_obtenido,
-                ];
-                table.rows.push(row);
-              }
-              await doc.table(table, {
-                columnsSize: [110, 70, 70, 115, 115],
-                prepareHeader: () => doc.fontSize(11).font("Helvetica-Bold"),
-                prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
-                  doc.fontSize(10).font("Helvetica");
-                },
-              });
-            })();
-          }
-        } else if (campo.titulo_campo === "Idiomas") {
-          if (!campo.descripcion_campo.length) {
-            doc
-              .fontSize(11)
-              .font("Helvetica")
-              .text("No tiene conocimientos", { indent: 20 });
-          } else {
-            (async function createTable() {
-              const table = {
-                headers: ["Idioma", "Nivel"],
-                rows: [],
-              };
-              for (const idioma of campo.descripcion_campo) {
-                const row = [idioma.nombre, idioma.nivel];
-                table.rows.push(row);
-              }
-              await doc.table(table, {
-                prepareHeader: () => doc.fontSize(11).font("Helvetica-Bold"),
-                prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
-                  doc.fontSize(10).font("Helvetica");
-                },
-              });
-            })();
-          }
-        } else {
-          if (campo.titulo_campo) {
-            doc.fontSize(11).font("Helvetica-Bold").text(campo.titulo_campo, {
-              continued: true,
-              indent: 20,
-            });
-
-            if (!campo.descripcion_campo) {
-              doc
-                .fontSize(11)
-                .font("Helvetica")
-                .text("Sin registrar / No posee", { indent: 20 });
-            } else {
-              doc.fontSize(11).font("Helvetica").text(campo.descripcion_campo);
-            }
-          } else {
-            if (!campo.descripcion_campo) {
-              doc
-                .fontSize(11)
-                .font("Helvetica")
-                .text("Sin registrar / No posee", { indent: 20 });
-            } else {
-              doc
-                .fontSize(11)
-                .font("Helvetica")
-                .text(campo.descripcion_campo, { indent: 20 });
-            }
-          }
-        }
-      }
-      doc.moveDown();
-    }
-
-    doc.end();
+    await browser.close();
 
     await crearCurriculoPDF(empleado_id, filename, pdf_path);
 

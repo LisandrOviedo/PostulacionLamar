@@ -6,7 +6,7 @@ const { DDMMYYYYHHMM2 } = require("./formatearFecha");
 const crearTabla = (valores, propiedades, encabezados) => {
   return `${
     !valores.length
-      ? `:</b> No posee</span>`
+      ? `</b>No posee</span>`
       : `</b></span><br>
   <table>
   <thead>
@@ -116,7 +116,15 @@ border: 1px solid #000;
         ${seccion.contenido
           .map(
             (contenido) => `
-<span>${contenido.titulo_campo || ""}${
+<span>${
+              contenido.titulo_campo &&
+              contenido.titulo_campo !== "Títulos Obtenidos" &&
+              contenido.titulo_campo !== "Experiencias" &&
+              contenido.titulo_campo !== "Contactos de Emergencia" &&
+              contenido.titulo_campo !== "Referencias Personales"
+                ? contenido.titulo_campo
+                : ""
+            }${
               contenido.titulo_campo === "Títulos Obtenidos"
                 ? crearTabla(
                     contenido.descripcion_campo,
@@ -320,7 +328,130 @@ border: 1px solid #000;
 `;
 };
 
+const reporteCurriculoPDF = (content) => {
+  const logoPath = path.join(__dirname, `../../public/LogoAzul.png`);
+
+  const logo = fs.readFileSync(logoPath).toString("base64");
+
+  return `
+<!DOCTYPE html>
+<html lang="en" style="font-family: sans-serif;">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil Profesional</title>
+
+    <style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+h3{
+margin: 0;
+padding: 0;
+}
+</style>
+  </head>
+
+  <body>
+    <div style="display: flex; flex-direction: column;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+    <img src="data:image/png;base64,${logo}" alt="Logo LAMAR" width="100px" />
+    <div style="display: flex; flex-direction: column; align-items: center; font-size: 12px;">
+    <span>${DDMMYYYYHHMM2()}</span>
+    </div>
+      </div>
+      <div style="display: flex; justify-content: center">
+        <h3>PERFIL PROFESIONAL</h3>
+      </div>
+      ${content
+        .map(
+          (seccion) => `<br><br>
+      <div style="display: flex; flex-direction: column">
+        <span><b><u>${seccion.titulo}</u></b></span>
+        <br>
+        ${seccion.contenido
+          .map(
+            (contenido) => `
+<span>${
+              contenido.titulo_campo &&
+              contenido.titulo_campo !== "Títulos Obtenidos" &&
+              contenido.titulo_campo !== "Experiencias" &&
+              contenido.titulo_campo !== "Idiomas"
+                ? contenido.titulo_campo
+                : ""
+            }${
+              contenido.titulo_campo === "Títulos Obtenidos"
+                ? crearTabla(
+                    contenido.descripcion_campo,
+                    [
+                      "grado_instruccion",
+                      "fecha_desde",
+                      "fecha_hasta",
+                      "nombre_instituto",
+                      "titulo_obtenido",
+                    ],
+                    [
+                      "Grado Instrucción",
+                      "Fecha Desde",
+                      "Fecha Hasta",
+                      "Nombre Instituto",
+                      "Título Obtenido",
+                    ]
+                  )
+                : contenido.titulo_campo === "Experiencias"
+                ? crearTabla(
+                    contenido.descripcion_campo,
+                    [
+                      "tipo",
+                      "cargo_titulo",
+                      "fecha_desde",
+                      "fecha_hasta",
+                      "empresa_centro_educativo",
+                    ],
+                    [
+                      "Tipo",
+                      "Cargo Ejercido",
+                      "Fecha Desde",
+                      "Fecha Hasta",
+                      "Empresa",
+                    ]
+                  )
+                : contenido.titulo_campo === "Idiomas"
+                ? crearTabla(
+                    contenido.descripcion_campo,
+                    ["nombre", "nivel"],
+                    ["Idioma", "Nivel"]
+                  )
+                : `${contenido.descripcion_campo || ""}</span>`
+            }
+          `
+          )
+          .join("")}
+      </div>
+      `
+        )
+        .join("")}
+  </body>
+
+</html>
+`;
+};
+
 module.exports = {
   reporteFichaIngreso,
   reporteMovimiento,
+  reporteCurriculoPDF,
 };
