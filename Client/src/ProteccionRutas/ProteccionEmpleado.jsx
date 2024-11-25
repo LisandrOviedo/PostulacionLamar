@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-export const ProteccionEmpleado = () => {
+export default function ProteccionEmpleado() {
   const userState = useSelector((state) => state.empleados.empleado);
 
   const location = useLocation();
@@ -19,6 +19,4 @@ export const ProteccionEmpleado = () => {
   ) : (
     <Navigate replace to="/" state={{ from: location }} />
   );
-};
-
-export default ProteccionEmpleado;
+}

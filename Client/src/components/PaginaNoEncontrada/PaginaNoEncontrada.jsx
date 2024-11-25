@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { Button, Title, Hr } from "../UI";
 
-export function PaginaNoEncontrada() {
+export default function PaginaNoEncontrada() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 

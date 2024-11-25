@@ -21,7 +21,7 @@ import { DDMMYYYY } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
-export function Empleados() {
+export default function Empleados() {
   const tableRef = useRef(null);
 
   const navigate = useNavigate();

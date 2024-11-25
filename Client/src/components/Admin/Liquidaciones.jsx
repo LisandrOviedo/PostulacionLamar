@@ -32,7 +32,7 @@ import { calcularAntiguedad } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
-export function Liquidaciones() {
+export default function Liquidaciones() {
   /*En este caso, está accediendo a state.empleados.token, 
   lo que significa que está extrayendo el valor del token del objeto empleados dentro del estado. */
   const token = useSelector((state) => state.empleados.token);
@@ -117,6 +117,14 @@ export function Liquidaciones() {
             cargo_empleado_id: data.Cargos_Empleados[0]?.cargo_empleado_id
               ? data.Cargos_Empleados[0].cargo_empleado_id
               : "",
+          });
+        } else {
+          Swal.fire({
+            title: "Oops...",
+            text: "Empleado no encontrado o no forma parte de tu empresa",
+            icon: "error",
+            showConfirmButton: false,
+            timer: 3000,
           });
         }
       });

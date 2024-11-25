@@ -45,7 +45,7 @@ import { calcularAntiguedad } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
-export function Movimientos() {
+export default function Movimientos() {
   /*En este caso, está accediendo a state.empleados.token, 
   lo que significa que está extrayendo el valor del token del objeto empleados dentro del estado. */
   const token = useSelector((state) => state.empleados.token);

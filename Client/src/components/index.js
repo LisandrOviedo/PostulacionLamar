@@ -1,64 +1,70 @@
-import { AccesoEmpleado } from "./AccesoEmpleado/AccesoEmpleado";
-import { ActualizarClave } from "./ActualizarClave/ActualizarClave";
-import { ActualizarClaveTemporal } from "./ActualizarClaveTemporal/ActualizarClaveTemporal";
-import { BarraNavegacion } from "./BarraNavegacion/BarraNavegacion";
-import { CrearCurriculo } from "./CrearCurriculo/CrearCurriculo";
-import { DatosPersonales } from "./DatosPersonales/DatosPersonales";
-import { EnviarSugerencia } from "./EnviarSugerencia/EnviarSugerencia";
-import { HistorialPostulaciones } from "./HistorialPostulaciones/HistorialPostulaciones";
-import { InfoCurriculo } from "./InfoCurriculo/InfoCurriculo";
-import { InfoPostulacion } from "./InfoPostulacion/InfoPostulacion";
-import { Inicio } from "./Inicio/Inicio";
-import { PaginaNoEncontrada } from "./PaginaNoEncontrada/PaginaNoEncontrada";
-import { PruebaKostick } from "./PruebaKostick/PruebaKostick";
-import { SubirDocumentos } from "./SubirDocumentos/SubirDocumentos";
+import { lazy } from "react";
 
-import { AccesoAdmin } from "./Admin/AccesoAdmin";
-import { AsignacionRoles } from "./Admin/AsignacionRoles";
-import { ConsultarLiquidaciones } from "./Admin/ConsultarLiquidaciones";
-import { DetalleEmpleado } from "./Admin/DetalleEmpleado";
-import { DetalleVacante } from "./Admin/DetalleVacante";
-import { Empleados } from "./Admin/Empleados";
-import { FormularioIngreso } from "./Admin/FormularioIngreso";
-import { Liquidaciones } from "./Admin/Liquidaciones";
-import { Movimientos } from "./Admin/Movimientos";
-import { PanelAdmin } from "./Admin/PanelAdmin";
-import { PerfilesProfesionales } from "./Admin/PerfilesProfesionales";
-import { PruebasEmpleados } from "./Admin/PruebasEmpleados";
-import { GestionRoles } from "./Admin/GestionRoles";
-import { SolicitudesMovimientos } from "./Admin/SolicitudesMovimientos";
-import { Sugerencias } from "./Admin/Sugerencias";
-import { Vacantes } from "./Admin/Vacantes";
+export const AccesoEmpleado = lazy(() =>
+  import("./AccesoEmpleado/AccesoEmpleado")
+);
+export const ActualizarClave = lazy(() =>
+  import("./ActualizarClave/ActualizarClave")
+);
+export const ActualizarClaveTemporal = lazy(() =>
+  import("./ActualizarClaveTemporal/ActualizarClaveTemporal")
+);
+export const BarraNavegacion = lazy(() =>
+  import("./BarraNavegacion/BarraNavegacion")
+);
+export const CrearCurriculo = lazy(() =>
+  import("./CrearCurriculo/CrearCurriculo")
+);
+export const DatosPersonales = lazy(() =>
+  import("./DatosPersonales/DatosPersonales")
+);
+export const EnviarSugerencia = lazy(() =>
+  import("./EnviarSugerencia/EnviarSugerencia")
+);
+export const HistorialPostulaciones = lazy(() =>
+  import("./HistorialPostulaciones/HistorialPostulaciones")
+);
+export const InfoCurriculo = lazy(() =>
+  import("./InfoCurriculo/InfoCurriculo")
+);
+export const InfoPostulacion = lazy(() =>
+  import("./InfoPostulacion/InfoPostulacion")
+);
+export const Inicio = lazy(() => import("./Inicio/Inicio"));
+export const PaginaNoEncontrada = lazy(() =>
+  import("./PaginaNoEncontrada/PaginaNoEncontrada")
+);
+export const PruebaKostick = lazy(() =>
+  import("./PruebaKostick/PruebaKostick")
+);
+export const SubirDocumentos = lazy(() =>
+  import("./SubirDocumentos/SubirDocumentos")
+);
 
-export {
-  AccesoEmpleado,
-  ActualizarClave,
-  ActualizarClaveTemporal,
-  BarraNavegacion,
-  CrearCurriculo,
-  DatosPersonales,
-  EnviarSugerencia,
-  HistorialPostulaciones,
-  InfoCurriculo,
-  InfoPostulacion,
-  Inicio,
-  PaginaNoEncontrada,
-  PruebaKostick,
-  SubirDocumentos,
-  AccesoAdmin,
-  AsignacionRoles,
-  ConsultarLiquidaciones,
-  DetalleEmpleado,
-  DetalleVacante,
-  Empleados,
-  FormularioIngreso,
-  GestionRoles,
-  Liquidaciones,
-  Movimientos,
-  PanelAdmin,
-  PerfilesProfesionales,
-  PruebasEmpleados,
-  SolicitudesMovimientos,
-  Sugerencias,
-  Vacantes,
-};
+export const AccesoAdmin = lazy(() => import("./Admin/AccesoAdmin"));
+export const AsignacionAccesoEmpresas = lazy(() =>
+  import("./Admin/AsignacionAccesoEmpresas")
+);
+export const AsignacionRoles = lazy(() => import("./Admin/AsignacionRoles"));
+export const ConsultarLiquidaciones = lazy(() =>
+  import("./Admin/ConsultarLiquidaciones")
+);
+export const DetalleEmpleado = lazy(() => import("./Admin/DetalleEmpleado"));
+export const DetalleVacante = lazy(() => import("./Admin/DetalleVacante"));
+export const Empleados = lazy(() => import("./Admin/Empleados"));
+export const FormularioIngreso = lazy(() =>
+  import("./Admin/FormularioIngreso")
+);
+export const Liquidaciones = lazy(() => import("./Admin/Liquidaciones"));
+export const Movimientos = lazy(() => import("./Admin/Movimientos"));
+export const PanelAdmin = lazy(() => import("./Admin/PanelAdmin"));
+export const PerfilesProfesionales = lazy(() =>
+  import("./Admin/PerfilesProfesionales")
+);
+export const PruebasEmpleados = lazy(() => import("./Admin/PruebasEmpleados"));
+export const GestionRoles = lazy(() => import("./Admin/GestionRoles"));
+export const SolicitudesMovimientos = lazy(() =>
+  import("./Admin/SolicitudesMovimientos")
+);
+export const Sugerencias = lazy(() => import("./Admin/Sugerencias"));
+export const Vacantes = lazy(() => import("./Admin/Vacantes"));

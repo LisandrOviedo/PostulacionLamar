@@ -17,7 +17,7 @@ import { DDMMYYYYHHMM2 } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
-export function ConsultarLiquidaciones() {
+export default function ConsultarLiquidaciones() {
   const tableRef = useRef(null);
   const modalContentRef = useRef(null);
 

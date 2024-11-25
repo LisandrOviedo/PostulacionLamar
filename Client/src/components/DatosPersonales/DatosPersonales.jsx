@@ -14,7 +14,7 @@ import { MdCancel } from "react-icons/md";
 
 import { TfiPencil } from "react-icons/tfi";
 
-export function DatosPersonales() {
+export default function DatosPersonales() {
   const dispatch = useDispatch();
 
   const token = useSelector((state) => state.empleados.token);

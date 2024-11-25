@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ import { IoMdArrowDropup, IoMdArrowDropdown } from "react-icons/io";
 
 import Swal from "sweetalert2";
 
-export function BarraNavegacion() {
+export default function BarraNavegacion() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -79,9 +79,13 @@ export function BarraNavegacion() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         if (pathname.startsWith("/admin/")) {
-          navigate("/admin/panel");
+          if (pathname !== "/admin/panel") {
+            navigate("/admin/panel");
+          }
         } else {
-          navigate("/");
+          if (pathname !== "/") {
+            navigate("/");
+          }
         }
 
         await deleteSesion(token, empleado.empleado_id);
@@ -213,15 +217,19 @@ export function BarraNavegacion() {
             </ul>
           </>
         ) : (
-          <Link
+          <NavLink
             to={menuItem.ruta}
-            className="text-white hover:text-[#F0C95C] block"
+            className={({ isActive }) => {
+              return isActive
+                ? "text-[#F0C95C] hover:text-[#F0C95C] block pointer-events-none"
+                : "text-white hover:text-[#F0C95C] block";
+            }}
             onClick={() => {
               toggleMenuBurger();
             }}
           >
             {menuItem.titulo}
-          </Link>
+          </NavLink>
         )}
       </li>
     ));

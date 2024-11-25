@@ -25,7 +25,7 @@ import { MdCancel, MdVideoCameraBack } from "react-icons/md";
 
 import Swal from "sweetalert2";
 
-export function Vacantes() {
+export default function Vacantes() {
   const navigate = useNavigate();
 
   const tableRef = useRef(null);

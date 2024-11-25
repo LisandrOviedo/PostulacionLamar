@@ -19,7 +19,7 @@ import {
 
 import { DDMMYYYY } from "../../utils/formatearFecha";
 
-export function PerfilesProfesionales() {
+export default function PerfilesProfesionales() {
   const tableRef = useRef(null);
 
   const token = useSelector((state) => state.empleados.token);

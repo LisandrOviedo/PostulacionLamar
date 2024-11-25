@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import { Title } from "../UI";
 
-export function PanelAdmin() {
+export default function PanelAdmin() {
   useEffect(() => {
     window.scroll(0, 0);
 

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 import { Title } from "../UI";
 
-export function Inicio() {
+export default function Inicio() {
   const empleado = useSelector((state) => state.empleados.empleado);
 
   useEffect(() => {

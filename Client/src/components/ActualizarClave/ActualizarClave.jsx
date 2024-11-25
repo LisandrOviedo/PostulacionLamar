@@ -6,7 +6,7 @@ import { Button, Input, Label, Title, Span } from "../UI";
 import { MdCancel } from "react-icons/md";
 import { putPassword } from "../../redux/empleados/empleadosActions";
 
-export function ActualizarClave() {
+export default function ActualizarClave() {
   const token = useSelector((state) => state.empleados.token);
   const empleado = useSelector((state) => state.empleados.empleado);
 

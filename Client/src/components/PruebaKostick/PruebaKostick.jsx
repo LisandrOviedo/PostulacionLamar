@@ -18,7 +18,7 @@ import {
   cuandoPuedesAplicar,
 } from "../../utils/pruebaKostick";
 
-export function PruebaKostick() {
+export default function PruebaKostick() {
   const navigate = useNavigate();
 
   const token = useSelector((state) => state.empleados.token);

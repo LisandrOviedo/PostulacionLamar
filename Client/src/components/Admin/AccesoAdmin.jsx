@@ -12,7 +12,7 @@ import { getLogin } from "../../redux/empleados/empleadosActions";
 
 import Swal from "sweetalert2";
 
-export function AccesoAdmin() {
+export default function AccesoAdmin() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -159,12 +159,12 @@ export function AccesoAdmin() {
         <div>
           <div className="flex items-center justify-between mb-1 gap-4 sm:gap-0">
             <Label htmlFor="clave">Contraseña</Label>
-            <a
-              className="cursor-pointer font-semibold text-[#002846] hover:text-[#002846]/[.5] text-xs sm:text-sm"
+            <button
+              className="font-semibold text-[#002846] hover:text-[#002846]/[.5] text-xs sm:text-sm bg-transparent border-none focus:outline-none"
               onClick={handleHelp}
             >
               ¿Olvidó su contraseña?
-            </a>
+            </button>
           </div>
           <Input
             id="clave"
@@ -195,12 +195,12 @@ export function AccesoAdmin() {
           >
             Acceder
           </Button>
-          <a
-            className="cursor-pointer font-semibold text-[#002846] hover:text-[#002846]/[.5] text-xs sm:text-sm"
-            onClick={() => navigate("/")}
+          <Link
+            to="/"
+            className="font-semibold text-[#002846] hover:text-[#002846]/[.5] text-xs sm:text-sm"
           >
             Ir a la vista de empleado
-          </a>
+          </Link>
         </div>
       </div>
     </div>

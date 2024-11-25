@@ -9,7 +9,7 @@ import { DDMMYYYYHHMM2 } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
-export function InfoPostulacion() {
+export default function InfoPostulacion() {
   const navigate = useNavigate();
 
   const URL_INTRANET = import.meta.env.VITE_URL_INTRANET;

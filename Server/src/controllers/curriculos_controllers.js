@@ -157,7 +157,7 @@ const traerCurriculoPDF = async (empleado_id) => {
     const curriculo = await traerCurriculoEmpleado(empleado_id);
 
     content.push({
-      titulo: "Datos Personales",
+      titulo: "DATOS PERSONALES",
       contenido: [
         {
           titulo_campo: "Nombre completo: ",
@@ -197,7 +197,7 @@ const traerCurriculoPDF = async (empleado_id) => {
     });
 
     content.push({
-      titulo: "Disponibilidad",
+      titulo: "DISPONIBILIDAD",
       contenido: [
         {
           titulo_campo: "¿Puede viajar? ",
@@ -228,7 +228,7 @@ const traerCurriculoPDF = async (empleado_id) => {
     });
 
     content.push({
-      titulo: "Títulos Obtenidos",
+      titulo: "TÍTULOS OBTENIDOS",
       contenido: [
         {
           titulo_campo: "Títulos Obtenidos",
@@ -250,7 +250,7 @@ const traerCurriculoPDF = async (empleado_id) => {
     });
 
     content.push({
-      titulo: "Experiencias",
+      titulo: "EXPERIENCIAS",
       contenido: [
         {
           titulo_campo: "Experiencias",
@@ -269,7 +269,7 @@ const traerCurriculoPDF = async (empleado_id) => {
     });
 
     content.push({
-      titulo: "Idiomas",
+      titulo: "IDIOMAS",
       contenido: [
         {
           titulo_campo: "Idiomas",
@@ -279,7 +279,7 @@ const traerCurriculoPDF = async (empleado_id) => {
     });
 
     content.push({
-      titulo: "Habilidades Técnicas",
+      titulo: "HABILIDADES TÉCNICAS",
       contenido: [
         {
           descripcion_campo: curriculo.Curriculo.habilidades_tecnicas,
@@ -294,7 +294,7 @@ const traerCurriculoPDF = async (empleado_id) => {
     });
 
     content.push({
-      titulo: "Áreas de Interés",
+      titulo: "ÁREAS DE INTERÉS",
       contenido: [
         {
           descripcion_campo: areas,

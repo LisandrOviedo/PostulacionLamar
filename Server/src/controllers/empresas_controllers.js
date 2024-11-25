@@ -91,10 +91,6 @@ const cargarEmpresas = async () => {
           { transaction: t }
         );
 
-        await t.commit();
-
-        t = await conn.transaction();
-
         await Sedes.create(
           {
             empresa_id: crearEmpresa.empresa_id,
@@ -108,45 +104,41 @@ const cargarEmpresas = async () => {
       }
     }
 
-    for (const empresa_faltante of empresas_faltantes) {
-      const empresa = await Empresas.findOne({
-        where: {
-          codigo_empresa: empresa_faltante.codigo_empresa,
-          nombre: sanarTextoAPI(empresa_faltante.descripcion_empresa),
-        },
-      });
+    // for (const empresa_faltante of empresas_faltantes) {
+    //   const empresa = await Empresas.findOne({
+    //     where: {
+    //       codigo_empresa: empresa_faltante.codigo_empresa,
+    //       nombre: sanarTextoAPI(empresa_faltante.descripcion_empresa),
+    //     },
+    //   });
 
-      if (!empresa) {
-        t = await conn.transaction();
+    //   if (!empresa) {
+    //     t = await conn.transaction();
 
-        const crearEmpresa = await Empresas.create(
-          {
-            codigo_empresa: empresa_faltante.codigo_empresa,
-            nombre: sanarTextoAPI(empresa_faltante.descripcion_empresa),
-            direccion:
-              sanarTextoAPI(empresa_faltante.direccion_empresa) || null,
-            rif: empresa_faltante.rif_empresa || null,
-          },
-          { transaction: t }
-        );
+    //     const crearEmpresa = await Empresas.create(
+    //       {
+    //         codigo_empresa: empresa_faltante.codigo_empresa,
+    //         nombre: sanarTextoAPI(empresa_faltante.descripcion_empresa),
+    //         direccion:
+    //           sanarTextoAPI(empresa_faltante.direccion_empresa) || null,
+    //         rif: empresa_faltante.rif_empresa || null,
+    //       },
+    //       { transaction: t }
+    //     );
 
-        await t.commit();
+    //     await Sedes.create(
+    //       {
+    //         empresa_id: crearEmpresa.empresa_id,
+    //         nombre: "Principal",
+    //         direccion:
+    //           sanarTextoAPI(empresa_faltante.direccion_empresa) || null,
+    //       },
+    //       { transaction: t }
+    //     );
 
-        t = await conn.transaction();
-
-        await Sedes.create(
-          {
-            empresa_id: crearEmpresa.empresa_id,
-            nombre: "Principal",
-            direccion:
-              sanarTextoAPI(empresa_faltante.direccion_empresa) || null,
-          },
-          { transaction: t }
-        );
-
-        await t.commit();
-      }
-    }
+    //     await t.commit();
+    //   }
+    // }
 
     console.log(`${fechaHoraActual()} - Terminó de registrar las empresas`);
   } catch (error) {
@@ -261,8 +253,8 @@ const inactivarEmpresa = async (empresa_id) => {
       { activo: !empresa.activo },
       {
         where: { empresa_id: empresa_id },
-         transaction: t 
-      },
+        transaction: t,
+      }
     );
 
     await t.commit();

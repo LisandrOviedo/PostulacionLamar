@@ -28,7 +28,7 @@ import { calcularAntiguedad } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
-export function SolicitudesMovimientos() {
+export default function SolicitudesMovimientos() {
   const tableRef = useRef(null);
 
   const modalContentRef = useRef(null);

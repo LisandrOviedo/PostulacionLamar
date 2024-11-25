@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { getAllRoles, putRolEmpleado } from "../../redux/roles/rolesActions";
+import { getAllEmpresasActivas } from "../../redux/empresas/empresasActions";
 
 import {
   getAllEmpleados,
@@ -19,12 +19,12 @@ import { DDMMYYYY } from "../../utils/formatearFecha";
 
 import Swal from "sweetalert2";
 
-export default function AsignacionRoles() {
+export default function AsignacionAccesoEmpresas() {
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);
 
-  const [roles, setRoles] = useState([]);
+  const [empresas, setEmpresas] = useState([]);
 
   const [empleadoDetail, setEmpleadoDetail] = useState({});
 
@@ -42,7 +42,9 @@ export default function AsignacionRoles() {
     empresa_id: empleado.empresa_id,
   });
 
-  const [nuevoRol, setNuevoRol] = useState({});
+  const [accesosEmpresas, setAccesosEmpresas] = useState({});
+
+  const [selectAll, setSelectAll] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -144,12 +146,12 @@ export default function AsignacionRoles() {
     handleFind();
 
     (async function () {
-      const dataAllRoles = await getAllRoles(token);
+      const dataAllEmpresas = await getAllEmpresasActivas();
 
-      setRoles(dataAllRoles);
+      setEmpresas(dataAllEmpresas);
     })();
 
-    document.title = "Grupo Lamar - Asignación Roles (Admin)";
+    document.title = "Grupo Lamar - Asignación Accesos Empresas (Admin)";
 
     return () => {
       document.title = "Grupo Lamar";
@@ -254,7 +256,7 @@ export default function AsignacionRoles() {
 
   const handleCerrarModal = () => {
     setShowModal(false);
-    setNuevoRol({});
+    setAccesosEmpresas({});
   };
 
   const handleVerDetalles = async (empleado_id) => {
@@ -271,7 +273,7 @@ export default function AsignacionRoles() {
     const identificacionEmpleado = `${empleadoDetail.tipo_identificacion}${empleadoDetail.numero_identificacion}`;
 
     Swal.fire({
-      text: `¿Deseas asignar el rol ${nuevoRol.descripcion} al usuario ${identificacionEmpleado}?`,
+      text: `¿Deseas actualizar los accesos del usuario ${identificacionEmpleado}?`,
       icon: "info",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -280,45 +282,38 @@ export default function AsignacionRoles() {
       cancelButtonText: "No",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        if (nuevoRol.rol_id !== "Seleccione") {
-          await putRolEmpleado(
-            token,
-            nuevoRol.rol_id,
-            empleadoDetail.empleado_id
-          );
-
-          setShowModal(false);
-
-          const dataEmpleados = await getAllEmpleados(
-            token,
-            filters,
-            paginaActual,
-            limitePorPagina
-          );
-
-          setEmpleados(dataEmpleados);
-        } else {
-          Swal.fire({
-            title: "Oops...",
-            text: "Debes seleccionar un rol válido",
-            icon: "error",
-            showConfirmButton: false,
-            timer: 3000,
-          });
-        }
       }
     });
   };
 
+  const handleSelectAll = () => {
+    const empresasSeleccionadas = {};
+
+    if (selectAll) {
+      setAccesosEmpresas({});
+    } else {
+      empresas.forEach((empresa) => {
+        empresasSeleccionadas[empresa.empresa_id] = true;
+      });
+    }
+
+    setAccesosEmpresas(empresasSeleccionadas);
+    setSelectAll(!selectAll);
+  };
+
   const handleValidate = (e) => {
-    const { name, value } = e.target;
+    const { name, checked } = e.target;
 
-    const rol_seleccionado = document.getElementById("rol_id");
+    if (accesosEmpresas[name] === true) {
+      setAccesosEmpresas((prevState) => {
+        const newState = { ...prevState };
+        delete newState[name];
 
-    const descripcion_rol =
-      rol_seleccionado.options[rol_seleccionado.selectedIndex].text;
-
-    setNuevoRol({ descripcion: descripcion_rol, [name]: value });
+        return newState;
+      });
+    } else {
+      setAccesosEmpresas({ ...accesosEmpresas, [name]: checked });
+    }
   };
 
   const handleChangePage = async (page) => {
@@ -346,7 +341,7 @@ export default function AsignacionRoles() {
         }`}
       >
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <Title>Asignación Roles</Title>
+          <Title>Asignación Accesos Empresas</Title>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-5 w-full">
           <div className="flex flex-col place-content-between">
@@ -533,7 +528,7 @@ export default function AsignacionRoles() {
                             handleVerDetalles(empleado.empleado_id)
                           }
                         >
-                          Editar
+                          Editar Accesos
                         </Button>
                       </td>
                     </tr>
@@ -599,9 +594,9 @@ export default function AsignacionRoles() {
       </div>
 
       {showModal && (
-        <div className="fixed z-50 inset-0 flex items-center justify-center mx-[6%]">
+        <div className="fixed z-[999] w-full min-h-screen top-0 left-0">
           {/* Modal content */}
-          <div className="bg-gray-400 rounded-lg border-2 border-white">
+          <div className="bg-gray-400 rounded-lg border-2 border-white m-[5%] max-h-[80vh] overflow-auto">
             {/* Modal header */}
 
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 p-6">
@@ -652,41 +647,105 @@ export default function AsignacionRoles() {
 
             {/* Cuerpo del modal */}
             <div className="grid sm:grid-cols-2 md:grid-cols-3 p-4 rounded-t border-t gap-4">
-              <div className="md:col-span-2">
-                <Label htmlFor="rol_id" className="font-bold">
-                  Asignar nuevo rol:
-                </Label>
-
-                <Select
-                  id="rol_id"
-                  name="rol_id"
-                  onChange={handleValidate}
-                  className="md:w-auto"
-                >
-                  <option value="Seleccione">Seleccione</option>
-                  {roles.length > 0 &&
-                    roles.map((rol) => (
-                      <option key={rol.rol_id} value={rol.rol_id}>
-                        {rol.descripcion}
-                      </option>
-                    ))}
-                </Select>
+              <div>
+                <Label className="font-bold">Lista de empresas</Label>
               </div>
-
-              <div className="flex flex-col gap-4 sm:flex-row justify-end items-center sm:items-end">
-                <Button
-                  className="m-0 md:w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
-                  onClick={handleGuardarRol}
-                >
-                  Guardar
-                </Button>
-                <Button
-                  className="m-0 md:w-auto text-xs"
-                  onClick={handleCerrarModal}
-                >
-                  Cancelar
-                </Button>
+              <div className="sm:col-span-2 md:col-span-3">
+                <div className="overflow-auto shadow-md sm:rounded-lg max-h-[80vh]">
+                  <table className="w-full text-sm text-left rtl:text-right text-black">
+                    <thead className="text-xs uppercase bg-gray-300">
+                      <tr>
+                        <th scope="col" className="p-4">
+                          <div className="flex items-center">
+                            <input
+                              id="checkbox-all-search"
+                              type="checkbox"
+                              className="w-4 h-4 mr-2 text-blue-600 bg-gray-100 border-gray-400 rounded focus:ring-blue-500 focus:ring-2"
+                              onChange={handleSelectAll}
+                              checked={selectAll}
+                            />
+                            <label htmlFor="checkbox-all-search">
+                              Sel. Todo
+                            </label>
+                          </div>
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                          Código
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                          Nombre
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                          RIF
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                          Tipo
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                          Seguro Social
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                          División
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                          Sector
+                        </th>
+                      </tr>
+                    </thead>
+                    {empresas && empresas.length > 0 && (
+                      <tbody>
+                        {empresas.map((empresa, i) => (
+                          <tr
+                            key={i}
+                            className="bg-gray-200 border-b hover:bg-gray-300"
+                          >
+                            <td className="w-4 p-4 text-center">
+                              <input
+                                id={empresa.empresa_id}
+                                type="checkbox"
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-400 rounded focus:ring-blue-500"
+                                checked={
+                                  accesosEmpresas[empresa.empresa_id] || false
+                                }
+                                onChange={handleValidate}
+                                name={empresa.empresa_id}
+                              />
+                            </td>
+                            <th
+                              scope="row"
+                              className="px-6 py-4 font-medium whitespace-nowrap"
+                            >
+                              {empresa.codigo_empresa}
+                            </th>
+                            <td className="px-6 py-4">{empresa.nombre}</td>
+                            <td className="px-6 py-4">{empresa.rif}</td>
+                            <td className="px-6 py-4">{empresa.tipo}</td>
+                            <td className="px-6 py-4">
+                              {empresa.seguro_social_id}
+                            </td>
+                            <td className="px-6 py-4">{empresa.division_id}</td>
+                            <td className="px-6 py-4">{empresa.sector_id}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    )}
+                  </table>
+                </div>
               </div>
+            </div>
+            <div className="flex flex-col gap-4 px-4 pb-4 sm:flex-row justify-center items-center">
+              <Button
+                className="m-0 md:w-auto text-xs bg-green-600 hover:bg-green-600/[.5]"
+                onClick={handleGuardarRol}
+              >
+                Guardar
+              </Button>
+              <Button
+                className="m-0 md:w-auto text-xs"
+                onClick={handleCerrarModal}
+              >
+                Cancelar
+              </Button>
             </div>
           </div>
         </div>

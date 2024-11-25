@@ -788,6 +788,20 @@ Empresas.belongsTo(Seguro_Social, {
   },
 });
 
+// Empleados M:M Empresas
+Empleados.belongsToMany(Empresas, {
+  through: "Accesos_Empresas",
+  foreignKey: {
+    name: "empleado_id",
+  },
+});
+Empresas.belongsToMany(Empleados, {
+  through: "Accesos_Empresas",
+  foreignKey: {
+    name: "empresa_id",
+  },
+});
+
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
   conn: sequelize, // para importart la conexión { conn } = require('./db.js');

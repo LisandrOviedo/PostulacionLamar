@@ -5,7 +5,7 @@ import { Button, Hr, Title } from "../UI";
 
 import Swal from "sweetalert2";
 
-export function InfoCurriculo() {
+export default function InfoCurriculo() {
   const navigate = useNavigate();
 
   useEffect(() => {

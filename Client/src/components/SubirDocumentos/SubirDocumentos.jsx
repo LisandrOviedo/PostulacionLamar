@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 
 import { alertError } from "../../utils/sweetAlert2";
 
-export function SubirDocumentos() {
+export default function SubirDocumentos() {
   const token = useSelector((state) => state.empleados.token);
 
   const empleado = useSelector((state) => state.empleados.empleado);

@@ -13,7 +13,7 @@ import { Button, Hr, Label, Select, TextArea, Title } from "../UI";
 
 import Swal from "sweetalert2";
 
-export function EnviarSugerencia() {
+export default function EnviarSugerencia() {
   const URL_INTRANET = import.meta.env.VITE_URL_INTRANET;
 
   const [sugerencia, setSugerencia] = useState({});
