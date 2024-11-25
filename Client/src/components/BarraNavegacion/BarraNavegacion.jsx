@@ -317,7 +317,7 @@ export default function BarraNavegacion() {
           isOpenBurger ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
         } transition-all duration-300 ease-in-out`}
       >
-        <div className="h-full overflow-y-auto scroll-smooth">
+        <div className="h-full overflow-y-auto scroll-smooth pb-[12vh]">
           <nav>
             <ul className="space-y-2 flex flex-col gap-2 text-center">
               <li>
