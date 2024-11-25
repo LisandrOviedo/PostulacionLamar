@@ -393,7 +393,28 @@ export default function Movimientos() {
     } else {
       await postMovimiento(token, datosMovimiento).then(() => {
         window.scroll(0, 0);
-        window.location.reload();
+
+        setDatosMovimiento({
+          solicitante_id: empleado.empleado_id,
+          empresa_id: empleado.empresa_id,
+          tipo_identificacion: "V",
+          numero_identificacion: "",
+          duracion_movimiento: "Permanente",
+          duracion_movimiento_dias: "1",
+          duracion_periodo_prueba: "1",
+          sueldo: "",
+          tipo_identificacion_supervisor: "V",
+          tipo_identificacion_gerencia: "V",
+          tipo_identificacion_tthh: "V",
+          numero_identificacion_supervisor: "",
+          numero_identificacion_gerencia: "",
+          numero_identificacion_tthh: "",
+        });
+
+        setDatosEmpleado({});
+        setDatosSupervisor({});
+        setDatosAprobacionGerencia({});
+        setDatosTTHH({});
       });
     }
   };

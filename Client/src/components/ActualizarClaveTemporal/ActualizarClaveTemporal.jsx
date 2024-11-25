@@ -53,7 +53,9 @@ export default function ActualizarClaveTemporal() {
 
   useEffect(() => {
     window.scroll(0, 0);
-    document.title = "Grupo Lamar - Actualizar Clave Temporal";
+
+    document.title = "Grupo Lamar - Actualizar Contraseña Temporal";
+
     return () => {
       document.title = "Grupo Lamar";
     };
@@ -61,7 +63,7 @@ export default function ActualizarClaveTemporal() {
 
   return (
     <div className="mt-10 sm:mt-15 flex flex-col justify-center items-center px-4 sm:px-10 bg-white h-full">
-      <Title>Actualización de contraseña</Title>
+      <Title>Actualizar Contraseña</Title>
       <br />
       <p className="text-center text-sm sm:text-base">
         ¡Hola, bienvenid@! Haz ingresado con una contraseña temporal, por
