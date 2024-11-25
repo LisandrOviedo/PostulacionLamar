@@ -72,7 +72,9 @@ export default function DatosPersonales() {
     return () => {
       document.title = "Grupo Lamar";
     };
-  }, [empleado]);
+  }, []);
+
+  useEffect(() => {}, [empleado]);
 
   const handleInputChangeDatos = (event) => {
     const { name, value } = event.target;
@@ -107,7 +109,19 @@ export default function DatosPersonales() {
   };
 
   const handleSaveChanges = () => {
-    dispatch(putEmpleado(token, datosPersonales));
+    dispatch(putEmpleado(token, datosPersonales)).then(() => {
+      setModificar({
+        estado_civil: false,
+        rif: false,
+        telefono: false,
+        correo: false,
+        etnia_id: false,
+        mano_dominante: false,
+        sexo: false,
+        factor_grupo_sanguineo: false,
+        cantidad_hijos: false,
+      });
+    });
   };
 
   const handleModificar = (campo) => {

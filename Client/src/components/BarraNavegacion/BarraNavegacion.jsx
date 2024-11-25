@@ -21,7 +21,7 @@ export default function BarraNavegacion() {
 
   const { pathname } = useLocation();
 
-  const [isOpenBurger, setIsOpenBurger] = useState(false);
+  const [isOpenBurger, setIsOpenBurger] = useState(true);
   const [isOpenNotif, setIsOpenNotif] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -96,6 +96,8 @@ export default function BarraNavegacion() {
   };
 
   const asideRef = useRef(null);
+  const asideRef2 = useRef(null);
+  const asideRef3 = useRef(null);
 
   const URL_SERVER = import.meta.env.VITE_URL_SERVER;
   const FOTO_PERFIL = `${URL_SERVER}/documentos_empleados/documento/${empleado.tipo_identificacion}${empleado.numero_identificacion}/${empleado.foto_perfil_nombre}`;
@@ -119,25 +121,26 @@ export default function BarraNavegacion() {
     setMenu(resultadoMenu);
   }, [pathname]);
 
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (
-        window.innerWidth > 640 &&
-        asideRef.current &&
-        !asideRef.current.contains(event.target)
-      ) {
-        setIsOpenNotif(false);
-      }
-    };
-
-    if (window.innerWidth > 640) {
-      document.addEventListener("mousedown", handleOutsideClick);
+  const handleOutsideClick = (event) => {
+    if (asideRef.current && !asideRef.current.contains(event.target)) {
+      setIsOpenNotif(false);
     }
 
+    if (
+      asideRef2.current &&
+      !asideRef2.current.contains(event.target) &&
+      asideRef3.current &&
+      !asideRef3.current.contains(event.target)
+    ) {
+      setIsOpenBurger(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+
     return () => {
-      if (window.innerWidth > 640) {
-        document.removeEventListener("mousedown", handleOutsideClick);
-      }
+      document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [empleado]);
 
@@ -239,6 +242,7 @@ export default function BarraNavegacion() {
     <div className="w-full fixed top-0 select-none z-[999]">
       <nav className="bg-[#002846] p-1 flex items-center justify-between">
         <div
+          ref={asideRef3}
           onClick={toggleMenuBurger}
           className="text-white flex items-center sm:hover:opacity-85 cursor-pointer gap-1"
         >
@@ -247,7 +251,7 @@ export default function BarraNavegacion() {
         </div>
 
         <div className="flex items-center space-x-4 mr-6">
-          {pathname.startsWith("/admin/") ? (
+          {pathname.startsWith("/admin/") && (
             <>
               <div ref={asideRef} className="static">
                 <span onClick={toggleNotif} className="cursor-pointer">
@@ -259,7 +263,9 @@ export default function BarraNavegacion() {
                     }
                     alt="Notificaciones"
                     className={
-                      Object.keys(notificaciones).length ? "h-6" : "h-5"
+                      Object.keys(notificaciones).length
+                        ? "h-6 animate-bounce"
+                        : "h-5"
                     }
                   />
                 </span>
@@ -287,7 +293,7 @@ export default function BarraNavegacion() {
                 </ul>
               </div>
             </>
-          ) : null}
+          )}
 
           <span className="text-white text-sm md:text-base">Bienvenido/a</span>
           {empleado.foto_perfil_nombre ? (
@@ -306,11 +312,12 @@ export default function BarraNavegacion() {
         </div>
       </nav>
       <aside
-        className={`bg-[#002846] text-white w-full sm:w-56 p-4 h-screen ${
-          isOpenBurger ? "block" : "hidden"
-        }`}
+        ref={asideRef2}
+        className={`bg-[#002846] text-white w-full sm:w-56 p-4 h-screen overflow-hidden ${
+          isOpenBurger ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+        } transition-all duration-300 ease-in-out`}
       >
-        <div className="h-full overflow-y-auto scroll-smooth pb-[20vh]">
+        <div className="h-full overflow-y-auto scroll-smooth pb-[12vh]">
           <nav>
             <ul className="space-y-2 flex flex-col gap-2 text-center">
               <li>

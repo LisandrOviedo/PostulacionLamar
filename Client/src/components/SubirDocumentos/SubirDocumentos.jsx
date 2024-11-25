@@ -261,15 +261,43 @@ export default function SubirDocumentos() {
       }
 
       await postDocumentos(token, formData);
-    }
 
-    Swal.fire({
-      title: "Oops...",
-      text: "¡Debes cargar al menos 1 archivo!",
-      icon: "error",
-      showConfirmButton: false,
-      timer: 3000,
-    });
+      const data = await getDocumentos(token, empleado.empleado_id);
+
+      setAnexos(data);
+
+      setIsLoad({
+        foto_carnet: false,
+        foto_cedula: false,
+        rif: false,
+        resumen_curricular: false,
+        titulo_bachiller: false,
+        titulos_universitarios: false,
+        otros_estudios: false,
+        referencia_personal: false,
+        cuenta_bancaria: false,
+      });
+
+      foto_carnet.value = "";
+      foto_cedula.value = "";
+      rif.value = "";
+      resumen_curricular.value = "";
+      titulo_bachiller.value = "";
+      titulos_universitarios.value = "";
+      otros_estudios.value = "";
+      referencia_personal.value = "";
+      cuenta_bancaria.value = "";
+
+      window.scroll(0, 0);
+    } else {
+      Swal.fire({
+        title: "Oops...",
+        text: "¡Debes cargar al menos 1 archivo!",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+    }
   };
 
   const handleOpenDocument = async (filename) => {
@@ -285,7 +313,7 @@ export default function SubirDocumentos() {
 
   return (
     <div className="mt-24 sm:mt-32 h-full flex flex-col px-5 sm:px-10 bg-white">
-      <Title>Mis documentos</Title>
+      <Title>Mis Documentos</Title>
       <br />
       <Hr />
       <div className="flex flex-col mt-5 mb-5 gap-3">

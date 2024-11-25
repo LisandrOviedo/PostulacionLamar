@@ -27,7 +27,11 @@ export default function ActualizarClave() {
 
     await putPassword(token, body);
 
-    window.location.reload();
+    setData({
+      claveAnterior: "",
+      claveNueva: "",
+      confirmarClave: "",
+    });
   };
 
   const handleKeyDown = (e) => {
@@ -50,8 +54,8 @@ export default function ActualizarClave() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    document.title = "Grupo Lamar - Actualizar Clave";
-    
+    document.title = "Grupo Lamar - Actualizar Contraseña";
+
     return () => {
       document.title = "Grupo Lamar";
     };
@@ -60,7 +64,7 @@ export default function ActualizarClave() {
   return (
     <div className="mt-24 sm:mt-32 px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
-        <Title>Actualización de contraseña</Title>
+        <Title>Actualizar Contraseña</Title>
         <br />
         <div className="grid gap-3 sm:grid-cols-3 mx-[10%] sm:mx-[0%]">
           <div className="flex flex-col">

@@ -163,9 +163,6 @@ export const postDocumentos = async (token, formData) => {
       text: "Documentos actualizados correctamente",
       icon: "success",
     });
-
-    window.scroll(0, 0);
-    window.location.reload();
   } catch (error) {
     alertError(error);
 
@@ -361,7 +358,6 @@ export const putEmpleado = (token, datosPersonales) => {
         width: "20em",
       });
 
-      window.location.reload();
       return;
     } catch (error) {
       alertError(error);

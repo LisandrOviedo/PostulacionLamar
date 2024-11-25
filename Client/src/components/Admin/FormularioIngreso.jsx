@@ -701,9 +701,6 @@ export default function FormularioIngreso() {
     const nombres = document.getElementById("nombres");
     const apellidos = document.getElementById("apellidos");
     const estado_civil = document.getElementById("estado_civil");
-    const rif = document.getElementById("rif");
-    const telefono = document.getElementById("telefono");
-    const correo = document.getElementById("correo");
     const fecha_nacimiento = document.getElementById("fecha_nacimiento");
     const nacimiento_lugar = document.getElementById("nacimiento_lugar");
     const nacimiento_pais_id = document.getElementById("nacimiento_pais_id");
@@ -786,7 +783,36 @@ export default function FormularioIngreso() {
     await saveFichaIngreso(token, datosIngreso);
 
     window.scroll(0, 0);
-    window.location.reload();
+
+    setDatosIngreso({
+      tipo_identificacion: "V",
+      numero_identificacion: "",
+      estado_civil: "Soltero(a)",
+      mano_dominante: "Derecha",
+      sexo: "Masculino",
+      factor_grupo_sanguineo: "Seleccione",
+      cantidad_hijos: "0",
+      carga_familiar: "0",
+      tipo_vivienda: "Casa",
+      grado_instruccion: "Primaria",
+      titulos_obtenidos: [],
+      experiencias: [],
+      referencias_personales: [],
+      posee_parientes_empresa: "0",
+      contactos_emergencia: [],
+      alergia_alimentos: false,
+      alergia_medicamentos: false,
+      alergia_otros: false,
+      fuma: false,
+      titular_cuenta: "Propia",
+      entidad_bancaria: "100% Banco",
+      tipo_cuenta: "Corriente",
+      fecha_ingreso: YYYYMMDD(),
+      posee_licencia_conducir: false,
+      posee_carta_medica: false,
+      tiene_parientes_empresa: false,
+      salario: "",
+    });
   };
 
   const handleConvertirADecimales = (e) => {
