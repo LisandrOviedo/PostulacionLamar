@@ -138,7 +138,7 @@ export default function DatosPersonales() {
         <img
           src={imagen}
           alt="Imgen del perfil"
-          className="w-40 h-40 border border-[#002846] bg-gray-400 rounded-full ring-2 ring-[#F0C95C] "
+          className="w-40 h-40 border border-primary bg-gray-400 rounded-full ring-2 ring-secondary"
         />
         <Span className="font-bold text-base">Imagen del perfil</Span>
       </div>

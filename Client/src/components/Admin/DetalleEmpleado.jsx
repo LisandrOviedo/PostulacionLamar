@@ -199,7 +199,7 @@ export default function DetalleEmpleado() {
               empleadoDetail.foto_perfil_nombre ? FOTO_PERFIL : "./Person.svg"
             }
             alt="Imgen del perfil"
-            className="w-40 h-40 border border-[#002846] bg-gray-400 rounded-full ring-2 ring-[#F0C95C]"
+            className="w-40 h-40 border border-primary bg-gray-400 rounded-full ring-2 ring-secondary"
           />
           <span className="text-sm">Imagen del perfil</span>
         </div>

@@ -155,7 +155,7 @@ export default function AccesoEmpleado() {
           <div className="flex items-center justify-between mb-1 gap-4 sm:gap-0">
             <Label htmlFor="clave">Contraseña</Label>
             <button
-              className="font-semibold text-[#002846] hover:text-[#002846]/[.5] text-xs sm:text-sm bg-transparent border-none focus:outline-none"
+              className="font-semibold text-primary hover:text-primary/[.5] text-xs sm:text-sm bg-transparent border-none focus:outline-none"
               onClick={handleHelp}
             >
               ¿Olvidó su contraseña?
