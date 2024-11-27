@@ -490,7 +490,7 @@ const login = async (tipo_identificacion, numero_identificacion, clave) => {
       return {
         empleado_id: empleado.empleado_id,
         changePassword: true,
-        rol: empleado.Role.nombre,
+        acceso_admin: empleado.Role.acceso_admin,
       };
     }
 

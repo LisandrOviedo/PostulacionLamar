@@ -26,12 +26,11 @@ export default function ActualizarClaveTemporal() {
 
     await putPasswordTemporal(body);
 
-    if (empleado.rol === "admin") {
+    if (empleado.acceso_admin) {
       navigate("/admin/acceso");
-      return;
+    } else {
+      navigate("/");
     }
-
-    navigate("/");
   };
 
   const handleKeyDown = (e) => {
@@ -145,7 +144,11 @@ export default function ActualizarClaveTemporal() {
           </Button>
           <Button
             onClick={() => {
-              navigate("/");
+              if (empleado.acceso_admin) {
+                navigate("/admin/acceso");
+              } else {
+                navigate("/");
+              }
             }}
             className={clsx("w-auto bg-red-600 hover:bg-red-700")}
           >
