@@ -41,7 +41,6 @@ export const SubirDocumentos = lazy(() =>
   import("./SubirDocumentos/SubirDocumentos")
 );
 
-export const AccesoAdmin = lazy(() => import("./Admin/AccesoAdmin"));
 export const AsignacionAccesoEmpresas = lazy(() =>
   import("./Admin/AsignacionAccesoEmpresas")
 );

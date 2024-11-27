@@ -47,11 +47,19 @@ export default function AccesoEmpleado() {
   useEffect(() => {
     window.scroll(0, 0);
 
-    if (empleado.activo && empleado.Role.nombre) {
-      return navigate("/inicio");
-    }
+    if (location.pathname.startsWith("/admin/")) {
+      document.title = "Grupo Lamar - Login (Admin)";
 
-    document.title = "Grupo Lamar - Login";
+      if (empleado.activo && empleado.Role.acceso_admin) {
+        return navigate("/admin/panel");
+      }
+    } else {
+      document.title = "Grupo Lamar - Login";
+
+      if (empleado.activo && empleado.Role.nombre) {
+        return navigate("/inicio");
+      }
+    }
 
     return () => {
       document.title = "Grupo Lamar";
@@ -66,20 +74,44 @@ export default function AccesoEmpleado() {
 
     if (empleado?.changePassword) {
       return navigate("/miPerfil/actualizarClaveTemporal");
-    } else if (empleado.activo && empleado.Role.nombre) {
-      Swal.fire({
-        title: "¡Bienvenido!",
-        text: "Sesión iniciada correctamente",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 1500,
-        width: "20em",
-      });
+    } else if (location.pathname.startsWith("/admin/")) {
+      if (empleado.activo && !empleado.Role.acceso_admin) {
+        Swal.fire({
+          text: "Datos incorrectos",
+          icon: "error",
+        });
+      } else if (empleado.activo && empleado.Role.acceso_admin) {
+        Swal.fire({
+          title: "¡Bienvenido!",
+          text: "Sesión iniciada correctamente",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+          width: "20em",
+        });
 
-      if (location.state?.from) {
-        return navigate(location.state.from);
-      } else {
-        return navigate("/inicio");
+        if (location.state?.from) {
+          return navigate(location.state.from);
+        } else {
+          return navigate("/admin/panel");
+        }
+      }
+    } else {
+      if (empleado.activo && empleado.Role.nombre) {
+        Swal.fire({
+          title: "¡Bienvenido!",
+          text: "Sesión iniciada correctamente",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+          width: "20em",
+        });
+
+        if (location.state?.from) {
+          return navigate(location.state.from);
+        } else {
+          return navigate("/inicio");
+        }
       }
     }
   }, [empleado]);
@@ -109,7 +141,9 @@ export default function AccesoEmpleado() {
         </div>
         <div>
           <Title className="mt-4 text-2xl font-bold leading-9 tracking-tight">
-            Acceso Empleado
+            {location.pathname.startsWith("/admin/")
+              ? "Acceso Administrador"
+              : "Acceso Empleado"}
           </Title>
         </div>
       </div>
@@ -170,7 +204,7 @@ export default function AccesoEmpleado() {
             onKeyDown={handleKeyDown}
           />
         </div>
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center">
           <Button
             id="btn_continuar"
             onClick={handleLogin}
@@ -190,6 +224,14 @@ export default function AccesoEmpleado() {
           >
             Acceder
           </Button>
+          {location.pathname.startsWith("/admin/") && (
+            <Link
+              to="/"
+              className="font-semibold text-primary hover:text-primary/[.5] text-xs sm:text-sm"
+            >
+              Ir a la vista de empleado
+            </Link>
+          )}
         </div>
       </div>
     </div>
