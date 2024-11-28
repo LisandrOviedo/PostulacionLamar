@@ -200,7 +200,7 @@ export default function BarraNavegacion() {
           <>
             <span
               onClick={() => toggleMenu(menuItem.menu_id)}
-              className="hover:text-[#F0C95C] block cursor-pointer"
+              className="hover:text-secondary block cursor-pointer"
             >
               {menuItem.titulo}
               {showSubMenu[menuItem.menu_id] ? (
@@ -224,8 +224,8 @@ export default function BarraNavegacion() {
             to={menuItem.ruta}
             className={({ isActive }) => {
               return isActive
-                ? "text-[#F0C95C] hover:text-[#F0C95C] block pointer-events-none"
-                : "text-white hover:text-[#F0C95C] block";
+                ? "text-secondary hover:text-secondary block pointer-events-none"
+                : "text-white hover:text-secondary block";
             }}
             onClick={() => {
               toggleMenuBurger();
@@ -240,7 +240,7 @@ export default function BarraNavegacion() {
 
   return (
     <div className="w-full fixed top-0 select-none z-[999]">
-      <nav className="bg-[#002846] p-1 flex items-center justify-between">
+      <nav className="bg-primary p-1 flex items-center justify-between">
         <div
           ref={asideRef3}
           onClick={toggleMenuBurger}
@@ -280,7 +280,7 @@ export default function BarraNavegacion() {
                   <li>
                     <Link
                       to="/admin/sugerencias"
-                      className="text-white hover:text-[#F0C95C] text-sm"
+                      className="text-white hover:text-secondary text-sm"
                     >
                       <span className="text-xs">
                         {notificaciones.sugerencias
@@ -300,20 +300,20 @@ export default function BarraNavegacion() {
             <img
               src={FOTO_PERFIL}
               alt="Icono de Perfil"
-              className="inline-block h-6 w-6 sm:h-8 sm:w-8 rounded-full ring-2 ring-[#F0C95C]"
+              className="inline-block h-6 w-6 sm:h-8 sm:w-8 rounded-full ring-2 ring-secondary"
             />
           ) : (
             <img
               src="./Person.svg"
               alt="Icono de Perfil"
-              className="inline-block h-6 w-6 sm:h-8 sm:w-8 rounded-full ring-2 ring-[#F0C95C]"
+              className="inline-block h-6 w-6 sm:h-8 sm:w-8 rounded-full ring-2 ring-secondary"
             />
           )}
         </div>
       </nav>
       <aside
         ref={asideRef2}
-        className={`bg-[#002846] text-white w-full sm:w-56 p-4 h-screen overflow-hidden ${
+        className={`bg-primary text-white w-full sm:w-56 p-4 h-screen overflow-hidden ${
           isOpenBurger ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
         } transition-all duration-300 ease-in-out`}
       >
@@ -337,7 +337,7 @@ export default function BarraNavegacion() {
               {renderMenu(menu)}
               <li>
                 <Link
-                  className="text-white hover:text-[#F0C95C] block"
+                  className="text-white hover:text-secondary block"
                   onClick={logout}
                 >
                   Cerrar Sesión

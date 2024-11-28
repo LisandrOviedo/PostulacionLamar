@@ -19,7 +19,6 @@ import {
   PaginaNoEncontrada,
   PruebaKostick,
   SubirDocumentos,
-  AccesoAdmin,
   AsignacionAccesoEmpresas,
   AsignacionRoles,
   DetalleEmpleado,
@@ -57,7 +56,7 @@ function App() {
         userState.empleado_id && <BarraNavegacion />}
       <Routes>
         <Route path="/" element={<AccesoEmpleado />} />
-        <Route path="/admin/acceso" element={<AccesoAdmin />} />
+        <Route path="/admin/acceso" element={<AccesoEmpleado />} />
         <Route path="/sugerencias" element={<EnviarSugerencia />} />
         <Route
           path="/infoPostulacion/:vacante_id"

@@ -7,7 +7,7 @@ export const TextArea = ({ className, errors, ...props }) => {
       className={twMerge(
         clsx(
           `text-sm resize-none block w-full rounded-lg bg-gray-50 border ${
-            errors ? "border-[#ff1a1a]" : "border-gray-400"
+            errors ? "border-error" : "border-gray-400"
           } py-1.5 text-gray-900`,
           className
         )

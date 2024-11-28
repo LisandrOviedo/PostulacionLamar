@@ -1,8 +1,12 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import { Title } from "../UI";
 
 export default function PanelAdmin() {
+  const empleado = useSelector((state) => state.empleados.empleado);
+
   useEffect(() => {
     window.scroll(0, 0);
 
@@ -14,12 +18,15 @@ export default function PanelAdmin() {
   }, []);
 
   return (
-    <div className="mt-24 sm:mt-32 flex min-h-full flex-1 flex-col items-center px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <Title>Panel Administrativo</Title>
-      </div>
-
-      <div className="mt-10 sm:mx-auto sm:w-[40%] sm:max-w-sm"></div>
+    <div className="mt-24 sm:mt-32 flex flex-col justify-center items-center bg-white gap-2">
+      <Title>Panel Administrativo</Title>
+      <Title>{`${empleado.nombres} ${empleado.apellidos}`}</Title>
+      <Link
+        to="/inicio"
+        className="font-semibold text-primary hover:text-primary/[.5] text-xs sm:text-sm"
+      >
+        Ir a la vista de empleado
+      </Link>
     </div>
   );
 }

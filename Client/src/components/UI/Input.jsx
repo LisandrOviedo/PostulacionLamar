@@ -7,7 +7,7 @@ export const Input = ({ className, errors, ...props }) => {
       className={twMerge(
         clsx(
           `bg-gray-50 border ${
-            errors ? "border-[#ff1a1a]" : "border-gray-400"
+            errors ? "border-error" : "border-gray-400"
           }  text-gray-900 text-sm rounded-lg block w-full p-2.5 outline-none`,
           className
         )
